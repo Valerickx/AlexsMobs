@@ -66,20 +66,16 @@ public class EntityMurmur extends Monster implements ISemiAquatic {
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
     }
 
-    public static <T extends Mob> boolean checkMurmurSpawnRules(EntityType<EntityMurmur> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return reason == MobSpawnType.SPAWNER || !iServerWorld.canSeeSky(pos) && (pos.getY() <= AMConfig.murmurSpawnHeight || iServerWorld.getBiome(pos).is(AMTagRegistry.SPAWNS_MURMURS_IGNORE_HEIGHT)) && checkMonsterSpawnRules(entityType, iServerWorld, reason, pos, random);
+    public static <T extends Mob> boolean checkMurmurSpawnRules(EntityType<EntityMurmur> entityType, ServerLevelAccessor iServerWorld, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return reason == EntitySpawnReason.SPAWNER || !iServerWorld.canSeeSky(pos) && (pos.getY() <= AMConfig.murmurSpawnHeight || iServerWorld.getBiome(pos).is(AMTagRegistry.SPAWNS_MURMURS_IGNORE_HEIGHT)) && checkMonsterSpawnRules(entityType, iServerWorld, reason, pos, random);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.murmurSpawnRolls, this.getRandom(), spawnReasonIn) && super.checkSpawnRules(worldIn, spawnReasonIn);
     }
 
     public boolean isAlliedTo(Entity entity) {
         return this.getHeadUUID() != null && entity.getUUID().equals(this.getHeadUUID()) || super.isAlliedTo(entity);
-    }
-
-    public MobType getMobType() {
-        return MobType.UNDEAD;
     }
 
     @Override
@@ -92,10 +88,10 @@ public class EntityMurmur extends Monster implements ISemiAquatic {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HEAD_UUID, Optional.empty());
-        this.entityData.define(HEAD_ID, -1);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HEAD_UUID, Optional.empty());
+        builder.define(HEAD_ID, -1);
     }
 
     @Nullable
@@ -108,7 +104,7 @@ public class EntityMurmur extends Monster implements ISemiAquatic {
     }
 
     public Entity getHead() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             UUID id = getHeadUUID();
             return id == null ? null : ((ServerLevel) level()).getEntity(id);
         }else{
@@ -126,7 +122,7 @@ public class EntityMurmur extends Monster implements ISemiAquatic {
         if (this.renderFakeHead) this.renderFakeHead = false;
         this.yBodyRot = this.getYRot();
         this.yHeadRot = Mth.clamp(this.yHeadRot, this.yBodyRot - 70, this.yBodyRot + 70);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             Entity head = getHead();
             if(head == null){
                 LivingEntity created = createHead();
@@ -180,18 +176,18 @@ public class EntityMurmur extends Monster implements ISemiAquatic {
         return 5;
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("HeadUUID")) {
-            this.setHeadUUID(compound.getUUID("HeadUUID"));
+        if (compound.read("HeadUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setHeadUUID(compound.read("HeadUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
     }
 
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getHeadUUID() != null) {
-            compound.putUUID("HeadUUID", this.getHeadUUID());
+            compound.store("HeadUUID", net.minecraft.core.UUIDUtil.CODEC, this.getHeadUUID());
         }
     }
 

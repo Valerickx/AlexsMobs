@@ -49,7 +49,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -88,8 +88,8 @@ public class EntityUnderminer extends PathfinderMob {
         return new PathNavigator(this, level());
     }
 
-    public static <T extends Mob> boolean checkUnderminerSpawnRules(EntityType<EntityUnderminer> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        if (reason == MobSpawnType.SPAWNER) {
+    public static <T extends Mob> boolean checkUnderminerSpawnRules(EntityType<EntityUnderminer> entityType, ServerLevelAccessor iServerWorld, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        if (reason == EntitySpawnReason.SPAWNER) {
             return true;
         }else{
             int j = 3;
@@ -114,22 +114,22 @@ public class EntityUnderminer extends PathfinderMob {
         return super.requiresCustomPersistence() || this.hasCustomName() || lastGivenStack != null;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.underminerSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DWARF, true);
-        this.entityData.define(HIDING, false);
-        this.entityData.define(VISUALLY_MINING, false);
-        this.entityData.define(TARGETED_BLOCK_POS, Optional.empty());
-        this.entityData.define(MINING_PROGRESS, 0.0F);
-        this.entityData.define(VARIANT, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DWARF, true);
+        builder.define(HIDING, false);
+        builder.define(VISUALLY_MINING, false);
+        builder.define(TARGETED_BLOCK_POS, Optional.empty());
+        builder.define(MINING_PROGRESS, 0.0F);
+        builder.define(VARIANT, 0);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Dwarf", this.isDwarf());
         compound.putBoolean("Hiding", this.isHiding());
@@ -141,13 +141,13 @@ public class EntityUnderminer extends PathfinderMob {
         }
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setDwarf(compound.getBoolean("Dwarf"));
-        this.setHiding(compound.getBoolean("Hiding"));
-        this.setVariant(compound.getInt("Variant"));
-        this.resetStackTime = compound.getInt("ResetItemTime");
-        this.mineCooldown = compound.getInt("MineCooldown");
+        this.setDwarf(compound.getBooleanOr("Dwarf", false));
+        this.setHiding(compound.getBooleanOr("Hiding", false));
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.resetStackTime = compound.getIntOr("ResetItemTime", 0);
+        this.mineCooldown = compound.getIntOr("MineCooldown", 0);
         if(compound.contains("MineStack")){
             this.lastGivenStack = ItemStack.of(compound.getCompound("MineStack"));
         }
@@ -219,7 +219,7 @@ public class EntityUnderminer extends PathfinderMob {
 
     private float calculateDistanceToFloor() {
         BlockPos floor = AMBlockPos.fromCoords(this.getX(), this.getBoundingBox().maxY, this.getZ());
-        while (!level().getBlockState(floor).isFaceSturdy(level(), floor, Direction.UP) && floor.getY() > level().getMinBuildHeight()) {
+        while (!level().getBlockState(floor).isFaceSturdy(level(), floor, Direction.UP) && floor.getY() > level().getMinY()) {
             floor = floor.below();
         }
         return (float) (this.getBoundingBox().minY - (floor.getY() + 1));
@@ -250,8 +250,8 @@ public class EntityUnderminer extends PathfinderMob {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag tag) {
-        spawnData = super.finalizeSpawn(level, difficultyInstance, mobSpawnType, spawnData, tag);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficultyInstance, EntitySpawnReason EntitySpawnReason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag tag) {
+        spawnData = super.finalizeSpawn(level, difficultyInstance, EntitySpawnReason, spawnData, tag);
         RandomSource randomsource = level.getRandom();
         this.populateDefaultEquipmentSlots(randomsource, difficultyInstance);
         if(random.nextFloat() < 0.3F){
@@ -279,7 +279,7 @@ public class EntityUnderminer extends PathfinderMob {
         if(!this.isHiding() && hidingProgress > 0F){
             hidingProgress--;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final double xzSpeed = this.getDeltaMovement().horizontalDistance();
             final double distToFloor = Mth.clamp(calculateDistanceToFloor(), -1F, 1F);
             if (Math.abs(distToFloor) > 0.01 && xzSpeed < 0.05 && !this.isActuallyInAWall()) {

@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelBlueJay;
 import com.github.alexthe666.alexsmobs.client.model.ModelRaccoon;
 import com.github.alexthe666.alexsmobs.entity.EntityBlueJay;
@@ -7,19 +9,20 @@ import com.github.alexthe666.alexsmobs.entity.EntityRaccoon;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
-public class RenderBlueJay extends MobRenderer<EntityBlueJay, ModelBlueJay> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/blue_jay.png");
-    private static final ResourceLocation TEXTURE_SHINY = new ResourceLocation("alexsmobs:textures/entity/blue_jay_shiny.png");
+public class RenderBlueJay extends MobRenderer<EntityBlueJay, LivingEntityRenderState, ModelBlueJay> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/blue_jay.png");
+    private static final Identifier TEXTURE_SHINY = Identifier.parse("alexsmobs:textures/entity/blue_jay_shiny.png");
 
     public RenderBlueJay(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelBlueJay(), 0.2F);
@@ -45,7 +48,7 @@ public class RenderBlueJay extends MobRenderer<EntityBlueJay, ModelBlueJay> {
     }
 
 
-    public ResourceLocation getTextureLocation(EntityBlueJay entity) {
+    public Identifier getTextureLocation(EntityBlueJay entity) {
         return TEXTURE;
     }
 
@@ -55,7 +58,7 @@ public class RenderBlueJay extends MobRenderer<EntityBlueJay, ModelBlueJay> {
             super(RenderBlueJay.this);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityBlueJay entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityBlueJay entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(entitylivingbaseIn.getFeedTime() > 0){
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(TEXTURE_SHINY));
                 float alpha = (float) (1F + Math.sin(ageInTicks * 0.3F)) * 0.1F + 0.8F;

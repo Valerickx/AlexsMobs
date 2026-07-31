@@ -34,6 +34,13 @@ import java.util.Locale;
 
 public class BlockEndPirateAnchor extends BaseEntityBlock implements AMSpecialRenderBlock {
 
+    public static final com.mojang.serialization.MapCodec<BlockEndPirateAnchor> CODEC = simpleCodec(p -> new BlockEndPirateAnchor());
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
     public static final BooleanProperty EASTORWEST = BooleanProperty.create("eastorwest");
     public static final EnumProperty<BlockEndPirateAnchor.PieceType> PIECE = EnumProperty.create("piece", BlockEndPirateAnchor.PieceType.class);
     protected static final VoxelShape FULL_AABB_EW = Block.box(0.0D, 0.0D, 4D, 16.0D, 16.0D, 12.0D);
@@ -193,7 +200,7 @@ public class BlockEndPirateAnchor extends BaseEntityBlock implements AMSpecialRe
     }
 
     public RenderShape getRenderShape(BlockState state) {
-        return state.getValue(PIECE) == PieceType.ANCHOR_SIDE ? RenderShape.INVISIBLE : RenderShape.ENTITYBLOCK_ANIMATED;
+        return state.getValue(PIECE) == PieceType.ANCHOR_SIDE ? RenderShape.INVISIBLE : RenderShape.MODEL;
     }
 
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {

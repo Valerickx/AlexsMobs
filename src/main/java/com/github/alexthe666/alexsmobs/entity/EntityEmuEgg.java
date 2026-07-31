@@ -7,14 +7,14 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+
 
 public class EntityEmuEgg extends ThrowableItemProjectile {
 
@@ -30,13 +30,9 @@ public class EntityEmuEgg extends ThrowableItemProjectile {
         super(AMEntityRegistry.EMU_EGG.get(), x, y, z, worldIn);
     }
 
-    public EntityEmuEgg(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.EMU_EGG.get(), world);
-    }
-
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -51,7 +47,7 @@ public class EntityEmuEgg extends ThrowableItemProjectile {
 
     protected void onHit(HitResult result) {
         super.onHit(result);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.random.nextInt(8) == 0) {
                 int lvt_2_1_ = 1;
                 if (this.random.nextInt(32) == 0) {

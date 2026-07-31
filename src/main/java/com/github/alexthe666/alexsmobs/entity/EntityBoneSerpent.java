@@ -28,13 +28,13 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.WitherSkeleton;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -60,12 +60,12 @@ public class EntityBoneSerpent extends Monster {
 
     protected EntityBoneSerpent(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.LAVA, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.LAVA, 0.0F);
         switchNavigator(false);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.boneSeprentSpawnRolls, this.getRandom(), spawnReasonIn) && super.checkSpawnRules(worldIn, spawnReasonIn);
     }
 
@@ -105,10 +105,6 @@ public class EntityBoneSerpent extends Monster {
         return super.canBeAffected(potioneffectIn);
     }
 
-    public MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
     public float getWalkTargetValue(BlockPos pos, LevelReader worldIn) {
         if (worldIn.getBlockState(pos).getFluidState().is(FluidTags.WATER) || worldIn.getBlockState(pos).getFluidState().is(FluidTags.LAVA)) {
             return 10.0F;
@@ -129,7 +125,7 @@ public class EntityBoneSerpent extends Monster {
         return worldIn.isUnobstructed(this);
     }
 
-    public static boolean canBoneSerpentSpawn(EntityType<EntityBoneSerpent> p_234314_0_, LevelAccessor p_234314_1_, MobSpawnType p_234314_2_, BlockPos p_234314_3_, RandomSource p_234314_4_) {
+    public static boolean canBoneSerpentSpawn(EntityType<EntityBoneSerpent> p_234314_0_, LevelAccessor p_234314_1_, EntitySpawnReason p_234314_2_, BlockPos p_234314_3_, RandomSource p_234314_4_) {
         BlockPos.MutableBlockPos blockpos$mutable = p_234314_3_.mutable();
 
         do {
@@ -183,10 +179,10 @@ public class EntityBoneSerpent extends Monster {
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getChildId() != null) {
-            compound.putUUID("ChildUUID", this.getChildId());
+            compound.store("ChildUUID", net.minecraft.core.UUIDUtil.CODEC, this.getChildId());
         }
     }
 
@@ -201,17 +197,17 @@ public class EntityBoneSerpent extends Monster {
         return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(source);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("ChildUUID")) {
-            this.setChildId(compound.getUUID("ChildUUID"));
+        if (compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setChildId(compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CHILD_UUID, Optional.empty());
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CHILD_UUID, Optional.empty());
     }
 
     @Nullable
@@ -225,7 +221,7 @@ public class EntityBoneSerpent extends Monster {
 
     public Entity getChild() {
         UUID id = getChildId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -249,7 +245,7 @@ public class EntityBoneSerpent extends Monster {
                 switchNavigator(false);
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final Entity child = getChild();
             if (child == null) {
                 LivingEntity partParent = this;

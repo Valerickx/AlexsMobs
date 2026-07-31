@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -29,7 +29,14 @@ import javax.annotation.Nullable;
 
 public class BlockEndPirateShipWheel extends BaseEntityBlock implements AMSpecialRenderBlock{
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final com.mojang.serialization.MapCodec<BlockEndPirateShipWheel> CODEC = simpleCodec(p -> new BlockEndPirateShipWheel());
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape SOUTH_AABB = Block.box(-2, -2, 0, 18, 18, 3);
     private static final VoxelShape NORTH_AABB = Block.box(-2, -2, 13, 18, 18, 16);
     private static final VoxelShape EAST_AABB = Block.box(0, -2, -2, 3, 18, 18);
@@ -38,12 +45,12 @@ public class BlockEndPirateShipWheel extends BaseEntityBlock implements AMSpecia
     private static final VoxelShape DOWN_AABB = Block.box(-2, 13, -2, 16, 16, 18);
 
     public BlockEndPirateShipWheel() {
-        super(Properties.of().mapColor(MapColor.TERRACOTTA_WHITE).noOcclusion().sound(SoundType.ANCIENT_DEBRIS).strength(1F).lightLevel((i) -> 3).noCollission().requiresCorrectToolForDrops());
+        super(Properties.of().mapColor(MapColor.TERRACOTTA_WHITE).noOcclusion().sound(SoundType.ANCIENT_DEBRIS).strength(1F).lightLevel((i) -> 3).noCollision().requiresCorrectToolForDrops());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     public BlockState updateShape(BlockState state, Direction direction, BlockState state2, LevelAccessor level, BlockPos pos, BlockPos p_52801_) {
-        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state2, level, pos, p_52801_);
+        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : state;
     }
 
     public VoxelShape getShape(BlockState p_54561_, BlockGetter p_54562_, BlockPos p_54563_, CollisionContext p_54564_) {

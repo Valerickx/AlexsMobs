@@ -30,7 +30,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.FlyingAnimal;
+
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +50,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 
-public class EntityEndergrade extends Animal implements FlyingAnimal {
+public class EntityEndergrade extends Animal {
 
     private static final EntityDataAccessor<Integer> BITE_TICK = SynchedEntityData.defineId(EntityEndergrade.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> SADDLED = SynchedEntityData.defineId(EntityEndergrade.class, EntityDataSerializers.BOOLEAN);
@@ -70,7 +70,7 @@ public class EntityEndergrade extends Animal implements FlyingAnimal {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 20D).add(Attributes.ARMOR, 0.0D).add(Attributes.ATTACK_DAMAGE, 2.0D).add(Attributes.MOVEMENT_SPEED, 0.15F);
     }
 
-    public static boolean canEndergradeSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canEndergradeSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return !worldIn.getBlockState(pos.below()).isAir();
     }
 
@@ -78,21 +78,21 @@ public class EntityEndergrade extends Animal implements FlyingAnimal {
         return new DirectPathNavigator(this, worldIn);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Saddled", this.isSaddled());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setSaddled(compound.getBoolean("Saddled"));
+        this.setSaddled(compound.getBooleanOr("Saddled", false));
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(BITE_TICK, 0);
-        this.entityData.define(SADDLED, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(BITE_TICK, 0);
+        builder.define(SADDLED, false);
     }
 
     protected void registerGoals() {
@@ -230,10 +230,6 @@ public class EntityEndergrade extends Animal implements FlyingAnimal {
         return false;
     }
 
-    public MobType getMobType() {
-        return MobType.ARTHROPOD;
-    }
-
     protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
@@ -266,7 +262,7 @@ public class EntityEndergrade extends Animal implements FlyingAnimal {
         this.entityData.set(BITE_TICK, 5);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.endergradeSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -279,7 +275,7 @@ public class EntityEndergrade extends Animal implements FlyingAnimal {
     protected void dropEquipment() {
         super.dropEquipment();
         if (this.isSaddled()) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.spawnAtLocation(Items.SADDLE);
             }
         }
@@ -304,7 +300,7 @@ public class EntityEndergrade extends Animal implements FlyingAnimal {
         if(player.zza != 0 || player.xxa != 0){
             this.setRot(player.getYRot(), player.getXRot() * 0.25F);
             this.yRotO = this.yBodyRot = this.yHeadRot = this.getYRot();
-            this.setMaxUpStep(1);
+            com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1);
             this.getNavigation().stop();
             this.setTarget(null);
             this.setSprinting(true);

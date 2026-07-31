@@ -29,35 +29,34 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeableLeatherItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(modid = AlexsMobs.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = AlexsMobs.MODID, value = Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
 
     public static final Int2ObjectMap<SoundBearMusicBox> BEAR_MUSIC_BOX_SOUND_MAP = new Int2ObjectOpenHashMap<>();
@@ -74,27 +73,21 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public static void onItemColors(RegisterColorHandlersEvent.Item event) {
-
+    public static void onItemColors(RegisterColorHandlersEvent.ItemTintSources event) {
         AlexsMobs.LOGGER.info("loaded in item colorizer");
-        if(AMItemRegistry.STRADDLEBOARD.isPresent()){
-            event.register((stack, colorIn) -> colorIn < 1 ? -1 : ((DyeableLeatherItem) stack.getItem()).getColor(stack), AMItemRegistry.STRADDLEBOARD.get());
-        }else{
-            AlexsMobs.LOGGER.warn("Could not add straddleboard item to colorizer...");
-        }
     }
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public static void onBlockColors(RegisterColorHandlersEvent.Block event) {
+    public static void onBlockColors(RegisterColorHandlersEvent.BlockTintSources event) {
         AlexsMobs.LOGGER.info("loaded in block colorizer");
-        event.register((state, tintGetter, pos, tint) -> {
+        event.getBlockColors().register((state, tintGetter, pos, tint) -> {
             return tintGetter != null && pos != null ? RainbowUtil.calculateGlassColor(pos) : -1;
         }, AMBlockRegistry.RAINBOW_GLASS.get());
     }
 
-    public void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    @Override
+    public void init(IEventBus bus) {
         bus.addListener(ClientProxy::onBakingCompleted);
         bus.addListener(ClientProxy::onItemColors);
         bus.addListener(ClientProxy::onBlockColors);
@@ -229,25 +222,25 @@ public class ClientProxy extends CommonProxy {
         EntityRenderers.register(AMEntityRegistry.CAIMAN.get(), RenderCaiman::new);
         EntityRenderers.register(AMEntityRegistry.TRIOPS.get(), RenderTriops::new);
         try {
-            ItemProperties.register(AMItemRegistry.BLOOD_SPRAYER.get(), new ResourceLocation("empty"), (stack, p_239428_1_, p_239428_2_, j) -> {
+            ItemProperties.register(AMItemRegistry.BLOOD_SPRAYER.get(), Identifier.parse("empty"), (stack, p_239428_1_, p_239428_2_, j) -> {
                 return !ItemBloodSprayer.isUsable(stack) || p_239428_2_ instanceof Player && ((Player) p_239428_2_).getCooldowns().isOnCooldown(AMItemRegistry.BLOOD_SPRAYER.get()) ? 1.0F : 0.0F;
             });
-            ItemProperties.register(AMItemRegistry.HEMOLYMPH_BLASTER.get(), new ResourceLocation("empty"), (stack, p_239428_1_, p_239428_2_, j) -> {
+            ItemProperties.register(AMItemRegistry.HEMOLYMPH_BLASTER.get(), Identifier.parse("empty"), (stack, p_239428_1_, p_239428_2_, j) -> {
                 return !ItemHemolymphBlaster.isUsable(stack) || p_239428_2_ instanceof Player && ((Player) p_239428_2_).getCooldowns().isOnCooldown(AMItemRegistry.HEMOLYMPH_BLASTER.get()) ? 1.0F : 0.0F;
             });
-            ItemProperties.register(AMItemRegistry.TARANTULA_HAWK_ELYTRA.get(), new ResourceLocation("broken"), (stack, p_239428_1_, p_239428_2_, j) -> {
+            ItemProperties.register(AMItemRegistry.TARANTULA_HAWK_ELYTRA.get(), Identifier.parse("broken"), (stack, p_239428_1_, p_239428_2_, j) -> {
                 return ItemTarantulaHawkElytra.isUsable(stack) ? 0.0F : 1.0F;
             });
-            ItemProperties.register(AMItemRegistry.SHIELD_OF_THE_DEEP.get(), new ResourceLocation("blocking"), (stack, p_239421_1_, p_239421_2_, j) -> {
+            ItemProperties.register(AMItemRegistry.SHIELD_OF_THE_DEEP.get(), Identifier.parse("blocking"), (stack, p_239421_1_, p_239421_2_, j) -> {
                 return p_239421_2_ != null && p_239421_2_.isUsingItem() && p_239421_2_.getUseItem() == stack ? 1.0F : 0.0F;
             });
-            ItemProperties.register(AMItemRegistry.SOMBRERO.get(), new ResourceLocation("silly"), (stack, p_239421_1_, p_239421_2_, j) -> {
+            ItemProperties.register(AMItemRegistry.SOMBRERO.get(), Identifier.parse("silly"), (stack, p_239421_1_, p_239421_2_, j) -> {
                 return AlexsMobs.isAprilFools() ? 1.0F : 0.0F;
             });
-            ItemProperties.register(AMItemRegistry.TENDON_WHIP.get(), new ResourceLocation("active"), (stack, p_239421_1_, holder, j) -> {
+            ItemProperties.register(AMItemRegistry.TENDON_WHIP.get(), Identifier.parse("active"), (stack, p_239421_1_, holder, j) -> {
                 return ItemTendonWhip.isActive(stack, holder) ? 1.0F : 0.0F;
             });
-            ItemProperties.register(AMItemRegistry.PUPFISH_LOCATOR.get(), new ResourceLocation("in_chunk"), (stack, world, entity, j) -> {
+            ItemProperties.register(AMItemRegistry.PUPFISH_LOCATOR.get(), Identifier.parse("in_chunk"), (stack, world, entity, j) -> {
                 int x = pupfishChunkX * 16;
                 int z = pupfishChunkZ * 16;
                 if (entity != null && entity.getX() >= x && entity.getX() <= x + 16 && entity.getZ() >= z && entity.getZ() <= z + 16) {
@@ -255,7 +248,7 @@ public class ClientProxy extends CommonProxy {
                 }
                 return 0.0F;
             });
-            ItemProperties.register(AMItemRegistry.SKELEWAG_SWORD.get(), new ResourceLocation("blocking"), (stack, p_239421_1_, p_239421_2_, j) -> {
+            ItemProperties.register(AMItemRegistry.SKELEWAG_SWORD.get(), Identifier.parse("blocking"), (stack, p_239421_1_, p_239421_2_, j) -> {
                 return p_239421_2_ != null && p_239421_2_.isUsingItem() && p_239421_2_.getUseItem() == stack ? 1.0F : 0.0F;
             });
         } catch (Exception e) {
@@ -278,7 +271,7 @@ public class ClientProxy extends CommonProxy {
 
     private static void onBakingCompleted(final ModelEvent.ModifyBakingResult e) {
         String ghostlyPickaxe = "alexsmobs:ghostly_pickaxe";
-        for (ResourceLocation id : e.getModels().keySet()) {
+        for (Identifier id : e.getModels().keySet()) {
             if (id.toString().contains(ghostlyPickaxe)) {
                 e.getModels().put(id, new GhostlyPickaxeBakedModel(e.getModels().get(id)));
             }

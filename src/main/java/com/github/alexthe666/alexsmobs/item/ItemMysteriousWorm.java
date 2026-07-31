@@ -10,7 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.Random;
 import java.util.UUID;
@@ -37,7 +37,7 @@ public class ItemMysteriousWorm extends Item {
                 worm.updatePostSummon = true;
                 worm.setBaseMaxHealth(AMConfig.voidWormMaxHealth, true);
 
-                if(!entity.level().isClientSide){
+                if(!entity.level().isClientSide()){
                     Entity thrower = entity.getOwner();
                     if(thrower != null){
                         UUID uuid = thrower.getUUID();

@@ -66,7 +66,7 @@ public class TileEntitySculkBoomer extends BlockEntity implements GameEventListe
                 if(level.getRandom().nextInt(100) == 0){
                     sound = AMSoundRegistry.SCULK_BOOMER_FART.get();
                 }
-                level.playSound((Player)null, pos, sound, SoundSource.BLOCKS, 4F, level.random.nextFloat() * 0.2F + 0.9F);
+                level.playSound((Player)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
                 level.addParticle(AMParticleRegistry.SKULK_BOOM.get(), pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, 0, 0, 0);
             }
             tileEntity.prevOpen = openNow;
@@ -80,12 +80,12 @@ public class TileEntitySculkBoomer extends BlockEntity implements GameEventListe
 
     public void load(CompoundTag tag) {
         super.load(tag);
-        if (tag.contains("ScreamCooldown", 99)) {
-            this.screamTime = tag.getInt("ScreamCooldown");
+        if (tag.contains("ScreamCooldown")) {
+            this.screamTime = tag.getIntOr("ScreamCooldown", 0);
         }
     }
 
-    protected void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput tag) {
         super.saveAdditional(tag);
         tag.putInt("ScreamCooldown", this.screamTime);
     }

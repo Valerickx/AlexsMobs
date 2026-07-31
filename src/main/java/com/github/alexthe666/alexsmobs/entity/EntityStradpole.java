@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.entity.ai.BoneSerpentPathNavigator;
 import com.github.alexthe666.alexsmobs.item.AMItemRegistry;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
 import com.github.alexthe666.alexsmobs.misc.AMTagRegistry;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,8 +32,8 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.Bucketable;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -46,13 +46,13 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,8 +71,8 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
     private int ricochetCount = 0;
     protected EntityStradpole(EntityType type, Level world) {
         super(type, world);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.LAVA, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.LAVA, 0.0F);
         this.moveControl = new AquaticMoveController(this, 1.4F);
     }
 
@@ -93,7 +93,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.STRADPOLE_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
         return stack;
     }
@@ -101,7 +101,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
+            bucket.setCustomName(this.getCustomName());
         }
         Bucketable.saveDefaultDataToBucketTag(this, bucket);
     }
@@ -122,12 +122,12 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
             if(random.nextFloat() < 0.45F){
                 EntityStraddler straddler = AMEntityRegistry.STRADDLER.get().create(level());
                 straddler.copyPosition(this);
-                if(!this.level().isClientSide && level().addFreshEntity(straddler)){
+                if(!this.level().isClientSide() && level().addFreshEntity(straddler)){
                     this.remove(RemovalReason.DISCARDED);
 
                 }
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
         if (itemstack.getItem() == Items.LAVA_BUCKET && this.isAlive()) {
             this.gameEvent(GameEvent.ENTITY_INTERACT);
@@ -137,12 +137,12 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
             ItemStack itemstack2 = ItemUtils.createFilledResult(itemstack, player, itemstack1, false);
             player.setItemInHand(hand, itemstack2);
             Level level = this.level();
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer)player, itemstack1);
             }
 
             this.discard();
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return super.mobInteract(player, hand);
     }
@@ -153,12 +153,12 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(PARENT_UUID, Optional.empty());
-        this.entityData.define(DESPAWN_SOON, false);
-        this.entityData.define(LAUNCHED, false);
-        this.entityData.define(FROM_BUCKET, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(PARENT_UUID, Optional.empty());
+        builder.define(DESPAWN_SOON, false);
+        builder.define(LAUNCHED, false);
+        builder.define(FROM_BUCKET, false);
     }
 
     @Override
@@ -186,10 +186,10 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
         this.entityData.set(PARENT_UUID, Optional.ofNullable(uniqueId));
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getParentId() != null) {
-            compound.putUUID("ParentUUID", this.getParentId());
+            compound.store("ParentUUID", net.minecraft.core.UUIDUtil.CODEC, this.getParentId());
         }
         compound.putBoolean("FromBucket", this.fromBucket());
         compound.putBoolean("DespawnSoon", this.isDespawnSoon());
@@ -203,11 +203,11 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
         return !this.fromBucket() && !this.hasCustomName();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.stradpoleSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canStradpoleSpawn(EntityType<EntityStradpole> p_234314_0_, LevelAccessor p_234314_1_, MobSpawnType p_234314_2_, BlockPos p_234314_3_, RandomSource p_234314_4_) {
+    public static boolean canStradpoleSpawn(EntityType<EntityStradpole> p_234314_0_, LevelAccessor p_234314_1_, EntitySpawnReason p_234314_2_, BlockPos p_234314_3_, RandomSource p_234314_4_) {
         if(p_234314_1_.getFluidState(p_234314_3_).is(FluidTags.LAVA)){
             if(!p_234314_1_.getFluidState(p_234314_3_.below()).is(FluidTags.LAVA)){
 
@@ -217,13 +217,13 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
         return false;
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("ParentUUID")) {
-            this.setParentId(compound.getUUID("ParentUUID"));
+        if (compound.read("ParentUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setParentId(compound.read("ParentUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        this.setFromBucket(compound.getBoolean("FromBucket"));
-        this.setDespawnSoon(compound.getBoolean("DespawnSoon"));
+        this.setFromBucket(compound.getBooleanOr("FromBucket", false));
+        this.setDespawnSoon(compound.getBooleanOr("DespawnSoon", false));
     }
 
     protected void registerGoals() {
@@ -317,7 +317,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
 
     public Entity getParent() {
         UUID id = getParentId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -325,7 +325,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
 
     private void onEntityHit(EntityHitResult raytraceresult) {
         Entity entity = this.getParent();
-        if (entity instanceof LivingEntity && !this.level().isClientSide && raytraceresult.getEntity() instanceof LivingEntity target) {
+        if (entity instanceof LivingEntity && !this.level().isClientSide() && raytraceresult.getEntity() instanceof LivingEntity target) {
             if(!target.isBlocking()){
                 target.hurt(damageSources().mobProjectile(this, (LivingEntity)entity), 3.0F);
                 target.knockback(0.7F, entity.getX() - this.getX(), entity.getZ() - this.getZ());
@@ -339,8 +339,8 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
     }
 
     protected void damageShieldFor(Player holder, float damage) {
-        if (holder.getUseItem().canPerformAction(ToolActions.SHIELD_BLOCK)) {
-            if (!this.level().isClientSide) {
+        if (holder.getUseItem().canPerformAction(ItemAbilities.SHIELD_BLOCK)) {
+            if (!this.level().isClientSide()) {
                 holder.awardStat(Stats.ITEM_USED.get(holder.getUseItem().getItem()));
             }
 
@@ -349,7 +349,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
                 InteractionHand hand = holder.getUsedItemHand();
                 holder.getUseItem().hurtAndBreak(i, holder, (p_213833_1_) -> {
                     p_213833_1_.broadcastBreakEvent(hand);
-                    net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(holder, holder.getUseItem(), hand);
+                    net.neoforged.neoforge.event.ForgeEventFactory.onPlayerDestroyItem(holder, holder.getUseItem(), hand);
                 });
                 if (holder.getUseItem().isEmpty()) {
                     if (hand == InteractionHand.MAIN_HAND) {
@@ -357,7 +357,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
                     } else {
                         holder.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                     }
-                    holder.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
+                    holder.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
                 }
             }
 

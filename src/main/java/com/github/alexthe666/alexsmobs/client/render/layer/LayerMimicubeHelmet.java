@@ -10,24 +10,24 @@ import com.mojang.math.Axis;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 
 public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicube> {
 
-    private static final Map<String, ResourceLocation> ARMOR_TEXTURE_RES_MAP = Maps.newHashMap();
+    private static final Map<String, Identifier> ARMOR_TEXTURE_RES_MAP = Maps.newHashMap();
     private final HumanoidModel defaultBipedModel;
     private final RenderMimicube renderer;
 
@@ -37,7 +37,7 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
         defaultBipedModel = new HumanoidModel(renderManagerIn.bakeLayer(ModelLayers.ARMOR_STAND_OUTER_ARMOR));
     }
 
-    public static ResourceLocation getArmorResource(net.minecraft.world.entity.Entity entity, ItemStack stack, EquipmentSlot slot, @javax.annotation.Nullable String type) {
+    public static Identifier getArmorResource(net.minecraft.world.entity.Entity entity, ItemStack stack, EquipmentSlot slot, @javax.annotation.Nullable String type) {
         ArmorItem item = (ArmorItem) stack.getItem();
         String texture = item.getMaterial().getName();
         String domain = "minecraft";
@@ -48,18 +48,18 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
         }
         String s1 = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, (1), type == null ? "" : String.format("_%s", type));
 
-        s1 = net.minecraftforge.client.ForgeHooksClient.getArmorTexture(entity, stack, s1, slot, type);
-        ResourceLocation resourcelocation = ARMOR_TEXTURE_RES_MAP.get(s1);
+        s1 = net.neoforged.neoforge.client.ClientHooks.getArmorTexture(entity, stack, s1, slot, type);
+        Identifier Identifier = ARMOR_TEXTURE_RES_MAP.get(s1);
 
-        if (resourcelocation == null) {
-            resourcelocation = new ResourceLocation(s1);
-            ARMOR_TEXTURE_RES_MAP.put(s1, resourcelocation);
+        if (Identifier == null) {
+            Identifier = Identifier.parse(s1);
+            ARMOR_TEXTURE_RES_MAP.put(s1, Identifier);
         }
 
-        return resourcelocation;
+        return Identifier;
     }
 
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityMimicube cube, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityMimicube cube, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         matrixStackIn.pushPose();
         ItemStack itemstack = cube.getItemBySlot(EquipmentSlot.HEAD);
         float helmetSwap = Mth.lerp(partialTicks, cube.prevHelmetSwapProgress, cube.helmetSwapProgress) * 0.2F;
@@ -95,7 +95,7 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
         matrixStackIn.popPose();
     }
 
-    private void renderArmor(EntityMimicube entity, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, ResourceLocation armorResource, boolean notAVanillaModel) {
+    private void renderArmor(EntityMimicube entity, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
         VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(armorResource), false, glintIn);
         if(notAVanillaModel){
             renderer.getModel().copyPropertiesTo(modelIn);
@@ -145,7 +145,7 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
 
     protected HumanoidModel<?> getArmorModelHook(LivingEntity entity, ItemStack itemStack, EquipmentSlot slot, HumanoidModel model) {
         try{
-            Model basicModel = net.minecraftforge.client.ForgeHooksClient.getArmorModel(entity, itemStack, slot, model);
+            Model basicModel = net.neoforged.neoforge.client.ClientHooks.getArmorModel(entity, itemStack, slot, model);
             return basicModel instanceof HumanoidModel ? (HumanoidModel<?>) basicModel : model;
         }catch (Exception e){
             return model;

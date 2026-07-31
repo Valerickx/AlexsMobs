@@ -4,11 +4,10 @@ import com.github.alexthe666.alexsmobs.entity.EntityStraddleboard;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -22,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ItemStraddleboard extends Item implements DyeableLeatherItem {
+public class ItemStraddleboard extends Item {
 
     private static final Predicate<Entity> ENTITY_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
 
@@ -32,7 +31,7 @@ public class ItemStraddleboard extends Item implements DyeableLeatherItem {
 
     public int getColor(ItemStack p_200886_1_) {
         CompoundTag lvt_2_1_ = p_200886_1_.getTagElement("display");
-        return lvt_2_1_ != null && lvt_2_1_.contains("color", 99) ? lvt_2_1_.getInt("color") : 0XADC3D7;
+        return lvt_2_1_ != null && lvt_2_1_.contains("color") ? lvt_2_1_.getInt("color") : 0XADC3D7;
     }
 
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
@@ -43,11 +42,11 @@ public class ItemStraddleboard extends Item implements DyeableLeatherItem {
         return 1;
     }
 
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
         HitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.ANY);
         if (raytraceresult.getType() == HitResult.Type.MISS) {
-            return InteractionResultHolder.pass(itemstack);
+            return InteractionResult.PASS;
         } else {
             Vec3 vector3d = playerIn.getViewVector(1.0F);
             double d0 = 5.0D;
@@ -58,7 +57,7 @@ public class ItemStraddleboard extends Item implements DyeableLeatherItem {
                 for (Entity entity : list) {
                     AABB axisalignedbb = entity.getBoundingBox().inflate(entity.getPickRadius());
                     if (axisalignedbb.contains(vector3d1)) {
-                        return InteractionResultHolder.pass(itemstack);
+                        return InteractionResult.PASS;
                     }
                 }
             }
@@ -70,9 +69,9 @@ public class ItemStraddleboard extends Item implements DyeableLeatherItem {
                 boatentity.setColor(this.getColor(itemstack));
                 boatentity.setYRot(playerIn.getYRot());
                 if (!worldIn.noCollision(boatentity, boatentity.getBoundingBox().inflate(-0.1D))) {
-                    return InteractionResultHolder.fail(itemstack);
+                    return InteractionResult.FAIL;
                 } else {
-                    if (!worldIn.isClientSide) {
+                    if (!worldIn.isClientSide()) {
                         worldIn.addFreshEntity(boatentity);
                         if (!playerIn.getAbilities().instabuild) {
                             itemstack.shrink(1);
@@ -80,10 +79,10 @@ public class ItemStraddleboard extends Item implements DyeableLeatherItem {
                     }
 
                     playerIn.awardStat(Stats.ITEM_USED.get(this));
-                    return InteractionResultHolder.sidedSuccess(itemstack, worldIn.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             } else {
-                return InteractionResultHolder.pass(itemstack);
+                return InteractionResult.PASS;
             }
         }
     }

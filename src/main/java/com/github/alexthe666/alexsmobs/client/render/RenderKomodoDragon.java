@@ -1,20 +1,23 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelKomodoDragon;
 import com.github.alexthe666.alexsmobs.entity.EntityKomodoDragon;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderKomodoDragon extends MobRenderer<EntityKomodoDragon, ModelKomodoDragon> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/komodo_dragon.png");
-    private static final ResourceLocation TEXTURE_SADDLE = new ResourceLocation("alexsmobs:textures/entity/komodo_dragon_saddle.png");
-    private static final ResourceLocation TEXTURE_MAID = new ResourceLocation("alexsmobs:textures/entity/komodo_dragon_maid.png");
+public class RenderKomodoDragon extends MobRenderer<EntityKomodoDragon, LivingEntityRenderState, ModelKomodoDragon> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/komodo_dragon.png");
+    private static final Identifier TEXTURE_SADDLE = Identifier.parse("alexsmobs:textures/entity/komodo_dragon_saddle.png");
+    private static final Identifier TEXTURE_MAID = Identifier.parse("alexsmobs:textures/entity/komodo_dragon_maid.png");
 
     public RenderKomodoDragon(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelKomodoDragon(0.0F), 0.6F);
@@ -24,7 +27,7 @@ public class RenderKomodoDragon extends MobRenderer<EntityKomodoDragon, ModelKom
     protected void scale(EntityKomodoDragon entitylivingbaseIn, PoseStack matrixStackIn, float partialTickTime) {
     }
 
-    public ResourceLocation getTextureLocation(EntityKomodoDragon entity) {
+    public Identifier getTextureLocation(EntityKomodoDragon entity) {
         return TEXTURE;
     }
 
@@ -37,7 +40,7 @@ public class RenderKomodoDragon extends MobRenderer<EntityKomodoDragon, ModelKom
             super(render);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityKomodoDragon entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityKomodoDragon entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(entitylivingbaseIn.isMaid()){
                 VertexConsumer maid = bufferIn.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_MAID));
                 this.getParentModel().copyPropertiesTo(MAID_MODEL);

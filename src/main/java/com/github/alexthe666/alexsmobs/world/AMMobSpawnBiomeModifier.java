@@ -2,16 +2,19 @@ package com.github.alexthe666.alexsmobs.world;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ModifiableBiomeInfo;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class AMMobSpawnBiomeModifier implements BiomeModifier {
-    private static final RegistryObject<Codec<? extends BiomeModifier>> SERIALIZER = RegistryObject.create(new ResourceLocation(AlexsMobs.MODID, "am_mob_spawns"), ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, AlexsMobs.MODID);
+    private static final DeferredHolder<MapCodec<? extends BiomeModifier>, MapCodec<AMMobSpawnBiomeModifier>> SERIALIZER = DeferredHolder.create(Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "am_mob_spawns"), NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS, AlexsMobs.MODID);
 
     public AMMobSpawnBiomeModifier() {
     }
@@ -22,11 +25,11 @@ public class AMMobSpawnBiomeModifier implements BiomeModifier {
         }
     }
 
-    public Codec<? extends BiomeModifier> codec() {
-        return (Codec)SERIALIZER.get();
+    public MapCodec<? extends BiomeModifier> codec() {
+        return SERIALIZER.get();
     }
 
-    public static Codec<AMMobSpawnBiomeModifier> makeCodec() {
-        return Codec.unit(AMMobSpawnBiomeModifier::new);
+    public static MapCodec<AMMobSpawnBiomeModifier> makeCodec() {
+        return MapCodec.unit(AMMobSpawnBiomeModifier::new);
     }
 }

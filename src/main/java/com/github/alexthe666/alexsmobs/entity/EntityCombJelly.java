@@ -20,8 +20,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.Bucketable;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -62,12 +62,12 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
         return !this.fromBucket() && !this.hasCustomName();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.terrapinSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canCombJellySpawn(EntityType<EntityCombJelly> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return reason == MobSpawnType.SPAWNER || iServerWorld.isWaterAt(pos) && iServerWorld.isWaterAt(pos.above()) && isLightLevelOk(pos, iServerWorld);
+    public static boolean canCombJellySpawn(EntityType<EntityCombJelly> entityType, ServerLevelAccessor iServerWorld, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return reason == EntitySpawnReason.SPAWNER || iServerWorld.isWaterAt(pos) && iServerWorld.isWaterAt(pos.above()) && isLightLevelOk(pos, iServerWorld);
     }
 
     private static boolean isLightLevelOk(BlockPos pos, ServerLevelAccessor iServerWorld) {
@@ -77,12 +77,12 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(JELLYPITCH, 0F);
-        this.entityData.define(FROM_BUCKET, false);
-        this.entityData.define(JELLY_SCALE, 1.0F);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+        builder.define(JELLYPITCH, 0F);
+        builder.define(FROM_BUCKET, false);
+        builder.define(JELLY_SCALE, 1.0F);
     }
 
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
@@ -142,7 +142,7 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.COMB_JELLY_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
         return stack;
     }
@@ -159,7 +159,7 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
             onLandProgress--;
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.isInWater()) {
                 this.setNoGravity(true);
                 if(moveTarget == null || this.random.nextInt(120) == 0 || this.distanceToSqr(moveTarget.getX() + 0.5F, moveTarget.getY() + 0.5F, moveTarget.getZ() + 0.5F) < 5 || tickCount % 10 == 0 && !canBlockPosBeSeen(moveTarget)){
@@ -203,18 +203,18 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("FromBucket", this.fromBucket());
         compound.putFloat("JellyScale", this.getJellyScale());
         compound.putInt("Variant", this.getVariant());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFromBucket(compound.getBoolean("FromBucket"));
-        this.setJellyScale(compound.getFloat("JellyScale"));
-        this.setVariant(compound.getInt("Variant"));
+        this.setFromBucket(compound.getBooleanOr("FromBucket", false));
+        this.setJellyScale(compound.getFloatOr("JellyScale", 0.0F));
+        this.setVariant(compound.getIntOr("Variant", 0));
     }
 
     public boolean canBlockPosBeSeen(BlockPos pos) {
@@ -246,7 +246,7 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
+            bucket.setCustomName(this.getCustomName());
         }
         Bucketable.saveDefaultDataToBucketTag(this, bucket);
         CompoundTag compoundnbt = bucket.getOrCreateTag();
@@ -258,15 +258,15 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
     public void loadFromBucketTag(@Nonnull CompoundTag compound) {
         Bucketable.loadDefaultDataFromBucketTag(this, compound);
         if (compound.contains("BucketScale")){
-            this.setJellyScale(compound.getFloat("BucketScale"));
+            this.setJellyScale(compound.getFloatOr("BucketScale", 0.0F));
         }
         if (compound.contains("BucketVariantTag")){
-            this.setVariant(compound.getInt("BucketVariantTag"));
+            this.setVariant(compound.getIntOr("BucketVariantTag", 0));
         }
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setVariant(random.nextInt(3));
         this.setJellyScale(0.8F + random.nextFloat() * 0.4F);
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
@@ -299,10 +299,6 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
         }
 
         return f1;
-    }
-
-    public MobType getMobType() {
-        return MobType.WATER;
     }
 
     public boolean checkSpawnObstruction(LevelReader worldIn) {

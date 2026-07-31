@@ -24,6 +24,14 @@ import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockSculkBoomer extends BaseEntityBlock {
+
+    public static final com.mojang.serialization.MapCodec<BlockSculkBoomer> CODEC = simpleCodec(p -> new BlockSculkBoomer());
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
 
@@ -33,13 +41,13 @@ public class BlockSculkBoomer extends BaseEntityBlock {
     }
 
     public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if(!worldIn.isClientSide){
+        if(!worldIn.isClientSide()){
             this.updateState(state, worldIn, pos, blockIn);
         }
     }
 
     public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
-        if(!worldIn.isClientSide){
+        if(!worldIn.isClientSide()){
             this.updateState(state, worldIn, pos, state.getBlock());
         }
     }

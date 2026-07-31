@@ -13,8 +13,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.animal.Bucketable;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.Bucketable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,8 +23,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -41,8 +41,8 @@ public class ItemModFishBucket extends MobBucketItem {
         EntityType fishType = getFishType();
         if (fishType == AMEntityRegistry.LOBSTER.get()) {
             CompoundTag compoundnbt = stack.getTag();
-            if (compoundnbt != null && compoundnbt.contains("BucketVariantTag", 3)) {
-                int i = compoundnbt.getInt("BucketVariantTag");
+            if (compoundnbt != null && compoundnbt.contains("BucketVariantTag")) {
+                int i = compoundnbt.getIntOr("BucketVariantTag", 0);
                 String s = "entity.alexsmobs.lobster.variant_" + EntityLobster.getVariantName(i);
                 tooltip.add((Component.translatable(s)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
             }
@@ -56,8 +56,8 @@ public class ItemModFishBucket extends MobBucketItem {
         }
         if (fishType == AMEntityRegistry.COMB_JELLY.get()) {
             CompoundTag compoundnbt = stack.getTag();
-            if (compoundnbt != null && compoundnbt.contains("BucketVariantTag", 3)) {
-                int i = compoundnbt.getInt("BucketVariantTag");
+            if (compoundnbt != null && compoundnbt.contains("BucketVariantTag")) {
+                int i = compoundnbt.getIntOr("BucketVariantTag", 0);
                 String s = "entity.alexsmobs.comb_jelly.variant_" + i;
                 tooltip.add((Component.translatable(s)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
             }
@@ -73,7 +73,7 @@ public class ItemModFishBucket extends MobBucketItem {
     }
 
     private void spawnFish(ServerLevel serverLevel, ItemStack stack, BlockPos pos) {
-        Entity entity = getFishType().spawn(serverLevel, stack, (Player)null, pos, MobSpawnType.BUCKET, true, false);
+        Entity entity = getFishType().spawn(serverLevel, stack, (Player)null, pos, EntitySpawnReason.BUCKET, true, false);
         if (entity instanceof Bucketable) {
             Bucketable bucketable = (Bucketable)entity;
             bucketable.loadFromBucketTag(stack.getOrCreateTag());

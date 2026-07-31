@@ -38,7 +38,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -46,7 +46,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.function.Predicate;
 
-public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquatic, Shearable, net.minecraftforge.common.IForgeShearable {
+public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquatic, Shearable, net.neoforged.neoforge.common.IShearable {
 
     public static final Predicate<LivingEntity> TARGET_PRED = (animal) -> {
         return !(animal instanceof EntityAlligatorSnappingTurtle) && !(animal instanceof ArmorStand) && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(animal) && animal.isAlive();
@@ -69,9 +69,9 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
 
     protected EntityAlligatorSnappingTurtle(EntityType<? extends Animal> type, Level worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
-        this.setMaxUpStep(1);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1.0F);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -87,12 +87,12 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
     }
 
 
-    public static boolean canTurtleSpawn(EntityType type, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static boolean canTurtleSpawn(EntityType type, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.ALLIGATOR_SNAPPING_TURTLE_SPAWNS);
         return spawnBlock && pos.getY() < worldIn.getSeaLevel() + 4;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.alligatorSnappingTurtleSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -100,6 +100,7 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 18.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.7D).add(Attributes.ARMOR, 8D).add(Attributes.FOLLOW_RANGE, 16.0D).add(Attributes.ATTACK_DAMAGE, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.2F);
     }
 
+    @Override
     public float getScale() {
         return this.isBaby() ? 0.3F : 1.0F;
     }
@@ -137,14 +138,14 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CLIMBING, (byte) 0);
-        this.entityData.define(MOSS, 0);
-        this.entityData.define(TURTLE_SCALE, 1F);
-        this.entityData.define(WAITING, false);
-        this.entityData.define(ATTACK_TARGET_FLAG, false);
-        this.entityData.define(LUNGE_FLAG, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CLIMBING, (byte) 0);
+        builder.define(MOSS, 0);
+        builder.define(TURTLE_SCALE, 1F);
+        builder.define(WAITING, false);
+        builder.define(ATTACK_TARGET_FLAG, false);
+        builder.define(LUNGE_FLAG, false);
     }
 
     public void tick() {
@@ -184,7 +185,7 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
         if (chaseTime < 0)
             chaseTime++;
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.setBesideClimbableBlock(this.horizontalCollision && this.isInWater());
             if (this.isWaiting()) {
                 waitTime++;
@@ -254,10 +255,10 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setMoss(random.nextInt(6));
         this.setTurtleScale(0.8F + random.nextFloat() * 0.2F);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public float getTurtleScale() {
@@ -297,7 +298,7 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
 
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Waiting", this.isWaiting());
         compound.putInt("MossLevel", this.getMoss());
@@ -307,14 +308,14 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
         compound.putInt("WaitTime2", this.timeUntilWait);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setWaiting(compound.getBoolean("Waiting"));
-        this.setMoss(compound.getInt("MossLevel"));
-        this.setTurtleScale(compound.getFloat("TurtleScale"));
-        this.mossTime = compound.getInt("MossTime");
-        this.waitTime = compound.getInt("WaitTime");
-        this.timeUntilWait = compound.getInt("WaitTime2");
+        this.setWaiting(compound.getBooleanOr("Waiting", false));
+        this.setMoss(compound.getIntOr("MossLevel", 0));
+        this.setTurtleScale(compound.getFloatOr("TurtleScale", 0.0F));
+        this.mossTime = compound.getIntOr("MossTime", 0);
+        this.waitTime = compound.getIntOr("WaitTime", 0);
+        this.timeUntilWait = compound.getIntOr("WaitTime2", 0);
     }
 
     @Override
@@ -393,7 +394,7 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
     }
 
     @Override
-    public void shear(SoundSource category) {
+    public void shear(ServerLevel level, SoundSource category, ItemStack shears) {
         this.level().playSound(null, this, SoundEvents.SHEEP_SHEAR, category, 1.0F, 1.0F);
         this.gameEvent(GameEvent.ENTITY_INTERACT);
         if (!this.level().isClientSide()) {

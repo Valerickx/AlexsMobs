@@ -34,7 +34,14 @@ import java.util.List;
 
 public class BlockEndPirateDoor extends BaseEntityBlock {
 
-    public static final DirectionProperty HORIZONTAL_FACING = HorizontalDirectionalBlock.FACING;
+    public static final com.mojang.serialization.MapCodec<BlockEndPirateDoor> CODEC = simpleCodec(p -> new BlockEndPirateDoor());
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    public static final EnumProperty<Direction> HORIZONTAL_FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final EnumProperty<DoorHingeSide> HINGE = BlockStateProperties.DOOR_HINGE;
@@ -64,10 +71,10 @@ public class BlockEndPirateDoor extends BaseEntityBlock {
 
     public BlockState updateShape(BlockState state, Direction direction, BlockState state2, LevelAccessor level, BlockPos pos, BlockPos p_52801_) {
         if(state.getValue(SEGMENT) == 0){
-            return !state.canSurvive(level, pos) || !level.getBlockState(pos.above()).is(this) || !level.getBlockState(pos.above(2)).is(this) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state2, level, pos, p_52801_);
+            return !state.canSurvive(level, pos) || !level.getBlockState(pos.above()).is(this) || !level.getBlockState(pos.above(2)).is(this) ? Blocks.AIR.defaultBlockState() : state;
 
         }
-        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state2, level, pos, p_52801_);
+        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : state;
     }
 
     public BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {
@@ -83,7 +90,7 @@ public class BlockEndPirateDoor extends BaseEntityBlock {
     }
 
     public RenderShape getRenderShape(BlockState state) {
-        return state.getValue(SEGMENT) == 0 ? RenderShape.ENTITYBLOCK_ANIMATED : RenderShape.INVISIBLE;
+        return state.getValue(SEGMENT) == 0 ? RenderShape.MODEL : RenderShape.INVISIBLE;
     }
 
     @Nullable
@@ -128,7 +135,7 @@ public class BlockEndPirateDoor extends BaseEntityBlock {
             openDoorAt(worldIn, relative, !open, powered);
         }
         openDoorAt(worldIn, pos, !open, powered);
-        return InteractionResult.sidedSuccess(worldIn.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     public static void openDoorAt(Level worldIn, BlockPos pos, boolean open, boolean powered) {
@@ -157,7 +164,7 @@ public class BlockEndPirateDoor extends BaseEntityBlock {
     public BlockState getStateForPlacement(BlockPlaceContext p_52739_) {
         BlockPos blockpos = p_52739_.getClickedPos();
         Level level = p_52739_.getLevel();
-        if (blockpos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(blockpos.above()).canBeReplaced(p_52739_) && level.getBlockState(blockpos.above(2)).canBeReplaced(p_52739_)) {
+        if (blockpos.getY() < level.getMaxY() - 1 && level.getBlockState(blockpos.above()).canBeReplaced(p_52739_) && level.getBlockState(blockpos.above(2)).canBeReplaced(p_52739_)) {
             boolean flag = level.hasNeighborSignal(blockpos) || level.hasNeighborSignal(blockpos.above());
             return this.defaultBlockState().setValue(HORIZONTAL_FACING, p_52739_.getHorizontalDirection()).setValue(HINGE, this.getHinge(p_52739_)).setValue(OPEN, Boolean.valueOf(flag)).setValue(SEGMENT, 0);
         } else {

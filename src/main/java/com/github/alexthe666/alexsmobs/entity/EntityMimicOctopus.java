@@ -42,8 +42,8 @@ import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.animal.Pufferfish;
+import net.minecraft.world.entity.Bucketable;
+import net.minecraft.world.entity.animal.fish.Pufferfish;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.entity.monster.Monster;
@@ -56,12 +56,12 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -105,8 +105,8 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
 
     protected EntityMimicOctopus(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
         switchNavigator(false);
     }
 
@@ -114,7 +114,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 16D).add(Attributes.ARMOR, 0.0D).add(Attributes.ATTACK_DAMAGE, 2.0D).add(Attributes.MOVEMENT_SPEED, 0.2F);
     }
 
-    public static boolean canMimicOctopusSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canMimicOctopusSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         BlockPos downPos = pos;
         while (downPos.getY() > 1 && !worldIn.getFluidState(downPos).isEmpty()) {
             downPos = downPos.below();
@@ -152,43 +152,43 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
         return worldIn.isUnobstructed(this);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.mimicOctopusSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.entityData.set(PREV_MIMIC_ORDINAL, 0);
         this.setMimickedBlock(null);
         this.setMimicState(MimicState.OVERLAY);
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         this.entityData.set(MIMIC_ORDINAL, compound.getInt("MimicState"));
-        this.setUpgraded(compound.getBoolean("Upgraded"));
-        this.setOrderedToSit(compound.getBoolean("Sitting"));
-        this.setStopChange(compound.getBoolean("StopChange"));
-        this.setCommand(compound.getInt("OctoCommand"));
-        this.setMoistness(compound.getInt("Moistness"));
-        this.setFromBucket(compound.getBoolean("FromBucket"));
+        this.setUpgraded(compound.getBooleanOr("Upgraded", false));
+        this.setOrderedToSit(compound.getBooleanOr("Sitting", false));
+        this.setStopChange(compound.getBooleanOr("StopChange", false));
+        this.setCommand(compound.getIntOr("OctoCommand", 0));
+        this.setMoistness(compound.getIntOr("Moistness", 0));
+        this.setFromBucket(compound.getBooleanOr("FromBucket", false));
         BlockState blockstate = null;
-        if (compound.contains("MimickedBlockState", 10)) {
-            blockstate = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compound.getCompound("MimickedBlockState"));
+        if (compound.contains("MimickedBlockState")) {
+            blockstate = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compound.getCompoundOrEmpty("MimickedBlockState"));
             if (blockstate.isAir()) {
                 blockstate = null;
             }
         }
         this.setMimickedBlock(blockstate);
-        this.camoCooldown = compound.getInt("CamoCooldown");
-        this.mimicCooldown = compound.getInt("MimicCooldown");
-        this.stopMimicCooldown = compound.getInt("StopMimicCooldown");
-        this.fishFeedings = compound.getInt("FishFeedings");
-        this.mimicreamFeedings = compound.getInt("MimicreamFeedings");
+        this.camoCooldown = compound.getIntOr("CamoCooldown", 0);
+        this.mimicCooldown = compound.getIntOr("MimicCooldown", 0);
+        this.stopMimicCooldown = compound.getIntOr("StopMimicCooldown", 0);
+        this.fishFeedings = compound.getIntOr("FishFeedings", 0);
+        this.mimicreamFeedings = compound.getIntOr("MimicreamFeedings", 0);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("MimicState", this.getMimicState().ordinal());
         compound.putBoolean("Upgraded", this.isUpgraded());
@@ -213,7 +213,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.MIMIC_OCTOPUS_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
         return stack;
     }
@@ -221,7 +221,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
+            bucket.setCustomName(this.getCustomName());
         }
         CompoundTag platTag = new CompoundTag();
         this.addAdditionalSaveData(platTag);
@@ -238,7 +238,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
     }
 
     protected float getJumpPower() {
-        return super.getJumpPower() * (this.isInWaterOrBubble() ? 1.3F : 1F);
+        return super.getJumpPower() * (this.isInWater() ? 1.3F : 1F);
     }
 
     @Override
@@ -490,7 +490,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
         }
 
         BlockPos pos = AMBlockPos.fromCoords(this.getX(), this.getEyeY() - 1F, this.getZ());
-        boolean ground = level().getBlockState(pos).isFaceSturdy(level(), pos, Direction.UP) && this.getMimicState() != MimicState.GUARDIAN || !this.isInWaterOrBubble() || this.isSitting();
+        boolean ground = level().getBlockState(pos).isFaceSturdy(level(), pos, Direction.UP) && this.getMimicState() != MimicState.GUARDIAN || !this.isInWater() || this.isSitting();
         this.prevTransProgress = transProgress;
         this.prevColorShiftProgress = colorShiftProgress;
         this.prevGroundProgress = groundProgress;
@@ -519,7 +519,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
         if (!isSitting() && sitProgress > 0F) {
             sitProgress -= 0.5F;
         }
-        if (this.isInWaterOrBubble()) {
+        if (this.isInWater()) {
             float f2 = (float) -((float) this.getDeltaMovement().y * 3 * (double) Mth.RAD_TO_DEG);
             this.setXRot(f2);
         }
@@ -535,7 +535,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
         if (this.isNoAi()) {
             this.setAirSupply(this.getMaxAirSupply());
         } else {
-            if (this.isInWaterRainOrBubble() || this.getMainHandItem().getItem() == Items.WATER_BUCKET) {
+            if (this.isInWaterOrRain() || this.getMainHandItem().getItem() == Items.WATER_BUCKET) {
                 this.setMoistness(60000);
             } else {
                 this.setMoistness(this.getMoistness() - 1);
@@ -555,7 +555,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
             this.setMimickedBlock(null);
             stopMimicCooldown = -1;
         }
-        if (this.level().isClientSide && exclaimTime > 0) {
+        if (this.level().isClientSide() && exclaimTime > 0) {
             exclaimTime--;
             if (exclaimTime == 0) {
                 Entity e = level().getEntity(this.entityData.get(LAST_SCARED_MOB_ID));
@@ -573,7 +573,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
                 ++this.guardianLaserTime;
             }
             LivingEntity livingentity = this.getGuardianLaser();
-            if (livingentity != null && this.isInWaterOrBubble()) {
+            if (livingentity != null && this.isInWater()) {
                 this.getLookControl().setLookAt(livingentity, 90.0F, 90.0F);
                 this.getLookControl().tick();
                 double d5 = this.getLaserAttackAnimationScale(0.0F);
@@ -596,7 +596,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
                 }
             }
         }
-        if (!this.level().isClientSide && tickCount % 40 == 0) {
+        if (!this.level().isClientSide() && tickCount % 40 == 0) {
             this.heal(2);
         }
     /*if(!world.isRemote){
@@ -712,14 +712,14 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
     }
 
     public boolean hasGuardianLaser() {
-        return this.entityData.get(UPGRADED_LASER_ENTITY_ID) != -1 && this.isUpgraded() && this.isInWaterOrBubble();
+        return this.entityData.get(UPGRADED_LASER_ENTITY_ID) != -1 && this.isUpgraded() && this.isInWater();
     }
 
     @Nullable
     public LivingEntity getGuardianLaser() {
         if (!this.hasGuardianLaser()) {
             return null;
-        } else if (this.level().isClientSide) {
+        } else if (this.level().isClientSide()) {
             if (this.laserTargetEntity != null) {
                 return this.laserTargetEntity;
             } else {
@@ -751,20 +751,20 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
         return !this.isTame() && !this.fromBucket();
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(MIMIC_ORDINAL, 0);
-        this.entityData.define(PREV_MIMIC_ORDINAL, -1);
-        this.entityData.define(MOISTNESS, 60000);
-        this.entityData.define(MIMICKED_BLOCK, Optional.empty());
-        this.entityData.define(PREV_MIMICKED_BLOCK, Optional.empty());
-        this.entityData.define(SITTING, false);
-        this.entityData.define(COMMAND, 0);
-        this.entityData.define(LAST_SCARED_MOB_ID, -1);
-        this.entityData.define(FROM_BUCKET, false);
-        this.entityData.define(UPGRADED, false);
-        this.entityData.define(STOP_CHANGE, false);
-        this.entityData.define(UPGRADED_LASER_ENTITY_ID, -1);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(MIMIC_ORDINAL, 0);
+        builder.define(PREV_MIMIC_ORDINAL, -1);
+        builder.define(MOISTNESS, 60000);
+        builder.define(MIMICKED_BLOCK, Optional.empty());
+        builder.define(PREV_MIMICKED_BLOCK, Optional.empty());
+        builder.define(SITTING, false);
+        builder.define(COMMAND, 0);
+        builder.define(LAST_SCARED_MOB_ID, -1);
+        builder.define(FROM_BUCKET, false);
+        builder.define(UPGRADED, false);
+        builder.define(STOP_CHANGE, false);
+        builder.define(UPGRADED_LASER_ENTITY_ID, -1);
     }
 
     public MimicState getMimicState() {
@@ -803,7 +803,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
     }
 
     protected void updateAir(int p_209207_1_) {
-        if (this.isAlive() && !this.isInWaterOrBubble()) {
+        if (this.isAlive() && !this.isInWater()) {
             this.setAirSupply(p_209207_1_ - 1);
             if (this.getAirSupply() == -20) {
                 this.setAirSupply(0);
@@ -816,12 +816,12 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
 
     @Override
     public boolean shouldEnterWater() {
-        return !this.isSitting() && (this.getTarget() == null || this.getTarget().isInWaterOrBubble());
+        return !this.isSitting() && (this.getTarget() == null || this.getTarget().isInWater());
     }
 
     @Override
     public boolean shouldLeaveWater() {
-        return this.getTarget() != null && !this.getTarget().isInWaterOrBubble();
+        return this.getTarget() != null && !this.getTarget().isInWater();
     }
 
     @Override
@@ -1203,7 +1203,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
                     if (!EntityMimicOctopus.this.isStopChange()) {
                         EntityMimicOctopus.this.setMimickedBlock(null);
                         MimicState prev = EntityMimicOctopus.this.getMimicState();
-                        if (EntityMimicOctopus.this.isInWaterOrBubble()) {
+                        if (EntityMimicOctopus.this.isInWater()) {
                             if (prev != MimicState.GUARDIAN && prev != MimicState.PUFFERFISH) {
                                 if (random.nextBoolean()) {
                                     EntityMimicOctopus.this.setMimicState(MimicState.GUARDIAN);

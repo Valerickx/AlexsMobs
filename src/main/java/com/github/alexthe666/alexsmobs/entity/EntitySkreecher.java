@@ -93,11 +93,11 @@ public class EntitySkreecher extends Monster {
         });
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.skreecherSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean checkSkreecherSpawnRules(EntityType<? extends Monster> animal, ServerLevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean checkSkreecherSpawnRules(EntityType<? extends Monster> animal, ServerLevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         boolean isOnSculk = worldIn.getBlockState(pos.below()).is(Blocks.SCULK);
         return worldIn.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(worldIn, pos, random) && isOnSculk;
     }
@@ -122,12 +122,12 @@ public class EntitySkreecher extends Monster {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 2D).add(Attributes.ATTACK_DAMAGE, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.FOLLOW_RANGE, 64F);
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DIST_TO_CEILING, 0F);
-        this.entityData.define(CLINGING, false);
-        this.entityData.define(JUMPING_UP, false);
-        this.entityData.define(CLAPPING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DIST_TO_CEILING, 0F);
+        builder.define(CLINGING, false);
+        builder.define(JUMPING_UP, false);
+        builder.define(CLAPPING, false);
     }
 
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
@@ -167,7 +167,7 @@ public class EntitySkreecher extends Monster {
                 clapProgress--;
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             float technicalDistToCeiling = calculateDistanceToCeiling();
             float gap = Math.max(technicalDistToCeiling - this.getDistanceToCeiling(), 0F);
             if(this.isClinging()){
@@ -238,11 +238,11 @@ public class EntitySkreecher extends Monster {
                         spawnAt = spawnAt.below();
                     }
                     Holder<Biome> holder = level().getBiome(spawnAt);
-                    if(!this.level().isClientSide && getNearbyWardens().isEmpty() && holder.is(AMTagRegistry.SKREECHERS_CAN_SPAWN_WARDENS)){
+                    if(!this.level().isClientSide() && getNearbyWardens().isEmpty() && holder.is(AMTagRegistry.SKREECHERS_CAN_SPAWN_WARDENS)){
                         Warden warden = EntityType.WARDEN.create(this.level());
 
                         warden.moveTo(this.getX(), spawnAt.getY() + 1, this.getZ(), this.getYRot(), 0.0F);
-                        warden.finalizeSpawn((ServerLevel)level(), level().getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.TRIGGERED, (SpawnGroupData)null, (CompoundTag)null);
+                        warden.finalizeSpawn((ServerLevel)level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.TRIGGERED, (SpawnGroupData)null, (CompoundTag)null);
                         warden.setAttackTarget(this);
                         warden.increaseAngerAt(this, 79, false);
                         this.level().addFreshEntity(warden);
@@ -251,7 +251,7 @@ public class EntitySkreecher extends Monster {
                 }
             }
             clapTick++;
-            if(!this.level().isClientSide){
+            if(!this.level().isClientSide()){
                 if(this.getTarget() != null && this.getTarget().isAlive() && this.hasLineOfSight(this.getTarget()) && !this.getTarget().hasEffect(MobEffects.INVISIBILITY) && !this.hasEffect(MobEffects.BLINDNESS)) {
                     double horizDist = this.getTarget().position().subtract(this.position()).horizontalDistance();
                     if (horizDist > 20) {
@@ -289,7 +289,7 @@ public class EntitySkreecher extends Monster {
         return this.level().getEntitiesOfClass(Warden.class, angerBox);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Clinging", this.isClinging());
         compound.putDouble("CeilDist", this.getDistanceToCeiling());
@@ -297,12 +297,12 @@ public class EntitySkreecher extends Monster {
         compound.putInt("ClingCooldown", this.clingCooldown);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setClinging(compound.getBoolean("Clinging"));
+        this.setClinging(compound.getBooleanOr("Clinging", false));
         this.setDistanceToCeiling((float)compound.getDouble("CeilDist"));
-        this.hasAttemptedWardenSpawning = compound.getBoolean("SummonedWarden");
-        this.clingCooldown = compound.getInt("ClingCooldown");
+        this.hasAttemptedWardenSpawning = compound.getBooleanOr("SummonedWarden", false);
+        this.clingCooldown = compound.getIntOr("ClingCooldown", 0);
     }
 
 
@@ -403,7 +403,7 @@ public class EntitySkreecher extends Monster {
     }
 
     public BlockPos getCeilingOf(BlockPos usPos){
-        while (!level().getBlockState(usPos).isFaceSturdy(level(), usPos, Direction.DOWN) && usPos.getY() < level().getMaxBuildHeight()){
+        while (!level().getBlockState(usPos).isFaceSturdy(level(), usPos, Direction.DOWN) && usPos.getY() < (level().getMaxY() + 1)){
             usPos = usPos.above();
         }
         return usPos;

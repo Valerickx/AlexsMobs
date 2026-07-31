@@ -16,8 +16,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.AABB;
@@ -57,10 +57,6 @@ public class EntityCentipedeBody extends Mob implements IHurtableMultipart {
         return  source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(source);
     }
 
-    public MobType getMobType() {
-        return MobType.ARTHROPOD;
-    }
-
     public boolean isNoGravity() {
         return false;
     }
@@ -73,7 +69,7 @@ public class EntityCentipedeBody extends Mob implements IHurtableMultipart {
         if (this.tickCount > 1) {
             final Entity parent = getParent();
             refreshDimensions();
-            if (parent != null && !this.level().isClientSide) {
+            if (parent != null && !this.level().isClientSide()) {
                 if (parent instanceof final LivingEntity parentEntity) {
                     if ((parentEntity.hurtTime > 0 || parentEntity.deathTime > 0)) {
                         AlexsMobs.sendMSGToAll(new MessageHurtMultipart(this.getId(), parent.getId(), 0));
@@ -84,7 +80,7 @@ public class EntityCentipedeBody extends Mob implements IHurtableMultipart {
                 if (parent.isRemoved()) {
                     this.remove(RemovalReason.DISCARDED);
                 }
-            } else if (!this.level().isClientSide && tickCount > 20) {
+            } else if (!this.level().isClientSide() && tickCount > 20) {
                 remove(RemovalReason.DISCARDED);
             }
         }
@@ -95,43 +91,43 @@ public class EntityCentipedeBody extends Mob implements IHurtableMultipart {
         this.setParent(parent);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getParentId() != null) {
-            compound.putUUID("ParentUUID", this.getParentId());
+            compound.store("ParentUUID", net.minecraft.core.UUIDUtil.CODEC, this.getParentId());
         }
         if (this.getChildId() != null) {
-            compound.putUUID("ChildUUID", this.getChildId());
+            compound.store("ChildUUID", net.minecraft.core.UUIDUtil.CODEC, this.getChildId());
         }
         compound.putInt("BodyIndex", getBodyIndex());
         compound.putFloat("PartAngle", angleYaw);
         compound.putFloat("PartRadius", radius);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("ParentUUID")) {
-            this.setParentId(compound.getUUID("ParentUUID"));
+        if (compound.read("ParentUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setParentId(compound.read("ParentUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        if (compound.hasUUID("ChildUUID")) {
-            this.setChildId(compound.getUUID("ChildUUID"));
+        if (compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setChildId(compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        this.setBodyIndex(compound.getInt("BodyIndex"));
-        this.angleYaw = compound.getFloat("PartAngle");
-        this.radius = compound.getFloat("PartRadius");
+        this.setBodyIndex(compound.getIntOr("BodyIndex", 0));
+        this.angleYaw = compound.getFloatOr("PartAngle", 0.0F);
+        this.radius = compound.getFloatOr("PartRadius", 0.0F);
     }
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(PARENT_UUID, Optional.empty());
-        this.entityData.define(CHILD_UUID, Optional.empty());
-        this.entityData.define(BODYINDEX, 0);
-        this.entityData.define(BODY_XROT, 0F);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(PARENT_UUID, Optional.empty());
+        builder.define(CHILD_UUID, Optional.empty());
+        builder.define(BODYINDEX, 0);
+        builder.define(BODY_XROT, 0F);
     }
 
     public Entity getParent() {
         final UUID id = getParentId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -143,7 +139,7 @@ public class EntityCentipedeBody extends Mob implements IHurtableMultipart {
 
     public Entity getChild() {
         final UUID id = getChildId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -167,7 +163,7 @@ public class EntityCentipedeBody extends Mob implements IHurtableMultipart {
     public boolean hurt(DamageSource source, float damage) {
         final Entity parent = getParent();
         final boolean prev = parent != null && parent.hurt(source, damage * this.damageMultiplier);
-        if (prev && !this.level().isClientSide) {
+        if (prev && !this.level().isClientSide()) {
             AlexsMobs.sendMSGToAll(new MessageHurtMultipart(this.getId(), parent.getId(), damage * this.damageMultiplier));
         }
         return prev;

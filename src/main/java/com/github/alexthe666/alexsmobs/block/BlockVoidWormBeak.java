@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -26,13 +26,20 @@ import javax.annotation.Nullable;
 
 public class BlockVoidWormBeak extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = DirectionalBlock.FACING;
+    public static final com.mojang.serialization.MapCodec<BlockVoidWormBeak> CODEC = simpleCodec(p -> new BlockVoidWormBeak());
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    public static final EnumProperty<Direction> FACING = DirectionalBlock.FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     private static final VoxelShape AABB = Block.box(0, 4, 0, 16, 12, 16);
     private static final VoxelShape AABB_VERTICAL = Block.box(0, 0, 4, 16, 16, 12);
 
     public BlockVoidWormBeak() {
-        super(Properties.of().mapColor(MapColor.COLOR_PURPLE).noOcclusion().sound(SoundType.ANCIENT_DEBRIS).strength(1F).noCollission().requiresCorrectToolForDrops());
+        super(Properties.of().mapColor(MapColor.COLOR_PURPLE).noOcclusion().sound(SoundType.ANCIENT_DEBRIS).strength(1F).noCollision().requiresCorrectToolForDrops());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(POWERED, false));
     }
 
@@ -41,13 +48,13 @@ public class BlockVoidWormBeak extends BaseEntityBlock {
     }
 
     public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if(!worldIn.isClientSide){
+        if(!worldIn.isClientSide()){
             this.updateState(state, worldIn, pos, blockIn);
         }
     }
 
     public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
-        if(!worldIn.isClientSide){
+        if(!worldIn.isClientSide()){
             this.updateState(state, worldIn, pos, state.getBlock());
         }
     }

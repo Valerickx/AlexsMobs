@@ -1,16 +1,19 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelFlyingFish;
 import com.github.alexthe666.alexsmobs.entity.EntityFlyingFish;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderFlyingFish extends MobRenderer<EntityFlyingFish, ModelFlyingFish> {
-    private static final ResourceLocation TEXTURE_0 = new ResourceLocation("alexsmobs:textures/entity/flying_fish_0.png");
-    private static final ResourceLocation TEXTURE_1 = new ResourceLocation("alexsmobs:textures/entity/flying_fish_1.png");
-    private static final ResourceLocation TEXTURE_2 = new ResourceLocation("alexsmobs:textures/entity/flying_fish_2.png");
+public class RenderFlyingFish extends MobRenderer<EntityFlyingFish, LivingEntityRenderState, ModelFlyingFish> {
+    private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/flying_fish_0.png");
+    private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/flying_fish_1.png");
+    private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/flying_fish_2.png");
 
     public RenderFlyingFish(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelFlyingFish(), 0.2F);
@@ -21,7 +24,7 @@ public class RenderFlyingFish extends MobRenderer<EntityFlyingFish, ModelFlyingF
     }
 
 
-    public ResourceLocation getTextureLocation(EntityFlyingFish entity) {
+    public Identifier getTextureLocation(EntityFlyingFish entity) {
         switch (entity.getVariant()){
             case 0:
                 return TEXTURE_0;

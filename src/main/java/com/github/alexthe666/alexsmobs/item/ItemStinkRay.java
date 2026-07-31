@@ -5,18 +5,18 @@ import com.github.alexthe666.alexsmobs.entity.EntityFart;
 import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.function.Predicate;
 
@@ -34,8 +34,8 @@ public class ItemStinkRay extends Item {
         return isUsable(stack) ? 72000 : 0;
     }
 
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     public static boolean isUsable(ItemStack stack) {
@@ -71,7 +71,7 @@ public class ItemStinkRay extends Item {
                 entity.gameEvent(GameEvent.ITEM_INTERACT_START);
                 entity.playSound(AMSoundRegistry.STINK_RAY.get(), 1.0F, 0.9F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
                 blood.shoot((double) vector3d.x(), (double) vector3d.y(), (double) vector3d.z(), 0.2F + getPowerForTime(i) * 0.4F, 10);
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     level.addFreshEntity(blood);
                 }
                 itemStack.hurtAndBreak(1, entity, (breaker) -> {
@@ -85,7 +85,7 @@ public class ItemStinkRay extends Item {
 
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
         playerIn.startUsingItem(handIn);
         if (!isUsable(itemstack)) {
@@ -103,7 +103,7 @@ public class ItemStinkRay extends Item {
                 itemstack.setDamageValue(0);
             }
         }
-        return InteractionResultHolder.consume(itemstack);
+        return InteractionResult.CONSUME;
     }
 
     public ItemStack findAmmo(Player entity) {

@@ -25,7 +25,7 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -52,18 +52,18 @@ public class EntityCentipedeHead extends Monster {
     protected EntityCentipedeHead(EntityType type, Level worldIn) {
         super(type, worldIn);
         this.xpReward = 13;
-        this.setMaxUpStep(3);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 3);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 35.0D).add(Attributes.FOLLOW_RANGE, 32.0D).add(Attributes.ARMOR, 6.0D).add(Attributes.ATTACK_DAMAGE, 8.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.5F).add(Attributes.MOVEMENT_SPEED, 0.22F);
     }
 
-    public static <T extends Mob> boolean canCentipedeSpawn(EntityType<EntityCentipedeHead> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return reason == MobSpawnType.SPAWNER || !iServerWorld.canSeeSky(pos) && pos.getY() <= AMConfig.caveCentipedeSpawnHeight && checkMonsterSpawnRules(entityType, iServerWorld, reason, pos, random);
+    public static <T extends Mob> boolean canCentipedeSpawn(EntityType<EntityCentipedeHead> entityType, ServerLevelAccessor iServerWorld, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return reason == EntitySpawnReason.SPAWNER || !iServerWorld.canSeeSky(pos) && pos.getY() <= AMConfig.caveCentipedeSpawnHeight && checkMonsterSpawnRules(entityType, iServerWorld, reason, pos, random);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.caveCentipedeSpawnRolls, this.getRandom(), spawnReasonIn) && super.checkSpawnRules(worldIn, spawnReasonIn);
     }
 
@@ -88,10 +88,6 @@ public class EntityCentipedeHead extends Monster {
         return AMSoundRegistry.CENTIPEDE_HURT.get();
     }
 
-    public MobType getMobType() {
-        return MobType.ARTHROPOD;
-    }
-
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(AMSoundRegistry.CENTIPEDE_WALK.get(), 1F, 1.0F);
     }
@@ -109,11 +105,11 @@ public class EntityCentipedeHead extends Monster {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CHILD_UUID, Optional.empty());
-        this.entityData.define(CHILD_ID, -1);
-        this.entityData.define(SEGMENT_COUNT, 5);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CHILD_UUID, Optional.empty());
+        builder.define(CHILD_ID, -1);
+        builder.define(SEGMENT_COUNT, 5);
     }
 
     public boolean doHurtTarget(Entity entityIn) {
@@ -157,7 +153,7 @@ public class EntityCentipedeHead extends Monster {
 
     public Entity getChild() {
         final UUID id = getChildId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -169,26 +165,26 @@ public class EntityCentipedeHead extends Monster {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setSegmentCount(random.nextInt(4) + 5);
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getChildId() != null) {
-            compound.putUUID("ChildUUID", this.getChildId());
+            compound.store("ChildUUID", net.minecraft.core.UUIDUtil.CODEC, this.getChildId());
         }
         compound.putInt("SegCount", getSegmentCount());
 
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("ChildUUID")) {
-            this.setChildId(compound.getUUID("ChildUUID"));
+        if (compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setChildId(compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        this.setSegmentCount(compound.getInt("SegCount"));
+        this.setSegmentCount(compound.getIntOr("SegCount", 0));
     }
 
     private boolean shouldReplaceParts() {
@@ -225,7 +221,7 @@ public class EntityCentipedeHead extends Monster {
         }
         this.ringBuffer[this.ringBufferIndex] = this.getYRot();
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final Entity child = getChild();
             if (child == null) {
                 LivingEntity partParent = this;

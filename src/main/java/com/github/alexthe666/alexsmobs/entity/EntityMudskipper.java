@@ -28,7 +28,7 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
-import net.minecraft.world.entity.animal.Bucketable;
+import net.minecraft.world.entity.Bucketable;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -41,7 +41,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,8 +77,8 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
 
     public EntityMudskipper(EntityType type, Level level) {
         super(type, level);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
         switchNavigator(true);
     }
 
@@ -100,12 +100,12 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
         }
     }
 
-    public static <T extends Mob> boolean canMudskipperSpawn(EntityType type, LevelAccessor worldIn, MobSpawnType reason, BlockPos p_223317_3_, RandomSource random) {
+    public static <T extends Mob> boolean canMudskipperSpawn(EntityType type, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos p_223317_3_, RandomSource random) {
         BlockState blockstate = worldIn.getBlockState(p_223317_3_.below());
         return blockstate.is(Blocks.MUD) || blockstate.is(Blocks.MUDDY_MANGROVE_ROOTS);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.mudskipperSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -156,22 +156,22 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DISPLAYING, false);
-        this.entityData.define(FROM_BUCKET, false);
-        this.entityData.define(DISPLAY_ANGLE, 0F);
-        this.entityData.define(DISPLAYER_UUID, Optional.empty());
-        this.entityData.define(MOUTH_TICKS, 0);
-        this.entityData.define(COMMAND, 0);
-        this.entityData.define(SITTING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DISPLAYING, false);
+        builder.define(FROM_BUCKET, false);
+        builder.define(DISPLAY_ANGLE, 0F);
+        builder.define(DISPLAYER_UUID, Optional.empty());
+        builder.define(MOUTH_TICKS, 0);
+        builder.define(COMMAND, 0);
+        builder.define(SITTING, false);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 12.0D).add(Attributes.ATTACK_DAMAGE, 2.0D).add(Attributes.MOVEMENT_SPEED, 0.2F);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("FromBucket", this.fromBucket());
         compound.putInt("DisplayCooldown", this.displayCooldown);
@@ -179,12 +179,12 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
         compound.putBoolean("MudskipperSitting", this.isOrderedToSit());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFromBucket(compound.getBoolean("FromBucket"));
-        this.displayCooldown = compound.getInt("DisplayCooldown");
-        this.setCommand(compound.getInt("MudskipperCommand"));
-        this.setOrderedToSit(compound.getBoolean("MudskipperSitting"));
+        this.setFromBucket(compound.getBooleanOr("FromBucket", false));
+        this.displayCooldown = compound.getIntOr("DisplayCooldown", 0);
+        this.setCommand(compound.getIntOr("MudskipperCommand", 0));
+        this.setOrderedToSit(compound.getBooleanOr("MudskipperSitting", false));
     }
 
     public void tick(){
@@ -215,15 +215,15 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
                 mudProgress -= 0.5f;
         }
 
-        boolean swim = !this.onGround() && this.isInWaterOrBubble();
+        boolean swim = !this.onGround() && this.isInWater();
         if(swimProgress < 5F && swim){
             swimProgress++;
         }
         if(swimProgress > 0 && !swim){
             swimProgress--;
         }
-        if (!this.level().isClientSide) {
-            if (isInWaterOrBubble()) {
+        if (!this.level().isClientSide()) {
+            if (isInWater()) {
                 swimTimer++;
             } else {
                 swimTimer--;
@@ -232,7 +232,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
         if (displayCooldown > 0) {
             displayCooldown--;
         }
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if(this.getDisplayAngle() < nextDisplayAngleFromServer){
                 this.setDisplayAngle(this.getDisplayAngle() + 1);
 
@@ -296,7 +296,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
     @javax.annotation.Nullable
     public Entity getDisplayingPartner() {
         UUID id = getDisplayingPartnerUUID();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -399,7 +399,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.MUDSKIPPER_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
         return stack;
     }
@@ -407,7 +407,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
+            bucket.setCustomName(this.getCustomName());
         }
         CompoundTag platTag = new CompoundTag();
         this.addAdditionalSaveData(platTag);

@@ -19,7 +19,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -50,11 +50,11 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -67,7 +67,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
 
     public static final Animation ANIMATION_BITE = Animation.create(13);
     protected static final EntityDimensions QUEEN_SIZE = EntityDimensions.fixed(1.25F, 0.98F);
-    public static final ResourceLocation QUEEN_LOOT = new ResourceLocation("alexsmobs", "entities/leafcutter_ant_queen");
+    public static final Identifier QUEEN_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "entities/leafcutter_ant_queen");
     private static final EntityDataAccessor<Optional<BlockPos>> LEAF_HARVESTED_POS = SynchedEntityData.defineId(EntityLeafcutterAnt.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<BlockState>> LEAF_HARVESTED_STATE = SynchedEntityData.defineId(EntityLeafcutterAnt.class, EntityDataSerializers.OPTIONAL_BLOCK_STATE);
     private static final EntityDataAccessor<Boolean> HAS_LEAF = SynchedEntityData.defineId(EntityLeafcutterAnt.class, EntityDataSerializers.BOOLEAN);
@@ -96,7 +96,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
     private int haveBabyCooldown = 0;
     public EntityLeafcutterAnt(EntityType type, Level world) {
         super(type, world);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
         switchNavigator(true);
 
     }
@@ -109,12 +109,8 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
     }
 
     @Nullable
-    protected ResourceLocation getDefaultLootTable() {
+    protected Identifier getDefaultLootTable() {
         return this.isQueen() ? QUEEN_LOOT : super.getDefaultLootTable();
-    }
-
-    public MobType getMobType() {
-        return MobType.ARTHROPOD;
     }
 
     private void switchNavigator(boolean rightsideUp) {
@@ -215,7 +211,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
                     EntityLeafcutterAnt leafcutterAnt = AMEntityRegistry.LEAFCUTTER_ANT.get().create(level());
                     leafcutterAnt.copyPosition(this);
                     leafcutterAnt.setAge(-24000);
-                    if(!this.level().isClientSide){
+                    if(!this.level().isClientSide()){
                         level().broadcastEntityEvent(this, (byte)18);
                         level().addFreshEntity(leafcutterAnt);
                     }
@@ -264,11 +260,11 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
         if (attachChangeProgress > 0F) {
             attachChangeProgress -= 0.25F;
         }
-        this.setMaxUpStep(isQueen() ? 1F : 0.5F);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, isQueen() ? 1F : 0.5F);
         Vec3 vector3d = this.getDeltaMovement();
-        if (!this.level().isClientSide && !this.isQueen()) {
+        if (!this.level().isClientSide() && !this.isQueen()) {
             this.setBesideClimbableBlock(this.horizontalCollision || this.verticalCollision && !this.onGround());
-            if (this.onGround() || this.isInWaterOrBubble() || this.isInLava()) {
+            if (this.onGround() || this.isInWater() || this.isInLava()) {
                 this.entityData.set(ATTACHED_FACE, Direction.DOWN);
             } else  if (this.verticalCollision) {
                 this.entityData.set(ATTACHED_FACE, Direction.UP);
@@ -318,7 +314,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
             attachChangeProgress = 1F;
         }
         this.prevAttachDir = attachmentFacing;
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (attachmentFacing == Direction.UP && !this.isUpsideDownNavigator) {
                 switchNavigator(false);
             }
@@ -400,26 +396,26 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
     }
 
     protected void customServerAiStep() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.updatePersistentAnger((ServerLevel)this.level(), false);
         }
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CLIMBING, (byte) 0);
-        this.entityData.define(LEAF_HARVESTED_POS, Optional.empty());
-        this.entityData.define(LEAF_HARVESTED_STATE, Optional.empty());
-        this.entityData.define(HAS_LEAF, false);
-        this.entityData.define(QUEEN, false);
-        this.entityData.define(ATTACHED_FACE, Direction.DOWN);
-        this.entityData.define(ANT_SCALE, 1.0F);
-        this.entityData.define(ANGER_TIME, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CLIMBING, (byte) 0);
+        builder.define(LEAF_HARVESTED_POS, Optional.empty());
+        builder.define(LEAF_HARVESTED_STATE, Optional.empty());
+        builder.define(HAS_LEAF, false);
+        builder.define(QUEEN, false);
+        builder.define(ATTACHED_FACE, Direction.DOWN);
+        builder.define(ANT_SCALE, 1.0F);
+        builder.define(ANGER_TIME, 0);
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setAntScale(0.75F + random.nextFloat() * 0.3F);
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
@@ -474,37 +470,37 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
         this.entityData.set(QUEEN, Boolean.valueOf(queen));
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         this.entityData.set(ATTACHED_FACE, Direction.from3DDataValue(compound.getByte("AttachFace")));
-        this.setLeaf(compound.getBoolean("Leaf"));
-        this.setQueen(compound.getBoolean("Queen"));
-        this.setAntScale(compound.getFloat("AntScale"));
+        this.setLeaf(compound.getBooleanOr("Leaf", false));
+        this.setQueen(compound.getBooleanOr("Queen", false));
+        this.setAntScale(compound.getFloatOr("AntScale", 0.0F));
         BlockState blockstate = null;
-        if (compound.contains("HarvestedLeafState", 10)) {
-            blockstate = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compound.getCompound("HarvestedLeafState"));
+        if (compound.contains("HarvestedLeafState")) {
+            blockstate = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compound.getCompoundOrEmpty("HarvestedLeafState"));
             if (blockstate.isAir()) {
                 blockstate = null;
             }
         }
-        this.stayOutOfHiveCountdown = compound.getInt("CannotEnterHiveTicks");
-        this.haveBabyCooldown = compound.getInt("BabyCooldown");
+        this.stayOutOfHiveCountdown = compound.getIntOr("CannotEnterHiveTicks", 0);
+        this.haveBabyCooldown = compound.getIntOr("BabyCooldown", 0);
         this.hivePos = null;
         if (compound.contains("HivePos")) {
             this.hivePos = NbtUtils.readBlockPos(compound.getCompound("HivePos"));
         }
         this.setLeafHarvestedState(blockstate);
         if (compound.contains("HLPX")) {
-            int i = compound.getInt("HLPX");
-            int j = compound.getInt("HLPY");
-            int k = compound.getInt("HLPZ");
+            int i = compound.getIntOr("HLPX", 0);
+            int j = compound.getIntOr("HLPY", 0);
+            int k = compound.getIntOr("HLPZ", 0);
             this.entityData.set(LEAF_HARVESTED_POS, Optional.of(new BlockPos(i, j, k)));
         } else {
             this.entityData.set(LEAF_HARVESTED_POS, Optional.empty());
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putByte("AttachFace", (byte) this.entityData.get(ATTACHED_FACE).get3DDataValue());
         compound.putBoolean("Leaf", this.hasLeaf());

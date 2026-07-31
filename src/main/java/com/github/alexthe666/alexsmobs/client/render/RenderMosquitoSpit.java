@@ -1,29 +1,31 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.entity.EntityMosquitoSpit;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.model.LlamaSpitModel;
+import net.minecraft.client.model.animal.llama.LlamaSpitModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.LlamaSpit;
 
-public class RenderMosquitoSpit extends EntityRenderer<EntityMosquitoSpit> {
-    private static final ResourceLocation SPIT_TEXTURE = new ResourceLocation("alexsmobs:textures/entity/mosquito_spit.png");
-    private final LlamaSpitModel<LlamaSpit> model;
+public class RenderMosquitoSpit extends EntityRenderer<EntityMosquitoSpit, EntityRenderState> {
+    private static final Identifier SPIT_TEXTURE = Identifier.parse("alexsmobs:textures/entity/mosquito_spit.png");
+    private final LlamaSpitModel model;
 
     public RenderMosquitoSpit(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn);
         this.model = new LlamaSpitModel<>(renderManagerIn.bakeLayer(ModelLayers.LLAMA_SPIT));
     }
 
-    public void render(EntityMosquitoSpit entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityMosquitoSpit entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.0D, (double)0.15F, 0.0D);
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 90.0F));
@@ -37,7 +39,7 @@ public class RenderMosquitoSpit extends EntityRenderer<EntityMosquitoSpit> {
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getTextureLocation(EntityMosquitoSpit entity) {
+    public Identifier getTextureLocation(EntityMosquitoSpit entity) {
         return SPIT_TEXTURE;
     }
 }

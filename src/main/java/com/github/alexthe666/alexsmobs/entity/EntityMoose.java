@@ -30,7 +30,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -45,8 +45,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -77,10 +77,10 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
 
     protected EntityMoose(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setMaxUpStep(1.1F);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1.1F);
     }
 
-    public static boolean canMooseSpawn(EntityType<? extends Mob> typeIn, ServerLevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static boolean canMooseSpawn(EntityType<? extends Mob> typeIn, ServerLevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         BlockState blockstate = worldIn.getBlockState(pos.below());
         return (blockstate.is(Blocks.GRASS_BLOCK) || blockstate.is(Blocks.SNOW)) || blockstate.is(Blocks.SNOW_BLOCK) && worldIn.getRawBrightness(pos, 0) > 8;
     }
@@ -89,7 +89,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 55D).add(Attributes.ATTACK_DAMAGE, 7.5D).add(Attributes.MOVEMENT_SPEED, 0.25F).add(Attributes.KNOCKBACK_RESISTANCE, 0.5F);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.mooseSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -152,28 +152,28 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ANTLERED, true);
-        this.entityData.define(JOSTLING, false);
-        this.entityData.define(SNOWY, false);
-        this.entityData.define(JOSTLE_ANGLE, 0F);
-        this.entityData.define(JOSTLER_UUID, Optional.empty());
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ANTLERED, true);
+        builder.define(JOSTLING, false);
+        builder.define(SNOWY, false);
+        builder.define(JOSTLE_ANGLE, 0F);
+        builder.define(JOSTLER_UUID, Optional.empty());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setSnowy(compound.getBoolean("Snowy"));
+        this.setSnowy(compound.getBooleanOr("Snowy", false));
         if (compound.contains("AntlerTime")) {
-            this.timeUntilAntlerDrop = compound.getInt("AntlerTime");
+            this.timeUntilAntlerDrop = compound.getIntOr("AntlerTime", 0);
         }
-        this.setAntlered(compound.getBoolean("Antlered"));
-        this.jostleCooldown = compound.getInt("JostlingCooldown");
-        this.permSnow = compound.getBoolean("SnowPerm");
+        this.setAntlered(compound.getBooleanOr("Antlered", false));
+        this.jostleCooldown = compound.getIntOr("JostlingCooldown", 0);
+        this.permSnow = compound.getBooleanOr("SnowPerm", false);
 
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Snowy", this.isSnowy());
         compound.putBoolean("SnowPerm", this.permSnow);
@@ -198,7 +198,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
         if (jostleCooldown > 0) {
             jostleCooldown--;
         }
-        if (!this.level().isClientSide && this.getAnimation() == NO_ANIMATION && getRandom().nextInt(120) == 0 && (this.getTarget() == null || !this.getTarget().isAlive()) && !this.isJostling() && this.getJostlingPartnerUUID() == null) {
+        if (!this.level().isClientSide() && this.getAnimation() == NO_ANIMATION && getRandom().nextInt(120) == 0 && (this.getTarget() == null || !this.getTarget().isAlive()) && !this.isJostling() && this.getJostlingPartnerUUID() == null) {
             if (level().getBlockState(this.blockPosition().below()).is(Blocks.GRASS_BLOCK) && getRandom().nextInt(3) == 0) {
                 this.setAnimation(ANIMATION_EAT_GRASS);
             }
@@ -220,7 +220,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
             if (this.isJostling()) {
                 this.setJostling(false);
             }
-            if (!this.level().isClientSide && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 8) {
+            if (!this.level().isClientSide() && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 8) {
                 float dmg = (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue();
                 if (!isAntlered()) {
                     dmg = 3;
@@ -235,16 +235,16 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
         if(snowTimer > 0){
             snowTimer--;
         }
-        if (snowTimer == 0 && !this.level().isClientSide) {
+        if (snowTimer == 0 && !this.level().isClientSide()) {
             snowTimer = 200 + random.nextInt(400);
             if(this.isSnowy()){
                 if(!permSnow){
-                    if (!this.level().isClientSide || this.getRemainingFireTicks() > 0 || this.isInWaterOrBubble() || !EntityGrizzlyBear.isSnowingAt(level(), this.blockPosition().above())) {
+                    if (!this.level().isClientSide() || this.getRemainingFireTicks() > 0 || this.isInWater() || !EntityGrizzlyBear.isSnowingAt(level(), this.blockPosition().above())) {
                         this.setSnowy(false);
                     }
                 }
             }else{
-                if (!this.level().isClientSide && EntityGrizzlyBear.isSnowingAt(level(), this.blockPosition())) {
+                if (!this.level().isClientSide() && EntityGrizzlyBear.isSnowingAt(level(), this.blockPosition())) {
                     this.setSnowy(true);
                 }
             }
@@ -322,7 +322,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
         ItemStack itemstack = player.getItemInHand(hand);
         Item item = itemstack.getItem();
         InteractionResult type = super.mobInteract(player, hand);
-        if (item == Items.SNOW && !this.isSnowy() && !this.level().isClientSide) {
+        if (item == Items.SNOW && !this.isSnowy() && !this.level().isClientSide()) {
             this.usePlayerItem(player, hand, itemstack);
             this.permSnow = true;
             this.setSnowy(true);
@@ -330,7 +330,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
             this.playSound(SoundEvents.SNOW_PLACE, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
-        if (item instanceof ShovelItem && this.isSnowy() && !this.level().isClientSide) {
+        if (item instanceof ShovelItem && this.isSnowy() && !this.level().isClientSide()) {
             this.permSnow = false;
             if (!player.isCreative()) {
                 itemstack.hurt(1, this.getRandom(), player instanceof ServerPlayer ? (ServerPlayer) player : null);
@@ -346,7 +346,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
     @Nullable
     public Entity getJostlingPartner() {
         UUID id = getJostlingPartnerUUID();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -365,7 +365,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
     }
 
     private void applyKnockbackFromMoose(float strength, double ratioX, double ratioZ) {
-        net.minecraftforge.event.entity.living.LivingKnockBackEvent event = net.minecraftforge.common.ForgeHooks.onLivingKnockBack(this, strength, ratioX, ratioZ);
+        net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event = net.neoforged.neoforge.common.ForgeHooks.onLivingKnockBack(this, strength, ratioX, ratioZ);
         if (event.isCanceled()) return;
         strength = event.getStrength();
         ratioX = event.getRatioX();

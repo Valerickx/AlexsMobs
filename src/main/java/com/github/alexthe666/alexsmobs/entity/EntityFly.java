@@ -28,20 +28,20 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
 import net.minecraft.world.entity.ai.util.HoverRandomPos;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.FlyingAnimal;
+
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -50,7 +50,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class EntityFly extends Animal implements FlyingAnimal {
+public class EntityFly extends Animal {
 
     private int conversionTime = 0;
     private static final EntityDataAccessor<Boolean> NO_DESPAWN = SynchedEntityData.defineId(EntityFly.class, EntityDataSerializers.BOOLEAN);
@@ -58,29 +58,29 @@ public class EntityFly extends Animal implements FlyingAnimal {
     protected EntityFly(EntityType<? extends Animal> type, Level worldIn) {
         super(type, worldIn);
         this.moveControl = new FlyingMoveControl(this, 20, true);
-        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 16.0F);
-        this.setPathfindingMalus(BlockPathTypes.COCOA, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.FENCE, -1.0F);
+        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
+        this.setPathfindingMalus(PathType.COCOA, -1.0F);
+        this.setPathfindingMalus(PathType.FENCE, -1.0F);
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {}
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("NoFlyDespawn", this.isNoDespawn());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setNoDespawn(compound.getBoolean("NoFlyDespawn"));
+        this.setNoDespawn(compound.getBooleanOr("NoFlyDespawn", false));
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(NO_DESPAWN, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(NO_DESPAWN, false);
     }
 
         public boolean isNoDespawn() {
@@ -92,8 +92,8 @@ public class EntityFly extends Animal implements FlyingAnimal {
     }
 
 
-    public static boolean canFlySpawn(EntityType<EntityFly> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return reason == MobSpawnType.SPAWNER || pos.getY() > 63 && random.nextInt(4) == 0 && worldIn.getRawBrightness(pos, 0) > 8 && worldIn.getBrightness(LightLayer.BLOCK, pos) == 0 && worldIn.getBlockState(pos.below()).is(AMTagRegistry.FLY_SPAWNS);
+    public static boolean canFlySpawn(EntityType<EntityFly> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return reason == EntitySpawnReason.SPAWNER || pos.getY() > 63 && random.nextInt(4) == 0 && worldIn.getRawBrightness(pos, 0) > 8 && worldIn.getBrightness(LightLayer.BLOCK, pos) == 0 && worldIn.getBlockState(pos.below()).is(AMTagRegistry.FLY_SPAWNS);
     }
 
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
@@ -104,7 +104,7 @@ public class EntityFly extends Animal implements FlyingAnimal {
         return this.isNoDespawn()  || this.hasCustomName() || this.isLeashed() || super.requiresCustomPersistence();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.flySpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -194,8 +194,8 @@ public class EntityFly extends Animal implements FlyingAnimal {
             if(conversionTime > 300){
                 EntityCrimsonMosquito mosquito = AMEntityRegistry.CRIMSON_MOSQUITO.get().create(level());
                 mosquito.copyPosition(this);
-                if(!this.level().isClientSide){
-                    mosquito.finalizeSpawn((ServerLevelAccessor)level(), level().getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.CONVERSION, null, null);
+                if(!this.level().isClientSide()){
+                    mosquito.finalizeSpawn((ServerLevelAccessor)level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.CONVERSION, null, null);
                 }
                 level().addFreshEntity(mosquito);
                 mosquito.onSpawnFromFly();
@@ -220,10 +220,6 @@ public class EntityFly extends Animal implements FlyingAnimal {
 
     protected boolean makeFlySound() {
         return true;
-    }
-
-    public MobType getMobType() {
-        return MobType.ARTHROPOD;
     }
 
     protected void jumpInLiquid(TagKey<Fluid> fluidTag) {

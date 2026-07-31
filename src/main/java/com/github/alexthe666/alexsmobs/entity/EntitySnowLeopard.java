@@ -60,18 +60,18 @@ public class EntitySnowLeopard extends Animal implements IAnimatedEntity, ITarge
 
     protected EntitySnowLeopard(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setMaxUpStep(2F);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 2F);
     }
 
     protected PathNavigation createNavigation(Level worldIn) {
         return new AdvancedPathNavigateNoTeleport(this, worldIn, false);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.snowLeopardSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static <T extends Mob> boolean canSnowLeopardSpawn(EntityType<EntitySnowLeopard> snowleperd, LevelAccessor worldIn, MobSpawnType reason, BlockPos p_223317_3_, RandomSource random) {
+    public static <T extends Mob> boolean canSnowLeopardSpawn(EntityType<EntitySnowLeopard> snowleperd, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos p_223317_3_, RandomSource random) {
         return worldIn.getBlockState(p_223317_3_.below()).is(AMTagRegistry.SNOW_LEOPARD_SPAWNS) && worldIn.getRawBrightness(p_223317_3_, 0) > 8;
     }
 
@@ -117,12 +117,12 @@ public class EntitySnowLeopard extends Animal implements IAnimatedEntity, ITarge
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SITTING, false);
-        this.entityData.define(SLEEPING, false);
-        this.entityData.define(SL_SNEAKING, false);
-        this.entityData.define(TACKLING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SITTING, false);
+        builder.define(SLEEPING, false);
+        builder.define(SL_SNEAKING, false);
+        builder.define(TACKLING, false);
     }
 
     public boolean isSitting() {
@@ -218,18 +218,18 @@ public class EntitySnowLeopard extends Animal implements IAnimatedEntity, ITarge
         if(tackling){
             this.yBodyRot = this.getYRot();
         }
-        if(!this.level().isClientSide) {
+        if(!this.level().isClientSide()) {
             if (this.getTarget() != null && (this.isSitting() || this.isSleeping())) {
                 this.setSitting(false);
                 this.setSleeping(false);
             }
-            if ((isSitting() || isSleeping()) && (++sittingTime > maxSitTime || this.getTarget() != null || this.isInLove() || this.isInWaterOrBubble())) {
+            if ((isSitting() || isSleeping()) && (++sittingTime > maxSitTime || this.getTarget() != null || this.isInLove() || this.isInWater())) {
                 this.setSitting(false);
                 this.setSleeping(false);
                 sittingTime = 0;
                 maxSitTime = 100 + random.nextInt(50);
             }
-            if (this.getTarget() == null && this.getDeltaMovement().lengthSqr() < 0.03D && this.getAnimation() == NO_ANIMATION && !this.isSleeping() && !this.isSitting() && !this.isInWaterOrBubble() && random.nextInt(340) == 0) {
+            if (this.getTarget() == null && this.getDeltaMovement().lengthSqr() < 0.03D && this.getAnimation() == NO_ANIMATION && !this.isSleeping() && !this.isSitting() && !this.isInWater() && random.nextInt(340) == 0) {
                 sittingTime = 0;
                 if (this.getRandom().nextInt(2) != 0) {
                     maxSitTime = 200 + random.nextInt(800);

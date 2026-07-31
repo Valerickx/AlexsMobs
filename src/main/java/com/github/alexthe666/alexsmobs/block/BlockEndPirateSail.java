@@ -27,7 +27,7 @@ public class BlockEndPirateSail extends Block {
     protected static final VoxelShape NS_AABB = Block.box(0.0D, 0.0D, 7.0D, 16.0D, 16.0D, 9.0D);
 
     public BlockEndPirateSail(boolean spectre) {
-        super(Properties.of().mapColor(MapColor.COLOR_BLUE).noOcclusion().emissiveRendering((a, b, c) -> true).sound(SoundType.WOOL).lightLevel((state) -> 5).requiresCorrectToolForDrops().strength(0.4F));
+        super(Properties.of().mapColor(MapColor.COLOR_BLUE).noOcclusion().sound(SoundType.WOOL).lightLevel((state) -> 5).requiresCorrectToolForDrops().strength(0.4F));
         this.registerDefaultState(this.stateDefinition.any().setValue(EASTORWEST, Boolean.valueOf(false)).setValue(SAIL, SailType.SINGLE));
     }
 

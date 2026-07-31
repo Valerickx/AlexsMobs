@@ -23,8 +23,8 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,26 +52,22 @@ public class EntityTendonSegment  extends Entity {
         super(type, level);
     }
 
-    public EntityTendonSegment(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.TENDON_SEGMENT.get(), world);
-    }
-
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(CREATOR_ID, Optional.empty());
-        this.entityData.define(FROM_ID, -1);
-        this.entityData.define(TARGET_COUNT, 0);
-        this.entityData.define(CURRENT_TARGET_ID, -1);
-        this.entityData.define(PROGRESS, 0F);
-        this.entityData.define(DAMAGE, 5F);
-        this.entityData.define(RETRACTING, false);
-        this.entityData.define(HAS_CLAW, true);
-        this.entityData.define(HAS_GLINT, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        builder.define(CREATOR_ID, Optional.empty());
+        builder.define(FROM_ID, -1);
+        builder.define(TARGET_COUNT, 0);
+        builder.define(CURRENT_TARGET_ID, -1);
+        builder.define(PROGRESS, 0F);
+        builder.define(DAMAGE, 5F);
+        builder.define(RETRACTING, false);
+        builder.define(HAS_CLAW, true);
+        builder.define(HAS_GLINT, false);
     }
 
     @Override
@@ -81,7 +77,7 @@ public class EntityTendonSegment  extends Entity {
         if(tickCount < 1){
             onJoinWorld();
         }else if(tickCount == 1){
-            if(!this.level().isClientSide){
+            if(!this.level().isClientSide()){
                 this.playSound(AMSoundRegistry.TENDON_WHIP.get(),1.0F, 0.8F + this.random.nextFloat() * 0.4F);
             }
         }
@@ -111,7 +107,7 @@ public class EntityTendonSegment  extends Entity {
                 Vec3 target = new Vec3(current.getX(), current.getY(0.4F), current.getZ());
                 Vec3 lerp = target.subtract(this.position());
                 this.setDeltaMovement(lerp.scale(0.5F));
-                if(!this.level().isClientSide){
+                if(!this.level().isClientSide()){
                     if(!hasTouched && progress >= MAX_EXTEND_TIME){
                         hasTouched = true;
                         Entity entity = getCreatorEntity();
@@ -125,7 +121,7 @@ public class EntityTendonSegment  extends Entity {
             }
         }
         Vec3 vector3d = this.getDeltaMovement();
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if(!hasChained){
                 if(this.getTargetsHit() > 3){
                     this.setRetracting(true);
@@ -257,7 +253,7 @@ public class EntityTendonSegment  extends Entity {
 
     public Entity getCreatorEntity() {
         UUID uuid = getCreatorEntityUUID();
-        if(uuid != null && !this.level().isClientSide){
+        if(uuid != null && !this.level().isClientSide()){
             return ((ServerLevel) level()).getEntity(uuid);
         }
         return null;
@@ -324,12 +320,12 @@ public class EntityTendonSegment  extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag p_20052_) {
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput p_20052_) {
 
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag p_20139_) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput p_20139_) {
 
     }
 

@@ -55,9 +55,9 @@ public class BlockLeafcutterAntChamber extends Block {
                 this.angerNearbyAnts(worldIn, pos);
             }
             worldIn.setBlockAndUpdate(pos, state.setValue(FUNGUS, 0));
-            if(!worldIn.isClientSide){
-                if(worldIn.random.nextInt(2) == 0){
-                    Direction dir = Direction.getRandom(worldIn.random);
+            if(!worldIn.isClientSide()){
+                if(worldIn.getRandom().nextInt(2) == 0){
+                    Direction dir = Direction.getRandom(worldIn.getRandom());
                     if(worldIn.getBlockState(pos.above()).getBlock() == AMBlockRegistry.LEAFCUTTER_ANTHILL.get()){
                         dir = Direction.DOWN;
                     }
@@ -92,7 +92,7 @@ public class BlockLeafcutterAntChamber extends Block {
         List<Player> list1 = world.getEntitiesOfClass(Player.class, (new AABB(pos)).inflate(20D, 6.0D, 20D));
         if (list1.isEmpty()) return; //Forge: Prevent Error when no players are around.
         int i = list1.size();
-        player = list1.get(world.random.nextInt(i));
+        player = list1.get(world.getRandom().nextInt(i));
         if (!list.isEmpty()) {
             for (EntityLeafcutterAnt beeentity : list) {
                 if (beeentity.getTarget() == null) {
@@ -100,7 +100,7 @@ public class BlockLeafcutterAntChamber extends Block {
                 }
             }
         }
-        if(!world.isClientSide){
+        if(!world.isClientSide()){
             PoiManager pointofinterestmanager = ((ServerLevel) world).getPoiManager();
             Stream<BlockPos> stream = pointofinterestmanager.findAll((poiTypeHolder -> poiTypeHolder.is(AMPointOfInterestRegistry.LEAFCUTTER_ANT_HILL.getKey())), Predicates.alwaysTrue(), pos, 50, PoiManager.Occupancy.ANY);
             List<BlockPos> listOfHives = stream.collect(Collectors.toList());

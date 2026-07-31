@@ -1,15 +1,18 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelCockroach;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerCockroachMaracas;
 import com.github.alexthe666.alexsmobs.entity.EntityCockroach;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderCockroach extends MobRenderer<EntityCockroach, ModelCockroach> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/cockroach.png");
+public class RenderCockroach extends MobRenderer<EntityCockroach, LivingEntityRenderState, ModelCockroach> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/cockroach.png");
 
     public RenderCockroach(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelCockroach(), 0.3F);
@@ -21,7 +24,7 @@ public class RenderCockroach extends MobRenderer<EntityCockroach, ModelCockroach
     }
 
 
-    public ResourceLocation getTextureLocation(EntityCockroach entity) {
+    public Identifier getTextureLocation(EntityCockroach entity) {
         return TEXTURE;
     }
 }

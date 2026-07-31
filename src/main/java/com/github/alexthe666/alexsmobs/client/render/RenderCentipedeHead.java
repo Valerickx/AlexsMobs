@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelCaveCentipede;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerCentipedeHeadEyes;
 import com.github.alexthe666.alexsmobs.entity.EntityCentipedeHead;
@@ -9,12 +11,13 @@ import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderCentipedeHead extends MobRenderer<EntityCentipedeHead, AdvancedEntityModel<EntityCentipedeHead>> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/cave_centipede.png");
+public class RenderCentipedeHead extends MobRenderer<EntityCentipedeHead, LivingEntityRenderState, AdvancedEntityModel<EntityCentipedeHead>> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/cave_centipede.png");
 
     public RenderCentipedeHead(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelCaveCentipede<>(0), 0.5F);
@@ -53,7 +56,7 @@ public class RenderCentipedeHead extends MobRenderer<EntityCentipedeHead, Advanc
         return 180.0F;
     }
 
-    public ResourceLocation getTextureLocation(EntityCentipedeHead entity) {
+    public Identifier getTextureLocation(EntityCentipedeHead entity) {
         return TEXTURE;
     }
 }

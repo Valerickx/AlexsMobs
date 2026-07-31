@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelCosmaw;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerBasicGlow;
 import com.github.alexthe666.alexsmobs.entity.EntityCosmaw;
@@ -7,17 +9,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class RenderCosmaw extends MobRenderer<EntityCosmaw, ModelCosmaw> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/cosmaw.png");
-    private static final ResourceLocation TEXTURE_GLOW = new ResourceLocation("alexsmobs:textures/entity/cosmaw_glow.png");
+public class RenderCosmaw extends MobRenderer<EntityCosmaw, LivingEntityRenderState, ModelCosmaw> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/cosmaw.png");
+    private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/cosmaw_glow.png");
 
     public RenderCosmaw(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelCosmaw(), 0.9F);
@@ -29,7 +32,7 @@ public class RenderCosmaw extends MobRenderer<EntityCosmaw, ModelCosmaw> {
         matrixStackIn.translate(0, -0.5F, 0);
     }
 
-    public ResourceLocation getTextureLocation(EntityCosmaw entity) {
+    public Identifier getTextureLocation(EntityCosmaw entity) {
         return TEXTURE;
     }
 
@@ -39,7 +42,7 @@ public class RenderCosmaw extends MobRenderer<EntityCosmaw, ModelCosmaw> {
             super(RenderCosmaw.this);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityCosmaw entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityCosmaw entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             ItemStack itemstack = entitylivingbaseIn.getMainHandItem();
             matrixStackIn.pushPose();
             translateToHand(matrixStackIn);

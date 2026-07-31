@@ -1,31 +1,33 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelPollenBall;
 import com.github.alexthe666.alexsmobs.entity.EntityPollenBall;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class RenderPollenBall extends EntityRenderer<EntityPollenBall> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/pollen_ball.png");
+public class RenderPollenBall extends EntityRenderer<EntityPollenBall, EntityRenderState> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/pollen_ball.png");
     private static final ModelPollenBall MODEL_POLLEN_BALL = new ModelPollenBall();
     public RenderPollenBall(EntityRendererProvider.Context renderManager) {
         super(renderManager);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityPollenBall entity) {
+    public Identifier getTextureLocation(EntityPollenBall entity) {
         return TEXTURE;
     }
 
     @Override
-    public void render(EntityPollenBall entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityPollenBall entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.0D, (double)-0.25F, 0.0D);

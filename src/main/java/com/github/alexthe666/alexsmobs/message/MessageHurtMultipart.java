@@ -6,14 +6,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.Supplier;
 
@@ -56,9 +56,9 @@ public class MessageHurtMultipart {
         public Handler() {
         }
 
-        public static void handle(MessageHurtMultipart message, Supplier<NetworkEvent.Context> context) {
-            context.get().setPacketHandled(true);
-            context.get().enqueueWork(() -> {
+        public static void handle(MessageHurtMultipart message, IPayloadContext context) {
+            
+            context.enqueueWork(() -> {
                 Player player = context.get().getSender();
                 if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
@@ -69,7 +69,7 @@ public class MessageHurtMultipart {
                         Entity part = player.level().getEntity(message.part);
                         Entity parent = player.level().getEntity(message.parent);
                         Registry<DamageType> registry = player.level().registryAccess().registry(Registries.DAMAGE_TYPE).get();
-                        DamageType dmg = registry.get(new ResourceLocation(message.damageType));
+                        DamageType dmg = registry.get(Identifier.parse(message.damageType));
                         if (dmg != null) {
                             Holder<DamageType> holder = registry.getHolder(registry.getId(dmg)).orElseGet(null);
                             if (holder != null) {

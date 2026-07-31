@@ -7,7 +7,7 @@ import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
 import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.misc.AMTagRegistry;
 import com.google.common.base.Predicates;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,7 +30,7 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.FlyingAnimal;
+
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.UUID;
 
-public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems, FlyingAnimal, IFollower {
+public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems, IFollower {
 
     private static final EntityDataAccessor<Float> COSMAW_PITCH = SynchedEntityData.defineId(EntityCosmaw.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> ATTACK_TICK = SynchedEntityData.defineId(EntityCosmaw.class, EntityDataSerializers.INT);
@@ -76,20 +76,20 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 20.0D).add(Attributes.FOLLOW_RANGE, 32.0D).add(Attributes.ATTACK_DAMAGE, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.cosmawSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canCosmawSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canCosmawSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return !worldIn.getBlockState(pos.below()).isAir();
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(COSMAW_PITCH, 0.0F);
-        this.entityData.define(ATTACK_TICK, 0);
-        this.entityData.define(COMMAND, Integer.valueOf(0));
-        this.entityData.define(SITTING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(COSMAW_PITCH, 0.0F);
+        builder.define(ATTACK_TICK, 0);
+        builder.define(COMMAND, Integer.valueOf(0));
+        builder.define(SITTING, false);
 
     }
 
@@ -206,16 +206,16 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
     }
 
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("CosmawSitting", this.isSitting());
         compound.putInt("Command", this.getCommand());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setOrderedToSit(compound.getBoolean("CosmawSitting"));
-        this.setCommand(compound.getInt("Command"));
+        this.setOrderedToSit(compound.getBooleanOr("CosmawSitting", false));
+        this.setCommand(compound.getIntOr("Command", 0));
     }
 
     public void tick() {
@@ -224,7 +224,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
         prevClutchProgress = clutchProgress;
         prevBiteProgress = biteProgress;
         prevCosmawPitch = this.getCosmawPitch();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final float f2 = (float) -((float) this.getDeltaMovement().y * Mth.RAD_TO_DEG);
             this.setCosmawPitch(this.getCosmawPitch() + 0.6F * (this.getCosmawPitch() + f2) - this.getCosmawPitch());
         }
@@ -295,7 +295,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
         } else {
             heldItemTime = 0;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (tickCount % 100 == 0 || lastSafeTpPosition == null) {
                 BlockPos pos = getCosmawGround(this.blockPosition());
                 if (pos.getY() > 1) {
@@ -431,7 +431,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
     public void onGetItem(ItemEntity e) {
         ItemStack duplicate = e.getItem().copy();
         duplicate.setCount(1);
-        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide) {
+        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         this.setItemInHand(InteractionHand.MAIN_HAND, duplicate);

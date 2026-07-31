@@ -1,23 +1,25 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelStraddleboard;
 import com.github.alexthe666.alexsmobs.entity.EntityStraddleboard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 
 import static net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY;
 
-public class RenderStraddleboard extends EntityRenderer<EntityStraddleboard> {
-    private static final ResourceLocation TEXTURE_OVERLAY = new ResourceLocation("alexsmobs:textures/entity/straddleboard_overlay.png");
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/straddleboard.png");
+public class RenderStraddleboard extends EntityRenderer<EntityStraddleboard, EntityRenderState> {
+    private static final Identifier TEXTURE_OVERLAY = Identifier.parse("alexsmobs:textures/entity/straddleboard_overlay.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/straddleboard.png");
     private static final ModelStraddleboard BOARD_MODEL = new ModelStraddleboard();
 
     public RenderStraddleboard(EntityRendererProvider.Context renderManager) {
@@ -25,12 +27,12 @@ public class RenderStraddleboard extends EntityRenderer<EntityStraddleboard> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityStraddleboard entity) {
+    public Identifier getTextureLocation(EntityStraddleboard entity) {
         return TEXTURE;
     }
 
     @Override
-    public void render(EntityStraddleboard entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityStraddleboard entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(new Quaternionf().rotateY(180F * Mth.DEG_TO_RAD));
         matrixStackIn.mulPose(Axis.YN.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) + 180));

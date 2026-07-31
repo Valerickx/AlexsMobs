@@ -1,26 +1,29 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelEnderiophage;
 import com.github.alexthe666.alexsmobs.entity.EntityEnderiophage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
-public class RenderEnderiophage extends MobRenderer<EntityEnderiophage, ModelEnderiophage> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/enderiophage.png");
-    private static final ResourceLocation TEXTURE_GLOW = new ResourceLocation("alexsmobs:textures/entity/enderiophage_glow.png");
-    private static final ResourceLocation TEXTURE_OVERWORLD = new ResourceLocation("alexsmobs:textures/entity/enderiophage_overworld.png");
-    private static final ResourceLocation TEXTURE_OVERWORLD_GLOW = new ResourceLocation("alexsmobs:textures/entity/enderiophage_overworld_glow.png");
-    private static final ResourceLocation TEXTURE_NETHER = new ResourceLocation("alexsmobs:textures/entity/enderiophage_nether.png");
-    private static final ResourceLocation TEXTURE_NETHER_GLOW = new ResourceLocation("alexsmobs:textures/entity/enderiophage_nether_glow.png");
+public class RenderEnderiophage extends MobRenderer<EntityEnderiophage, LivingEntityRenderState, ModelEnderiophage> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/enderiophage.png");
+    private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/enderiophage_glow.png");
+    private static final Identifier TEXTURE_OVERWORLD = Identifier.parse("alexsmobs:textures/entity/enderiophage_overworld.png");
+    private static final Identifier TEXTURE_OVERWORLD_GLOW = Identifier.parse("alexsmobs:textures/entity/enderiophage_overworld_glow.png");
+    private static final Identifier TEXTURE_NETHER = Identifier.parse("alexsmobs:textures/entity/enderiophage_nether.png");
+    private static final Identifier TEXTURE_NETHER_GLOW = Identifier.parse("alexsmobs:textures/entity/enderiophage_nether_glow.png");
 
     public RenderEnderiophage(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelEnderiophage(), 0.5F);
@@ -30,13 +33,13 @@ public class RenderEnderiophage extends MobRenderer<EntityEnderiophage, ModelEnd
     @Nullable
     @Override
     protected RenderType getRenderType(EntityEnderiophage p_230496_1_, boolean p_230496_2_, boolean p_230496_3_, boolean p_230496_4_) {
-        ResourceLocation resourcelocation = this.getTextureLocation(p_230496_1_);
+        Identifier Identifier = this.getTextureLocation(p_230496_1_);
         if (p_230496_3_) {
-            return RenderType.itemEntityTranslucentCull(resourcelocation);
+            return RenderType.itemEntityTranslucentCull(Identifier);
         } else if (p_230496_2_) {
-            return RenderType.entityTranslucent(resourcelocation);
+            return RenderType.entityTranslucent(Identifier);
         } else {
-            return p_230496_4_ ? RenderType.outline(resourcelocation) : null;
+            return p_230496_4_ ? RenderType.outline(Identifier) : null;
         }
     }
 
@@ -46,7 +49,7 @@ public class RenderEnderiophage extends MobRenderer<EntityEnderiophage, ModelEnd
     }
 
 
-    public ResourceLocation getTextureLocation(EntityEnderiophage entity) {
+    public Identifier getTextureLocation(EntityEnderiophage entity) {
         return entity.getVariant() == 2 ? TEXTURE_NETHER : entity.getVariant() == 1 ? TEXTURE_OVERWORLD : TEXTURE;
     }
 
@@ -57,7 +60,7 @@ public class RenderEnderiophage extends MobRenderer<EntityEnderiophage, ModelEnd
         }
 
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityEnderiophage entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityEnderiophage entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(this.getRenderType(entitylivingbaseIn));
             this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, 15728640, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         }

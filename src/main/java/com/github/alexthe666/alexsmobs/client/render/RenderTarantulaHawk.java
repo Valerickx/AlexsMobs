@@ -1,24 +1,27 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelTarantulaHawk;
 import com.github.alexthe666.alexsmobs.client.model.ModelTarantulaHawkBaby;
 import com.github.alexthe666.alexsmobs.entity.EntityTarantulaHawk;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
-public class RenderTarantulaHawk extends MobRenderer<EntityTarantulaHawk, EntityModel<EntityTarantulaHawk>> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/tarantula_hawk.png");
-    private static final ResourceLocation TEXTURE_ANGRY = new ResourceLocation("alexsmobs:textures/entity/tarantula_hawk_angry.png");
-    private static final ResourceLocation TEXTURE_NETHER = new ResourceLocation("alexsmobs:textures/entity/tarantula_hawk_nether.png");
-    private static final ResourceLocation TEXTURE_NETHER_ANGRY = new ResourceLocation("alexsmobs:textures/entity/tarantula_hawk_nether_angry.png");
-    private static final ResourceLocation TEXTURE_BABY = new ResourceLocation("alexsmobs:textures/entity/tarantula_hawk_baby.png");
+public class RenderTarantulaHawk extends MobRenderer<EntityTarantulaHawk, LivingEntityRenderState, EntityModel<EntityTarantulaHawk>> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/tarantula_hawk.png");
+    private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/tarantula_hawk_angry.png");
+    private static final Identifier TEXTURE_NETHER = Identifier.parse("alexsmobs:textures/entity/tarantula_hawk_nether.png");
+    private static final Identifier TEXTURE_NETHER_ANGRY = Identifier.parse("alexsmobs:textures/entity/tarantula_hawk_nether_angry.png");
+    private static final Identifier TEXTURE_BABY = Identifier.parse("alexsmobs:textures/entity/tarantula_hawk_baby.png");
     private static final ModelTarantulaHawk MODEL = new ModelTarantulaHawk();
     private static final ModelTarantulaHawkBaby MODEL_BABY = new ModelTarantulaHawkBaby();
     public RenderTarantulaHawk(EntityRendererProvider.Context renderManagerIn) {
@@ -43,17 +46,17 @@ public class RenderTarantulaHawk extends MobRenderer<EntityTarantulaHawk, Entity
     @Nullable
     @Override
     protected RenderType getRenderType(EntityTarantulaHawk hawk, boolean b0, boolean b1, boolean b2) {
-        ResourceLocation resourcelocation = this.getTextureLocation(hawk);
+        Identifier Identifier = this.getTextureLocation(hawk);
         if (b1) {
-            return RenderType.itemEntityTranslucentCull(resourcelocation);
+            return RenderType.itemEntityTranslucentCull(Identifier);
         } else if (b0) {
-            return RenderType.entityTranslucent(resourcelocation);
+            return RenderType.entityTranslucent(Identifier);
         } else {
-            return b2 ? RenderType.outline(resourcelocation) : null;
+            return b2 ? RenderType.outline(Identifier) : null;
         }
     }
 
-    public ResourceLocation getTextureLocation(EntityTarantulaHawk entity) {
+    public Identifier getTextureLocation(EntityTarantulaHawk entity) {
         return entity.isBaby() ? TEXTURE_BABY : entity.isNether() ? entity.isAngry() ? TEXTURE_NETHER_ANGRY : TEXTURE_NETHER : entity.isAngry() ? TEXTURE_ANGRY : TEXTURE;
     }
 }

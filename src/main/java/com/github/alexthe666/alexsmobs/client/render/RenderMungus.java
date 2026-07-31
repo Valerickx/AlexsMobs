@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelMungus;
 import com.github.alexthe666.alexsmobs.entity.EntityMungus;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
@@ -8,17 +10,18 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,12 +30,12 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class RenderMungus extends MobRenderer<EntityMungus, ModelMungus> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/mungus.png");
-    private static final ResourceLocation BEAM_TEXTURE = new ResourceLocation("alexsmobs:textures/entity/mungus_beam.png");
-    private static final ResourceLocation TEXTURE_BEAM_OVERLAY = new ResourceLocation("alexsmobs:textures/entity/mungus_beam_overlay.png");
-    private static final ResourceLocation TEXTURE_SACK_OVERLAY = new ResourceLocation("alexsmobs:textures/entity/mungus_sack.png");
-    private static final ResourceLocation TEXTURE_SHOES = new ResourceLocation("alexsmobs:textures/entity/mungus_shoes.png");
+public class RenderMungus extends MobRenderer<EntityMungus, LivingEntityRenderState, ModelMungus> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/mungus.png");
+    private static final Identifier BEAM_TEXTURE = Identifier.parse("alexsmobs:textures/entity/mungus_beam.png");
+    private static final Identifier TEXTURE_BEAM_OVERLAY = Identifier.parse("alexsmobs:textures/entity/mungus_beam_overlay.png");
+    private static final Identifier TEXTURE_SACK_OVERLAY = Identifier.parse("alexsmobs:textures/entity/mungus_sack.png");
+    private static final Identifier TEXTURE_SHOES = Identifier.parse("alexsmobs:textures/entity/mungus_shoes.png");
     private static final RenderType beamType = AMRenderTypes.getEyesNoFog(BEAM_TEXTURE);
 
     public RenderMungus(EntityRendererProvider.Context renderManagerIn) {
@@ -100,7 +103,7 @@ public class RenderMungus extends MobRenderer<EntityMungus, ModelMungus> {
         return new Vec3(d0, d1, d2);
     }
 
-    public void render(EntityMungus entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityMungus entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         BlockPos target = entityIn.getBeamTarget();
         if (target != null) {
@@ -176,7 +179,7 @@ public class RenderMungus extends MobRenderer<EntityMungus, ModelMungus> {
 
     }
 
-    public ResourceLocation getTextureLocation(EntityMungus entity) {
+    public Identifier getTextureLocation(EntityMungus entity) {
         return TEXTURE;
     }
 
@@ -186,7 +189,7 @@ public class RenderMungus extends MobRenderer<EntityMungus, ModelMungus> {
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityMungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityMungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer lead = bufferIn.getBuffer(AMRenderTypes.getEyesFlickering(TEXTURE_SACK_OVERLAY, 0));
             float alpha = 0.75F + (Mth.cos(ageInTicks * 0.2F) + 1F) * 0.125F;
             this.getParentModel().renderToBuffer(matrixStackIn, lead, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, alpha);
@@ -213,7 +216,7 @@ public class RenderMungus extends MobRenderer<EntityMungus, ModelMungus> {
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityMungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityMungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
             BlockState blockstate = entitylivingbaseIn.getMushroomState();
             if (blockstate == null) {

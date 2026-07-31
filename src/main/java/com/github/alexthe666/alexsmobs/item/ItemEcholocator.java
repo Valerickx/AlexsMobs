@@ -14,7 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.StructureTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.player.Player;
@@ -74,14 +74,14 @@ public class ItemEcholocator extends Item {
         return world.getBlockState(checkPos).isAir() && world.getBrightness(LightLayer.SKY, checkPos) == 0 && world.getBrightness(LightLayer.BLOCK, checkPos) < 4;
     }
 
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player livingEntityIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player livingEntityIn, InteractionHand handIn) {
         ItemStack stack = livingEntityIn.getItemInHand(handIn);
         boolean left = false;
         if (livingEntityIn.getUsedItemHand() == InteractionHand.OFF_HAND && livingEntityIn.getMainArm() == HumanoidArm.RIGHT || livingEntityIn.getUsedItemHand() == InteractionHand.MAIN_HAND && livingEntityIn.getMainArm() == HumanoidArm.LEFT) {
             left = true;
         }
         EntityCachalotEcho whaleEcho = new EntityCachalotEcho(worldIn, livingEntityIn, !left, type == EchoType.PUPFISH);
-        if (!worldIn.isClientSide && worldIn instanceof ServerLevel) {
+        if (!worldIn.isClientSide() && worldIn instanceof ServerLevel) {
             BlockPos playerPos = livingEntityIn.blockPosition();
             List<BlockPos> portals = getNearbyPortals(playerPos, (ServerLevel) worldIn, 128);
             BlockPos pos = null;
@@ -134,7 +134,7 @@ public class ItemEcholocator extends Item {
         }
         livingEntityIn.getCooldowns().addCooldown(this, 5);
 
-        return InteractionResultHolder.sidedSuccess(stack, worldIn.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     public enum EchoType {

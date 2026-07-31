@@ -1,19 +1,21 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.entity.EntityVineLasso;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
@@ -23,8 +25,8 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class RenderVineLasso extends EntityRenderer<EntityVineLasso> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/vine_lasso.png");
+public class RenderVineLasso extends EntityRenderer<EntityVineLasso, EntityRenderState> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/vine_lasso.png");
 
     private static final float VINES_COLOR_R = 96F / 255F;
     private static final float VINES_COLOR_G = 143F / 255F;
@@ -38,7 +40,7 @@ public class RenderVineLasso extends EntityRenderer<EntityVineLasso> {
         super(renderManagerIn);
     }
 
-    public void render(EntityVineLasso entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityVineLasso entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.0D, 0.25F, 0.0D);
         matrixStackIn.mulPose(Axis.YN.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 180F));
@@ -63,7 +65,7 @@ public class RenderVineLasso extends EntityRenderer<EntityVineLasso> {
         }
     }
 
-    private void renderCircle(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    private void renderCircle(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
         PoseStack.Pose lvt_19_1_ = matrixStackIn.last();
@@ -77,7 +79,7 @@ public class RenderVineLasso extends EntityRenderer<EntityVineLasso> {
     }
 
 
-    public static <E extends Entity> void renderVine(Entity mob, float partialTick, PoseStack p_115464_, MultiBufferSource p_115465_, LivingEntity player, boolean left, float zOffset) {
+    public static <E extends Entity> void renderVine(Entity mob, float partialTick, PoseStack p_115464_, OrderedSubmitNodeCollector p_115465_, LivingEntity player, boolean left, float zOffset) {
         p_115464_.pushPose();
         float bodyRot = mob instanceof LivingEntity ? ((LivingEntity) mob).yBodyRot : mob.getYRot();
         float bodyRot0 = mob instanceof LivingEntity ? ((LivingEntity) mob).yBodyRotO : mob.yRotO;
@@ -171,7 +173,7 @@ public class RenderVineLasso extends EntityRenderer<EntityVineLasso> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityVineLasso entity) {
+    public Identifier getTextureLocation(EntityVineLasso entity) {
         return TEXTURE;
     }
 

@@ -6,7 +6,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -14,11 +14,15 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class RecipeMimicreamRepair extends CustomRecipe {
-    public RecipeMimicreamRepair(ResourceLocation idIn, CraftingBookCategory category) {
-        super(idIn, category);
+    public static final RecipeSerializer<RecipeMimicreamRepair> SERIALIZER = new RecipeSerializer<>(
+        com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec(i -> i.point(new RecipeMimicreamRepair())),
+        net.minecraft.network.codec.StreamCodec.unit(new RecipeMimicreamRepair())
+    );
+
+    public RecipeMimicreamRepair() {
     }
 
     /**
@@ -48,7 +52,7 @@ public class RecipeMimicreamRepair extends CustomRecipe {
     }
 
     public boolean isBlacklisted(ItemStack stack) {
-        ResourceLocation name = ForgeRegistries.ITEMS.getKey(stack.getItem());
+        Identifier name = BuiltInRegistries.ITEM.getKey(stack.getItem());
         return name != null && AMConfig.mimicreamBlacklist.contains(name.toString());
     }
 
@@ -79,13 +83,13 @@ public class RecipeMimicreamRepair extends CustomRecipe {
             if(damageableStack.is(AMItemRegistry.GHOSTLY_PICKAXE.get()) && compoundnbt.contains("Items")){
                 compoundnbt.remove("Items");
             }
-            ListTag oldNBTList = compoundnbt.getList("Enchantments", 10);
+            ListTag oldNBTList = compoundnbt.getListOrEmpty("Enchantments");
             ListTag newNBTList = new ListTag();
-            ResourceLocation mendingName = ForgeRegistries.ENCHANTMENTS.getKey(Enchantments.MENDING);
+            Identifier mendingName = BuiltInRegistries.ENCHANTMENT.getKey(Enchantments.MENDING);
             for (int i = 0; i < oldNBTList.size(); ++i) {
-                CompoundTag compoundnbt2 = oldNBTList.getCompound(i);
-                ResourceLocation resourcelocation1 = ResourceLocation.tryParse(compoundnbt2.getString("id"));
-                if (resourcelocation1 == null || !resourcelocation1.equals(mendingName)) {
+                CompoundTag compoundnbt2 = oldNBTList.getCompoundOrEmpty(i);
+                Identifier Identifier1 = Identifier.tryParse(compoundnbt2.getStringOr("id", ""));
+                if (Identifier1 == null || !Identifier1.equals(mendingName)) {
                     newNBTList.add(compoundnbt2);
                 }
             }

@@ -5,18 +5,18 @@ import com.github.alexthe666.alexsmobs.entity.EntityVineLasso;
 import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 public class ItemVineLasso extends Item {
 
@@ -24,8 +24,8 @@ public class ItemVineLasso extends Item {
         super(props);
     }
 
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     public static boolean isItemInUse(ItemStack stack){
@@ -46,11 +46,11 @@ public class ItemVineLasso extends Item {
         return 72000;
     }
 
-    public InteractionResultHolder<ItemStack> use(Level p_40672_, Player p_40673_, InteractionHand p_40674_) {
+    public InteractionResult use(Level p_40672_, Player p_40673_, InteractionHand p_40674_) {
         ItemStack itemstack = p_40673_.getItemInHand(p_40674_);
         p_40673_.startUsingItem(p_40674_);
 
-        return InteractionResultHolder.success(itemstack);
+        return InteractionResult.SUCCESS;
     }
 
     public void onUseTick(Level worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
@@ -61,7 +61,7 @@ public class ItemVineLasso extends Item {
     }
 
     public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity livingEntityIn, int i) {
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             boolean left = false;
             if (livingEntityIn.getUsedItemHand() == InteractionHand.OFF_HAND && livingEntityIn.getMainArm() == HumanoidArm.RIGHT || livingEntityIn.getUsedItemHand() == InteractionHand.MAIN_HAND && livingEntityIn.getMainArm() == HumanoidArm.LEFT) {
                 left = true;
@@ -70,7 +70,7 @@ public class ItemVineLasso extends Item {
             EntityVineLasso lasso = new EntityVineLasso(worldIn, livingEntityIn);
             Vec3 vector3d = livingEntityIn.getViewVector(1.0F);
             lasso.shoot((double) vector3d.x(), (double) vector3d.y(), (double) vector3d.z(), getPowerForTime(power), 1);
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 worldIn.addFreshEntity(lasso);
             }
             stack.shrink(1);

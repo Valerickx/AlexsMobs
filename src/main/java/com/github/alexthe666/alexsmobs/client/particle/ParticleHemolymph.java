@@ -3,10 +3,10 @@ package com.github.alexthe666.alexsmobs.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
-public class ParticleHemolymph extends TextureSheetParticle {
+public class ParticleHemolymph extends SingleQuadParticle {
 
     private static final int[] POSSIBLE_COLORS = {0X70FFF8, 0X3BFFD0, 0X08DED9};
 

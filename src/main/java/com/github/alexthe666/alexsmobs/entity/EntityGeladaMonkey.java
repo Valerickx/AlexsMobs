@@ -33,7 +33,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,10 +67,10 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
 
     protected EntityGeladaMonkey(EntityType type, Level lvl) {
         super(type, lvl);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.geladaMonkeySpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -127,7 +127,7 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
         }));
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Leader", this.isLeader());
         compound.putInt("GrassTime", this.getClearGrassTime());
@@ -135,12 +135,12 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
         compound.putBoolean("MonkeySitting", this.isSitting());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setLeader(compound.getBoolean("Leader"));
-        this.setClearGrassTime(compound.getInt("GrassTime"));
-        this.setSitting(compound.getBoolean("MonkeySitting"));
-        this.leaderFightTime = compound.getInt("FightTime");
+        this.setLeader(compound.getBooleanOr("Leader", false));
+        this.setClearGrassTime(compound.getIntOr("GrassTime", 0));
+        this.setSitting(compound.getBooleanOr("MonkeySitting", false));
+        this.leaderFightTime = compound.getIntOr("FightTime", 0);
     }
 
     public boolean isFood(ItemStack stack) {
@@ -148,12 +148,12 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(LEADER, false);
-        this.entityData.define(SITTING, false);
-        this.entityData.define(HAS_TARGET, false);
-        this.entityData.define(GRASS_TIME, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(LEADER, false);
+        builder.define(SITTING, false);
+        builder.define(HAS_TARGET, false);
+        builder.define(GRASS_TIME, 0);
     }
 
     public boolean isLeader() {
@@ -200,7 +200,7 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
                 sitProgress--;
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (isSitting() && ++sittingTime > maxSitTime) {
                 this.setSitting(false);
                 sittingTime = 0;
@@ -386,7 +386,7 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
     }
 
     @javax.annotation.Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
         if (spawnDataIn instanceof AgeableMob.AgeableMobGroupData) {
             AgeableMob.AgeableMobGroupData pack = (AgeableMob.AgeableMobGroupData) spawnDataIn;
             if (pack.getGroupSize() == 0 || pack.getGroupSize() > 4 && random.nextInt(2) == 0) {

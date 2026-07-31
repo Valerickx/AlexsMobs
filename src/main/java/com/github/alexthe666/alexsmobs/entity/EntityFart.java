@@ -18,10 +18,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -41,10 +41,6 @@ public class EntityFart extends Entity {
         this.setShooter(p_i47273_2_);
         float rot = p_i47273_2_.yHeadRot + (right ? 60 : -60);
         this.setPos(p_i47273_2_.getX() - (double) (p_i47273_2_.getBbWidth()) * 0.5D * (double) Mth.sin(rot * Mth.DEG_TO_RAD), p_i47273_2_.getEyeY() - (double) 0.2F, p_i47273_2_.getZ() + (double) (p_i47273_2_.getBbWidth()) * 0.5D * (double) Mth.cos(rot * Mth.DEG_TO_RAD));
-    }
-
-    public EntityFart(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.FART.get(), world);
     }
 
     public void tick(){
@@ -142,9 +138,9 @@ public class EntityFart extends Entity {
 
     }
 
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         if (this.ownerUUID != null) {
-            compound.putUUID("Owner", this.ownerUUID);
+            compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
 
         if (this.leftOwner) {
@@ -154,20 +150,20 @@ public class EntityFart extends Entity {
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
 
     }
 
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.hasUUID("Owner")) {
-            this.ownerUUID = compound.getUUID("Owner");
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
+        if (compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
 
-        this.leftOwner = compound.getBoolean("LeftOwner");
+        this.leftOwner = compound.getBooleanOr("LeftOwner", false);
     }
 
     @Nullable

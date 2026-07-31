@@ -1,19 +1,22 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelMimicOctopus;
 import com.github.alexthe666.alexsmobs.entity.EntityMimicOctopus;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
@@ -21,15 +24,15 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, ModelMimicOctopus> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/mimic_octopus.png");
-    private static final ResourceLocation TEXTURE_OVERLAY = new ResourceLocation("alexsmobs:textures/entity/mimic_octopus_overlay.png");
-    private static final ResourceLocation TEXTURE_CREEPER = new ResourceLocation("alexsmobs:textures/entity/mimic_octopus_creeper.png");
-    private static final ResourceLocation TEXTURE_GUARDIAN = new ResourceLocation("alexsmobs:textures/entity/mimic_octopus_guardian.png");
-    private static final ResourceLocation TEXTURE_PUFFERFISH = new ResourceLocation("alexsmobs:textures/entity/mimic_octopus_pufferfish.png");
-    private static final ResourceLocation TEXTURE_MIMICUBE = new ResourceLocation("alexsmobs:textures/entity/mimic_octopus_mimicube.png");
-    private static final ResourceLocation TEXTURE_EYES = new ResourceLocation("alexsmobs:textures/entity/mimic_octopus_eyes.png");
-    private static final ResourceLocation GUARDIAN_BEAM_TEXTURE = new ResourceLocation("textures/entity/guardian_beam.png");
+public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, LivingEntityRenderState, ModelMimicOctopus> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/mimic_octopus.png");
+    private static final Identifier TEXTURE_OVERLAY = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_overlay.png");
+    private static final Identifier TEXTURE_CREEPER = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_creeper.png");
+    private static final Identifier TEXTURE_GUARDIAN = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_guardian.png");
+    private static final Identifier TEXTURE_PUFFERFISH = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_pufferfish.png");
+    private static final Identifier TEXTURE_MIMICUBE = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_mimicube.png");
+    private static final Identifier TEXTURE_EYES = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_eyes.png");
+    private static final Identifier GUARDIAN_BEAM_TEXTURE = Identifier.parse("textures/entity/guardian_beam.png");
     private static final RenderType BEAM_RENDER_TYPE = RenderType.entityCutoutNoCull(GUARDIAN_BEAM_TEXTURE);
 
     public RenderMimicOctopus(EntityRendererProvider.Context renderManagerIn) {
@@ -41,7 +44,7 @@ public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, ModelMim
         p_229108_0_.vertex(p_229108_1_, p_229108_3_, p_229108_4_, p_229108_5_).color(p_229108_6_, p_229108_7_, p_229108_8_, 255).uv(p_229108_9_, p_229108_10_).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(p_229108_2_, 0.0F, 1.0F, 0.0F).endVertex();
     }
 
-    public void render(EntityMimicOctopus entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityMimicOctopus entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         LivingEntity livingentity = entityIn.getGuardianLaser();
         if (livingentity != null) {
             float f = entityIn.getLaserAttackAnimationScale(partialTicks);
@@ -144,7 +147,7 @@ public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, ModelMim
     }
 
 
-    public ResourceLocation getTextureLocation(EntityMimicOctopus entity) {
+    public Identifier getTextureLocation(EntityMimicOctopus entity) {
         return TEXTURE;
     }
 
@@ -155,7 +158,7 @@ public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, ModelMim
             super(render);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource buffer, int packedLightIn, EntityMimicOctopus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector buffer, int packedLightIn, EntityMimicOctopus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             float transProgress = entitylivingbaseIn.prevTransProgress + (entitylivingbaseIn.transProgress - entitylivingbaseIn.prevTransProgress) * partialTicks;
             float colorProgress = (entitylivingbaseIn.prevColorShiftProgress + (entitylivingbaseIn.colorShiftProgress - entitylivingbaseIn.prevColorShiftProgress) * partialTicks) * 0.2F;
             float r = 1F;
@@ -212,7 +215,7 @@ public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, ModelMim
             this.getParentModel().renderToBuffer(matrixStackIn, eyes, packedLightIn, getOverlayCoords(entitylivingbaseIn, 0), 1.0F, 1.0F, 1.0F, 1.0F);
         }
 
-        public ResourceLocation getFor(EntityMimicOctopus.MimicState state) {
+        public Identifier getFor(EntityMimicOctopus.MimicState state) {
             if (state == EntityMimicOctopus.MimicState.CREEPER) {
                 return TEXTURE_CREEPER;
             }

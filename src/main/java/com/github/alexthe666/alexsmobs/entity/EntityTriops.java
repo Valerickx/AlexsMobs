@@ -29,8 +29,8 @@ import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.TryFindWaterGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.Bucketable;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -41,8 +41,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -80,11 +80,11 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
         prevTail2Yaw = this.getYRot();
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FROM_BUCKET, false);
-        this.entityData.define(TRIOPS_SCALE, 1F);
-        this.entityData.define(BABY_AGE, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FROM_BUCKET, false);
+        builder.define(TRIOPS_SCALE, 1F);
+        builder.define(BABY_AGE, 0);
     }
 
     protected void registerGoals() {
@@ -111,7 +111,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
     }
 
     public void travel(Vec3 travelVector) {
-        if (this.isEffectiveAi() && this.isInWaterOrBubble()) {
+        if (this.isEffectiveAi() && this.isInWater()) {
             this.moveRelative(this.getSpeed(), travelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().multiply(0.9D, 0.8D, 0.9D));
@@ -162,7 +162,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
 
 
     protected void handleAirSupply(int i) {
-        if (this.isAlive() && !this.isInWaterOrBubble()) {
+        if (this.isAlive() && !this.isInWater()) {
             this.setAirSupply(i - 1);
             if (this.getAirSupply() == -20) {
                 this.setAirSupply(0);
@@ -193,7 +193,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
         return getBabyAge() < 0;
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("FromBucket", this.fromBucket());
         compound.putBoolean("FedCarrot", this.fedCarrot);
@@ -203,14 +203,14 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
         compound.putInt("BabyAge", this.getBabyAge());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFromBucket(compound.getBoolean("FromBucket"));
-        this.fedCarrot = compound.getBoolean("FedCarrot");
-        this.pregnant = compound.getBoolean("Pregnant");
-        this.breedCooldown = compound.getInt("BreedCooldown");
-        this.setTriopsScale(compound.getFloat("TriopsScale"));
-        this.setBabyAge(compound.getInt("BabyAge"));
+        this.setFromBucket(compound.getBooleanOr("FromBucket", false));
+        this.fedCarrot = compound.getBooleanOr("FedCarrot", false);
+        this.pregnant = compound.getBooleanOr("Pregnant", false);
+        this.breedCooldown = compound.getIntOr("BreedCooldown", 0);
+        this.setTriopsScale(compound.getFloatOr("TriopsScale", 0.0F));
+        this.setBabyAge(compound.getIntOr("BabyAge", 0));
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -218,7 +218,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setTriopsScale(0.9F + random.nextFloat() * 0.2F);
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
@@ -232,7 +232,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
         this.prevSwimRot = swimRot;
         this.prevTail1Yaw = tail1Yaw;
         this.prevTail2Yaw = tail2Yaw;
-        final boolean onLand = !this.isInWaterOrBubble() && this.onGround();
+        final boolean onLand = !this.isInWater() && this.onGround();
         this.setXRot((float) -((float) this.getDeltaMovement().y * 2.2F * Mth.RAD_TO_DEG));
         if (onLand && onLandProgress < 5F) {
             onLandProgress++;
@@ -255,10 +255,6 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
         float f1 = (float) Mth.length(this.getX() - this.xo, this.getY() - this.yo, this.getZ() - this.zo);
         float f2 = Math.min(f1 * 6, 1.0F);
         this.walkAnimation.update(f2, 0.4F);
-    }
-
-    public MobType getMobType() {
-        return MobType.ARTHROPOD;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -286,7 +282,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
             this.gameEvent(GameEvent.EAT);
             this.playSound(SoundEvents.CAT_EAT, this.getVoicePitch(), this.getSoundVolume());
             this.heal(5);
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 if (breedCooldown == 0 && !fedCarrot) {
                     this.fedCarrot = true;
                     this.level().broadcastEntityEvent(this, (byte) 67);
@@ -306,7 +302,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
             this.playSound(SoundEvents.CAT_EAT, this.getVoicePitch(), this.getSoundVolume());
             this.heal(5);
             if (itemstack.is(AMTagRegistry.TRIOPS_BREEDABLES)) {
-                if (!this.level().isClientSide) {
+                if (!this.level().isClientSide()) {
                     if (breedCooldown == 0) {
                         this.level().broadcastEntityEvent(this, (byte) 67);
                     }
@@ -319,13 +315,13 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
     }
 
     public boolean isSearchingForMate() {
-        return this.isAlive() && this.isInWaterOrBubble() && this.fedCarrot && this.breedCooldown <= 0;
+        return this.isAlive() && this.isInWater() && this.fedCarrot && this.breedCooldown <= 0;
     }
 
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
+            bucket.setCustomName(this.getCustomName());
         }
         CompoundTag platTag = new CompoundTag();
         this.addAdditionalSaveData(platTag);
@@ -345,7 +341,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.TRIOPS_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
         return stack;
     }
@@ -371,7 +367,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
 
         @Override
         public boolean canUse() {
-            if (!EntityTriops.this.isInWaterOrBubble() || !EntityTriops.this.fedCarrot || EntityTriops.this.breedCooldown > 0 || EntityTriops.this.breedWith != null) {
+            if (!EntityTriops.this.isInWater() || !EntityTriops.this.fedCarrot || EntityTriops.this.breedCooldown > 0 || EntityTriops.this.breedWith != null) {
                 return false;
             }
             if (executionCooldown > 0) {
@@ -454,7 +450,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
         public BlockPos getEggLayPos() {
             for (int i = 0; i < 10; i++) {
                 BlockPos offset = EntityTriops.this.blockPosition().offset(EntityTriops.this.getRandom().nextInt(10) - 5, 10, EntityTriops.this.getRandom().nextInt(10) - 5);
-                while (level().getBlockState(offset.below()).isAir() && offset.getY() > EntityTriops.this.level().getMinBuildHeight()) {
+                while (level().getBlockState(offset.below()).isAir() && offset.getY() > EntityTriops.this.level().getMinY()) {
                     offset = offset.below();
                 }
                 if (isValidPos(offset)) {

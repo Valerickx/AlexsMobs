@@ -25,11 +25,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.ItemAbilities;
+
+
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -66,10 +66,6 @@ public class EntityVoidWormShot extends Entity {
         this.setDeltaMovement(p_i47274_8_, p_i47274_10_, p_i47274_12_);
     }
 
-    public EntityVoidWormShot(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.VOID_WORM_SHOT.get(), world);
-    }
-
     protected static float lerpRotation(float p_234614_0_, float p_234614_1_) {
         while (p_234614_1_ - p_234614_0_ < -180.0F) {
             p_234614_0_ -= 360.0F;
@@ -84,7 +80,7 @@ public class EntityVoidWormShot extends Entity {
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     public void tick() {
@@ -130,7 +126,7 @@ public class EntityVoidWormShot extends Entity {
         this.updateRotation();
         if (this.level().getBlockStates(this.getBoundingBox()).noneMatch(BlockBehaviour.BlockStateBase::isAir)) {
             this.remove(RemovalReason.DISCARDED);
-        } else if (this.isInWaterOrBubble()) {
+        } else if (this.isInWater()) {
             this.remove(RemovalReason.DISCARDED);
         } else {
             this.setDeltaMovement(vector3d.scale(0.99F));
@@ -144,7 +140,7 @@ public class EntityVoidWormShot extends Entity {
             final boolean b = wormAttack(p_213868_1_.getEntity(), damageSources().mobProjectile(this, (LivingEntity) entity), (float) (AMConfig.voidWormDamageModifier * 4F));
             if(b && p_213868_1_.getEntity() instanceof Player){
                 Player player = ((Player)p_213868_1_.getEntity());
-                if(player.getUseItem().canPerformAction(ToolActions.SHIELD_BLOCK)){
+                if(player.getUseItem().canPerformAction(ItemAbilities.SHIELD_BLOCK)){
                     player.disableShield(true);
                 }
             }
@@ -160,13 +156,13 @@ public class EntityVoidWormShot extends Entity {
 
     protected void onHitBlock(BlockHitResult p_230299_1_) {
         BlockState blockstate = this.level().getBlockState(p_230299_1_.getBlockPos());
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.remove(RemovalReason.DISCARDED);
         }
     }
 
-    protected void defineSynchedData() {
-        this.entityData.define(STOP_HOMING_PROGRESS, 0.0F);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        builder.define(STOP_HOMING_PROGRESS, 0.0F);
     }
 
     public float getStopHomingProgress() {
@@ -194,9 +190,9 @@ public class EntityVoidWormShot extends Entity {
         }
     }
 
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         if (this.ownerUUID != null) {
-            compound.putUUID("Owner", this.ownerUUID);
+            compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
 
         if (this.leftOwner) {
@@ -208,12 +204,12 @@ public class EntityVoidWormShot extends Entity {
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.hasUUID("Owner")) {
-            this.ownerUUID = compound.getUUID("Owner");
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
+        if (compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
-        this.setStopHomingProgress(compound.getFloat("HomeTime"));
-        this.leftOwner = compound.getBoolean("LeftOwner");
+        this.setStopHomingProgress(compound.getFloatOr("HomeTime", 0.0F));
+        this.leftOwner = compound.getBooleanOr("LeftOwner", false);
     }
 
     private boolean checkLeftOwner() {

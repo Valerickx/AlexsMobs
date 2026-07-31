@@ -15,7 +15,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
@@ -90,7 +90,7 @@ public class ShoebillAIFish extends Goal {
         List<ItemStack> result = loottable.getRandomItems(lootcontext$builder.create(lootparameterset$builder.build()));
         for (ItemStack itemstack : result) {
             ItemEntity item = new ItemEntity(this.bird.level(), this.bird.getX() + 0.5F, this.bird.getY(), this.bird.getZ(), itemstack);
-            if (!this.bird.level().isClientSide) {
+            if (!this.bird.level().isClientSide()) {
                 this.bird.level().addFreshEntity(item);
             }
         }

@@ -4,13 +4,13 @@ import com.github.alexthe666.alexsmobs.entity.EntityMosquitoSpit;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -31,8 +31,8 @@ public class ItemBloodSprayer extends Item {
         return isUsable(stack) ? Integer.MAX_VALUE : 0;
     }
 
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     public static boolean isUsable(ItemStack stack) {
@@ -40,7 +40,7 @@ public class ItemBloodSprayer extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
 
         ItemStack itemstack = playerIn.getItemInHand(handIn);
         playerIn.startUsingItem(handIn);
@@ -55,7 +55,7 @@ public class ItemBloodSprayer extends Item {
                 itemstack.setDamageValue(0);
             }
         }
-        return InteractionResultHolder.consume(itemstack);
+        return InteractionResult.CONSUME;
     }
 
     public ItemStack findAmmo(Player entity) {
@@ -92,7 +92,7 @@ public class ItemBloodSprayer extends Item {
                 livingEntityIn.gameEvent(GameEvent.ITEM_INTERACT_START);
                 livingEntityIn.playSound(SoundEvents.LAVA_POP,1.0F, 1.2F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
                 blood.shoot((double) vector3d.x(), (double) vector3d.y(), (double) vector3d.z(), 1F, 10);
-                if (!worldIn.isClientSide) {
+                if (!worldIn.isClientSide()) {
                     worldIn.addFreshEntity(blood);
                 }
                 stack.hurtAndBreak(1, livingEntityIn, (player) -> {

@@ -8,15 +8,15 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.monster.zombie.Drowned;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.neoforge.common.ItemAbilities;
+
+
 
 public class EntitySharkToothArrow extends Arrow {
 
@@ -38,7 +38,7 @@ public class EntitySharkToothArrow extends Arrow {
     }
 
     protected void damageShield(Player player, float damage) {
-        if (damage >= 3.0F && player.getUseItem().getItem().canPerformAction(player.getUseItem(), ToolActions.SHIELD_BLOCK)) {
+        if (damage >= 3.0F && player.getUseItem().getItem().canPerformAction(player.getUseItem(), ItemAbilities.SHIELD_BLOCK)) {
             ItemStack copyBeforeUse = player.getUseItem().copy();
             int i = 1 + Mth.floor(damage);
             player.getUseItem().hurtAndBreak(i, player, (p_213360_0_) -> {
@@ -47,7 +47,7 @@ public class EntitySharkToothArrow extends Arrow {
 
             if (player.getUseItem().isEmpty()) {
                 InteractionHand Hand = player.getUsedItemHand();
-                net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copyBeforeUse, Hand);
+                net.neoforged.neoforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copyBeforeUse, Hand);
 
                 if (Hand == net.minecraft.world.InteractionHand.MAIN_HAND) {
                     this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
@@ -55,7 +55,7 @@ public class EntitySharkToothArrow extends Arrow {
                     this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                 }
                 player.stopUsingItem();
-                this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
+                this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
             }
         }
     }
@@ -81,13 +81,9 @@ public class EntitySharkToothArrow extends Arrow {
         return false;
     }
 
-    public EntitySharkToothArrow(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.SHARK_TOOTH_ARROW.get(), world);
-    }
-
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
 

@@ -2,7 +2,7 @@ package com.github.alexthe666.alexsmobs.message;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.Supplier;
 
@@ -32,9 +32,9 @@ public class MessageSetPupfishChunkOnClient {
         public Handler() {
         }
 
-        public static void handle(MessageSetPupfishChunkOnClient message, Supplier<NetworkEvent.Context> context) {
-            context.get().setPacketHandled(true);
-            context.get().enqueueWork(() -> {
+        public static void handle(MessageSetPupfishChunkOnClient message, IPayloadContext context) {
+            
+            context.enqueueWork(() -> {
                 AlexsMobs.PROXY.setPupfishChunkForItem(message.chunkX, message.chunkZ);
             });
         }

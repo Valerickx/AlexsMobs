@@ -10,7 +10,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -18,8 +18,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.PalettedContainer;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.Supplier;
 
@@ -55,9 +55,9 @@ public class MessageMungusBiomeChange {
         public Handler() {
         }
 
-        public static void handle(MessageMungusBiomeChange message, Supplier<NetworkEvent.Context> context) {
-            context.get().setPacketHandled(true);
-            context.get().enqueueWork(() -> {
+        public static void handle(MessageMungusBiomeChange message, IPayloadContext context) {
+            
+            context.enqueueWork(() -> {
                 Player player = context.get().getSender();
                 if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
@@ -67,13 +67,13 @@ public class MessageMungusBiomeChange {
                     if (player.level() != null) {
                         Entity entity = player.level().getEntity(message.mungusID);
                         Registry<Biome> registry = player.level().registryAccess().registryOrThrow(Registries.BIOME);
-                        Biome biome = registry.get(new ResourceLocation(message.biomeOption));
+                        Biome biome = registry.get(Identifier.parse(message.biomeOption));
                         ResourceKey<Biome> resourceKey = registry.getResourceKey(biome).orElse(null);
                         Holder<Biome> holder = registry.getHolder(resourceKey).orElse(null);
                         if (AMConfig.mungusBiomeTransformationType == 2) {
                             if (entity instanceof EntityMungus && entity.distanceToSqr(message.posX, entity.getY(), message.posZ) < 1000 && biome != null) {
                                 LevelChunk chunk = player.level().getChunkAt(new BlockPos(message.posX, 0, message.posZ));
-                                int i = QuartPos.fromBlock(chunk.getMinBuildHeight());
+                                int i = QuartPos.fromBlock(chunk.getMinY());
                                 int k = i + QuartPos.fromBlock(chunk.getHeight()) - 1;
                                 int l = Mth.clamp(QuartPos.fromBlock((int)entity.getY()), i, k);
                                 int j = chunk.getSectionIndex(QuartPos.toBlock(l));

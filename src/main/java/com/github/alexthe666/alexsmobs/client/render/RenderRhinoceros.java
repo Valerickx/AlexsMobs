@@ -1,19 +1,22 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelRhinoceros;
 import com.github.alexthe666.alexsmobs.entity.EntityRhinoceros;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderRhinoceros extends MobRenderer<EntityRhinoceros, ModelRhinoceros> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/rhinoceros.png");
-    private static final ResourceLocation TEXTURE_ANGRY = new ResourceLocation("alexsmobs:textures/entity/rhinoceros_angry.png");
-    private static final ResourceLocation TEXTURE_POTION = new ResourceLocation("alexsmobs:textures/entity/rhinoceros_potion.png");
+public class RenderRhinoceros extends MobRenderer<EntityRhinoceros, LivingEntityRenderState, ModelRhinoceros> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/rhinoceros.png");
+    private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/rhinoceros_angry.png");
+    private static final Identifier TEXTURE_POTION = Identifier.parse("alexsmobs:textures/entity/rhinoceros_potion.png");
 
     public RenderRhinoceros(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelRhinoceros(), 0.9F);
@@ -25,7 +28,7 @@ public class RenderRhinoceros extends MobRenderer<EntityRhinoceros, ModelRhinoce
         matrixStackIn.scale(1.1F, 1.1F, 1.1F);
     }
 
-    public ResourceLocation getTextureLocation(EntityRhinoceros entity) {
+    public Identifier getTextureLocation(EntityRhinoceros entity) {
         return entity.isAngry() ? TEXTURE_ANGRY : TEXTURE;
     }
 
@@ -34,7 +37,7 @@ public class RenderRhinoceros extends MobRenderer<EntityRhinoceros, ModelRhinoce
             super(parent);
         }
 
-        public void render(PoseStack p_225628_1_, MultiBufferSource p_225628_2_, int p_225628_3_, EntityRhinoceros rhino, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
+        public void render(PoseStack p_225628_1_, OrderedSubmitNodeCollector p_225628_2_, int p_225628_3_, EntityRhinoceros rhino, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
             int color = rhino.getPotionColor();
             if (color != -1 && !rhino.isInvisible()) {
                 float r = (float) (color >> 16 & 255) / 255.0F;

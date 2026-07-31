@@ -5,16 +5,17 @@ import com.github.alexthe666.alexsmobs.client.model.ModelEndPirateFlag;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityEndPirateFlag;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderEndPirateFlag<T extends TileEntityEndPirateFlag> implements BlockEntityRenderer<T> {
+public class RenderEndPirateFlag<T extends TileEntityEndPirateFlag> implements BlockEntityRenderer<T, BlockEntityRenderState> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/end_pirate/flag.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/end_pirate/flag.png");
     private static final ModelEndPirateFlag FLAG_MODEL = new ModelEndPirateFlag();
 
 
@@ -22,7 +23,7 @@ public class RenderEndPirateFlag<T extends TileEntityEndPirateFlag> implements B
     }
 
     @Override
-    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         Direction dir = tileEntityIn.getBlockState().getValue(BlockEndPirateFlag.FACING);
         switch (dir) {

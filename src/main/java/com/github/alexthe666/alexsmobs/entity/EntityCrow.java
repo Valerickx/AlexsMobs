@@ -9,7 +9,7 @@ import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
 import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.misc.AMTagRegistry;
 import com.google.common.base.Predicate;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -42,7 +42,7 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -50,16 +50,16 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
+
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -90,11 +90,11 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
 
     protected EntityCrow(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 16.0F);
-        this.setPathfindingMalus(BlockPathTypes.COCOA, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.FENCE, -1.0F);
+        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
+        this.setPathfindingMalus(PathType.COCOA, -1.0F);
+        this.setPathfindingMalus(PathType.FENCE, -1.0F);
         switchNavigator(false);
     }
 
@@ -125,11 +125,11 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
     }
 
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.crowSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static <T extends Mob> boolean canCrowSpawn(EntityType<EntityCrow> crow, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static <T extends Mob> boolean canCrowSpawn(EntityType<EntityCrow> crow, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return isBrightEnoughToSpawn(worldIn, pos);
     }
 
@@ -217,7 +217,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                 this.setPos(riding.getX() + extraX, riding.getY() + extraY, riding.getZ() + extraZ);
                 if (!riding.isAlive() || boardingCooldown == 0 && riding.isShiftKeyDown() || ((Player) riding).isFallFlying() || this.getTarget() != null && this.getTarget().isAlive()) {
                     this.removeVehicle();
-                    if (!this.level().isClientSide) {
+                    if (!this.level().isClientSide()) {
                         AlexsMobs.sendMSGToAll(new MessageCrowDismount(this.getId(), riding.getId()));
                     }
                 }
@@ -303,7 +303,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
             fleePumpkinFlag--;
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final boolean isFlying = isFlying();
             if (isFlying && this.isLandNavigator) {
                 switchNavigator(false);
@@ -413,7 +413,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Flying", this.isFlying());
         compound.putBoolean("MonkeySitting", this.isSitting());
@@ -438,13 +438,13 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
         super.travel(vec3d);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFlying(compound.getBoolean("Flying"));
-        this.setOrderedToSit(compound.getBoolean("MonkeySitting"));
-        this.setCommand(compound.getInt("Command"));
+        this.setFlying(compound.getBooleanOr("Flying", false));
+        this.setOrderedToSit(compound.getBooleanOr("MonkeySitting", false));
+        this.setCommand(compound.getIntOr("Command", 0));
         if (compound.contains("PerchX") && compound.contains("PerchY") && compound.contains("PerchZ")) {
-            this.setPerchPos(new BlockPos(compound.getInt("PerchX"), compound.getInt("PerchY"), compound.getInt("PerchZ")));
+            this.setPerchPos(new BlockPos(compound.getIntOr("PerchX", 0), compound.getIntOr("PerchY", 0), compound.getIntOr("PerchZ", 0)));
         }
     }
 
@@ -476,13 +476,13 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLYING, false);
-        this.entityData.define(ATTACK_TICK, 0);
-        this.entityData.define(COMMAND, 0);
-        this.entityData.define(SITTING, false);
-        this.entityData.define(PERCH_POS, Optional.empty());
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLYING, false);
+        builder.define(ATTACK_TICK, 0);
+        builder.define(COMMAND, 0);
+        builder.define(SITTING, false);
+        builder.define(PERCH_POS, Optional.empty());
     }
 
     @Override
@@ -605,7 +605,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
     public void onGetItem(ItemEntity e) {
         final ItemStack duplicate = e.getItem().copy();
         duplicate.setCount(1);
-        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide) {
+        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         this.setItemInHand(InteractionHand.MAIN_HAND, duplicate);
@@ -1016,7 +1016,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                     BlockPos hangingPosition = e.getPos().relative(e.getDirection().getOpposite());
                     BlockEntity entity = e.level().getBlockEntity(hangingPosition);
                     if(entity != null){
-                        LazyOptional<IItemHandler> handler = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, e.getDirection().getOpposite());
+                        LazyOptional<IItemHandler> handler = entity.getCapability(Capabilities.ItemHandler.BLOCK, e.getDirection().getOpposite());
                         if(handler != null && handler.isPresent()){
                             return ItemStack.isSameItem(e.getItem(), EntityCrow.this.getMainHandItem());
                         }
@@ -1089,7 +1089,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                         final BlockPos hangingPosition = targetEntity.getPos().relative(targetEntity.getDirection().getOpposite());
                         final BlockEntity entity = targetEntity.level().getBlockEntity(hangingPosition);
                         final Direction deposit = targetEntity.getDirection();
-                        final LazyOptional<IItemHandler> handler = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, deposit);
+                        final LazyOptional<IItemHandler> handler = entity.getCapability(Capabilities.ItemHandler.BLOCK, deposit);
                         if(handler.orElse(null) != null && cooldown == 0) {
                             ItemStack duplicate = EntityCrow.this.getItemInHand(InteractionHand.MAIN_HAND).copy();
                             ItemStack insertSimulate = ItemHandlerHelper.insertItem(handler.orElse(null), duplicate, true);

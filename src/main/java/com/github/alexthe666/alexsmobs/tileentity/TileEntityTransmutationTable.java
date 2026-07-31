@@ -7,13 +7,20 @@ import com.github.alexthe666.alexsmobs.misc.AMAdvancementTriggerRegistry;
 import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.misc.TransmutationData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.valuetypes.ValueInput;
+import net.minecraft.util.valuetypes.ValueOutput;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -28,9 +35,9 @@ import java.util.*;
 
 public class TileEntityTransmutationTable  extends BlockEntity {
 
-    private static final ResourceLocation COMMON_ITEMS = new ResourceLocation("alexsmobs", "gameplay/transmutation_table_common");
-    private static final ResourceLocation UNCOMMON_ITEMS = new ResourceLocation("alexsmobs", "gameplay/transmutation_table_uncommon");
-    private static final ResourceLocation RARE_ITEMS = new ResourceLocation("alexsmobs", "gameplay/transmutation_table_rare");
+    private static final Identifier COMMON_ITEMS = Identifier.parse("alexsmobs:gameplay/transmutation_table_common");
+    private static final Identifier UNCOMMON_ITEMS = Identifier.parse("alexsmobs:gameplay/transmutation_table_uncommon");
+    private static final Identifier RARE_ITEMS = Identifier.parse("alexsmobs:gameplay/transmutation_table_rare");
     public int ticksExisted;
     private int totalTransmuteCount = 0;
     private final Map<UUID, TransmutationData> playerToData = new HashMap<>();
@@ -47,52 +54,69 @@ public class TileEntityTransmutationTable  extends BlockEntity {
         entity.tick();
     }
 
-    private static ItemStack createFromLootTable(Player player, ResourceLocation loc) {
-        if(player.level().isClientSide){
+    private static ItemStack createFromLootTable(Player player, Identifier loc) {
+        if(player.level().isClientSide()){
             return ItemStack.EMPTY;
         }else{
-            LootTable loottable = player.level().getServer().getLootData().getLootTable(loc);
+            ResourceKey<LootTable> key = ResourceKey.create(Registries.LOOT_TABLE, loc);
+            LootTable loottable = player.level().getServer().reloadableRegistries().getLootTable(key);
             List<ItemStack> loots = loottable.getRandomItems((new LootParams.Builder((ServerLevel) player.level())).withParameter(LootContextParams.THIS_ENTITY, player).create(LootContextParamSets.EMPTY));
             return loots.isEmpty() ? ItemStack.EMPTY : loots.get(0);
         }
     }
 
 
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        totalTransmuteCount = tag.getInt("TotalCount");
-        ListTag list = new ListTag();
-        for(Map.Entry<UUID, TransmutationData> entry : playerToData.entrySet()){
-            CompoundTag innerTag = new CompoundTag();
-            innerTag.putUUID("UUID", entry.getKey());
-            innerTag.put("TransmutationData", entry.getValue().saveAsNBT());
-            list.add(innerTag);
-        }
-        tag.put("PlayerTransmutationData", list);
-        for(int i = 0; i < 3; i++){
-            if(tag.contains("Possibility" + i)){
-                possiblities[i] = ItemStack.of(tag.getCompound("Possiblity" + i));
-            }
-        }
-
-    }
-
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.putInt("TotalCount", totalTransmuteCount);
-        ListTag list = tag.getList("PlayerTransmutationData", 10);
-        if(!list.isEmpty()){
-            for(int i = 0; i < list.size(); ++i) {
-                CompoundTag compoundtag = list.getCompound(i);
-                UUID uuid = compoundtag.getUUID("UUID");
-                if(uuid != null){
-                    playerToData.put(uuid, TransmutationData.fromNBT(compoundtag.getCompound("TransmutationData")));
+    @Override
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        totalTransmuteCount = input.getIntOr("TotalCount", 0);
+        // Load player transmutation data - stored as compound tags inside the value input
+        // We use a nested compound approach since ValueInput doesn't have direct list support for complex data
+        Optional<ValueInput> playerData = input.read("PlayerTransmutationData");
+        if (playerData.isPresent()) {
+            ValueInput pd = playerData.get();
+            int size = pd.getIntOr("Size", 0);
+            for (int i = 0; i < size; i++) {
+                Optional<ValueInput> entry = pd.read("Entry" + i);
+                if (entry.isPresent()) {
+                    ValueInput e = entry.get();
+                    String uuidStr = e.getStringOr("UUID", null);
+                    if (uuidStr != null) {
+                        try {
+                            UUID uuid = UUID.fromString(uuidStr);
+                            Optional<ValueInput> dataIn = e.read("TransmutationData");
+                            if (dataIn.isPresent()) {
+                                playerToData.put(uuid, TransmutationData.fromValueInput(dataIn.get()));
+                            }
+                        } catch (IllegalArgumentException ignored) {}
+                    }
                 }
             }
         }
         for(int i = 0; i < 3; i++){
+            Optional<ValueInput> possItem = input.read("Possiblity" + i);
+            if(possItem.isPresent()){
+                possiblities[i] = ItemStack.CODEC.decode(possItem.get()).result().map(p -> p.getFirst()).orElse(ItemStack.EMPTY);
+            }
+        }
+    }
+
+    @Override
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.writeInt("TotalCount", totalTransmuteCount);
+        ValueOutput playerData = output.write("PlayerTransmutationData");
+        int size = 0;
+        for(Map.Entry<UUID, TransmutationData> entry : playerToData.entrySet()){
+            ValueOutput e = playerData.write("Entry" + size);
+            e.writeString("UUID", entry.getKey().toString());
+            entry.getValue().saveToValueOutput(e.write("TransmutationData"));
+            size++;
+        }
+        playerData.writeInt("Size", size);
+        for(int i = 0; i < 3; i++){
             if(possiblities[i] != null && !possiblities[i].isEmpty()){
-                tag.put("Possiblity" + i, possiblities[i].serializeNBT());
+                ItemStack.CODEC.encode(possiblities[i], output.write("Possiblity" + i));
             }
         }
     }
@@ -116,10 +140,10 @@ public class TileEntityTransmutationTable  extends BlockEntity {
     }
 
     public void rollPossiblity(Player player, int i){
-        if(player == null || player.level().isClientSide || !(player.level() instanceof ServerLevel)){
+        if(player == null || player.level().isClientSide() || !(player.level() instanceof ServerLevel)){
             return;
         }
-        ResourceLocation loot;
+        Identifier loot;
         int safeIndex = Mth.clamp(i, 0, 2);
         switch (safeIndex){
             default:

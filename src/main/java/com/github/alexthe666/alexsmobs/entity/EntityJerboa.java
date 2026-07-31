@@ -29,8 +29,8 @@ import net.minecraft.world.entity.ai.control.JumpControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Cat;
-import net.minecraft.world.entity.animal.Ocelot;
+import net.minecraft.world.entity.animal.feline.Cat;
+import net.minecraft.world.entity.animal.feline.Ocelot;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -41,8 +41,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -77,12 +77,12 @@ public class EntityJerboa extends Animal {
 
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(JUMP_ACTIVE, false);
-        this.entityData.define(BEGGING, false);
-        this.entityData.define(SLEEPING, false);
-        this.entityData.define(BEFRIENDED, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(JUMP_ACTIVE, false);
+        builder.define(BEGGING, false);
+        builder.define(SLEEPING, false);
+        builder.define(BEFRIENDED, false);
     }
 
     protected void registerGoals() {
@@ -103,13 +103,13 @@ public class EntityJerboa extends Animal {
         this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setBefriended(compound.getBoolean("Befriended"));
-        this.setSleeping(compound.getBoolean("Sleeping"));
+        this.setBefriended(compound.getBooleanOr("Befriended", false));
+        this.setSleeping(compound.getBooleanOr("Sleeping", false));
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Befriended", isBefriended());
         compound.putBoolean("Sleeping", isSleeping());
@@ -142,7 +142,7 @@ public class EntityJerboa extends Animal {
         this.prevReboundProgress = reboundProgress;
         this.prevSleepProgress = sleepProgress;
         this.prevBegProgress = begProgress;
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.entityData.set(JUMP_ACTIVE, !this.onGround());
         }
         if (this.entityData.get(JUMP_ACTIVE)) {
@@ -182,7 +182,7 @@ public class EntityJerboa extends Animal {
                 sleepProgress--;
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.level().isDay() && this.getLastHurtByMob() == null && !this.isBegging()) {
                 if (tickCount % 10 == 0 && this.getRandom().nextInt(750) == 0) {
                     this.setSleeping(true);
@@ -294,16 +294,16 @@ public class EntityJerboa extends Animal {
 
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.jerboaSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canMonsterSpawnInLight(EntityType<? extends EntityJerboa> p_223325_0_, ServerLevelAccessor p_223325_1_, MobSpawnType p_223325_2_, BlockPos p_223325_3_, RandomSource p_223325_4_) {
+    public static boolean canMonsterSpawnInLight(EntityType<? extends EntityJerboa> p_223325_0_, ServerLevelAccessor p_223325_1_, EntitySpawnReason p_223325_2_, BlockPos p_223325_3_, RandomSource p_223325_4_) {
         return isValidLightLevel(p_223325_1_, p_223325_3_, p_223325_4_) && checkMobSpawnRules(p_223325_0_, p_223325_1_, p_223325_2_, p_223325_3_, p_223325_4_);
     }
 
-    public static <T extends Mob> boolean canJerboaSpawn(EntityType<EntityJerboa> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return reason == MobSpawnType.SPAWNER || iServerWorld.canSeeSky(pos.above()) && canMonsterSpawnInLight(entityType, iServerWorld, reason, pos, random);
+    public static <T extends Mob> boolean canJerboaSpawn(EntityType<EntityJerboa> entityType, ServerLevelAccessor iServerWorld, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return reason == EntitySpawnReason.SPAWNER || iServerWorld.canSeeSky(pos.above()) && canMonsterSpawnInLight(entityType, iServerWorld, reason, pos, random);
     }
 
     protected void jumpFromGround() {
@@ -315,7 +315,7 @@ public class EntityJerboa extends Animal {
             }
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.level().broadcastEntityEvent(this, (byte) 1);
         }
 

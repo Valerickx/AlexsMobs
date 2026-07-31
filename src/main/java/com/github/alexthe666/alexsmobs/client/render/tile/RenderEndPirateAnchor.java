@@ -5,23 +5,24 @@ import com.github.alexthe666.alexsmobs.client.model.ModelEndPirateAnchor;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityEndPirateAnchor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderEndPirateAnchor<T extends TileEntityEndPirateAnchor> implements BlockEntityRenderer<T> {
+public class RenderEndPirateAnchor<T extends TileEntityEndPirateAnchor> implements BlockEntityRenderer<T, BlockEntityRenderState> {
 
-    protected static final ResourceLocation TEXTURE_ANCHOR = new ResourceLocation("alexsmobs:textures/entity/end_pirate/anchor.png");
-    protected static final ResourceLocation TEXTURE_ANCHOR_GLOW = new ResourceLocation("alexsmobs:textures/entity/end_pirate/anchor_glow.png");
+    protected static final Identifier TEXTURE_ANCHOR = Identifier.parse("alexsmobs:textures/entity/end_pirate/anchor.png");
+    protected static final Identifier TEXTURE_ANCHOR_GLOW = Identifier.parse("alexsmobs:textures/entity/end_pirate/anchor_glow.png");
     protected static final ModelEndPirateAnchor ANCHOR_MODEL = new ModelEndPirateAnchor();
 
     public RenderEndPirateAnchor(Context rendererDispatcherIn) {
     }
 
     @Override
-    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         boolean east = tileEntityIn.getBlockState().getValue(BlockEndPirateAnchor.EASTORWEST);
         //boolean isChain = tileEntityIn.getBlockState().getValue(BlockEndPirateAnchor.PIECE) == BlockEndPirateAnchor.PieceType.CHAIN;

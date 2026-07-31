@@ -7,8 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.Supplier;
 
@@ -39,9 +39,9 @@ public class MessageUpdateCapsid  {
         public Handler() {
         }
 
-        public static void handle(MessageUpdateCapsid message, Supplier<NetworkEvent.Context> context) {
-            context.get().setPacketHandled(true);
-            context.get().enqueueWork(() -> {
+        public static void handle(MessageUpdateCapsid message, IPayloadContext context) {
+            
+            context.enqueueWork(() -> {
                 Player player = context.get().getSender();
                 if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();

@@ -17,10 +17,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+
 
 import java.util.List;
 
@@ -37,10 +37,6 @@ public class EntityGust extends Entity {
 
     public EntityGust(Level worldIn) {
         this(AMEntityRegistry.GUST.get(), worldIn);
-    }
-
-    public EntityGust(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.GUST.get(), world);
     }
 
     public void push(Entity entityIn) {
@@ -61,7 +57,7 @@ public class EntityGust extends Entity {
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     public void tick() {
@@ -85,11 +81,11 @@ public class EntityGust extends Entity {
         double d0 = this.getX() + vector3d.x;
         double d1 = this.getY() + vector3d.y;
         double d2 = this.getZ() + vector3d.z;
-        if(this.getY() > this.level().getMaxBuildHeight()){
+        if(this.getY() > (this.level().getMaxY() + 1)){
             this.remove(RemovalReason.DISCARDED);
         }
         this.updateRotation();
-         if (this.isInWaterOrBubble()) {
+         if (this.isInWater()) {
             this.remove(RemovalReason.DISCARDED);
         } else {
             this.setDeltaMovement(vector3d);
@@ -144,7 +140,7 @@ public class EntityGust extends Entity {
         if( p_230299_1_.getBlockPos() != null){
             BlockPos pos = p_230299_1_.getBlockPos();
             if(level().isWaterAt(pos)){
-                if (!this.level().isClientSide) {
+                if (!this.level().isClientSide()) {
                     this.remove(RemovalReason.DISCARDED);
 
                 }
@@ -153,14 +149,14 @@ public class EntityGust extends Entity {
 
     }
 
-    protected void defineSynchedData() {
-        this.entityData.define(VERTICAL, false);
-        this.entityData.define(X_DIR, 0f);
-        this.entityData.define(Y_DIR, 0F);
-        this.entityData.define(Z_DIR, 0F);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        builder.define(VERTICAL, false);
+        builder.define(X_DIR, 0f);
+        builder.define(Y_DIR, 0F);
+        builder.define(Z_DIR, 0F);
     }
 
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         compound.putBoolean("VerticalTornado", getVertical());
         compound.putFloat("GustDirX", this.entityData.get(X_DIR));
         compound.putFloat("GustDirY", this.entityData.get(Y_DIR));
@@ -170,11 +166,11 @@ public class EntityGust extends Entity {
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         this.entityData.set(X_DIR, compound.getFloat("GustDirX"));
         this.entityData.set(Y_DIR, compound.getFloat("GustDirX"));
         this.entityData.set(Z_DIR, compound.getFloat("GustDirX"));
-        this.setVertical((compound.getBoolean("VerticalTornado")));
+        this.setVertical((compound.getBooleanOr("VerticalTornado", false)));
     }
 
     public void setVertical(boolean vertical){

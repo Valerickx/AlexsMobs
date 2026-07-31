@@ -1,25 +1,28 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelBison;
 import com.github.alexthe666.alexsmobs.client.model.ModelBisonBaby;
 import com.github.alexthe666.alexsmobs.entity.EntityBison;
 import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderBison extends MobRenderer<EntityBison, AdvancedEntityModel<EntityBison>> {
-    private static final ResourceLocation TEXTURE_BABY = new ResourceLocation("alexsmobs:textures/entity/bison_baby.png");
-    private static final ResourceLocation TEXTURE_BABY_SNOWY = new ResourceLocation("alexsmobs:textures/entity/bison_baby_snowy.png");
-    private static final ResourceLocation TEXTURE_SNOWY = new ResourceLocation("alexsmobs:textures/entity/bison_snowy.png");
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/bison.png");
-    private static final ResourceLocation TEXTURE_SHEARED = new ResourceLocation("alexsmobs:textures/entity/bison_sheared.png");
+public class RenderBison extends MobRenderer<EntityBison, LivingEntityRenderState, AdvancedEntityModel<EntityBison>> {
+    private static final Identifier TEXTURE_BABY = Identifier.parse("alexsmobs:textures/entity/bison_baby.png");
+    private static final Identifier TEXTURE_BABY_SNOWY = Identifier.parse("alexsmobs:textures/entity/bison_baby_snowy.png");
+    private static final Identifier TEXTURE_SNOWY = Identifier.parse("alexsmobs:textures/entity/bison_snowy.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/bison.png");
+    private static final Identifier TEXTURE_SHEARED = Identifier.parse("alexsmobs:textures/entity/bison_sheared.png");
     private final ModelBison modelBison = new ModelBison();
     private final ModelBisonBaby modelBaby = new ModelBisonBaby();
 
@@ -36,7 +39,7 @@ public class RenderBison extends MobRenderer<EntityBison, AdvancedEntityModel<En
         }
     }
 
-    public ResourceLocation getTextureLocation(EntityBison entity) {
+    public Identifier getTextureLocation(EntityBison entity) {
         return entity.isBaby() ? TEXTURE_BABY : entity.isSheared() ? TEXTURE_SHEARED : TEXTURE;
     }
 
@@ -46,7 +49,7 @@ public class RenderBison extends MobRenderer<EntityBison, AdvancedEntityModel<En
             super(RenderBison.this);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityBison entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityBison entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (entitylivingbaseIn.isSnowy()) {
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(entitylivingbaseIn.isBaby() ? TEXTURE_BABY_SNOWY : TEXTURE_SNOWY));
                 this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);

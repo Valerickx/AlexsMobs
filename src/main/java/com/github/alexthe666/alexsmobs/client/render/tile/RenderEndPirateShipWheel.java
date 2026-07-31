@@ -5,24 +5,25 @@ import com.github.alexthe666.alexsmobs.client.model.ModelEndPirateShipWheel;
 import com.github.alexthe666.alexsmobs.client.render.AMRenderTypes;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityEndPirateShipWheel;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderEndPirateShipWheel<T extends TileEntityEndPirateShipWheel> implements BlockEntityRenderer<T> {
+public class RenderEndPirateShipWheel<T extends TileEntityEndPirateShipWheel> implements BlockEntityRenderer<T, BlockEntityRenderState> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/end_pirate/ship_wheel.png");
-    private static final ResourceLocation TEXTURE_GLOW = new ResourceLocation("alexsmobs:textures/entity/end_pirate/ship_wheel_glow.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/end_pirate/ship_wheel.png");
+    private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/end_pirate/ship_wheel_glow.png");
     private static final ModelEndPirateShipWheel WHEEL_MODEL = new ModelEndPirateShipWheel();
 
     public RenderEndPirateShipWheel(Context rendererDispatcherIn) {
     }
 
     @Override
-    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         Direction dir = tileEntityIn.getBlockState().getValue(BlockEndPirateShipWheel.FACING);
         switch (dir) {

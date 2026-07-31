@@ -36,11 +36,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -70,15 +70,15 @@ public class EntityHummingbird extends Animal {
     protected EntityHummingbird(EntityType type, Level worldIn) {
         super(type, worldIn);
         this.moveControl = new FlightMoveController(this, 1.5F);
-        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 16.0F);
-        this.setPathfindingMalus(BlockPathTypes.COCOA, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.FENCE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.LEAVES, 0.0F);
+        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
+        this.setPathfindingMalus(PathType.COCOA, -1.0F);
+        this.setPathfindingMalus(PathType.FENCE, -1.0F);
+        this.setPathfindingMalus(PathType.LEAVES, 0.0F);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.hummingbirdSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -160,7 +160,7 @@ public class EntityHummingbird extends Animal {
         return worldIn.getBlockState(pos).isAir() ? 10.0F : 0.0F;
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("Variant", this.getVariant());
         compound.putInt("CropsPollinated", this.getCropsPollinated());
@@ -174,15 +174,15 @@ public class EntityHummingbird extends Animal {
 
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setVariant(compound.getInt("Variant"));
-        this.setCropsPollinated(compound.getInt("CropsPollinated"));
-        this.pollinateCooldown = compound.getInt("PollinateCooldown");
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.setCropsPollinated(compound.getIntOr("CropsPollinated", 0));
+        this.pollinateCooldown = compound.getIntOr("PollinateCooldown", 0);
         if (compound.contains("HLPX")) {
-            int i = compound.getInt("HLPX");
-            int j = compound.getInt("HLPY");
-            int k = compound.getInt("HLPZ");
+            int i = compound.getIntOr("HLPX", 0);
+            int j = compound.getIntOr("HLPY", 0);
+            int k = compound.getIntOr("HLPZ", 0);
             this.entityData.set(FEEDER_POS, Optional.of(new BlockPos(i, j, k)));
         } else {
             this.entityData.set(FEEDER_POS, Optional.empty());
@@ -198,16 +198,16 @@ public class EntityHummingbird extends Animal {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLYING, false);
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(CROPS_POLLINATED, 0);
-        this.entityData.define(FEEDER_POS, Optional.empty());
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLYING, false);
+        builder.define(VARIANT, 0);
+        builder.define(CROPS_POLLINATED, 0);
+        builder.define(FEEDER_POS, Optional.empty());
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setVariant(this.getRandom().nextInt(3));
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
@@ -319,7 +319,7 @@ public class EntityHummingbird extends Animal {
         return AMEntityRegistry.HUMMINGBIRD.get().create(serverWorld);
     }
 
-    public static <T extends Mob> boolean canHummingbirdSpawn(EntityType<EntityHummingbird> hummingbird, LevelAccessor worldIn, MobSpawnType reason, BlockPos p_223317_3_, RandomSource random) {
+    public static <T extends Mob> boolean canHummingbirdSpawn(EntityType<EntityHummingbird> hummingbird, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos p_223317_3_, RandomSource random) {
         BlockState blockstate = worldIn.getBlockState(p_223317_3_.below());
         return (blockstate.is(AMTagRegistry.HUMMINGBIRD_SPAWNS) || blockstate.is(Blocks.AIR)) && worldIn.getRawBrightness(p_223317_3_, 0) > 8;
     }

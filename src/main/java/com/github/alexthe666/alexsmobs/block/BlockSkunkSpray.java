@@ -2,7 +2,7 @@ package com.github.alexthe666.alexsmobs.block;
 
 import com.github.alexthe666.alexsmobs.client.particle.AMParticleRegistry;
 import com.github.alexthe666.alexsmobs.item.AMItemRegistry;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -37,7 +37,7 @@ public class BlockSkunkSpray extends MultifaceBlock implements SimpleWaterlogged
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public BlockSkunkSpray() {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).noOcclusion().randomTicks().noCollission().instabreak().sound(SoundType.FROGSPAWN));
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).noOcclusion().randomTicks().noCollision().instabreak().sound(SoundType.FROGSPAWN));
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(AGE, 0));
     }
 
@@ -46,7 +46,7 @@ public class BlockSkunkSpray extends MultifaceBlock implements SimpleWaterlogged
             levelAccessor.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
         }
 
-        return super.updateShape(state, direction, state2, levelAccessor, pos, pos2);
+        return state;
     }
 
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource) {
@@ -91,7 +91,7 @@ public class BlockSkunkSpray extends MultifaceBlock implements SimpleWaterlogged
                return InteractionResult.SUCCESS;
            }
         }
-        return super.use(state, worldIn, pos, player, handIn, hit);
+        return InteractionResult.PASS;
     }
 
     public static BlockState removeStinkFace(BlockState state, Direction faceProperty) {
@@ -118,10 +118,7 @@ public class BlockSkunkSpray extends MultifaceBlock implements SimpleWaterlogged
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
-    @Override
-    public MultifaceSpreader getSpreader() {
-        return null;
-    }
+
 
     public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return state.getFluidState().isEmpty();

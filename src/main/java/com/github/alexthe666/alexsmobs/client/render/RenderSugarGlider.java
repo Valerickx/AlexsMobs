@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelSugarGlider;
 import com.github.alexthe666.alexsmobs.entity.EntitySugarGlider;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,15 +14,16 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import org.joml.Quaternionf;
 
-public class RenderSugarGlider extends MobRenderer<EntitySugarGlider, ModelSugarGlider> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/sugar_glider.png");
+public class RenderSugarGlider extends MobRenderer<EntitySugarGlider, LivingEntityRenderState, ModelSugarGlider> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/sugar_glider.png");
 
     public RenderSugarGlider(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelSugarGlider(), 0.35F);
@@ -107,7 +110,7 @@ public class RenderSugarGlider extends MobRenderer<EntitySugarGlider, ModelSugar
     }
 
 
-    public ResourceLocation getTextureLocation(EntitySugarGlider entity) {
+    public Identifier getTextureLocation(EntitySugarGlider entity) {
         return TEXTURE;
     }
 }

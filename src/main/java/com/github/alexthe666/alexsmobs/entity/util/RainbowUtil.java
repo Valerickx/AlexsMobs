@@ -22,7 +22,7 @@ public class RainbowUtil {
         CompoundTag tag = CitadelEntityData.getOrCreateCitadelTag(fabulous);
         tag.putInt(RAINBOW_TYPE, type);
         CitadelEntityData.setCitadelTag(fabulous, tag);
-        if (!fabulous.level().isClientSide) {
+        if (!fabulous.level().isClientSide()) {
             Citadel.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", tag, fabulous.getId()));
         }else{
             Citadel.sendMSGToServer(new PropertiesMessage("CitadelPatreonConfig", tag, fabulous.getId()));
@@ -32,7 +32,7 @@ public class RainbowUtil {
     public static int getRainbowType(LivingEntity entity) {
         CompoundTag lassoedTag = CitadelEntityData.getOrCreateCitadelTag(entity);
         if (lassoedTag.contains(RAINBOW_TYPE)) {
-            return lassoedTag.getInt(RAINBOW_TYPE);
+            return lassoedTag.getIntOr(RAINBOW_TYPE, 0);
         }
         return 0;
     }

@@ -12,7 +12,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-public class CapsidRecipeCategory  implements IRecipeCategory<CapsidRecipe> {
+
+public class CapsidRecipeCategory implements IRecipeCategory<CapsidRecipe> {
     private final IDrawable background;
     private final IDrawable icon;
 
@@ -43,7 +44,7 @@ public class CapsidRecipeCategory  implements IRecipeCategory<CapsidRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CapsidRecipe recipe, IFocusGroup focuses) {
-        for(int i = 0; i < recipe.getIngredients().size(); i++){
+        for (int i = 0; i < recipe.getIngredients().size(); i++) {
             Ingredient ingredient = recipe.getIngredients().get(i);
             builder.addSlot(RecipeIngredientRole.INPUT, 21 + i * 15, 23).addIngredients(ingredient);
         }
@@ -55,4 +56,3 @@ public class CapsidRecipeCategory  implements IRecipeCategory<CapsidRecipe> {
         return true;
     }
 }
-

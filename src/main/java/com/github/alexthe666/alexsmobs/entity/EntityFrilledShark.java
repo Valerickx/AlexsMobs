@@ -34,11 +34,11 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.entity.animal.AbstractSchoolingFish;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.animal.Squid;
-import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.animal.fish.AbstractSchoolingFish;
+import net.minecraft.world.entity.Bucketable;
+import net.minecraft.world.entity.animal.squid.Squid;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.entity.monster.zombie.Drowned;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -48,8 +48,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,10 +74,10 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 20D).add(Attributes.ARMOR, 0.0D).add(Attributes.ATTACK_DAMAGE, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.2F);
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DEPRESSURIZED, false);
-        this.entityData.define(FROM_BUCKET, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DEPRESSURIZED, false);
+        builder.define(FROM_BUCKET, false);
     }
 
     protected void registerGoals() {
@@ -95,12 +95,12 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
         this.targetSelector.addGoal(5, new EntityAINearestTarget3D(this, Drowned.class, 4, false, true, null));
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.frilledSharkSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canFrilledSharkSpawn(EntityType<EntityFrilledShark> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return reason == MobSpawnType.SPAWNER || iServerWorld.isWaterAt(pos) && iServerWorld.isWaterAt(pos.above());
+    public static boolean canFrilledSharkSpawn(EntityType<EntityFrilledShark> entityType, ServerLevelAccessor iServerWorld, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return reason == EntitySpawnReason.SPAWNER || iServerWorld.isWaterAt(pos) && iServerWorld.isWaterAt(pos.above());
     }
 
     @Override
@@ -119,7 +119,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
         return SoundEvents.BUCKET_FILL_FISH;
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("FromBucket", this.fromBucket());
         compound.putBoolean("Depressurized", this.isDepressurized());
@@ -133,10 +133,10 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
         return !this.fromBucket() && !this.hasCustomName();
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFromBucket(compound.getBoolean("FromBucket"));
-        this.setDepressurized(compound.getBoolean("Depressurized"));
+        this.setFromBucket(compound.getBooleanOr("FromBucket", false));
+        this.setDepressurized(compound.getBooleanOr("Depressurized", false));
     }
 
     private void doInitialPosing(LevelAccessor world) {
@@ -148,8 +148,8 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        if (reason == MobSpawnType.NATURAL) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+        if (reason == EntitySpawnReason.NATURAL) {
             doInitialPosing(worldIn);
         }
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
@@ -184,7 +184,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.FRILLED_SHARK_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
         return stack;
     }
@@ -192,7 +192,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
+            bucket.setCustomName(this.getCustomName());
         }
         CompoundTag platTag = new CompoundTag();
         this.addAdditionalSaveData(platTag);
@@ -253,7 +253,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
         if (!isDepressurized() && !clear) {
             this.setDepressurized(true);
         }
-        if (!this.level().isClientSide && this.getTarget() != null && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 12) {
+        if (!this.level().isClientSide() && this.getTarget() != null && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 12) {
             float f1 = this.getYRot() * Mth.DEG_TO_RAD;
             this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f1) * 0.06F, 0.0D, Mth.cos(f1) * 0.06F));
             if (this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue())){

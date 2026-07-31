@@ -149,7 +149,7 @@ public class ModelCosmaw extends AdvancedEntityModel<EntityCosmaw> {
         float walkDegree = 0.4F;
         float idleSpeed = 0.1F;
         float idleDegree = 0.2F;
-        float partialTick = Minecraft.getInstance().getFrameTime();
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         float clutchProgress = entity.prevClutchProgress + (entity.clutchProgress - entity.prevClutchProgress) * partialTick;
         float biteProgress = entity.prevBiteProgress + (entity.biteProgress - entity.prevBiteProgress) * partialTick;
         float openProgress = Math.max(Math.max(entity.prevOpenProgress + (entity.openProgress - entity.prevOpenProgress) * partialTick, clutchProgress), biteProgress);

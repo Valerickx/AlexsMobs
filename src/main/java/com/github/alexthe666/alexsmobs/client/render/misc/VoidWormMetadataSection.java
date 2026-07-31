@@ -1,14 +1,14 @@
 package com.github.alexthe666.alexsmobs.client.render.misc;
 
 import com.google.gson.JsonObject;
-import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
 import net.minecraft.util.GsonHelper;
 
 public class VoidWormMetadataSection {
-    public static final VoidWormMetadataSection.Serializer SERIALIZER = new VoidWormMetadataSection.Serializer();
+    public static final MetadataSectionType<VoidWormMetadataSection> TYPE = MetadataSectionType.fromCodec("void_worm", com.mojang.serialization.Codec.unit(VoidWormMetadataSection::new));
     private final boolean hasEndPortalTexture;
 
-    public VoidWormMetadataSection(){
+    public VoidWormMetadataSection() {
         this.hasEndPortalTexture = false;
     }
 
@@ -20,17 +20,7 @@ public class VoidWormMetadataSection {
         return this.hasEndPortalTexture;
     }
 
-    private static class Serializer  implements MetadataSectionSerializer<VoidWormMetadataSection> {
-        private Serializer() {
-        }
-
-        public VoidWormMetadataSection fromJson(JsonObject json) {
-            return new VoidWormMetadataSection(GsonHelper.getAsBoolean(json, "end_portal_texture"));
-        }
-
-        public String getMetadataSectionName() {
-            return "void_worm";
-        }
+    public static VoidWormMetadataSection fromJson(JsonObject json) {
+        return new VoidWormMetadataSection(GsonHelper.getAsBoolean(json, "end_portal_texture"));
     }
-
 }

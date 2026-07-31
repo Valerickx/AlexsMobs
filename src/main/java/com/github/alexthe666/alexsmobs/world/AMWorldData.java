@@ -15,7 +15,7 @@ import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.storage.SavedDataStorage;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class AMWorldData extends SavedData {
             ServerLevel overworld = world.getServer().getLevel(Level.OVERWORLD);
             AMWorldData fromMap = dataMap.get(overworld);
             if(fromMap == null){
-                DimensionDataStorage storage = overworld.getDataStorage();
+                SavedDataStorage storage = overworld.getDataStorage();
                 AMWorldData data = storage.computeIfAbsent(AMWorldData::load, AMWorldData::new, IDENTIFIER);
                 if (data != null) {
                     data.level =  overworld;
@@ -65,20 +65,20 @@ public class AMWorldData extends SavedData {
 
     public static AMWorldData load(CompoundTag nbt) {
         AMWorldData data = new AMWorldData();
-        if (nbt.contains("BeachedCachalotSpawnDelay", 99)) {
-            data.beachedCachalotSpawnDelay = nbt.getInt("BeachedCachalotSpawnDelay");
+        if (nbt.contains("BeachedCachalotSpawnDelay")) {
+            data.beachedCachalotSpawnDelay = nbt.getIntOr("BeachedCachalotSpawnDelay", 0);
         }
-        if (nbt.contains("BeachedCachalotSpawnChance", 99)) {
-            data.beachedCachalotSpawnChance = nbt.getInt("BeachedCachalotSpawnChance");
+        if (nbt.contains("BeachedCachalotSpawnChance")) {
+            data.beachedCachalotSpawnChance = nbt.getIntOr("BeachedCachalotSpawnChance", 0);
         }
-        if (nbt.contains("BeachedCachalotId", 8)) {
-            data.beachedCachalotID = UUID.fromString(nbt.getString("BeachedCachalotId"));
+        if (nbt.contains("BeachedCachalotId")) {
+            data.beachedCachalotID = UUID.fromString(nbt.getStringOr("BeachedCachalotId", ""));
         }
         if (nbt.contains("PupfishChunkX") && nbt.contains("PupfishChunkZ")) {
-            data.pupfishChunk = new ChunkPos(nbt.getInt("PupfishChunkX"), nbt.getInt("PupfishChunkZ"));
+            data.pupfishChunk = new ChunkPos(nbt.getIntOr("PupfishChunkX", 0), nbt.getIntOr("PupfishChunkZ", 0));
         }
         if (nbt.contains("NoPupfishChunk")) {
-            data.noPupfishChunk = nbt.getBoolean("NoPupfishChunk");
+            data.noPupfishChunk = nbt.getBooleanOr("NoPupfishChunk", false);
         }
         return data;
     }
@@ -177,10 +177,10 @@ public class AMWorldData extends SavedData {
 
     public int getWaterHeight(NoiseBasedChunkGenerator generator, RandomState rand, int x, int z, LevelHeightAccessor level) {
         NoiseSettings noisesettings = generator.settings.value().noiseSettings();
-        int i = Math.max(noisesettings.minY(), level.getMinBuildHeight());
-        int j = Math.min(noisesettings.minY() + noisesettings.height(), level.getMaxBuildHeight());
+        int i = Math.max(noisesettings.minY(), level.getMinY());
+        int j = Math.min(noisesettings.minY() + noisesettings.height(), (level.getMaxY() + 1));
         int k = Mth.floorDiv(i, noisesettings.getCellHeight());
         int l = Mth.floorDiv(j - i, noisesettings.getCellHeight());
-        return generator.iterateNoiseColumn(level, rand, x, z, null, IS_WATER).orElse(level.getMinBuildHeight());
+        return generator.iterateNoiseColumn(level, rand, x, z, null, IS_WATER).orElse(level.getMinY());
     }
 }

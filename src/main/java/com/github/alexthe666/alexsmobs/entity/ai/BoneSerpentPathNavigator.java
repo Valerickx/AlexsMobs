@@ -1,9 +1,7 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
-import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -51,7 +49,7 @@ public class BoneSerpentPathNavigator extends PathNavigation {
                 }
             }
 
-            DebugPackets.sendPathFindingPacket(this.level, this.mob, this.path, this.maxDistanceToWaypoint);
+// DebugPackets.sendPathFindingPacket(this.level, this.mob, this.path, this.maxDistanceToWaypoint);
             if (!this.isDone()) {
                 Vec3 vector3d1 = this.path.getNextEntityPos(this.mob);
                 this.mob.getMoveControl().setWantedPosition(vector3d1.x, vector3d1.y, vector3d1.z, this.speedModifier);

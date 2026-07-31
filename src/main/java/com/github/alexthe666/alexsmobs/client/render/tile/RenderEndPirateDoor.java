@@ -5,24 +5,25 @@ import com.github.alexthe666.alexsmobs.client.model.ModelEndPirateDoor;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityEndPirateDoor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 
-public class RenderEndPirateDoor<T extends TileEntityEndPirateDoor> implements BlockEntityRenderer<T> {
+public class RenderEndPirateDoor<T extends TileEntityEndPirateDoor> implements BlockEntityRenderer<T, BlockEntityRenderState> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/end_pirate/door.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/end_pirate/door.png");
     private static final ModelEndPirateDoor DOOR_MODEL = new ModelEndPirateDoor();
 
     public RenderEndPirateDoor(Context rendererDispatcherIn) {
     }
 
     @Override
-    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         Direction dir = tileEntityIn.getBlockState().getValue(BlockEndPirateDoor.HORIZONTAL_FACING);
         switch (dir) {

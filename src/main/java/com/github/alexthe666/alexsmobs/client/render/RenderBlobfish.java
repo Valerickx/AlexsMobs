@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelBlobfish;
 import com.github.alexthe666.alexsmobs.client.model.ModelBlobfishDepressurized;
 import com.github.alexthe666.alexsmobs.entity.EntityBlobfish;
@@ -7,11 +9,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderBlobfish extends MobRenderer<EntityBlobfish, EntityModel<EntityBlobfish>> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/blobfish.png");
-    private static final ResourceLocation TEXTURE_DEPRESSURIZED = new ResourceLocation("alexsmobs:textures/entity/blobfish_depressurized.png");
+public class RenderBlobfish extends MobRenderer<EntityBlobfish, LivingEntityRenderState, EntityModel<EntityBlobfish>> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/blobfish.png");
+    private static final Identifier TEXTURE_DEPRESSURIZED = Identifier.parse("alexsmobs:textures/entity/blobfish_depressurized.png");
     private final ModelBlobfish modelFish = new ModelBlobfish();
     private final ModelBlobfishDepressurized modelDepressurized = new ModelBlobfishDepressurized();
 
@@ -29,7 +32,7 @@ public class RenderBlobfish extends MobRenderer<EntityBlobfish, EntityModel<Enti
     }
 
 
-    public ResourceLocation getTextureLocation(EntityBlobfish entity) {
+    public Identifier getTextureLocation(EntityBlobfish entity) {
         return entity.isDepressurized() ? TEXTURE_DEPRESSURIZED : TEXTURE;
     }
 }

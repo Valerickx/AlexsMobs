@@ -35,7 +35,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -43,7 +43,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -78,13 +78,13 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
     private boolean hasJostlingSize;
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(COMMAND, 0);
-        this.entityData.define(JOSTLING, false);
-        this.entityData.define(SADDLED, false);
-        this.entityData.define(JOSTLE_ANGLE, 0F);
-        this.entityData.define(JOSTLER_UUID, Optional.empty());
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(COMMAND, 0);
+        builder.define(JOSTLING, false);
+        builder.define(SADDLED, false);
+        builder.define(JOSTLE_ANGLE, 0F);
+        builder.define(JOSTLER_UUID, Optional.empty());
     }
 
     public int getCommand() {
@@ -95,12 +95,12 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
         this.entityData.set(COMMAND, Integer.valueOf(command));
     }
 
-    public static <T extends Mob> boolean canKomodoDragonSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static <T extends Mob> boolean canKomodoDragonSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.KOMODO_DRAGON_SPAWNS);
         return spawnBlock && worldIn.getRawBrightness(pos, 0) > 8;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.komodoDragonSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -141,7 +141,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
         if(player.zza != 0 || player.xxa != 0){
             this.setRot(player.getYRot(), player.getXRot() * 0.25F);
             this.yRotO = this.yBodyRot = this.yHeadRot = this.getYRot();
-            this.setMaxUpStep(1);
+            com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1);
             this.getNavigation().stop();
             this.setTarget(null);
             this.setSprinting(true);
@@ -177,18 +177,18 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
         return AMSoundRegistry.KOMODO_DRAGON_HURT.get();
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("SpitTime")) {
-            this.timeUntilSpit = compound.getInt("SpitTime");
+            this.timeUntilSpit = compound.getIntOr("SpitTime", 0);
         }
-        this.setCommand(compound.getInt("KomodoCommand"));
-        this.jostleCooldown = compound.getInt("JostlingCooldown");
-        this.setSaddled(compound.getBoolean("Saddle"));
+        this.setCommand(compound.getIntOr("KomodoCommand", 0));
+        this.jostleCooldown = compound.getIntOr("JostlingCooldown", 0);
+        this.setSaddled(compound.getBooleanOr("Saddle", false));
 
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("SpitTime", this.timeUntilSpit);
         compound.putInt("KomodoCommand", this.getCommand());
@@ -210,7 +210,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
         if(slaughterCooldown > 0){
             slaughterCooldown--;
         }
-        if (!this.level().isClientSide && this.isAlive() && !this.isBaby() && --this.timeUntilSpit <= 0) {
+        if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilSpit <= 0) {
             this.spawnAtLocation(AMItemRegistry.KOMODO_SPIT.get());
             this.timeUntilSpit = this.random.nextInt(12000) + 24000;
         }
@@ -262,7 +262,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
             jostleCooldown--;
         }
 
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if(this.getJostleAngle() < nextJostleAngleFromServer){
                 this.setJostleAngle(this.getJostleAngle() + 1);
 
@@ -470,7 +470,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
     @Nullable
     public Entity getJostlingPartner() {
         UUID id = getJostlingPartnerUUID();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -489,7 +489,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
     }
 
     private void applyKnockbackFromMoose(float strength, double ratioX, double ratioZ) {
-        net.minecraftforge.event.entity.living.LivingKnockBackEvent event = net.minecraftforge.common.ForgeHooks.onLivingKnockBack(this, strength, ratioX, ratioZ);
+        net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event = net.neoforged.neoforge.common.ForgeHooks.onLivingKnockBack(this, strength, ratioX, ratioZ);
         if (event.isCanceled()) return;
         strength = event.getStrength();
         ratioX = event.getRatioX();
@@ -512,7 +512,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
     protected void dropEquipment() {
         super.dropEquipment();
         if (this.isSaddled()) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.spawnAtLocation(Items.SADDLE);
             }
         }

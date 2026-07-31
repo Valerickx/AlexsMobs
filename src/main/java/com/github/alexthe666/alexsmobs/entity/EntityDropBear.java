@@ -31,7 +31,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -42,8 +42,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -82,7 +82,7 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
         return pos;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.dropbearSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -162,7 +162,7 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
         if (!this.isUpsideDown() && upsideDownProgress > 0F) {
             upsideDownProgress--;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             BlockPos abovePos = this.getPositionAbove();
             BlockState aboveState = level().getBlockState(abovePos);
             BlockState belowState = level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement());
@@ -245,9 +245,9 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
         }
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(UPSIDE_DOWN, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(UPSIDE_DOWN, false);
     }
 
     public boolean isUpsideDown() {
@@ -301,15 +301,15 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        if (reason == MobSpawnType.NATURAL) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+        if (reason == EntitySpawnReason.NATURAL) {
             doInitialPosing(worldIn);
         }
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     private void onLand() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             level().broadcastEntityEvent(this, (byte) 39);
             for (Entity entity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(2.5D))) {
                 if (!isAlliedTo(entity) && !(entity instanceof EntityDropBear) && entity != this) {
@@ -342,7 +342,7 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
 
     public void spawnGroundEffects() {
         float radius = 2.3F;
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             for (int i1 = 0; i1 < 20 + random.nextInt(12); i1++) {
                 double motionX = getRandom().nextGaussian() * 0.07D;
                 double motionY = getRandom().nextGaussian() * 0.07D;

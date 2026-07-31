@@ -33,7 +33,7 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -56,7 +56,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class EntityBison extends Animal implements IAnimatedEntity, Shearable, net.minecraftforge.common.IForgeShearable {
+public class EntityBison extends Animal implements IAnimatedEntity, Shearable, net.neoforged.neoforge.common.IShearable {
 
     public static final Animation ANIMATION_PREPARE_CHARGE = Animation.create(40);
     public static final Animation ANIMATION_EAT = Animation.create(35);
@@ -78,18 +78,18 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
 
     protected EntityBison(EntityType<? extends Animal> animal, Level lvl) {
         super(animal, lvl);
-        this.setMaxUpStep(1.1F);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1.1F);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 40.0D).add(Attributes.ATTACK_DAMAGE, 8.0D).add(Attributes.FOLLOW_RANGE, 32.0D).add(Attributes.MOVEMENT_SPEED, 0.25F).add(Attributes.ATTACK_KNOCKBACK, 2.0D);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.bisonSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
         if (spawnDataIn == null) {
             spawnDataIn = new AgeableMob.AgeableMobGroupData(0.25F);
         }
@@ -143,11 +143,11 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
 
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SHEARED, false);
-        this.entityData.define(SNOWY, false);
-        this.entityData.define(CHARGING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SHEARED, false);
+        builder.define(SNOWY, false);
+        builder.define(CHARGING, false);
     }
 
     @Nullable
@@ -156,16 +156,16 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         return AMEntityRegistry.BISON.get().create(level());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setSnowy(compound.getBoolean("Snowy"));
-        this.setSheared(compound.getBoolean("Sheared"));
-        this.permSnow = compound.getBoolean("SnowPerm");
-        this.chargeCooldown = compound.getInt("ChargeCooldown");
-        this.feedingsSinceLastShear = compound.getInt("Feedings");
+        this.setSnowy(compound.getBooleanOr("Snowy", false));
+        this.setSheared(compound.getBooleanOr("Sheared", false));
+        this.permSnow = compound.getBooleanOr("SnowPerm", false);
+        this.chargeCooldown = compound.getIntOr("ChargeCooldown", 0);
+        this.feedingsSinceLastShear = compound.getIntOr("Feedings", 0);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Snowy", this.isSnowy());
         compound.putBoolean("Sheared", this.isSheared());
@@ -187,12 +187,12 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         if (!this.isCharging() && chargeProgress > 0F) {
             chargeProgress--;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (snowTimer == 0) {
                 snowTimer = 200 + random.nextInt(400);
                 if (this.isSnowy()) {
                     if (!permSnow) {
-                        if (this.getRemainingFireTicks() > 0 || this.isInWaterOrBubble() || !EntityGrizzlyBear.isSnowingAt(level(), this.blockPosition().above())) {
+                        if (this.getRemainingFireTicks() > 0 || this.isInWater() || !EntityGrizzlyBear.isSnowingAt(level(), this.blockPosition().above())) {
                             this.setSnowy(false);
                         }
                     }
@@ -268,7 +268,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
             feedingsSinceLastShear = 0;
             this.setSheared(false);
         }
-        if (!this.level().isClientSide && this.isCharging() && (this.getTarget() == null && this.chargePartner == null || this.isInWaterOrBubble())) {
+        if (!this.level().isClientSide() && this.isCharging() && (this.getTarget() == null && this.chargePartner == null || this.isInWater())) {
             this.setCharging(false);
         }
         AnimationHandler.INSTANCE.updateAnimations(this);
@@ -315,7 +315,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         final ItemStack itemstack = player.getItemInHand(hand);
         final Item item = itemstack.getItem();
         final InteractionResult type = super.mobInteract(player, hand);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (item == Items.SNOW && !this.isSnowy()) {
                 this.usePlayerItem(player, hand, itemstack);
                 this.permSnow = true;
@@ -350,7 +350,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
             return;
         }
         boolean flag = false;
-        if (!this.level().isClientSide && this.blockBreakCounter == 0 && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(level(), this)) {
+        if (!this.level().isClientSide() && this.blockBreakCounter == 0 && net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(level(), this)) {
             for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
                 for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
                     for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
@@ -440,7 +440,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
     }
 
     public boolean isValidCharging() {
-        return !this.isBaby() && this.isAlive() && chargeCooldown == 0 && !this.isInWaterOrBubble();
+        return !this.isBaby() && this.isAlive() && chargeCooldown == 0 && !this.isInWater();
     }
 
 
@@ -449,7 +449,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
     }
 
     private void applyKnockbackFromBuffalo(float strength, double ratioX, double ratioZ) {
-        net.minecraftforge.event.entity.living.LivingKnockBackEvent event = net.minecraftforge.common.ForgeHooks.onLivingKnockBack(this, strength, ratioX, ratioZ);
+        net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event = net.neoforged.neoforge.common.ForgeHooks.onLivingKnockBack(this, strength, ratioX, ratioZ);
         if (event.isCanceled()) return;
         strength = event.getStrength();
         ratioX = event.getRatioX();

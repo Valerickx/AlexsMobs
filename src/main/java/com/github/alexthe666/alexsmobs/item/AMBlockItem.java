@@ -6,7 +6,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -17,13 +17,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class AMBlockItem extends BlockItem implements CustomTabBehavior {
 
-    private final RegistryObject<Block> blockSupplier;
+    private final DeferredHolder<Block, Block> blockSupplier;
 
-    public AMBlockItem(RegistryObject<Block> blockSupplier, Item.Properties props) {
+    public AMBlockItem(DeferredHolder<Block, Block> blockSupplier, Item.Properties props) {
         super((Block)null, props);
         this.blockSupplier = blockSupplier;
     }
@@ -41,8 +41,8 @@ public class AMBlockItem extends BlockItem implements CustomTabBehavior {
         if (this.blockSupplier.get() instanceof ShulkerBoxBlock) {
             ItemStack itemstack = p_150700_.getItem();
             CompoundTag compoundtag = getBlockEntityData(itemstack);
-            if (compoundtag != null && compoundtag.contains("Items", 9)) {
-                ListTag listtag = compoundtag.getList("Items", 10);
+            if (compoundtag != null && compoundtag.contains("Items")) {
+                ListTag listtag = compoundtag.getListOrEmpty("Items");
                 ItemUtils.onContainerDestroyed(p_150700_, listtag.stream().map(CompoundTag.class::cast).map(ItemStack::of));
             }
         }
@@ -66,7 +66,7 @@ public class AMBlockItem extends BlockItem implements CustomTabBehavior {
         return blockSupplier.equals(AMBlockRegistry.TRIOPS_EGGS) ? InteractionResult.PASS : super.useOn(context);
     }
 
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if(blockSupplier.equals(AMBlockRegistry.TRIOPS_EGGS)){
             BlockHitResult blockhitresult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
             BlockHitResult blockhitresult1 = blockhitresult.withPosition(blockhitresult.getBlockPos().above());

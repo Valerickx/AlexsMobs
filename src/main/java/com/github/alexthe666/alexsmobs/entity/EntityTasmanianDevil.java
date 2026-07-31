@@ -24,8 +24,8 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Chicken;
-import net.minecraft.world.entity.animal.Rabbit;
+import net.minecraft.world.entity.animal.chicken.Chicken;
+import net.minecraft.world.entity.animal.rabbit.Rabbit;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -128,10 +128,10 @@ public class EntityTasmanianDevil extends Animal implements IAnimatedEntity, ITa
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(BASKING, false);
-        this.entityData.define(SITTING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(BASKING, false);
+        builder.define(SITTING, false);
     }
 
 
@@ -173,7 +173,7 @@ public class EntityTasmanianDevil extends Animal implements IAnimatedEntity, ITa
                 baskProgress--;
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.getTarget() != null && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 5 && this.hasLineOfSight(this.getTarget())) {
                 float f1 = this.getYRot() * Mth.DEG_TO_RAD;
                 this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f1) * 0.02F, 0.0D, Mth.cos(f1) * 0.02F));

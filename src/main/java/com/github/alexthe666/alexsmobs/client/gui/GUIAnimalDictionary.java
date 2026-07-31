@@ -4,29 +4,29 @@ import com.github.alexthe666.alexsmobs.client.render.RenderLaviathan;
 import com.github.alexthe666.alexsmobs.client.render.RenderMurmurBody;
 import com.github.alexthe666.alexsmobs.client.render.RenderUnderminer;
 import com.github.alexthe666.citadel.client.gui.GuiBasicBook;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 
 @OnlyIn(Dist.CLIENT)
 public class GUIAnimalDictionary extends GuiBasicBook {
 
-    private static final ResourceLocation ROOT = new ResourceLocation("alexsmobs:book/animal_dictionary/root.json");
+    private static final Identifier ROOT = Identifier.parse("alexsmobs:book/animal_dictionary/root.json");
 
     public GUIAnimalDictionary(ItemStack bookStack) {
-        super(bookStack, Component.translatable("animal_dictionary.title"));
+        super(bookStack, Component.translatable("alexsmobs.animal_dictionary"));
     }
 
     public GUIAnimalDictionary(ItemStack bookStack, String page) {
-        super(bookStack, Component.translatable("animal_dictionary.title"));
-        this.currentPageJSON = new ResourceLocation(this.getTextFileDirectory() + page + ".json");
+        super(bookStack, Component.translatable("alexsmobs.animal_dictionary"));
+        this.currentPageJSON = Identifier.parse(this.getTextFileDirectory() + page + ".json");
     }
 
-    public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    public void render(GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
         RenderLaviathan.renderWithoutShaking = true;
         RenderMurmurBody.renderWithHead = true;
         RenderUnderminer.renderWithPickaxe = true;
@@ -40,7 +40,7 @@ public class GUIAnimalDictionary extends GuiBasicBook {
         return 0X606B26;
     }
 
-    public ResourceLocation getRootPage() {
+    public Identifier getRootPage() {
         return ROOT;
     }
 

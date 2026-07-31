@@ -28,11 +28,11 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
@@ -41,9 +41,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 public class EntityMimicube extends Monster implements RangedAttackMob {
 
@@ -76,14 +76,14 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
     }
 
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.mimicubeSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ATTACK_TICK, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ATTACK_TICK, 0);
 
     }
 
@@ -102,7 +102,7 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
     }
 
     public void setCombatTask() {
-        if (this.level() != null && !this.level().isClientSide) {
+        if (this.level() != null && !this.level().isClientSide()) {
             this.goalSelector.removeGoal(this.aiAttackOnCollide);
             this.goalSelector.removeGoal(this.aiArrowAttack);
             ItemStack itemstack = this.getMainHandItem();
@@ -182,7 +182,7 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
             }
         }
         super.setItemSlot(slotIn, stack);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.setCombatTask();
         }
     }
@@ -199,7 +199,7 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
     }
 
     public boolean isBlocking() {
-        return this.getMainHandItem().canPerformAction(ToolActions.SHIELD_BLOCK) || this.getOffhandItem().canPerformAction(ToolActions.SHIELD_BLOCK);
+        return this.getMainHandItem().canPerformAction(ItemAbilities.SHIELD_BLOCK) || this.getOffhandItem().canPerformAction(ItemAbilities.SHIELD_BLOCK);
     }
 
     public boolean hurt(DamageSource source, float amount) {

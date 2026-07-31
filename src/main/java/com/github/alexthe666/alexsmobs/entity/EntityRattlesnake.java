@@ -24,7 +24,7 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Rabbit;
+import net.minecraft.world.entity.animal.rabbit.Rabbit;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -83,7 +83,7 @@ public class EntityRattlesnake extends Animal implements IAnimatedEntity {
         return AMSoundRegistry.RATTLESNAKE_HURT.get();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.rattlesnakeSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -100,10 +100,10 @@ public class EntityRattlesnake extends Animal implements IAnimatedEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CURLED, false);
-        this.entityData.define(RATTLING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CURLED, false);
+        builder.define(RATTLING, false);
     }
 
     public boolean isCurled() {
@@ -147,7 +147,7 @@ public class EntityRattlesnake extends Animal implements IAnimatedEntity {
         }
 
         LivingEntity target = this.getTarget();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.isCurled() && (target != null && target.isAlive())) {
                 this.setCurled(false);
             }
@@ -235,7 +235,7 @@ public class EntityRattlesnake extends Animal implements IAnimatedEntity {
         return new Animation[]{ANIMATION_BITE};
     }
 
-    public static boolean canRattlesnakeSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canRattlesnakeSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.RATTLESNAKE_SPAWNS);
         return spawnBlock && worldIn.getRawBrightness(pos, 0) > 8;
 }

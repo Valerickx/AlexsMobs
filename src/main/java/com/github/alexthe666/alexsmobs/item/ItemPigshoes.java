@@ -3,7 +3,7 @@ package com.github.alexthe666.alexsmobs.item;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
+
 import net.minecraft.world.item.enchantment.Enchantments;
 
 public class ItemPigshoes extends Item {

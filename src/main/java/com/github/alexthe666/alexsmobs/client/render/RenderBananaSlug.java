@@ -1,28 +1,31 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelBananaSlug;
 import com.github.alexthe666.alexsmobs.entity.EntityBananaSlug;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderBananaSlug extends MobRenderer<EntityBananaSlug, ModelBananaSlug> {
-    private static final ResourceLocation TEXTURE_0 = new ResourceLocation("alexsmobs:textures/entity/banana_slug/banana_slug_0.png");
-    private static final ResourceLocation TEXTURE_1 = new ResourceLocation("alexsmobs:textures/entity/banana_slug/banana_slug_1.png");
-    private static final ResourceLocation TEXTURE_2 = new ResourceLocation("alexsmobs:textures/entity/banana_slug/banana_slug_2.png");
-    private static final ResourceLocation TEXTURE_3 = new ResourceLocation("alexsmobs:textures/entity/banana_slug/banana_slug_3.png");
-    private static final ResourceLocation TEXTURE_SLIME = new ResourceLocation("alexsmobs:textures/entity/banana_slug/banana_slug_slime.png");
+public class RenderBananaSlug extends MobRenderer<EntityBananaSlug, LivingEntityRenderState, ModelBananaSlug> {
+    private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/banana_slug/banana_slug_0.png");
+    private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/banana_slug/banana_slug_1.png");
+    private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/banana_slug/banana_slug_2.png");
+    private static final Identifier TEXTURE_3 = Identifier.parse("alexsmobs:textures/entity/banana_slug/banana_slug_3.png");
+    private static final Identifier TEXTURE_SLIME = Identifier.parse("alexsmobs:textures/entity/banana_slug/banana_slug_slime.png");
 
     public RenderBananaSlug(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelBananaSlug(), 0.2F);
@@ -116,7 +119,7 @@ public class RenderBananaSlug extends MobRenderer<EntityBananaSlug, ModelBananaS
     }
 
 
-    public ResourceLocation getTextureLocation(EntityBananaSlug entity) {
+    public Identifier getTextureLocation(EntityBananaSlug entity) {
         return switch (entity.getVariant()) {
             case 1 -> TEXTURE_1;
             case 2 -> TEXTURE_2;
@@ -131,7 +134,7 @@ public class RenderBananaSlug extends MobRenderer<EntityBananaSlug, ModelBananaS
             super(RenderBananaSlug.this);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityBananaSlug entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityBananaSlug entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             float alpha = entitylivingbaseIn.prevTrailVisability + (entitylivingbaseIn.trailVisability - entitylivingbaseIn.prevTrailVisability) * partialTicks;
             if(alpha > 0){
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(TEXTURE_SLIME));

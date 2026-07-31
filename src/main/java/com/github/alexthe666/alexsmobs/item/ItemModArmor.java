@@ -10,26 +10,26 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class ItemModArmor extends ArmorItem {
+public class ItemModArmor extends Item {
     private static final UUID[] ARMOR_MODIFIERS = new UUID[]{UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B")};
     private Multimap<Attribute, AttributeModifier> attributeMapCroc;
     private Multimap<Attribute, AttributeModifier> attributeMapMoose;
     private Multimap<Attribute, AttributeModifier> attributeMapFlyingFish;
     private Multimap<Attribute, AttributeModifier> attributeMapKimono;
 
-    public ItemModArmor(AMArmorMaterial armorMaterial, ArmorItem.Type slot) {
+    public ItemModArmor(AMArmorMaterial armorMaterial, ArmorType slot) {
         super(armorMaterial, slot, new Item.Properties());
     }
 
@@ -79,7 +79,7 @@ public class ItemModArmor extends ArmorItem {
         UUID uuid = ARMOR_MODIFIERS[type.ordinal()];
         builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", materialIn.getDefenseForType(this.type), AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", materialIn.getToughness(), AttributeModifier.Operation.ADDITION));
-        builder.put(ForgeMod.SWIM_SPEED.get(), new AttributeModifier(uuid, "Swim speed", 1, AttributeModifier.Operation.ADDITION));
+        builder.put(NeoForgeMod.SWIM_SPEED.get(), new AttributeModifier(uuid, "Swim speed", 1, AttributeModifier.Operation.ADDITION));
         if (this.knockbackResistance > 0) {
             builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", this.knockbackResistance, AttributeModifier.Operation.ADDITION));
         }
@@ -91,7 +91,7 @@ public class ItemModArmor extends ArmorItem {
         UUID uuid = ARMOR_MODIFIERS[type.ordinal()];
         builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", materialIn.getDefenseForType(this.type), AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", materialIn.getToughness(), AttributeModifier.Operation.ADDITION));
-        builder.put(ForgeMod.SWIM_SPEED.get(), new AttributeModifier(uuid, "Swim speed", 0.5, AttributeModifier.Operation.ADDITION));
+        builder.put(NeoForgeMod.SWIM_SPEED.get(), new AttributeModifier(uuid, "Swim speed", 0.5, AttributeModifier.Operation.ADDITION));
         attributeMapFlyingFish = builder.build();
     }
 
@@ -112,8 +112,8 @@ public class ItemModArmor extends ArmorItem {
         UUID uuid = ARMOR_MODIFIERS[type.ordinal()];
         builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", materialIn.getDefenseForType(this.type), AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", materialIn.getToughness(), AttributeModifier.Operation.ADDITION));
-        builder.put(ForgeMod.BLOCK_REACH.get(), new AttributeModifier(uuid, "Block Reach distance", 2, AttributeModifier.Operation.ADDITION));
-        builder.put(ForgeMod.ENTITY_REACH.get(), new AttributeModifier(uuid, "Entity Reach distance", 2, AttributeModifier.Operation.ADDITION));
+        builder.put(NeoForgeMod.BLOCK_REACH.get(), new AttributeModifier(uuid, "Block Reach distance", 2, AttributeModifier.Operation.ADDITION));
+        builder.put(NeoForgeMod.ENTITY_REACH.get(), new AttributeModifier(uuid, "Entity Reach distance", 2, AttributeModifier.Operation.ADDITION));
         attributeMapKimono = builder.build();
     }
 

@@ -1,27 +1,30 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelFarseer;
 import com.github.alexthe666.alexsmobs.entity.EntityFarseer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -30,17 +33,17 @@ import javax.annotation.Nullable;
 
 import static net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY;
 
-public class RenderFarseer extends MobRenderer<EntityFarseer, ModelFarseer> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/farseer/farseer.png");
-    private static final ResourceLocation TEXTURE_ANGRY = new ResourceLocation("alexsmobs:textures/entity/farseer/farseer_angry.png");
-    private static final ResourceLocation TEXTURE_CLAWS = new ResourceLocation("alexsmobs:textures/entity/farseer/farseer_claws.png");
-    private static final ResourceLocation TEXTURE_EYE = new ResourceLocation("alexsmobs:textures/entity/farseer/farseer_eye.png");
-    private static final ResourceLocation TEXTURE_SCARS = new ResourceLocation("alexsmobs:textures/entity/farseer/farseer_scars.png");
-    private static final ResourceLocation[] PORTAL_TEXTURES = new ResourceLocation[]{
-        new ResourceLocation("alexsmobs:textures/entity/farseer/portal_0.png"),
-        new ResourceLocation("alexsmobs:textures/entity/farseer/portal_1.png"),
-        new ResourceLocation("alexsmobs:textures/entity/farseer/portal_2.png"),
-        new ResourceLocation("alexsmobs:textures/entity/farseer/portal_3.png")};
+public class RenderFarseer extends MobRenderer<EntityFarseer, LivingEntityRenderState, ModelFarseer> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/farseer/farseer.png");
+    private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/farseer/farseer_angry.png");
+    private static final Identifier TEXTURE_CLAWS = Identifier.parse("alexsmobs:textures/entity/farseer/farseer_claws.png");
+    private static final Identifier TEXTURE_EYE = Identifier.parse("alexsmobs:textures/entity/farseer/farseer_eye.png");
+    private static final Identifier TEXTURE_SCARS = Identifier.parse("alexsmobs:textures/entity/farseer/farseer_scars.png");
+    private static final Identifier[] PORTAL_TEXTURES = new Identifier[]{
+        Identifier.parse("alexsmobs:textures/entity/farseer/portal_0.png"),
+        Identifier.parse("alexsmobs:textures/entity/farseer/portal_1.png"),
+        Identifier.parse("alexsmobs:textures/entity/farseer/portal_2.png"),
+        Identifier.parse("alexsmobs:textures/entity/farseer/portal_3.png")};
     private static final float HALF_SQRT_3 = (float)(Math.sqrt(3.0D) / 2.0D);
     private static final ModelFarseer EYE_MODEL = new ModelFarseer(0.1f);
     private static final ModelFarseer SCARS_MODEL = new ModelFarseer(0.05f);
@@ -75,8 +78,8 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, ModelFarseer> {
         return new Vec3(d0, d1, d2);
     }
 
-    public void render(EntityFarseer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<EntityFarseer, ModelFarseer>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn)))
+    public void render(EntityFarseer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+        if (net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.RenderLivingEvent.Pre<EntityFarseer, ModelFarseer>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn)))
             return;
         LivingEntity laserTarget = entityIn.getLaserTarget();
         float faceCameraAmount = entityIn.getFacingCameraAmount(partialTicks);
@@ -168,11 +171,11 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, ModelFarseer> {
 
         matrixStackIn.popPose();
         RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.shouldShowName(entityIn))) {
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(renderNameplateEvent);
+        if (renderNameplateEvent.getResult() != net.neoforged.bus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.neoforged.bus.api.Event.Result.ALLOW || this.shouldShowName(entityIn))) {
             this.renderNameTag(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
         }
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<EntityFarseer, ModelFarseer>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.RenderLivingEvent.Post<EntityFarseer, ModelFarseer>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
 
         //emergence portal
         if(entityIn.getAnimation() == EntityFarseer.ANIMATION_EMERGE){
@@ -231,7 +234,7 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, ModelFarseer> {
 
     }
 
-    private void renderFarseerModel(PoseStack matrixStackIn, MultiBufferSource source, RenderType defRenderType, float partialTicks, int packedLightIn, int overlayColors, float alphaIn, EntityFarseer entityIn) {
+    private void renderFarseerModel(PoseStack matrixStackIn, OrderedSubmitNodeCollector source, RenderType defRenderType, float partialTicks, int packedLightIn, int overlayColors, float alphaIn, EntityFarseer entityIn) {
         if(entityIn.hasLaser()){
             VertexConsumer staticyInsides = AMRenderTypes.createMergedVertexConsumer(source.getBuffer(AMRenderTypes.STATIC_ENTITY), source.getBuffer(RenderType.entityTranslucent(TEXTURE_EYE)));
             EYE_MODEL.renderToBuffer(matrixStackIn, staticyInsides, packedLightIn, NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1F);
@@ -291,7 +294,7 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, ModelFarseer> {
     }
     @Override
     protected void setupRotations(EntityFarseer farseer, PoseStack matrixStackIn, float f1, float f2, float f3) {
-        float invCameraAmount = 1F - farseer.getFacingCameraAmount(Minecraft.getInstance().getFrameTime());
+        float invCameraAmount = 1F - farseer.getFacingCameraAmount(Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
 
         if (this.isShaking(farseer)) {
             f2 += (float)(Math.cos((double)farseer.tickCount * 3.25D) * Math.PI * (double)0.4F);
@@ -319,17 +322,17 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, ModelFarseer> {
 
     @Nullable
     protected RenderType getRenderType(EntityFarseer farseer, boolean normal, boolean invis, boolean outline) {
-        ResourceLocation resourcelocation = this.getTextureLocation(farseer);
+        Identifier Identifier = this.getTextureLocation(farseer);
         if (invis || farseer.getAnimation() == EntityFarseer.ANIMATION_EMERGE) {
-            return RenderType.itemEntityTranslucentCull(resourcelocation);
+            return RenderType.itemEntityTranslucentCull(Identifier);
         } else if (normal) {
-            return this.model.renderType(resourcelocation);
+            return this.model.renderType(Identifier);
         } else {
-            return outline ? RenderType.outline(resourcelocation) : null;
+            return outline ? RenderType.outline(Identifier) : null;
         }
     }
 
-    public ResourceLocation getTextureLocation(EntityFarseer entity) {
+    public Identifier getTextureLocation(EntityFarseer entity) {
         return entity.isAngry() ? TEXTURE_ANGRY : TEXTURE;
     }
 
@@ -339,7 +342,7 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, ModelFarseer> {
             super(RenderFarseer.this);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityFarseer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityFarseer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (entitylivingbaseIn.getAnimation() == EntityFarseer.ANIMATION_EMERGE) {
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE_CLAWS));
                 this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);

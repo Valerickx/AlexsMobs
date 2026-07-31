@@ -28,17 +28,17 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.TryFindWaterGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.Dolphin;
-import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
+import net.minecraft.world.entity.monster.zombie.Drowned;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import javax.annotation.Nullable;
 
@@ -56,27 +56,23 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
         super(monster, level);
         this.xpReward = 10;
         this.moveControl = new AquaticMoveController(this, 1.0F, 15F);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
     }
 
     protected PathNavigation createNavigation(Level worldIn) {
         return new SemiAquaticPathNavigator(this, worldIn);
     }
 
-    public MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.skelewagSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canSkelewagSpawn(EntityType<EntitySkelewag> type, ServerLevelAccessor levelAccessor, MobSpawnType p_32352_, BlockPos below, RandomSource random) {
+    public static boolean canSkelewagSpawn(EntityType<EntitySkelewag> type, ServerLevelAccessor levelAccessor, EntitySpawnReason p_32352_, BlockPos below, RandomSource random) {
         if (!levelAccessor.getFluidState(below.below()).is(FluidTags.WATER)) {
             return false;
         } else {
-            return levelAccessor.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(levelAccessor, below, random) && (p_32352_ == MobSpawnType.SPAWNER || random.nextInt(40) == 0 && levelAccessor.getFluidState(below).is(FluidTags.WATER));
+            return levelAccessor.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(levelAccessor, below, random) && (p_32352_ == EntitySpawnReason.SPAWNER || random.nextInt(40) == 0 && levelAccessor.getFluidState(below).is(FluidTags.WATER));
         }
     }
 
@@ -106,9 +102,9 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
 
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, Integer.valueOf(0));
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, Integer.valueOf(0));
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -122,7 +118,7 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
     public void tick(){
         super.tick();
         this.prevOnLandProgress = onLandProgress;
-        boolean onLand = !this.isInWaterOrBubble() && this.onGround();
+        boolean onLand = !this.isInWater() && this.onGround();
         if (onLand && onLandProgress < 5F) {
             onLandProgress++;
         }
@@ -140,7 +136,7 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
             targetXRot = this.getXRot() + 5;
         }
         this.setXRot(targetXRot);
-        if (!this.level().isClientSide && this.getTarget() != null && this.distanceTo(this.getTarget()) < 2.0F + this.getTarget().getBbWidth()) {
+        if (!this.level().isClientSide() && this.getTarget() != null && this.distanceTo(this.getTarget()) < 2.0F + this.getTarget().getBbWidth()) {
             this.lookAt(this.getTarget(), 350, 200);
             if(this.getAnimation() == ANIMATION_STAB && this.getAnimationTick() == 7 && this.hasLineOfSight(this.getTarget())){
                 float f1 = this.getYRot() * Mth.DEG_TO_RAD;
@@ -159,7 +155,7 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
         if(onLandProgress >= 5.0F && this.isVehicle()){
             this.ejectPassengers();
         }
-        if(!isInWaterOrBubble()){
+        if(!isInWater()){
             if (this.onGround() && random.nextFloat() < 0.2F) {
                 this.setDeltaMovement(this.getDeltaMovement().add((this.random.nextFloat() * 2.0F - 1.0F) * 0.2F, 0.5D, (this.random.nextFloat() * 2.0F - 1.0F) * 0.2F));
                 this.setYRot(this.random.nextFloat() * 360.0F);
@@ -177,14 +173,14 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
         this.entityData.set(VARIANT, Integer.valueOf(command));
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("Variant", this.getVariant());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setVariant(compound.getInt("Variant"));
+        this.setVariant(compound.getIntOr("Variant", 0));
     }
 
     public boolean isPushedByFluid() {
@@ -222,7 +218,7 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setVariant(this.getRandom().nextFloat() < 0.3F ? 1 : 0);
         if (this.random.nextFloat() < 0.2F) {
             Drowned drowned = EntityType.DROWNED.create(level());

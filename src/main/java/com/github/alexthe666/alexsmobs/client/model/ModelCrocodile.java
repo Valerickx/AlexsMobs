@@ -199,7 +199,7 @@ public class ModelCrocodile extends AdvancedEntityModel<EntityCrocodile> {
         float walkDegree = 0.7F;
         float swimSpeed = 1.0F;
         float swimDegree = 0.2F;
-        float partialTick = Minecraft.getInstance().getFrameTime();
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         float swimProgress = entityIn.prevSwimProgress + (entityIn.swimProgress - entityIn.prevSwimProgress) * partialTick;
         float baskProgress = entityIn.prevBaskingProgress + (entityIn.baskingProgress - entityIn.prevBaskingProgress) * partialTick;
         float grabProgress = entityIn.prevGrabProgress + (entityIn.grabProgress - entityIn.prevGrabProgress) * partialTick;

@@ -11,7 +11,7 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -24,7 +24,7 @@ public class LayerCachalotWhaleCapturedSquid  extends RenderLayer<EntityCachalot
         super(render);
     }
 
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityCachalotWhale whale, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityCachalotWhale whale, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if(whale.hasCaughtSquid() && whale.isAlive()){
             Entity squid = whale.getCaughtSquid();
             if(squid != null && squid.isAlive()){
@@ -51,7 +51,7 @@ public class LayerCachalotWhaleCapturedSquid  extends RenderLayer<EntityCachalot
 
     }
 
-    public <E extends Entity> void renderEntity(E entityIn, double x, double y, double z, float yaw, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int packedLight) {
+    public <E extends Entity> void renderEntity(E entityIn, double x, double y, double z, float yaw, float partialTicks, PoseStack matrixStack, OrderedSubmitNodeCollector bufferIn, int packedLight) {
         EntityRenderer<? super E> render = null;
         EntityRenderDispatcher manager = Minecraft.getInstance().getEntityRenderDispatcher();
         try {

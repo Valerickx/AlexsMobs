@@ -28,9 +28,9 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.AbstractFish;
+import net.minecraft.world.entity.animal.fish.AbstractFish;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.turtle.Turtle;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +41,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -70,12 +70,12 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
 
     protected EntityShoebill(EntityType type, Level world) {
         super(type, world);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
         switchNavigator(false);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.shoebillSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -126,9 +126,9 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLYING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLYING, false);
     }
 
     protected void registerGoals() {
@@ -165,9 +165,9 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
     public void tick() {
         super.tick();
         if(this.isInWater()){
-            this.setMaxUpStep(1.2F);
+            com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1.2F);
         }else{
-            this.setMaxUpStep(0.6F);
+            com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 0.6F);
         }
         prevFlyProgress = flyProgress;
 
@@ -187,7 +187,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
         if (revengeCooldown == 0 && this.getLastHurtByMob() != null) {
             this.setLastHurtByMob(null);
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if(fishingCooldown > 0){
                 fishingCooldown--;
             }
@@ -215,7 +215,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
                 this.setNoGravity(false);
             }
         }
-        if (!this.level().isClientSide && this.getTarget() != null && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 9 && this.hasLineOfSight(this.getTarget())) {
+        if (!this.level().isClientSide() && this.getTarget() != null && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 9 && this.hasLineOfSight(this.getTarget())) {
             getTarget().knockback(0.3F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ());
             this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
         }
@@ -223,7 +223,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
     }
 
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Flying", this.isFlying());
         compound.putInt("FishingTimer", this.fishingCooldown);
@@ -232,13 +232,13 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
         compound.putInt("RevengeCooldownTimer", this.revengeCooldown);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFlying(compound.getBoolean("Flying"));
-        this.fishingCooldown = compound.getInt("FishingTimer");
-        this.luckLevel = compound.getInt("FishingLuck");
-        this.lureLevel = compound.getInt("FishingLure");
-        this.revengeCooldown = compound.getInt("RevengeCooldownTimer");
+        this.setFlying(compound.getBooleanOr("Flying", false));
+        this.fishingCooldown = compound.getIntOr("FishingTimer", 0);
+        this.luckLevel = compound.getIntOr("FishingLuck", 0);
+        this.lureLevel = compound.getIntOr("FishingLure", 0);
+        this.revengeCooldown = compound.getIntOr("RevengeCooldownTimer", 0);
 
     }
 
@@ -302,7 +302,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
                  this.gameEvent(GameEvent.EAT);
                  this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
                  lvt_3_1_.shrink(1);
-                 return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide);
+                 return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide());
              }else{
                  if(this.getAnimation() == NO_ANIMATION){
                      this.setAnimation(ANIMATION_BEAKSHAKE);
@@ -322,7 +322,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
                  lvt_3_1_.shrink(1);
                  this.gameEvent(GameEvent.EAT);
                  this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
-                 return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide);
+                 return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide());
              }else{
                  if(this.getAnimation() == NO_ANIMATION){
                      this.setAnimation(ANIMATION_BEAKSHAKE);

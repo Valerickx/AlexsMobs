@@ -18,7 +18,7 @@ public class TendonWhipUtil {
 
     private static void sync(LivingEntity enchanted, CompoundTag tag) {
         CitadelEntityData.setCitadelTag(enchanted, tag);
-        if (!enchanted.level().isClientSide) {
+        if (!enchanted.level().isClientSide()) {
             Citadel.sendMSGToAll(new PropertiesMessage("CitadelTagUpdate", tag, enchanted.getId()));
         } else {
             Citadel.sendMSGToServer(new PropertiesMessage("CitadelTagUpdate", tag, enchanted.getId()));
@@ -31,7 +31,7 @@ public class TendonWhipUtil {
             tag.remove(LAST_TENDON_UUID);
             tag.putInt(LAST_TENDON_ID, -1);
         } else {
-            tag.putUUID(LAST_TENDON_UUID, tendon.getUUID());
+            tag.store(LAST_TENDON_UUID, net.minecraft.core.UUIDUtil.CODEC, tendon.getUUID());
             tag.putInt(LAST_TENDON_ID, tendon.getId());
         }
         sync(entity, tag);
@@ -40,7 +40,7 @@ public class TendonWhipUtil {
     private static UUID getLastTendonUUID(LivingEntity entity) {
         CompoundTag tag = CitadelEntityData.getOrCreateCitadelTag(entity);
         if (tag.contains(LAST_TENDON_UUID)) {
-            return tag.getUUID(LAST_TENDON_UUID);
+            return tag.read(LAST_TENDON_UUID, net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         } else {
             return null;
         }
@@ -49,7 +49,7 @@ public class TendonWhipUtil {
     public static int getLastTendonId(LivingEntity entity) {
         CompoundTag tag = CitadelEntityData.getOrCreateCitadelTag(entity);
         if (tag.contains(LAST_TENDON_ID)) {
-            return tag.getInt(LAST_TENDON_ID);
+            return tag.getIntOr(LAST_TENDON_ID, 0);
         } else {
             return -1;
         }
@@ -74,7 +74,7 @@ public class TendonWhipUtil {
     public static EntityTendonSegment getLastTendon(LivingEntity player) {
         UUID uuid = getLastTendonUUID(player);
         int id = getLastTendonId(player);
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             if (uuid != null) {
                 Entity e = player.level().getEntity(id);
                 return e instanceof EntityTendonSegment ? (EntityTendonSegment) e : null;

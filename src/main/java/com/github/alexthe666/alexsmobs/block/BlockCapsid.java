@@ -19,17 +19,24 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
 public class BlockCapsid extends BaseEntityBlock {
 
-    public static final DirectionProperty HORIZONTAL_FACING = HorizontalDirectionalBlock.FACING;
+    public static final com.mojang.serialization.MapCodec<BlockCapsid> CODEC = simpleCodec(p -> new BlockCapsid());
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    public static final EnumProperty<Direction> HORIZONTAL_FACING = HorizontalDirectionalBlock.FACING;
     public BlockCapsid() {
         super(Properties.of().mapColor(MapColor.COLOR_PURPLE).noOcclusion().isValidSpawn(BlockCapsid::spawnOption).isRedstoneConductor(BlockCapsid::isntSolid).sound(SoundType.GLASS).lightLevel((state) -> 5).requiresCorrectToolForDrops().strength(1.5F));
     }
@@ -96,7 +103,6 @@ public class BlockCapsid extends BaseEntityBlock {
             Containers.dropContents(worldIn, pos, (TileEntityCapsid) tileentity);
             worldIn.updateNeighbourForOutputSignal(pos, this);
         }
-        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
 

@@ -1,23 +1,26 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelBunfungus;
 import com.github.alexthe666.alexsmobs.entity.EntityBunfungus;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class RenderBunfungus extends MobRenderer<EntityBunfungus, ModelBunfungus> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/bunfungus.png");
-    private static final ResourceLocation TEXTURE_SLEEPING = new ResourceLocation("alexsmobs:textures/entity/bunfungus_sleeping.png");
+public class RenderBunfungus extends MobRenderer<EntityBunfungus, LivingEntityRenderState, ModelBunfungus> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/bunfungus.png");
+    private static final Identifier TEXTURE_SLEEPING = Identifier.parse("alexsmobs:textures/entity/bunfungus_sleeping.png");
 
     public RenderBunfungus(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelBunfungus(), 0.6F);
@@ -32,7 +35,7 @@ public class RenderBunfungus extends MobRenderer<EntityBunfungus, ModelBunfungus
         matrixStackIn.scale(f2, f2, f2);
     }
 
-    public ResourceLocation getTextureLocation(EntityBunfungus entity) {
+    public Identifier getTextureLocation(EntityBunfungus entity) {
         return entity.isSleeping() ? TEXTURE_SLEEPING : TEXTURE;
     }
 
@@ -42,7 +45,7 @@ public class RenderBunfungus extends MobRenderer<EntityBunfungus, ModelBunfungus
             super(render);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityBunfungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityBunfungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             ItemStack itemstack = entitylivingbaseIn.getItemBySlot(EquipmentSlot.MAINHAND);
             matrixStackIn.pushPose();
             if (entitylivingbaseIn.isBaby()) {

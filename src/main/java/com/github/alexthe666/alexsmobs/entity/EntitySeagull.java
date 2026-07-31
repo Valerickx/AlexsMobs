@@ -50,7 +50,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -91,11 +91,11 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
 
     protected EntitySeagull(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 16.0F);
-        this.setPathfindingMalus(BlockPathTypes.COCOA, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.FENCE, -1.0F);
+        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
+        this.setPathfindingMalus(PathType.COCOA, -1.0F);
+        this.setPathfindingMalus(PathType.FENCE, -1.0F);
         switchNavigator(false);
     }
 
@@ -111,14 +111,14 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
         return AMSoundRegistry.SEAGULL_HURT.get();
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Flying", this.isFlying());
         compound.putBoolean("Sitting", this.isSitting());
         compound.putInt("StealCooldown", this.stealCooldown);
         compound.putInt("TreasureSitTime", this.treasureSitTime);
         if(feederUUID != null){
-            compound.putUUID("FeederUUID", feederUUID);
+            compound.store("FeederUUID", net.minecraft.core.UUIDUtil.CODEC, feederUUID);
         }
         if(this.getTreasurePos() != null){
             compound.putInt("TresX", this.getTreasurePos().getX());
@@ -127,17 +127,17 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
         }
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFlying(compound.getBoolean("Flying"));
-        this.setSitting(compound.getBoolean("Sitting"));
-        this.stealCooldown = compound.getInt("StealCooldown");
-        this.treasureSitTime = compound.getInt("TreasureSitTime");
-        if(compound.hasUUID("FeederUUID")){
-            this.feederUUID = compound.getUUID("FeederUUID");
+        this.setFlying(compound.getBooleanOr("Flying", false));
+        this.setSitting(compound.getBooleanOr("Sitting", false));
+        this.stealCooldown = compound.getIntOr("StealCooldown", 0);
+        this.treasureSitTime = compound.getIntOr("TreasureSitTime", 0);
+        if(compound.read("FeederUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()){
+            this.feederUUID = compound.read("FeederUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
         if(compound.contains("TresX") && compound.contains("TresY") && compound.contains("TresZ")){
-            this.setTreasurePos(new BlockPos(compound.getInt("TresX"), compound.getInt("TresY"), compound.getInt("TresZ")));
+            this.setTreasurePos(new BlockPos(compound.getIntOr("TresX", 0), compound.getIntOr("TresY", 0), compound.getIntOr("TresZ", 0)));
         }
     }
 
@@ -168,11 +168,11 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
         return stack.is(AMTagRegistry.SEAGULL_BREEDABLES);
     }
 
-    public static boolean canSeagullSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canSeagullSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return worldIn.getRawBrightness(pos, 0) > 8 && worldIn.getFluidState(pos.below()).isEmpty();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.seagullSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -196,13 +196,13 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLYING, false);
-        this.entityData.define(SITTING, false);
-        this.entityData.define(ATTACK_TICK, 0);
-        this.entityData.define(TREASURE_POS, Optional.empty());
-        this.entityData.define(FLIGHT_LOOK_YAW, 0F);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLYING, false);
+        builder.define(SITTING, false);
+        builder.define(ATTACK_TICK, 0);
+        builder.define(TREASURE_POS, Optional.empty());
+        builder.define(FLIGHT_LOOK_YAW, 0F);
     }
 
     public boolean isFlying() {
@@ -308,7 +308,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
                 attackProgress--;
             }
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (isFlying()) {
                 float lookYawDist = Math.abs(this.getFlightLookYaw() - targetFlightLookYaw);
                 if (flightLookCooldown > 0) {
@@ -324,7 +324,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
                 if (this.getFlightLookYaw() > this.targetFlightLookYaw && lookYawDist > 0.5F) {
                     this.setFlightLookYaw(this.getFlightLookYaw() - Math.min(lookYawDist, 4F));
                 }
-                if (this.onGround() && !this.isInWaterOrBubble() && this.timeFlying > 30) {
+                if (this.onGround() && !this.isInWater() && this.timeFlying > 30) {
                     this.setFlying(false);
                 }
                 timeFlying++;
@@ -366,7 +366,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
         if(treasureSitTime > 0){
             treasureSitTime--;
         }
-        if(this.isSitting() && this.isInWaterOrBubble()){
+        if(this.isSitting() && this.isInWater()){
             this.setDeltaMovement(this.getDeltaMovement().add(0, 0.02F, 0));
         }
     }
@@ -403,11 +403,11 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
                 if (map.hasTag() && map.getTag().contains("Decorations", 9)) {
                     ListTag listnbt = map.getTag().getList("Decorations", 10);
                     for(int i = 0; i < listnbt.size(); i++){
-                        CompoundTag nbt = listnbt.getCompound(i);
+                        CompoundTag nbt = listnbt.getCompoundOrEmpty(i);
                         byte type = nbt.getByte("type");
                         if(type == MapDecoration.Type.RED_X.getIcon() || type == MapDecoration.Type.TARGET_X.getIcon()){
-                            int x = nbt.getInt("x");
-                            int z = nbt.getInt("z");
+                            int x = nbt.getIntOr("x", 0);
+                            int z = nbt.getIntOr("z", 0);
                             if(this.distanceToSqr(x, this.getY(), z) <= 400){
                                 flag = true;
                                 this.setTreasurePos(new BlockPos(x, 0, z));
@@ -443,7 +443,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
     public void onGetItem(ItemEntity e) {
         ItemStack duplicate = e.getItem().copy();
         duplicate.setCount(1);
-        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide) {
+        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         stealCooldown += 600 + random.nextInt(1200);
@@ -694,7 +694,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
                 }
                 if (this.eagle.isBaby()) {
                     this.flightTarget = false;
-                } else if (this.eagle.isInWaterOrBubble()) {
+                } else if (this.eagle.isInWater()) {
                     this.flightTarget = true;
                 } else if (this.eagle.onGround()) {
                     this.flightTarget = random.nextInt(10) == 0;
@@ -729,7 +729,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
                 orbitResetCooldown++;
             }
             if (orbitResetCooldown > 0 && eagle.orbitPos != null) {
-                if (orbitTime < maxOrbitTime && !eagle.isInWaterOrBubble()) {
+                if (orbitTime < maxOrbitTime && !eagle.isInWater()) {
                     orbitTime++;
                 } else {
                     orbitTime = 0;
@@ -756,7 +756,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
                     orbitResetCooldown = -400 - random.nextInt(400);
                 }
             }
-            if (isFlying() && (!level().isEmptyBlock(eagle.getBlockPosBelowThatAffectsMyMovement()) || eagle.onGround()) && !eagle.isInWaterOrBubble() && eagle.timeFlying > 30) {
+            if (isFlying() && (!level().isEmptyBlock(eagle.getBlockPosBelowThatAffectsMyMovement()) || eagle.onGround()) && !eagle.isInWater() && eagle.timeFlying > 30) {
                 eagle.setFlying(false);
                 orbitTime = 0;
                 eagle.orbitPos = null;

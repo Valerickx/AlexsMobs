@@ -1,24 +1,27 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelSpectre;
 import com.github.alexthe666.alexsmobs.entity.EntitySpectre;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderSpectre extends MobRenderer<EntitySpectre, ModelSpectre> {
-    private static final ResourceLocation TEXTURE_BONE = new ResourceLocation("alexsmobs:textures/entity/spectre_bone.png");
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/spectre.png");
-    private static final ResourceLocation TEXTURE_EYES = new ResourceLocation("alexsmobs:textures/entity/spectre_glow.png");
-    private static final ResourceLocation TEXTURE_LEAD = new ResourceLocation("alexsmobs:textures/entity/spectre_lead.png");
+public class RenderSpectre extends MobRenderer<EntitySpectre, LivingEntityRenderState, ModelSpectre> {
+    private static final Identifier TEXTURE_BONE = Identifier.parse("alexsmobs:textures/entity/spectre_bone.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/spectre.png");
+    private static final Identifier TEXTURE_EYES = Identifier.parse("alexsmobs:textures/entity/spectre_glow.png");
+    private static final Identifier TEXTURE_LEAD = Identifier.parse("alexsmobs:textures/entity/spectre_lead.png");
 
     public RenderSpectre(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelSpectre(), 0.5F);
@@ -34,7 +37,7 @@ public class RenderSpectre extends MobRenderer<EntitySpectre, ModelSpectre> {
         return 15;
     }
 
-    public ResourceLocation getTextureLocation(EntitySpectre entity) {
+    public Identifier getTextureLocation(EntitySpectre entity) {
         return TEXTURE_BONE;
     }
 
@@ -59,7 +62,7 @@ public class RenderSpectre extends MobRenderer<EntitySpectre, ModelSpectre> {
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntitySpectre entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntitySpectre entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer lvt_11_1_ = bufferIn.getBuffer(this.getRenderType());
             this.getParentModel().renderToBuffer(matrixStackIn, lvt_11_1_, 15728640, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), 1.0F, 1.0F, 1.0F, getAlphaForRender(entitylivingbaseIn, partialTicks));
             if (entitylivingbaseIn.isLeashed()) {

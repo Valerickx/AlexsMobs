@@ -18,7 +18,7 @@ public class BlockBananaPeel extends BushBlock {
     protected static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D);
 
     public BlockBananaPeel() {
-        super(BlockBehaviour.Properties.of().dynamicShape().sound(SoundType.WET_GRASS).noCollission().requiresCorrectToolForDrops().strength(0.2F).friction(0.9999999999F));
+        super(BlockBehaviour.Properties.of().dynamicShape().sound(SoundType.WET_GRASS).noCollision().requiresCorrectToolForDrops().strength(0.2F).friction(0.9999999999F));
     }
 
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {

@@ -16,7 +16,9 @@ java {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
+    maven { name = 'ParchmentMC'; url = 'https://maven.parchmentmc.org' }
     maven { name = 'NeoForge'; url = 'https://maven.neoforged.net/releases/' }
     maven { name = 'Sponge Snapshots'; url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven { name = 'JitPack'; url = 'https://jitpack.io' }
@@ -25,6 +27,10 @@ repositories {
 
 base {
     archivesName = "${mod_id}-${minecraft_version}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-Xmaxerrs' << '100000'
 }
 
 neoForge {
@@ -63,8 +69,9 @@ neoForge {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    implementation "com.github.Valerickx:Citadel-26.2:master-SNAPSHOT"
+    implementation "com.github.alexthe666.citadel:citadel-26.2:2.7.5"
     implementation "net.neoforged:neoforge:${neoforge_version}"
+    compileOnly "mezz.jei:jei-26.1.2-neoforge:29.5.0.26"
 }
 
 configurations {
@@ -116,5 +123,11 @@ publishing {
     }
     repositories {
         maven { url = "file://${project.projectDir}/mcmodsrepo" }
+    }
+}
+
+tasks.register('dumpCp') {
+    doLast {
+        configurations.compileClasspath.each { println it }
     }
 }

@@ -1,4 +1,6 @@
 package com.github.alexthe666.alexsmobs.event;
+import net.neoforged.fml.common.EventBusSubscriber;
+
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.block.AMBlockRegistry;
@@ -54,12 +56,12 @@ import net.minecraft.world.entity.ai.goal.target.NonTameRandomTargetGoal;
 import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Spider;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.monster.spider.Spider;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.item.trading.VillagerTrades;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -74,30 +76,32 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.*;
-import net.minecraftforge.client.event.ComputeFovModifierEvent;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.items.ItemHandlerHelper;
-import org.antlr.v4.runtime.misc.Triple;
+import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
+import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.enchanting.EnchantedEntityLootEvent;
+import net.neoforged.neoforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.entity.EntityStruckByLightningEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Mod.EventBusSubscriber(modid = AlexsMobs.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = AlexsMobs.MODID)
 public class ServerEvents {
 
     public static final UUID ALEX_UUID = UUID.fromString("71363abe-fd03-49c9-940d-aae8b8209b7c");
@@ -110,8 +114,8 @@ public class ServerEvents {
     public static final ObjectList<Triple<ServerPlayer, ServerLevel, BlockPos>> teleportPlayers = new ObjectArrayList<>();
 
     @SubscribeEvent
-    public static void onServerTick(TickEvent.LevelTickEvent tick) {
-        if (!tick.level.isClientSide && tick.level instanceof ServerLevel serverWorld) {
+    public static void onServerTick(LevelTickEvent.Post tick) {
+        if (!tick.getLevel().isClientSide() && tick.getLevel() instanceof ServerLevel serverWorld) {
             BEACHED_CACHALOT_WHALE_SPAWNER_MAP.computeIfAbsent(serverWorld,
                 k -> new BeachedCachalotWhaleSpawner(serverWorld));
             BeachedCachalotWhaleSpawner spawner = BEACHED_CACHALOT_WHALE_SPAWNER_MAP.get(serverWorld);
@@ -119,9 +123,9 @@ public class ServerEvents {
 
             if (!teleportPlayers.isEmpty()) {
                 for (final var triple : teleportPlayers) {
-                    ServerPlayer player = triple.a;
-                    ServerLevel endpointWorld = triple.b;
-                    BlockPos endpoint = triple.c;
+                    ServerPlayer player = triple.getLeft();
+                    ServerLevel endpointWorld = triple.getMiddle();
+                    BlockPos endpoint = triple.getRight();
                     final int heightFromMap = endpointWorld.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, endpoint.getX(), endpoint.getZ());
                     endpoint = new BlockPos(endpoint.getX(), Math.max(heightFromMap, endpoint.getY()), endpoint.getZ());
                     player.teleportTo(endpointWorld, endpoint.getX() + 0.5D, endpoint.getY() + 0.5D, endpoint.getZ() + 0.5D, player.getYRot(), player.getXRot());
@@ -151,7 +155,7 @@ public class ServerEvents {
         final float f5 = Mth.sin(f1);
         final float f6 = f3 * f4;
         final float f7 = f2 * f4;
-        final double d0 = player.getAttribute(net.minecraftforge.common.ForgeMod.BLOCK_REACH.get()).getValue();
+        final double d0 = player.getAttribute(net.neoforged.neoforge.common.NeoForgeMod.BLOCK_REACH.get()).getValue();
         Vec3 vector3d1 = vector3d.add(f6 * d0, f5 * d0, f7 * d0);
         return worldIn.clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.OUTLINE, fluidMode, player));
     }
@@ -186,7 +190,7 @@ public class ServerEvents {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (AMConfig.giveBookOnStartup) {
             CompoundTag playerData = event.getEntity().getPersistentData();
-            CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
+            CompoundTag data = playerData.getCompoundOrEmpty(Player.PERSISTED_NBT_TAG);
             if (data != null && !data.getBoolean("alexsmobs_has_book")) {
                 ItemHandlerHelper.giveItemToPlayer(event.getEntity(), new ItemStack(AMItemRegistry.ANIMAL_DICTIONARY.get()));
                 final boolean isAlex = Objects.equals(event.getEntity().getUUID(), ALEX_UUID);
@@ -215,19 +219,19 @@ public class ServerEvents {
             iLeftClick.onLeftClick(rightItem, event.getEntity());
             flag = true;
         }
-        if (flag && event.getLevel().isClientSide) {
+        if (flag && event.getLevel().isClientSide()) {
             AlexsMobs.sendMSGToServer(MessageSwingArm.INSTANCE);
         }
     }
 
     @SubscribeEvent
     public static void onStruckByLightning(EntityStruckByLightningEvent event) {
-        if (event.getEntity().getType() == EntityType.SQUID && !event.getEntity().level().isClientSide) {
+        if (event.getEntity().getType() == EntityType.SQUID && !event.getEntity().level().isClientSide()) {
             ServerLevel level = (ServerLevel) event.getEntity().level();
             event.setCanceled(true);
             EntityGiantSquid squid = AMEntityRegistry.GIANT_SQUID.get().create(level);
             squid.moveTo(event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), event.getEntity().getYRot(), event.getEntity().getXRot());
-            squid.finalizeSpawn(level, level.getCurrentDifficultyAt(squid.blockPosition()), MobSpawnType.CONVERSION, null, null);
+            squid.finalizeSpawn(level, level.getCurrentDifficultyAt(squid.blockPosition()), EntitySpawnReason.CONVERSION, null, null);
             if (event.getEntity().hasCustomName()) {
                 squid.setCustomName(event.getEntity().getCustomName());
                 squid.setCustomNameVisible(event.getEntity().isCustomNameVisible());
@@ -242,7 +246,7 @@ public class ServerEvents {
     @SubscribeEvent
     public void onProjectileHit(ProjectileImpactEvent event) {
         if (event.getRayTraceResult() instanceof EntityHitResult hitResult
-            && hitResult.getEntity() instanceof EntityEmu emu && !event.getEntity().level().isClientSide) {
+            && hitResult.getEntity() instanceof EntityEmu emu && !event.getEntity().level().isClientSide()) {
             if (event.getEntity() instanceof AbstractArrow arrow) {
                 //fixes soft crash with vanilla
                 arrow.setPierceLevel((byte) 0);
@@ -268,7 +272,7 @@ public class ServerEvents {
                 if (!emu.horizontalCollision) {
                     emu.move(MoverType.SELF, new Vec3(vector3d2.x() * 0.25F, 0.1F, vector3d2.z() * 0.25F));
                 }
-                if (!event.getEntity().level().isClientSide) {
+                if (!event.getEntity().level().isClientSide()) {
                     if (event.getEntity() instanceof Projectile projectile) {
                         if (projectile.getOwner() instanceof ServerPlayer serverPlayer) {
                             AMAdvancementTriggerRegistry.EMU_DODGE.trigger(serverPlayer);
@@ -282,57 +286,20 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onEntityDespawnAttempt(MobSpawnEvent.AllowDespawn event) {
-        if (event.getEntity().hasEffect(AMEffectRegistry.DEBILITATING_STING.get()) && event.getEntity().getEffect(AMEffectRegistry.DEBILITATING_STING.get()) != null && event.getEntity().getEffect(AMEffectRegistry.DEBILITATING_STING.get()).getAmplifier() > 0) {
-            event.setResult(Event.Result.DENY);
+    public void onEntityDespawnAttempt(MobDespawnEvent event) {
+        if (event.getEntity().hasEffect(AMEffectRegistry.DEBILITATING_STING.getHolder().orElseThrow()) && event.getEntity().getEffect(AMEffectRegistry.DEBILITATING_STING.getHolder().orElseThrow()) != null && event.getEntity().getEffect(AMEffectRegistry.DEBILITATING_STING.getHolder().orElseThrow()).getAmplifier() > 0) {
+            event.setResult(MobDespawnEvent.Result.DENY);
         }
     }
 
     @SubscribeEvent
-    public void onTradeSetup(VillagerTradesEvent event) {
-        if (event.getType() == VillagerProfession.FISHERMAN) {
-            VillagerTrades.ItemListing ambergrisTrade = new EmeraldsForItemsTrade(AMItemRegistry.AMBERGRIS.get(), 20, 3, 4);
-            final var list = event.getTrades().get(2);
-            list.add(ambergrisTrade);
-            event.getTrades().put(2, list);
-        }
-    }
-
-    @SubscribeEvent
-    public void onWanderingTradeSetup(WandererTradesEvent event) {
-        if (AMConfig.wanderingTraderOffers) {
-            List<VillagerTrades.ItemListing> genericTrades = event.getGenericTrades();
-            List<VillagerTrades.ItemListing> rareTrades = event.getRareTrades();
-            genericTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.ANIMAL_DICTIONARY.get(), 4, 1, 2, 1));
-            genericTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.ACACIA_BLOSSOM.get(), 3, 2, 2, 1));
-            if (AMConfig.cockroachSpawnWeight > 0) {
-                genericTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.COCKROACH_OOTHECA.get(), 2, 1, 2, 1));
-            }
-            if (AMConfig.blobfishSpawnWeight > 0) {
-                genericTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.BLOBFISH_BUCKET.get(), 4, 1, 3, 1));
-            }
-            if (AMConfig.crocodileSpawnWeight > 0) {
-                genericTrades.add(new ItemsForEmeraldsTrade(AMBlockRegistry.CROCODILE_EGG.get().asItem(), 6, 1, 2, 1));
-            }
-            genericTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.BEAR_FUR.get(), 1, 1, 2, 1));
-            genericTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.CROCODILE_SCUTE.get(), 5, 1, 2, 1));
-            genericTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.ROADRUNNER_FEATHER.get(), 1, 2, 2, 2));
-            genericTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.MOSQUITO_LARVA.get(), 1, 3, 5, 1));
-            rareTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.SOMBRERO.get(), 20, 1, 1, 1));
-            rareTrades.add(new ItemsForEmeraldsTrade(AMBlockRegistry.BANANA_PEEL.get(), 1, 2, 1, 1));
-            rareTrades.add(new ItemsForEmeraldsTrade(AMItemRegistry.BLOOD_SAC.get(), 5, 2, 3, 1));
-        }
-    }
-
-    @SubscribeEvent
-    public void onLootLevelEvent(LootingLevelEvent event) {
+    public void onLootLevelEvent(EnchantedEntityLootEvent event) {
         DamageSource src = event.getDamageSource();
         if (src != null) {
             if (src.getEntity() instanceof EntitySnowLeopard) {
-                event.setLootingLevel(event.getLootingLevel() + 2);
+                event.setEnchantmentLevel(event.getEnchantmentLevel() + 2);
             }
         }
-
     }
 
     @SubscribeEvent
@@ -373,7 +340,7 @@ public class ServerEvents {
     public void onInteractWithEntity(PlayerInteractEvent.EntityInteract event) {
         if (event.getTarget() instanceof LivingEntity living) {
             if (!event.getEntity().isShiftKeyDown() && VineLassoUtil.hasLassoData(living)) {
-                if (!event.getEntity().level().isClientSide) {
+                if (!event.getEntity().level().isClientSide()) {
                     event.getTarget().spawnAtLocation(new ItemStack(AMItemRegistry.VINE_LASSO.get()));
                 }
                 VineLassoUtil.lassoTo(null, living);
@@ -411,7 +378,7 @@ public class ServerEvents {
             if (living instanceof Rabbit rabbit && event.getItemStack().getItem() == AMItemRegistry.MUNGAL_SPORES.get()
                     && AMConfig.bunfungusTransformation) {
                 final var random = ThreadLocalRandom.current();
-                if (!event.getEntity().level().isClientSide && random.nextFloat() < 0.15F) {
+                if (!event.getEntity().level().isClientSide() && random.nextFloat() < 0.15F) {
                     final EntityBunfungus bunfungus = rabbit.convertTo(AMEntityRegistry.BUNFUNGUS.get(), true);
                     if (bunfungus != null) {
                         event.getEntity().level().addFreshEntity(bunfungus);
@@ -485,7 +452,7 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onEntityFinalizeSpawn(MobSpawnEvent.FinalizeSpawn event) {
+    public void onEntityFinalizeSpawn(FinalizeSpawnEvent event) {
         final var entity = event.getEntity();
         if (entity instanceof WanderingTrader trader && AMConfig.elephantTraderSpawnChance > 0) {
             Biome biome = event.getLevel().getBiome(entity.blockPosition()).value();
@@ -612,7 +579,7 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onLivingUpdateEvent(LivingEvent.LivingTickEvent event) {
+    public void onLivingUpdateEvent(EntityTickEvent.Post event) {
         final var entity = event.getEntity();
         if (entity instanceof Player player) {
             if (player.getEyeHeight() < player.getBbHeight() * 0.5D) {
@@ -677,7 +644,7 @@ public class ServerEvents {
                 entity.setDeltaMovement(motion);
             }
         }
-        if (entity.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.SOMBRERO.get() && !entity.level().isClientSide && AlexsMobs.isAprilFools() && entity.isInWaterOrBubble()) {
+        if (entity.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.SOMBRERO.get() && !entity.level().isClientSide() && AlexsMobs.isAprilFools() && entity.isInWater()) {
             RandomSource random = entity.getRandom();
             if (random.nextInt(245) == 0 && !EntitySeaBear.isMobSafe(entity)) {
                 final int dist = 32;
@@ -737,17 +704,17 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onLivingAttack(LivingAttackEvent event) {
+    public void onLivingAttack(LivingIncomingDamageEvent event) {
         if (!event.getEntity().getUseItem().isEmpty() && event.getSource() != null && event.getSource().getEntity() != null) {
             if (event.getEntity().getUseItem().getItem() == AMItemRegistry.SHIELD_OF_THE_DEEP.get()) {
                 if (event.getSource().getEntity() instanceof LivingEntity living) {
                     boolean flag = false;
                     if (living.distanceTo(event.getEntity()) <= 4
-                        && !living.hasEffect(AMEffectRegistry.EXSANGUINATION.get())) {
-                        living.addEffect(new MobEffectInstance(AMEffectRegistry.EXSANGUINATION.get(), 60, 2));
+                        && !living.hasEffect(AMEffectRegistry.EXSANGUINATION.getHolder().orElseThrow())) {
+                        living.addEffect(new MobEffectInstance(AMEffectRegistry.EXSANGUINATION.getHolder().orElseThrow(), 60, 2));
                         flag = true;
                     }
-                    if (event.getEntity().isInWaterOrBubble()) {
+                    if (event.getEntity().isInWater()) {
                         event.getEntity().setAirSupply(Math.min(event.getEntity().getMaxAirSupply(), event.getEntity().getAirSupply() + 150));
                         flag = true;
                     }
@@ -769,7 +736,7 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onAddReloadListener(AddReloadListenerEvent event){
+    public void onAddReloadListener(AddServerReloadListenersEvent event){
         AlexsMobs.LOGGER.info("Adding datapack listener capsid_recipes");
         event.addListener(AlexsMobs.PROXY.getCapsidRecipeManager());
     }

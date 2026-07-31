@@ -4,7 +4,7 @@ import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -12,16 +12,14 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 
-public class ItemSkelewagSword extends SwordItem {
-
-    private final ImmutableMultimap<Attribute, AttributeModifier> skelewagModifiers;
+public class ItemSkelewagSword extends Item {
 
     public ItemSkelewagSword(Item.Properties props) {
-        super(Tiers.IRON, 2, 0, props);
+        super(props);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", (double)3.5F, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", (double)0, AttributeModifier.Operation.ADDITION));
@@ -33,12 +31,12 @@ public class ItemSkelewagSword extends SwordItem {
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-        return ToolActions.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
+    public boolean canPerformAction(ItemStack stack, ItemAbility ItemAbility) {
+        return ItemAbilities.DEFAULT_SHIELD_ACTIONS.contains(ItemAbility);
     }
 
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BLOCK;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BLOCK;
     }
 
     public int getUseDuration(ItemStack stack) {
@@ -50,10 +48,10 @@ public class ItemSkelewagSword extends SwordItem {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }
 
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack lvt_4_1_ = player.getItemInHand(hand);
         player.startUsingItem(hand);
-        return InteractionResultHolder.consume(lvt_4_1_);
+        return InteractionResult.CONSUME;
     }
 
     @Override

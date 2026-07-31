@@ -39,7 +39,7 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -72,8 +72,8 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
 
     protected EntitySeal(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
         switchNavigator(false);
     }
 
@@ -94,7 +94,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 10.0D).add(Attributes.ATTACK_DAMAGE, 2.0D).add(Attributes.MOVEMENT_SPEED, 0.18F);
     }
 
-    public static boolean canSealSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canSealSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         Holder<Biome> holder = worldIn.getBiome(pos);
         if (!holder.is(Biomes.FROZEN_OCEAN) && !holder.is(Biomes.DEEP_FROZEN_OCEAN)) {
             boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.SEAL_SPAWNS);
@@ -151,14 +151,14 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SWIM_ANGLE, 0F);
-        this.entityData.define(BASKING, false);
-        this.entityData.define(DIGGING, false);
-        this.entityData.define(ARCTIC, false);
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(BOB_TICKS, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SWIM_ANGLE, 0F);
+        builder.define(BASKING, false);
+        builder.define(DIGGING, false);
+        builder.define(ARCTIC, false);
+        builder.define(VARIANT, 0);
+        builder.define(BOB_TICKS, 0);
     }
 
     public boolean isTearsEasterEgg() {
@@ -186,7 +186,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
         prevDigProgress = digProgress;
         prevBobbingProgress = bobbingProgress;
         prevSwimAngle = this.getSwimAngle();
-        boolean dig = isDigging() && isInWaterOrBubble();
+        boolean dig = isDigging() && isInWater();
         float f2 = (float) -((float) this.getDeltaMovement().y * (double) Mth.RAD_TO_DEG);
         if (isInWater()) {
             this.setXRot(f2 * 2.5F);
@@ -227,14 +227,14 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
                 level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, understate), particleX, particleY, particleZ, motX, motY, motZ);
             }
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (isBasking()) {
-                if (this.getLastHurtByMob() != null || isInLove() || revengeCooldown > 0 || this.isInWaterOrBubble() || this.getTarget() != null || baskingTimer > 1000 && this.getRandom().nextInt(100) == 0) {
+                if (this.getLastHurtByMob() != null || isInLove() || revengeCooldown > 0 || this.isInWater() || this.getTarget() != null || baskingTimer > 1000 && this.getRandom().nextInt(100) == 0) {
                     this.setBasking(false);
                 }
             } else {
                 if (this.getTarget() == null && !isInLove() && this.getLastHurtByMob() == null && revengeCooldown == 0 && !isBasking() && baskingTimer == 0 && this.getRandom().nextInt(15) == 0) {
-                    if (!isInWaterOrBubble()) {
+                    if (!isInWater()) {
                         this.setBasking(true);
                     }
                 }
@@ -280,7 +280,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
             if(this.bobbingProgress > 0F){
                 this.bobbingProgress--;
             }
-            if(!this.level().isClientSide && random.nextInt(300) == 0 && !this.isInWater() && this.revengeCooldown == 0){
+            if(!this.level().isClientSide() && random.nextInt(300) == 0 && !this.isInWater() && this.revengeCooldown == 0){
                 bob = 20 + random.nextInt(20);
                 this.entityData.set(BOB_TICKS, bob);
             }
@@ -336,7 +336,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason
             reason, @Nullable SpawnGroupData data, @Nullable CompoundTag dataTag) {
         this.setArctic(this.isBiomeArctic(worldIn, this.blockPosition()));
         int i;
@@ -352,7 +352,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
         return super.finalizeSpawn(worldIn, difficultyIn, reason, data, dataTag);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Arctic", this.isArctic());
         compound.putBoolean("Basking", this.isBasking());
@@ -361,21 +361,21 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
         compound.putInt("FishFeedings", this.fishFeedings);
         compound.putInt("Variant", this.getVariant());
         if(feederUUID != null){
-            compound.putUUID("FeederUUID", feederUUID);
+            compound.store("FeederUUID", net.minecraft.core.UUIDUtil.CODEC, feederUUID);
         }
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setArctic(compound.getBoolean("Arctic"));
-        this.setBasking(compound.getBoolean("Basking"));
-        this.baskingTimer = compound.getInt("BaskingTimer");
-        this.swimTimer = compound.getInt("SwimTimer");
-        this.fishFeedings = compound.getInt("FishFeedings");
-        if(compound.hasUUID("FeederUUID")){
-            this.feederUUID = compound.getUUID("FeederUUID");
+        this.setArctic(compound.getBooleanOr("Arctic", false));
+        this.setBasking(compound.getBooleanOr("Basking", false));
+        this.baskingTimer = compound.getIntOr("BaskingTimer", 0);
+        this.swimTimer = compound.getIntOr("SwimTimer", 0);
+        this.fishFeedings = compound.getIntOr("FishFeedings", 0);
+        if(compound.read("FeederUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()){
+            this.feederUUID = compound.read("FeederUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
-        this.setVariant(compound.getInt("Variant"));
+        this.setVariant(compound.getIntOr("Variant", 0));
     }
 
     private boolean isBiomeArctic(LevelAccessor worldIn, BlockPos position) {

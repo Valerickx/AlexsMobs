@@ -1,20 +1,23 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelStraddler;
 import com.github.alexthe666.alexsmobs.client.model.ModelStradpole;
 import com.github.alexthe666.alexsmobs.entity.EntityStraddler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderStraddler extends MobRenderer<EntityStraddler, ModelStraddler> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/straddler.png");
+public class RenderStraddler extends MobRenderer<EntityStraddler, LivingEntityRenderState, ModelStraddler> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/straddler.png");
     private static final ModelStradpole STRADPOLE_MODEL = new ModelStradpole();
     public RenderStraddler(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelStraddler(), 0.6F);
@@ -26,7 +29,7 @@ public class RenderStraddler extends MobRenderer<EntityStraddler, ModelStraddler
     }
 
 
-    public ResourceLocation getTextureLocation(EntityStraddler entity) {
+    public Identifier getTextureLocation(EntityStraddler entity) {
         return TEXTURE;
     }
 
@@ -36,7 +39,7 @@ public class RenderStraddler extends MobRenderer<EntityStraddler, ModelStraddler
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityStraddler straddler, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityStraddler straddler, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             int t = straddler.getAnimationTick();
             if(straddler.getAnimation() == EntityStraddler.ANIMATION_LAUNCH && t < 20 && t > 6){
                 matrixStackIn.pushPose();

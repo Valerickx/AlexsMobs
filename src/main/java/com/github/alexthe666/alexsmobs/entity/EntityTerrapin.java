@@ -10,7 +10,7 @@ import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.misc.AMTagRegistry;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityTerrapinEgg;
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +36,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Bucketable;
+import net.minecraft.world.entity.Bucketable;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -46,7 +46,7 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -87,8 +87,8 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
 
     protected EntityTerrapin(EntityType animal, Level level) {
         super(animal, level);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
         switchNavigator(true);
     }
 
@@ -104,12 +104,12 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
         return AMSoundRegistry.TERRAPIN_HURT.get();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.terrapinSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canTerrapinSpawn(EntityType<EntityTerrapin> entityType, ServerLevelAccessor iServerWorld, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return reason == MobSpawnType.SPAWNER || iServerWorld.getBlockState(pos).getFluidState().is(Fluids.WATER);
+    public static boolean canTerrapinSpawn(EntityType<EntityTerrapin> entityType, ServerLevelAccessor iServerWorld, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return reason == EntitySpawnReason.SPAWNER || iServerWorld.getBlockState(pos).getFluidState().is(Fluids.WATER);
     }
 
     protected void registerGoals() {
@@ -132,7 +132,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
         prevRetreatProgress = retreatProgress;
         prevSpinProgress = spinProgress;
 
-        final boolean inWaterOrBubble = this.isInWaterOrBubble();
+        final boolean inWaterOrBubble = this.isInWater();
         final boolean spinning = this.isSpinning();
         final boolean retreated = this.hasRetreated();
 
@@ -188,11 +188,11 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
                 changeSpinAngleCooldown--;
             }
         }
-        if (!this.level().isClientSide) {
-            if (this.isInWaterOrBubble() && this.isLandNavigator) {
+        if (!this.level().isClientSide()) {
+            if (this.isInWater() && this.isLandNavigator) {
                 switchNavigator(false);
             }
-            if (!this.isInWaterOrBubble() && !this.isLandNavigator) {
+            if (!this.isInWater() && !this.isLandNavigator) {
                 switchNavigator(true);
             }
             if (isInWater()) {
@@ -216,9 +216,9 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
             }
 
             if (swimProgress > 0) {
-                this.setMaxUpStep(1);
+                com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1);
             } else {
-                this.setMaxUpStep(0.6F);
+                com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 0.6F);
             }
             if (hideInShellTimer > 0) {
                 hideInShellTimer--;
@@ -255,21 +255,21 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(TURTLE_TYPE, 0);
-        this.entityData.define(SHELL_TYPE, 0);
-        this.entityData.define(SKIN_TYPE, 0);
-        this.entityData.define(SHELL_COLOR, 0);
-        this.entityData.define(SKIN_COLOR, 0);
-        this.entityData.define(TURTLE_COLOR, 0);
-        this.entityData.define(RETREATED, false);
-        this.entityData.define(SPINNING, false);
-        this.entityData.define(HAS_EGG, false);
-        this.entityData.define(FROM_BUCKET, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(TURTLE_TYPE, 0);
+        builder.define(SHELL_TYPE, 0);
+        builder.define(SKIN_TYPE, 0);
+        builder.define(SHELL_COLOR, 0);
+        builder.define(SKIN_COLOR, 0);
+        builder.define(TURTLE_COLOR, 0);
+        builder.define(RETREATED, false);
+        builder.define(SPINNING, false);
+        builder.define(HAS_EGG, false);
+        builder.define(FROM_BUCKET, false);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("TurtleType", this.getTurtleTypeOrdinal());
         compound.putInt("ShellType", this.getShellType());
@@ -281,16 +281,16 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
         compound.putBoolean("Bucketed", this.fromBucket());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setTurtleTypeOrdinal(compound.getInt("TurtleType"));
-        this.setShellType(compound.getInt("ShellType"));
-        this.setSkinType(compound.getInt("SkinType"));
-        this.setTurtleColor(compound.getInt("TurtleColor"));
-        this.setShellColor(compound.getInt("ShellColor"));
-        this.setSkinColor(compound.getInt("SkinColor"));
-        this.setHasEgg(compound.getBoolean("HasEgg"));
-        this.setFromBucket(compound.getBoolean("Bucketed"));
+        this.setTurtleTypeOrdinal(compound.getIntOr("TurtleType", 0));
+        this.setShellType(compound.getIntOr("ShellType", 0));
+        this.setSkinType(compound.getIntOr("SkinType", 0));
+        this.setTurtleColor(compound.getIntOr("TurtleColor", 0));
+        this.setShellColor(compound.getIntOr("ShellColor", 0));
+        this.setSkinColor(compound.getIntOr("SkinColor", 0));
+        this.setHasEgg(compound.getBooleanOr("HasEgg", false));
+        this.setFromBucket(compound.getBooleanOr("Bucketed", false));
     }
 
     protected void playStepSound(BlockPos pos, BlockState state) {
@@ -416,7 +416,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     }
 
     public void push(Entity entity) {
-        if (this.isInWaterOrBubble() || entity instanceof EntityTerrapin) {
+        if (this.isInWater() || entity instanceof EntityTerrapin) {
             super.push(entity);
         } else {
             entity.setDeltaMovement(entity.getDeltaMovement().add(this.getDeltaMovement()));
@@ -424,7 +424,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     }
 
     public boolean canBeCollidedWith() {
-        return this.isInWaterOrBubble() ? super.canBeCollidedWith() : this.isAlive();
+        return this.isInWater() ? super.canBeCollidedWith() : this.isAlive();
     }
 
     private void spinFor(int time) {
@@ -444,7 +444,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     private void handleSpin() {
         this.setRetreated(true);
         ++this.spinCounter;
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.spinCounter > maxRollTime) {
                 this.setSpinning(false);
                 this.hideInShellTimer = 10 + random.nextInt(30);
@@ -465,7 +465,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
 
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setAirSupply(this.getMaxAirSupply());
         this.setTurtleType(TerrapinTypes.getRandomType(random));
         this.setShellType(random.nextInt(7));
@@ -533,7 +533,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.TERRAPIN_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
         return stack;
     }
@@ -541,7 +541,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
+            bucket.setCustomName(this.getCustomName());
         }
         CompoundTag platTag = new CompoundTag();
         this.addAdditionalSaveData(platTag);
@@ -576,10 +576,6 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     public boolean isKoopa() {
         String s = ChatFormatting.stripFormatting(this.getName().getString());
         return s != null && s.toLowerCase().contains("koopa");
-    }
-
-    public MobType getMobType() {
-        return MobType.WATER;
     }
 
     public boolean checkSpawnObstruction(LevelReader worldIn) {
@@ -656,7 +652,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
             if (!this.turtle.isInWater() && this.isReachedTarget()) {
                 Level world = this.turtle.level();
                 turtle.gameEvent(GameEvent.BLOCK_PLACE);
-                world.playSound(null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
+                world.playSound(null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + world.getRandom().nextFloat() * 0.2F);
                 world.setBlock(this.blockPos.above(), AMBlockRegistry.TERRAPIN_EGG.get().defaultBlockState().setValue(BlockTerrapinEgg.EGGS, Integer.valueOf(this.turtle.random.nextInt(1) + 3)), 3);
                 if(world.getBlockEntity(this.blockPos.above()) instanceof TileEntityTerrapinEgg eggTe){
                     eggTe.parent1 = new TileEntityTerrapinEgg.ParentData(turtle.getTurtleType(), turtle.getShellType(), turtle.getSkinType(), turtle.getTurtleColor(), turtle.getShellColor(), turtle.getSkinColor());

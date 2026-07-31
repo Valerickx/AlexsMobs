@@ -13,7 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -33,14 +33,14 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -54,13 +54,13 @@ public class EntityGuster extends Monster {
     private int liftingTime = 0;
     private int maxLiftTime = 40;
     private int shootingTicks;
-    public static final ResourceLocation RED_LOOT = new ResourceLocation("alexsmobs", "entities/guster_red");
-    public static final ResourceLocation SOUL_LOOT = new ResourceLocation("alexsmobs", "entities/guster_soul");
+    public static final Identifier RED_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "entities/guster_red");
+    public static final Identifier SOUL_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "entities/guster_soul");
 
     protected EntityGuster(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setMaxUpStep(1);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
     }
 
     public int getAmbientSoundInterval() {
@@ -84,7 +84,7 @@ public class EntityGuster extends Monster {
     }
 
     @Nullable
-    protected ResourceLocation getDefaultLootTable() {
+    protected Identifier getDefaultLootTable() {
         return this.getVariant() == 2 ? SOUL_LOOT : this.getVariant() == 1 ? RED_LOOT : super.getDefaultLootTable();
     }
 
@@ -92,12 +92,12 @@ public class EntityGuster extends Monster {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.FOLLOW_RANGE, 32.0D).add(Attributes.ATTACK_DAMAGE, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.2D);
     }
 
-    public static boolean canGusterSpawn(EntityType animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canGusterSpawn(EntityType animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         boolean spawnBlock = worldIn.getBlockState(pos.below()).is(BlockTags.SAND);
         return spawnBlock && (!AMConfig.limitGusterSpawnsToWeather || worldIn.getLevelData() != null && (worldIn.getLevelData().isThundering() || worldIn.getLevelData().isRaining()) || isBiomeNether(worldIn, pos));
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.gusterSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -137,10 +137,10 @@ public class EntityGuster extends Monster {
         return this.entityData.get(LIFT_ENTITY) != 0;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(LIFT_ENTITY, 0);
-        this.entityData.define(VARIANT, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(LIFT_ENTITY, 0);
+        builder.define(VARIANT, 0);
     }
 
 
@@ -186,7 +186,7 @@ public class EntityGuster extends Monster {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason
             reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         if(this.isBiomeNether(worldIn, this.blockPosition())){
             this.setVariant(2);
@@ -215,7 +215,7 @@ public class EntityGuster extends Monster {
     public void aiStep() {
         super.aiStep();
         Entity lifted = this.getLiftedEntity();
-        if (lifted == null && !this.level().isClientSide && tickCount % 15 == 0) {
+        if (lifted == null && !this.level().isClientSide() && tickCount % 15 == 0) {
             List<ItemEntity> list = this.level().getEntitiesOfClass(ItemEntity.class, this.getBoundingBox().inflate(0.8F));
             ItemEntity closestItem = null;
             for (int i = 0; i < list.size(); ++i) {
@@ -266,7 +266,7 @@ public class EntityGuster extends Monster {
             this.setLiftedEntity(this.getTarget().getId());
             maxLiftTime = 30 + random.nextInt(30);
         }
-        if (!this.level().isClientSide && shootingTicks >= 0) {
+        if (!this.level().isClientSide() && shootingTicks >= 0) {
             if (shootingTicks <= 0) {
                 if (this.getTarget() != null && (lifted == null || lifted.getId() != this.getTarget().getId()) && this.isAlive()) {
                     this.spit(this.getTarget());
@@ -287,14 +287,14 @@ public class EntityGuster extends Monster {
         return s != null && s.toLowerCase().contains("tweester");
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("Variant", this.getVariant());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setVariant(compound.getInt("Variant"));
+        this.setVariant(compound.getIntOr("Variant", 0));
     }
 
     private static boolean isBiomeRed(LevelAccessor worldIn, BlockPos position) {

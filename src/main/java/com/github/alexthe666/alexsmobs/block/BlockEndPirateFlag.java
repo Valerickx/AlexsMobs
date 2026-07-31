@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -26,20 +26,27 @@ import java.util.Random;
 
 public class BlockEndPirateFlag extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final com.mojang.serialization.MapCodec<BlockEndPirateFlag> CODEC = simpleCodec(p -> new BlockEndPirateFlag());
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape AABB = Block.box(6, 0, 6, 10, 16, 10);
 
     public BlockEndPirateFlag() {
-        super(Properties.of().mapColor(MapColor.TERRACOTTA_WHITE).noOcclusion().sound(SoundType.WOOD).strength(1F).lightLevel((i) -> 15).noCollission().requiresCorrectToolForDrops());
+        super(Properties.of().mapColor(MapColor.TERRACOTTA_WHITE).noOcclusion().sound(SoundType.WOOD).strength(1F).lightLevel((i) -> 15).noCollision().requiresCorrectToolForDrops());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     public RenderShape getRenderShape(BlockState p_49232_) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     public BlockState updateShape(BlockState state, Direction direction, BlockState state2, LevelAccessor level, BlockPos pos, BlockPos p_52801_) {
-        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state2, level, pos, p_52801_);
+        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : state;
     }
 
     public VoxelShape getShape(BlockState p_54561_, BlockGetter p_54562_, BlockPos p_54563_, CollisionContext p_54564_) {

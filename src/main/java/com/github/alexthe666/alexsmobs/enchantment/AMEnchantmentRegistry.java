@@ -1,21 +1,18 @@
 package com.github.alexthe666.alexsmobs.enchantment;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
-import com.github.alexthe666.alexsmobs.item.ItemStraddleboard;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class AMEnchantmentRegistry {
 
-    public static final DeferredRegister<Enchantment> DEF_REG = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, AlexsMobs.MODID);
-    public static final EnchantmentCategory STRADDLEBOARD = EnchantmentCategory.create("straddleboard", (item -> item instanceof ItemStraddleboard));
+    public static final DeferredRegister<Enchantment> DEF_REG = DeferredRegister.create(Registries.ENCHANTMENT, AlexsMobs.MODID);
 
-    public static final RegistryObject<Enchantment> STRADDLE_JUMP = DEF_REG.register("straddle_jump", () -> new StraddleJumpEnchantment(Enchantment.Rarity.COMMON, STRADDLEBOARD, EquipmentSlot.MAINHAND));
-    public static final RegistryObject<Enchantment> STRADDLE_LAVAWAX = DEF_REG.register("lavawax", () -> new StraddleEnchantment(Enchantment.Rarity.UNCOMMON, STRADDLEBOARD, EquipmentSlot.MAINHAND));
-    public static final RegistryObject<Enchantment> STRADDLE_SERPENTFRIEND = DEF_REG.register("serpentfriend", () -> new StraddleEnchantment(Enchantment.Rarity.RARE, STRADDLEBOARD, EquipmentSlot.MAINHAND));
-    public static final RegistryObject<Enchantment> STRADDLE_BOARDRETURN = DEF_REG.register("board_return", () -> new StraddleEnchantment(Enchantment.Rarity.UNCOMMON, STRADDLEBOARD, EquipmentSlot.MAINHAND));
+    public static final ResourceKey<Enchantment> STRADDLE_JUMP = ResourceKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "straddle_jump"));
+    public static final ResourceKey<Enchantment> STRADDLE_LAVAWAX = ResourceKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "lavawax"));
+    public static final ResourceKey<Enchantment> STRADDLE_SERPENTFRIEND = ResourceKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "serpentfriend"));
+    public static final ResourceKey<Enchantment> STRADDLE_BOARDRETURN = ResourceKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "board_return"));
 }

@@ -15,22 +15,22 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tiers;
+
+
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 
-public class ItemTendonWhip extends SwordItem implements ILeftClick {
+public class ItemTendonWhip extends Item implements ILeftClick {
 
     private final ImmutableMultimap<Attribute, AttributeModifier> tendonModifiers;
 
     public ItemTendonWhip(Item.Properties props) {
-        super(Tiers.IRON, 3, 0, props);
+        super(props);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", (double)4F, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", (double)-3.0F, AttributeModifier.Operation.ADDITION));
@@ -92,7 +92,7 @@ public class ItemTendonWhip extends SwordItem implements ILeftClick {
         Level worldIn = playerIn.level();
         if (TendonWhipUtil.canLaunchTendons(worldIn, playerIn)) {
             TendonWhipUtil.retractFarTendons(worldIn, playerIn);
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 if (closestValid != null) {
                     EntityTendonSegment segment = AMEntityRegistry.TENDON_SEGMENT.get().create(worldIn);
                     segment.copyPosition(playerIn);
@@ -111,8 +111,8 @@ public class ItemTendonWhip extends SwordItem implements ILeftClick {
         return false;
     }
 
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-        return toolAction != ToolActions.SWORD_SWEEP && super.canPerformAction(stack, toolAction);
+    public boolean canPerformAction(ItemStack stack, ItemAbility ItemAbility) {
+        return ItemAbility != ItemAbilities.SWORD_SWEEP && super.canPerformAction(stack, ItemAbility);
     }
 
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {

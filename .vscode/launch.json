@@ -1,0 +1,71 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Client",
+      "presentation": {
+        "group": "Mod Development - AlexsMobs-26.2",
+        "order": 0
+      },
+      "projectName": "AlexsMobs-26.2",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\justi\\Documents\\GitHub\\AlexsMobs-26.2\\build\\moddev\\clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\justi\\Documents\\GitHub\\AlexsMobs-26.2\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dalexsmobs%%C:\\Users\\justi\\Documents\\GitHub\\AlexsMobs-26.2\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Data",
+      "presentation": {
+        "group": "Mod Development - AlexsMobs-26.2",
+        "order": 1
+      },
+      "projectName": "AlexsMobs-26.2",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\justi\\Documents\\GitHub\\AlexsMobs-26.2\\build\\moddev\\dataRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\justi\\Documents\\GitHub\\AlexsMobs-26.2\\build\\moddev\\dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dalexsmobs%%C:\\Users\\justi\\Documents\\GitHub\\AlexsMobs-26.2\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Server",
+      "presentation": {
+        "group": "Mod Development - AlexsMobs-26.2",
+        "order": 2
+      },
+      "projectName": "AlexsMobs-26.2",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\justi\\Documents\\GitHub\\AlexsMobs-26.2\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\justi\\Documents\\GitHub\\AlexsMobs-26.2\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dalexsmobs%%C:\\Users\\justi\\Documents\\GitHub\\AlexsMobs-26.2\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}

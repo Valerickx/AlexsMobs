@@ -6,14 +6,14 @@ import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -31,15 +31,15 @@ public class ItemSquidGrapple extends Item {
         return 72000;
     }
 
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
-    public InteractionResultHolder<ItemStack> use(Level p_40672_, Player p_40673_, InteractionHand p_40674_) {
+    public InteractionResult use(Level p_40672_, Player p_40673_, InteractionHand p_40674_) {
         ItemStack itemstack = p_40673_.getItemInHand(p_40674_);
         p_40673_.startUsingItem(p_40674_);
 
-        return InteractionResultHolder.pass(itemstack);
+        return InteractionResult.PASS;
     }
 
     public void onUseTick(Level worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
@@ -52,7 +52,7 @@ public class ItemSquidGrapple extends Item {
         }
         livingEntityIn.playSound(AMSoundRegistry.GIANT_SQUID_TENTACLE.get(),1.0F, 1.0F + (livingEntityIn.getRandom().nextFloat() - livingEntityIn.getRandom().nextFloat()) * 0.2F);
         livingEntityIn.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             boolean left = false;
             if (livingEntityIn.getUsedItemHand() == InteractionHand.OFF_HAND && livingEntityIn.getMainArm() == HumanoidArm.RIGHT || livingEntityIn.getUsedItemHand() == InteractionHand.MAIN_HAND && livingEntityIn.getMainArm() == HumanoidArm.LEFT) {
                 left = true;
@@ -63,7 +63,7 @@ public class ItemSquidGrapple extends Item {
             hook.shoot((double) vector3d.x(), (double) vector3d.y(), (double) vector3d.z(), getPowerForTime(power) * 3, 1);
             hook.setXRot(livingEntityIn.getXRot());
             hook.setYRot(livingEntityIn.getYRot());
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 worldIn.addFreshEntity(hook);
             }
             stack.hurtAndBreak(1, livingEntityIn, (playerIn) -> {

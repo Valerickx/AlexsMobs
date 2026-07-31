@@ -26,7 +26,7 @@ public class CapsidRecipe {
         NonNullList<Ingredient> nonnulllist = NonNullList.create();
 
         for (int i = 0; i < ingredientArray.size(); ++i) {
-            Ingredient ingredient = Ingredient.fromJson(ingredientArray.get(i));
+            Ingredient ingredient = Ingredient.CODEC.parse(com.mojang.serialization.JsonOps.INSTANCE, ingredientArray.get(i)).getOrThrow();
             if (!ingredient.isEmpty()) {
                 nonnulllist.add(ingredient);
             }
@@ -69,7 +69,7 @@ public class CapsidRecipe {
             int time = JsonUtils.getInt(jsonobject, "time");
             ItemStack result = ItemStack.EMPTY;
             if (jsonobject.has("result")) {
-                result = ShapedRecipe.itemStackFromJson(JsonUtils.getJsonObject(jsonobject, "result"));
+                result = ItemStack.CODEC.parse(com.mojang.serialization.JsonOps.INSTANCE, JsonUtils.getJsonObject(jsonobject, "result")).getOrThrow();
             }
             NonNullList<Ingredient> nonnulllist = readIngredients(JsonUtils.getJsonArray(jsonobject, "ingredients"));
             return new CapsidRecipe(nonnulllist, result, time);

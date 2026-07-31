@@ -32,7 +32,6 @@ public class ModelUnsettlingKimono extends HumanoidModel {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    @Override
     public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
     }

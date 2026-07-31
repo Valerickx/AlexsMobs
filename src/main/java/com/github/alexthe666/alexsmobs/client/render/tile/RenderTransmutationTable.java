@@ -7,21 +7,22 @@ import com.github.alexthe666.alexsmobs.tileentity.TileEntityTransmutationTable;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class RenderTransmutationTable<T extends TileEntityTransmutationTable> implements BlockEntityRenderer<T> {
+public class RenderTransmutationTable<T extends TileEntityTransmutationTable> implements BlockEntityRenderer<T, BlockEntityRenderState> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/farseer/transmutation_table.png");
-    private static final ResourceLocation OVERLAY = new ResourceLocation("alexsmobs:textures/entity/farseer/transmutation_table_overlay.png");
-    private static final ResourceLocation GLOW_TEXTURE = new ResourceLocation("alexsmobs:textures/entity/farseer/transmutation_table_glow.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/farseer/transmutation_table.png");
+    private static final Identifier OVERLAY = Identifier.parse("alexsmobs:textures/entity/farseer/transmutation_table_overlay.png");
+    private static final Identifier GLOW_TEXTURE = Identifier.parse("alexsmobs:textures/entity/farseer/transmutation_table_glow.png");
     private static final ModelTransmutationTable MODEL = new ModelTransmutationTable(0F);
     private static final ModelTransmutationTable OVERLAY_MODEL = new ModelTransmutationTable(0.01F);
 
@@ -29,7 +30,7 @@ public class RenderTransmutationTable<T extends TileEntityTransmutationTable> im
     }
 
     @Override
-    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         Direction dir = tileEntityIn.getBlockState().getValue(BlockTransmutationTable.FACING);
         switch (dir) {

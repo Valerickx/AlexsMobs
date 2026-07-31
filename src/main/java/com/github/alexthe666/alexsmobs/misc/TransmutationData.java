@@ -3,8 +3,8 @@ package com.github.alexthe666.alexsmobs.misc;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.util.valuetypes.ValueInput;
+import net.minecraft.util.valuetypes.ValueOutput;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -22,7 +22,7 @@ public class TransmutationData {
 
     public double getWeight(ItemStack stack){
         for(Object2DoubleMap.Entry<ItemStack> entry : itemstackData.object2DoubleEntrySet()){
-            if(ItemStack.isSameItemSameTags(stack, entry.getKey())){
+            if(ItemStack.areEqual(stack, entry.getKey())){
                 return entry.getDoubleValue();
             }
         }
@@ -40,7 +40,7 @@ public class TransmutationData {
     public void putWeight(ItemStack stack, double newWeight){
         ItemStack replace = stack;
         for(ItemStack entry : itemstackData.keySet()){
-            if(ItemStack.isSameItemSameTags(stack, entry)){
+            if(ItemStack.areEqual(stack, entry)){
                 replace = entry;
                 break;
             }
@@ -66,31 +66,35 @@ public class TransmutationData {
         return result;
     }
 
-    public CompoundTag saveAsNBT(){
-        CompoundTag compound = new CompoundTag();
-        ListTag listTag = new ListTag();
+    public void saveToValueOutput(ValueOutput output){
+        int i = 0;
         for(Object2DoubleMap.Entry<ItemStack> entry : itemstackData.object2DoubleEntrySet()) {
-            CompoundTag tag = new CompoundTag();
-            tag.put("Item", entry.getKey().save(new CompoundTag()));
-            tag.putDouble("Weight", entry.getDoubleValue());
-            listTag.add(tag);
+            ValueOutput itemEntry = output.write("Entry" + i);
+            ItemStack.CODEC.encode(entry.getKey(), itemEntry.write("Item"));
+            itemEntry.writeDouble("Weight", entry.getDoubleValue());
+            i++;
         }
-        compound.put("TransmutationData", listTag);
-        return compound;
+        output.writeInt("Size", i);
     }
 
-    public static TransmutationData fromNBT(CompoundTag compound){
+    public static TransmutationData fromValueInput(ValueInput input){
         TransmutationData data = new TransmutationData();
-        if (compound.contains("TransmutationData")) {
-            ListTag listtag = compound.getList("TransmutationData", 10);
-            for (int i = 0; i < listtag.size(); ++i) {
-                CompoundTag innerTag = listtag.getCompound(i);
-                try{
-                    ItemStack from = ItemStack.of(innerTag.getCompound("Item"));
-                    if(!from.isEmpty()){
-                        data.putWeight(from, innerTag.getDouble("Weight"));
+        int size = input.getIntOr("Size", 0);
+        for (int i = 0; i < size; ++i) {
+            java.util.Optional<ValueInput> entryOpt = input.read("Entry" + i);
+            if (entryOpt.isPresent()) {
+                ValueInput itemEntry = entryOpt.get();
+                try {
+                    java.util.Optional<ValueInput> itemIn = itemEntry.read("Item");
+                    double weight = itemEntry.getDoubleOr("Weight", 0.0);
+                    if (itemIn.isPresent()) {
+                        ItemStack from = ItemStack.CODEC.decode(itemIn.get()).result()
+                                .map(p -> p.getFirst()).orElse(ItemStack.EMPTY);
+                        if (!from.isEmpty() && weight > 0.0) {
+                            data.putWeight(from, weight);
+                        }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

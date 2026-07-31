@@ -4,7 +4,7 @@ import com.github.alexthe666.alexsmobs.entity.EntityEnderiophageRocket;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.Item;
@@ -21,7 +21,7 @@ public class ItemEnderiophageRocket extends Item {
 
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             ItemStack itemstack = context.getItemInHand();
             Vec3 vector3d = context.getClickLocation();
             Direction direction = context.getClickedFace();
@@ -31,22 +31,22 @@ public class ItemEnderiophageRocket extends Item {
                 itemstack.shrink(1);
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide);
+        return InteractionResult.sidedSuccess(world.isClientSide());
     }
 
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         if (playerIn.isFallFlying()) {
             ItemStack itemstack = playerIn.getItemInHand(handIn);
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 worldIn.addFreshEntity(new EntityEnderiophageRocket(worldIn, itemstack, playerIn));
                 if (!playerIn.getAbilities().instabuild) {
                     itemstack.shrink(1);
                 }
             }
 
-            return InteractionResultHolder.sidedSuccess(playerIn.getItemInHand(handIn), worldIn.isClientSide());
+            return InteractionResult.SUCCESS;
         } else {
-            return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
+            return InteractionResult.PASS;
         }
     }
 

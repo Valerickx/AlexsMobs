@@ -1,4 +1,6 @@
 package com.github.alexthe666.alexsmobs.world;
+import net.neoforged.fml.common.EventBusSubscriber;
+
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
@@ -8,7 +10,7 @@ import com.github.alexthe666.alexsmobs.misc.AMTagRegistry;
 import com.github.alexthe666.citadel.config.biome.SpawnBiomeData;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -16,12 +18,12 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraftforge.common.world.ModifiableBiomeInfo;
-import net.minecraftforge.common.world.ModifiableStructureInfo;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+import net.neoforged.neoforge.common.world.ModifiableStructureInfo;
+import net.neoforged.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Mod.EventBusSubscriber(modid = AlexsMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = AlexsMobs.MODID)
 public class AMWorldRegistry {
 
     public static void modifyStructure(Holder<Structure> structure, ModifiableStructureInfo.StructureInfo.Builder builder) {
@@ -39,7 +41,7 @@ public class AMWorldRegistry {
         }
     }
 
-    private static ResourceLocation getBiomeName(Holder<Biome> biome) {
+    private static Identifier getBiomeName(Holder<Biome> biome) {
         return biome.unwrap().map((resourceKey) -> resourceKey.location(), (noKey) -> null);
     }
 

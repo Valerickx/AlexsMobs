@@ -117,7 +117,7 @@ public class ModelAlligatorSnappingTurtle extends AdvancedEntityModel<EntityAlli
         float idleDegree = 0.25F;
         float walkSpeed = entityIn.isInWater() ? 0.5F : 1F;
         float walkDegree = 0.75F;
-        float partialTicks = Minecraft.getInstance().getFrameTime();
+        float partialTicks = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
         float openProgress = entityIn.prevOpenMouthProgress + (entityIn.openMouthProgress - entityIn.prevOpenMouthProgress) * partialTicks;
         float snapProgress = entityIn.prevAttackProgress + (entityIn.attackProgress - entityIn.prevAttackProgress) * partialTicks;
         progressRotationPrev(neck, openProgress, Maths.rad(-10), 0, 0, 5F);
@@ -142,7 +142,7 @@ public class ModelAlligatorSnappingTurtle extends AdvancedEntityModel<EntityAlli
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.head_inside.setScale(0.99F, 0.99F, 0.99F);
-        if (this.young) {
+        if (this.isBaby()) {
             this.head.setScale(1.5F, 1.5F, 1.5F);
             matrixStackIn.pushPose();
             matrixStackIn.scale(0.25F, 0.25F, 0.25F);

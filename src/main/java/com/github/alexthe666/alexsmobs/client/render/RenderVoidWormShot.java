@@ -1,22 +1,24 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelVoidWormShot;
 import com.github.alexthe666.alexsmobs.entity.EntityVoidWormShot;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 
 import static net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY;
 
-public class RenderVoidWormShot extends EntityRenderer<EntityVoidWormShot> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/void_worm/void_worm_shot.png");
+public class RenderVoidWormShot extends EntityRenderer<EntityVoidWormShot, EntityRenderState> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/void_worm/void_worm_shot.png");
     private static final ModelVoidWormShot MODEL = new ModelVoidWormShot();
 
     public RenderVoidWormShot(EntityRendererProvider.Context renderManager) {
@@ -24,12 +26,12 @@ public class RenderVoidWormShot extends EntityRenderer<EntityVoidWormShot> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityVoidWormShot entity) {
+    public Identifier getTextureLocation(EntityVoidWormShot entity) {
         return TEXTURE;
     }
 
     @Override
-    public void render(EntityVoidWormShot entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityVoidWormShot entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.mulPose((new Quaternionf()).rotateX(Maths.rad(180)));
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot())));

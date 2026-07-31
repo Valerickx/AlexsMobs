@@ -25,7 +25,7 @@ public class LaviathanAIRandomSwimming extends LavaAndWaterAIRandomSwimming {
             return null;
         }
         if(mob.getRandom().nextInt(3) == 0){
-            while(!this.mob.level().getBlockState(pos).getFluidState().isEmpty() && pos.getY() < mob.level().getMaxBuildHeight()){
+            while(!this.mob.level().getBlockState(pos).getFluidState().isEmpty() && pos.getY() < (mob.level().getMaxY() + 1)){
                 pos = pos.above();
             }
             pos = pos.below();

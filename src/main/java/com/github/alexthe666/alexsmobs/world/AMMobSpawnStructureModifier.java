@@ -2,17 +2,20 @@ package com.github.alexthe666.alexsmobs.world;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraftforge.common.world.ModifiableStructureInfo;
-import net.minecraftforge.common.world.StructureModifier;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.world.ModifiableStructureInfo;
+import net.neoforged.neoforge.common.world.StructureModifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class AMMobSpawnStructureModifier implements StructureModifier {
 
-    private static final RegistryObject<Codec<? extends StructureModifier>> SERIALIZER = RegistryObject.create(new ResourceLocation(AlexsMobs.MODID, "am_structure_spawns"), ForgeRegistries.Keys.STRUCTURE_MODIFIER_SERIALIZERS, AlexsMobs.MODID);
+    private static final DeferredHolder<MapCodec<? extends StructureModifier>, MapCodec<AMMobSpawnStructureModifier>> SERIALIZER = DeferredHolder.create(Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "am_structure_spawns"), NeoForgeRegistries.STRUCTURE_MODIFIER_SERIALIZERS, AlexsMobs.MODID);
 
     public AMMobSpawnStructureModifier() {
     }
@@ -25,11 +28,11 @@ public class AMMobSpawnStructureModifier implements StructureModifier {
         }
     }
 
-    public Codec<? extends StructureModifier> codec() {
-        return (Codec)SERIALIZER.get();
+    public MapCodec<? extends StructureModifier> codec() {
+        return SERIALIZER.get();
     }
 
-    public static Codec<AMMobSpawnStructureModifier> makeCodec() {
-        return Codec.unit(AMMobSpawnStructureModifier::new);
+    public static MapCodec<AMMobSpawnStructureModifier> makeCodec() {
+        return MapCodec.unit(AMMobSpawnStructureModifier::new);
     }
 }

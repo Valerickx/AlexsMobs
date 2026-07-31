@@ -22,7 +22,7 @@ import net.minecraft.world.entity.ai.goal.TryFindWaterGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -211,7 +211,7 @@ public class EntitySeaBear extends WaterAnimal implements IAnimatedEntity {
 
         @Override
         public boolean canUse() {
-            return EntitySeaBear.this.getTarget() != null && EntitySeaBear.this.getTarget().isInWaterOrBubble() && EntitySeaBear.this.getTarget().isAlive() && (EntitySeaBear.this.circleCooldown == 0 || EntitySeaBear.this.getAnimation() == ANIMATION_POINT);
+            return EntitySeaBear.this.getTarget() != null && EntitySeaBear.this.getTarget().isInWater() && EntitySeaBear.this.getTarget().isAlive() && (EntitySeaBear.this.circleCooldown == 0 || EntitySeaBear.this.getAnimation() == ANIMATION_POINT);
         }
 
         public void tick() {

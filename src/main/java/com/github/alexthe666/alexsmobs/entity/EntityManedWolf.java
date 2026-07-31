@@ -28,7 +28,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -46,8 +46,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -82,7 +82,7 @@ public class EntityManedWolf extends Animal implements ITargetsDroppedItems, IDa
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.FOLLOW_RANGE, 32.0D).add(Attributes.ATTACK_DAMAGE, 2.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.manedWolfSpawnRolls, this.getRandom(), spawnReasonIn) && super.checkSpawnRules(worldIn, spawnReasonIn);
     }
 
@@ -99,12 +99,12 @@ public class EntityManedWolf extends Animal implements ITargetsDroppedItems, IDa
         this.targetSelector.addGoal(1, new CreatureAITargetItems(this, false, 30));
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(EAR_PITCH, 0F);
-        this.entityData.define(EAR_YAW, 0F);
-        this.entityData.define(SHAKING_TIME, 0);
-        this.entityData.define(DANCING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(EAR_PITCH, 0F);
+        builder.define(EAR_YAW, 0F);
+        builder.define(SHAKING_TIME, 0);
+        builder.define(DANCING, false);
     }
 
     public float getEarYaw() {
@@ -239,7 +239,7 @@ public class EntityManedWolf extends Animal implements ITargetsDroppedItems, IDa
         prevEarYaw = this.getEarYaw();
         prevDanceProgress = danceProgress;
         prevShakeProgress = shakeProgress;
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             updateEars();
         }
         boolean dance = isDancing();
@@ -262,7 +262,7 @@ public class EntityManedWolf extends Animal implements ITargetsDroppedItems, IDa
         }
         if (this.isShaking()) {
             this.setShakingTime(this.getShakingTime() - 1);
-            if (this.level().isClientSide) {
+            if (this.level().isClientSide()) {
                 double d0 = this.random.nextGaussian() * 0.02D;
                 double d1 = 0.05F + this.random.nextGaussian() * 0.02D;
                 double d2 = this.random.nextGaussian() * 0.02D;

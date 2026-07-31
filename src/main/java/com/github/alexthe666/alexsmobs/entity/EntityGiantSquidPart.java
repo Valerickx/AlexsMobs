@@ -16,7 +16,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.PartEntity;
+import net.neoforged.neoforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
 
@@ -51,7 +51,7 @@ public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implement
     }
 
     public InteractionResult interact(Player player, InteractionHand hand) {
-        if(this.level().isClientSide && this.getParent() != null){
+        if(this.level().isClientSide() && this.getParent() != null){
             AlexsMobs.sendMSGToServer(new MessageInteractMultipart(this.getParent().getId(), hand == InteractionHand.OFF_HAND));
         }
         return this.getParent() == null ? InteractionResult.PASS : this.getParent().mobInteract(player, hand);
@@ -78,7 +78,7 @@ public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implement
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if(this.level().isClientSide && this.getParent() != null && !this.getParent().isInvulnerableTo(source) && !collisionOnly){
+        if(this.level().isClientSide() && this.getParent() != null && !this.getParent().isInvulnerableTo(source) && !collisionOnly){
             AlexsMobs.sendMSGToServer(new MessageHurtMultipart(this.getId(), this.getParent().getId(), amount, source.getMsgId()));
         }
         return !collisionOnly && !this.isInvulnerableTo(source) && this.getParent().attackEntityPartFrom(this, source, amount);
@@ -97,7 +97,7 @@ public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implement
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
 
     }
 
@@ -106,12 +106,12 @@ public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implement
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
 
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
 
     }
 

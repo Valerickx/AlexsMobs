@@ -28,6 +28,13 @@ import javax.annotation.Nullable;
 
 public class BlockEndPirateAnchorWinch extends BaseEntityBlock implements AMSpecialRenderBlock{
 
+    public static final com.mojang.serialization.MapCodec<BlockEndPirateAnchorWinch> CODEC = simpleCodec(p -> new BlockEndPirateAnchorWinch());
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
     public static final BooleanProperty EASTORWEST = BooleanProperty.create("eastorwest");
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     protected static final VoxelShape FULL_AABB_EW = Block.box(3.0D, 3.0D, 0.0D, 13.0D, 13.0D, 16.0D);
@@ -39,7 +46,7 @@ public class BlockEndPirateAnchorWinch extends BaseEntityBlock implements AMSpec
     }
 
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

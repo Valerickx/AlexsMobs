@@ -19,7 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -53,15 +53,15 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class EntityVoidWorm extends Monster {
 
-    public static final ResourceLocation SPLITTER_LOOT = new ResourceLocation("alexsmobs", "entities/void_worm_splitter");
+    public static final Identifier SPLITTER_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "entities/void_worm_splitter");
     private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Optional<UUID>> SPLIT_FROM_UUID = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> SEGMENT_COUNT = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.INT);
@@ -105,11 +105,11 @@ public class EntityVoidWorm extends Monster {
         return isSilent() ? 0 : 5;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.voidWormSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canVoidWormSpawn(EntityType animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canVoidWormSpawn(EntityType animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return true;
     }
 
@@ -118,7 +118,7 @@ public class EntityVoidWorm extends Monster {
     }
 
     @Nullable
-    protected ResourceLocation getDefaultLootTable() {
+    protected Identifier getDefaultLootTable() {
         return this.isSplitter() ? SPLITTER_LOOT : super.getDefaultLootTable();
     }
 
@@ -128,7 +128,7 @@ public class EntityVoidWorm extends Monster {
 
     public void die(DamageSource cause) {
        super.die(cause);
-       if(!this.level().isClientSide && !this.isSplitter()){
+       if(!this.level().isClientSide() && !this.isSplitter()){
            if(cause != null && cause.getEntity() instanceof ServerPlayer) {
                AMAdvancementTriggerRegistry.VOID_WORM_SLAY_HEAD.trigger((ServerPlayer) cause.getEntity());
            }
@@ -153,7 +153,7 @@ public class EntityVoidWorm extends Monster {
 
     private void placeDropsSafely(Collection<ItemEntity> drops) {
         BlockPos pos = this.blockPosition();
-        while(!level().getBlockState(pos).canBeReplaced() && pos.getY() < level().getMaxBuildHeight() - 2){
+        while(!level().getBlockState(pos).canBeReplaced() && pos.getY() < (level().getMaxY() + 1) - 2){
             pos = pos.above();
         }
         int radius = 2;
@@ -206,16 +206,16 @@ public class EntityVoidWorm extends Monster {
         return new DirectPathNavigator(this, level());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("ChildUUID")) {
-            this.setChildId(compound.getUUID("ChildUUID"));
+        if (compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setChildId(compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        this.setWormSpeed(compound.getFloat("WormSpeed"));
-        this.setSplitter(compound.getBoolean("Splitter"));
-        this.setPortalTicks(compound.getInt("PortalTicks"));
-        this.makeIdlePortalCooldown = compound.getInt("MakePortalTime");
-        this.makePortalCooldown = compound.getInt("MakePortalCooldown");
+        this.setWormSpeed(compound.getFloatOr("WormSpeed", 0.0F));
+        this.setSplitter(compound.getBooleanOr("Splitter", false));
+        this.setPortalTicks(compound.getIntOr("PortalTicks", 0));
+        this.makeIdlePortalCooldown = compound.getIntOr("MakePortalTime", 0);
+        this.makePortalCooldown = compound.getIntOr("MakePortalCooldown", 0);
         if (this.hasCustomName()) {
             this.bossInfo.setName(this.getDisplayName());
         }
@@ -231,10 +231,10 @@ public class EntityVoidWorm extends Monster {
         return true;
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getChildId() != null) {
-            compound.putUUID("ChildUUID", this.getChildId());
+            compound.store("ChildUUID", net.minecraft.core.UUIDUtil.CODEC, this.getChildId());
         }
         compound.putInt("PortalTicks", getPortalTicks());
         compound.putInt("MakePortalTime", makeIdlePortalCooldown);
@@ -245,7 +245,7 @@ public class EntityVoidWorm extends Monster {
 
     public Entity getChild() {
         UUID id = getChildId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -278,7 +278,7 @@ public class EntityVoidWorm extends Monster {
         } else if (this.getWormAngle() < 0) {
             this.setWormAngle(Math.min(this.getWormAngle() + 20, 0));
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (!fullyThrough) {
                 this.setDeltaMovement(this.getDeltaMovement().multiply(0.9F, 0.9F, 0.9F).add(0, -0.01, 0));
             } else {
@@ -318,15 +318,15 @@ public class EntityVoidWorm extends Monster {
                     launch(entity, false);
                 }
             }
-            this.setMaxUpStep(2F);
+            com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 2F);
         }else{
             this.setDeltaMovement(new Vec3(0, 0.03F, 0));
         }
         yBodyRot = getYRot();
         final float f2 = (float) -((float) this.getDeltaMovement().y * (double) Mth.RAD_TO_DEG);
         this.setXRot(f2);
-        this.setMaxUpStep(2F);
-        if (!this.level().isClientSide) {
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 2F);
+        if (!this.level().isClientSide()) {
             Entity child = getChild();
             if (child == null) {
                 LivingEntity partParent = this;
@@ -374,7 +374,7 @@ public class EntityVoidWorm extends Monster {
         if (updatePostSummon) {
             updatePostSummon = false;
         }
-        if (!this.isSilent() && !this.level().isClientSide) {
+        if (!this.isSilent() && !this.level().isClientSide()) {
             this.level().broadcastEntityEvent(this, (byte) 67);
         }
     }
@@ -396,7 +396,7 @@ public class EntityVoidWorm extends Monster {
             DamageSource source = this.getLastDamageSource() == null ? damageSources().generic() : this.getLastDamageSource();
             Entity entity = source.getEntity();
 
-            final int i = net.minecraftforge.common.ForgeHooks.getLootingLevel(this, entity, source);
+            final int i = net.neoforged.neoforge.common.ForgeHooks.getLootingLevel(this, entity, source);
             this.captureDrops(new java.util.ArrayList<>());
 
             final boolean flag = this.lastHurtByPlayerTime > 0;
@@ -409,7 +409,7 @@ public class EntityVoidWorm extends Monster {
 
             Collection<ItemEntity> drops = captureDrops(null);
 
-            if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, source, drops, i, lastHurtByPlayerTime > 0)){
+            if (!net.neoforged.neoforge.common.ForgeHooks.onLivingDrops(this, source, drops, i, lastHurtByPlayerTime > 0)){
                 if(!drops.isEmpty()){
                     this.placeDropsSafely(drops);
                 }
@@ -449,7 +449,7 @@ public class EntityVoidWorm extends Monster {
     }
 
     public void resetWormScales() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             Entity child = getChild();
             if (child == null) {
                 LivingEntity nextPart = this;
@@ -472,7 +472,7 @@ public class EntityVoidWorm extends Monster {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason
             reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setSegmentCount(25 + random.nextInt(15));
         this.setXRot(0.0F);
@@ -481,16 +481,16 @@ public class EntityVoidWorm extends Monster {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SPLIT_FROM_UUID, Optional.empty());
-        this.entityData.define(CHILD_UUID, Optional.empty());
-        this.entityData.define(SEGMENT_COUNT, 10);
-        this.entityData.define(JAW_TICKS, 0);
-        this.entityData.define(WORM_ANGLE, 0F);
-        this.entityData.define(SPEEDMOD, 1F);
-        this.entityData.define(SPLITTER, false);
-        this.entityData.define(PORTAL_TICKS, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SPLIT_FROM_UUID, Optional.empty());
+        builder.define(CHILD_UUID, Optional.empty());
+        builder.define(SEGMENT_COUNT, 10);
+        builder.define(JAW_TICKS, 0);
+        builder.define(WORM_ANGLE, 0F);
+        builder.define(SPEEDMOD, 1F);
+        builder.define(SPLITTER, false);
+        builder.define(PORTAL_TICKS, 0);
     }
 
 
@@ -607,7 +607,7 @@ public class EntityVoidWorm extends Monster {
     }
 
     public void createPortal(Vec3 from, Vec3 to, @Nullable Direction outDir) {
-        if (!this.level().isClientSide && portalTarget == null) {
+        if (!this.level().isClientSide() && portalTarget == null) {
             Vec3 Vector3d = new Vec3(this.getX(), this.getEyeY(), this.getZ());
             HitResult result = this.level().clip(new ClipContext(Vector3d, from, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
             Vec3 vec = result.getLocation() != null ? result.getLocation() : this.position();
@@ -621,7 +621,7 @@ public class EntityVoidWorm extends Monster {
             Direction dir = Direction.getNearest(dirVec.x, dirVec.y, dirVec.z);
             portal.setAttachmentFacing(dir);
             portal.setLifespan(10000);
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 level().addFreshEntity(portal);
             }
             portalTarget = portal;
@@ -645,7 +645,7 @@ public class EntityVoidWorm extends Monster {
             return;
         }
         boolean flag = false;
-        if (!this.level().isClientSide && this.blockBreakCounter == 0 && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(level(), this)) {
+        if (!this.level().isClientSide() && this.blockBreakCounter == 0 && net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(level(), this)) {
             for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
                 for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
                     for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {

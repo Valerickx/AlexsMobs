@@ -47,15 +47,15 @@ public class TileEntityTerrapinEgg extends BlockEntity {
     public void load(CompoundTag compound) {
         super.load(compound);
         if(compound.contains("Parent1Data")){
-            this.parent1 = new ParentData(compound.getCompound("Parent1Data"));
+            this.parent1 = new ParentData(compound.getCompoundOrEmpty("Parent1Data"));
         }
         if(compound.contains("Parent2Data")){
-            this.parent2 = new ParentData(compound.getCompound("Parent2Data"));
+            this.parent2 = new ParentData(compound.getCompoundOrEmpty("Parent2Data"));
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
+    protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput compound) {
         super.saveAdditional(compound);
         if(this.parent1 != null){
             CompoundTag tag = new CompoundTag();
@@ -88,7 +88,7 @@ public class TileEntityTerrapinEgg extends BlockEntity {
 
         public ParentData(CompoundTag tag){
             this(TerrapinTypes.values()[Mth.clamp(tag.getInt("TerrapinType"), 0, TerrapinTypes.values().length - 1)],
-                    tag.getInt("ShellType"),
+                    tag.getIntOr("ShellType", 0),
                     tag.getInt("SkinType"),
                     tag.getInt("TurtleColor"),
                     tag.getInt("ShellColor"),

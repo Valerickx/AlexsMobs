@@ -3,7 +3,7 @@ package com.github.alexthe666.alexsmobs.entity.ai;
 import com.github.alexthe666.alexsmobs.entity.EntityPlatypus;
 import com.github.alexthe666.alexsmobs.misc.AMTagRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
@@ -25,8 +25,8 @@ import java.util.List;
 
 public class PlatypusAIDigForItems extends Goal {
 
-    public static final ResourceLocation PLATYPUS_REWARD = new ResourceLocation("alexsmobs", "gameplay/platypus_reward");
-    public static final ResourceLocation PLATYPUS_REWARD_CHARGED = new ResourceLocation("alexsmobs", "gameplay/platypus_supercharged_reward");
+    public static final Identifier PLATYPUS_REWARD = Identifier.fromNamespaceAndPath("alexsmobs", "gameplay/platypus_reward");
+    public static final Identifier PLATYPUS_REWARD_CHARGED = Identifier.fromNamespaceAndPath("alexsmobs", "gameplay/platypus_supercharged_reward");
     private EntityPlatypus platypus;
     private BlockPos digPos;
     private int generatePosCooldown = 0;

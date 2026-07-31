@@ -10,7 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -52,10 +52,10 @@ public class ItemDimensionalCarver extends Item {
         return 1; // fix for incompatibility with other mods
     }
 
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
         if (itemstack.getDamageValue() >= itemstack.getMaxDamage()) {
-            return InteractionResultHolder.fail(itemstack);
+            return InteractionResult.FAIL;
         } else {
             playerIn.startUsingItem(handIn);
             HitResult raytraceresult = rayTracePortal(worldIn, playerIn, ClipContext.Fluid.ANY);
@@ -76,7 +76,7 @@ public class ItemDimensionalCarver extends Item {
                 itemstack.setTag(itemstack.getOrCreateTag());
             }
             worldIn.addParticle(AMParticleRegistry.INVERT_DIG.get(), x, y, z, playerIn.getId(), 0, 0);
-            return InteractionResultHolder.consume(itemstack);
+            return InteractionResult.CONSUME;
         }
 
     }
@@ -110,7 +110,7 @@ public class ItemDimensionalCarver extends Item {
                     ((Player) player).getCooldowns().addCooldown(this, 40);
                 }
             }
-            if (count == 1 && !player.level().isClientSide) {
+            if (count == 1 && !player.level().isClientSide()) {
                 player.gameEvent(GameEvent.ITEM_INTERACT_START);
                 player.playSound(SoundEvents.GLASS_BREAK, 1, 0.5F);
                 EntityVoidPortal portal = new EntityVoidPortal(player.level(), this);

@@ -4,8 +4,8 @@ import com.github.alexthe666.alexsmobs.AlexsMobs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.Supplier;
 
@@ -35,9 +35,9 @@ public class MessageSendVisualFlagFromServer {
         public Handler() {
         }
 
-        public static void handle(MessageSendVisualFlagFromServer message, Supplier<NetworkEvent.Context> context) {
-            context.get().setPacketHandled(true);
-            context.get().enqueueWork(() -> {
+        public static void handle(MessageSendVisualFlagFromServer message, IPayloadContext context) {
+            
+            context.enqueueWork(() -> {
                 Player player = context.get().getSender();
                 if(context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT){
                     player = AlexsMobs.PROXY.getClientSidePlayer();

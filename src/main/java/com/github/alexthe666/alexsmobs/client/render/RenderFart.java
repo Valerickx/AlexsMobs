@@ -1,27 +1,29 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelFart;
 import com.github.alexthe666.alexsmobs.entity.EntityFart;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class RenderFart extends EntityRenderer<EntityFart> {
-    private static final ResourceLocation FART_TEXTURE = new ResourceLocation("alexsmobs:textures/entity/fart.png");
+public class RenderFart extends EntityRenderer<EntityFart, EntityRenderState> {
+    private static final Identifier FART_TEXTURE = Identifier.parse("alexsmobs:textures/entity/fart.png");
     private static final ModelFart MODEL = new ModelFart();
 
     public RenderFart(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn);
     }
 
-    public void render(EntityFart entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityFart entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         float f = Math.min(entityIn.tickCount + partialTicks, 30F) / 30F;
         float alpha = 1F - f;
         matrixStackIn.pushPose();
@@ -38,7 +40,7 @@ public class RenderFart extends EntityRenderer<EntityFart> {
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getTextureLocation(EntityFart entity) {
+    public Identifier getTextureLocation(EntityFart entity) {
         return FART_TEXTURE;
     }
 }

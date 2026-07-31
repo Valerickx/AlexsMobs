@@ -10,21 +10,21 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class ParticleSkulkBoom extends Particle {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/particle/skulk_boom.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/particle/skulk_boom.png");
     private float size;
     private float prevSize;
     private float prevAlpha;
@@ -63,8 +63,8 @@ public class ParticleSkulkBoom extends Particle {
         float f1 = (float)(Mth.lerp((double)partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float)(Mth.lerp((double)partialTick, this.zo, this.z) - vec3.z());
         Quaternionf quaternion = Axis.XP.rotationDegrees(90F);
-        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer portalStatic = multibuffersource$buffersource.getBuffer(AMRenderTypes.getSkulkBoom());
+        OrderedSubmitNodeCollector.BufferSource OrderedSubmitNodeCollector$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer portalStatic = OrderedSubmitNodeCollector$buffersource.getBuffer(AMRenderTypes.getSkulkBoom());
         PoseStack posestack = new PoseStack();
         PoseStack.Pose posestack$pose = posestack.last();
         Matrix4f matrix4f = posestack$pose.pose();
@@ -91,7 +91,7 @@ public class ParticleSkulkBoom extends Particle {
         portalStatic.vertex((double)avector3f[2].x(), (double)avector3f[2].y(), (double)avector3f[2].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f7, f5).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(j).normal(matrix3f, 0.0F, -1.0F, 0.0F).endVertex();
         portalStatic.vertex((double)avector3f[3].x(), (double)avector3f[3].y(), (double)avector3f[3].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f7, f6).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(j).normal(matrix3f, 0.0F, -1.0F, 0.0F).endVertex();
 
-        multibuffersource$buffersource.endBatch();
+        OrderedSubmitNodeCollector$buffersource.endBatch();
     }
     @Override
     public ParticleRenderType getRenderType() {

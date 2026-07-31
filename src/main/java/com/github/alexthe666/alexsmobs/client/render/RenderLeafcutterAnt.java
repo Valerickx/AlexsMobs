@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelLeafcutterAnt;
 import com.github.alexthe666.alexsmobs.client.model.ModelLeafcutterAntQueen;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerLeafcutterAntLeaf;
@@ -10,16 +12,17 @@ import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderLeafcutterAnt extends MobRenderer<EntityLeafcutterAnt, AdvancedEntityModel<EntityLeafcutterAnt>> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/leafcutter_ant.png");
-    private static final ResourceLocation TEXTURE_QUEEN = new ResourceLocation("alexsmobs:textures/entity/leafcutter_ant_queen.png");
-    private static final ResourceLocation TEXTURE_ANGRY = new ResourceLocation("alexsmobs:textures/entity/leafcutter_ant_angry.png");
-    private static final ResourceLocation TEXTURE_QUEEN_ANGRY = new ResourceLocation("alexsmobs:textures/entity/leafcutter_ant_queen_angry.png");
+public class RenderLeafcutterAnt extends MobRenderer<EntityLeafcutterAnt, LivingEntityRenderState, AdvancedEntityModel<EntityLeafcutterAnt>> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/leafcutter_ant.png");
+    private static final Identifier TEXTURE_QUEEN = Identifier.parse("alexsmobs:textures/entity/leafcutter_ant_queen.png");
+    private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/leafcutter_ant_angry.png");
+    private static final Identifier TEXTURE_QUEEN_ANGRY = Identifier.parse("alexsmobs:textures/entity/leafcutter_ant_queen_angry.png");
     private final ModelLeafcutterAnt modelAnt = new ModelLeafcutterAnt();
     private final ModelLeafcutterAntQueen modelQueen = new ModelLeafcutterAntQueen();
 
@@ -111,7 +114,7 @@ public class RenderLeafcutterAnt extends MobRenderer<EntityLeafcutterAnt, Advanc
     }
 
 
-    public ResourceLocation getTextureLocation(EntityLeafcutterAnt entity) {
+    public Identifier getTextureLocation(EntityLeafcutterAnt entity) {
         if(entity.getRemainingPersistentAngerTime() > 0){
             return entity.isQueen() ? TEXTURE_QUEEN_ANGRY : TEXTURE_ANGRY;
         }else {

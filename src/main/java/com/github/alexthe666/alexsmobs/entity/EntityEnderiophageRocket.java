@@ -15,10 +15,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+
 
 import javax.annotation.Nullable;
 import java.util.OptionalInt;
@@ -52,19 +52,15 @@ public class EntityEnderiophageRocket extends FireworkRocketEntity {
         this.entityData.set(DATA_ATTACHED_TO_TARGET, OptionalInt.of(p_i47367_3_.getId()));
     }
 
-    public EntityEnderiophageRocket(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.ENDERIOPHAGE_ROCKET.get(), world);
-    }
-
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     public void tick() {
         super.tick();
         ++this.phageAge;
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             this.level().addParticle(ParticleTypes.END_ROD, this.getX(), this.getY() - 0.3D, this.getZ(), this.random.nextGaussian() * 0.05D, -this.getDeltaMovement().y * 0.5D, this.random.nextGaussian() * 0.05D);
         }
     }

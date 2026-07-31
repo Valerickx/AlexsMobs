@@ -1,33 +1,36 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelTerrapin;
 import com.github.alexthe666.alexsmobs.entity.EntityTerrapin;
 import com.github.alexthe666.alexsmobs.entity.util.TerrapinTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderTerrapin extends MobRenderer<EntityTerrapin, ModelTerrapin> {
+public class RenderTerrapin extends MobRenderer<EntityTerrapin, LivingEntityRenderState, ModelTerrapin> {
 
-    private static final ResourceLocation[] SHELL_TEXTURES = {
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_0.png"),
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_1.png"),
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_2.png"),
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_3.png"),
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_4.png"),
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_5.png")
+    private static final Identifier[] SHELL_TEXTURES = {
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_0.png"),
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_1.png"),
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_2.png"),
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_3.png"),
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_4.png"),
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_5.png")
     };
-    private static final ResourceLocation[] SKIN_PATTERN_TEXTURES = {
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_skin_pattern_0.png"),
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_skin_pattern_1.png"),
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_skin_pattern_2.png"),
-            new ResourceLocation("alexsmobs:textures/entity/terrapin/overlay/terrapin_skin_pattern_3.png")
+    private static final Identifier[] SKIN_PATTERN_TEXTURES = {
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_skin_pattern_0.png"),
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_skin_pattern_1.png"),
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_skin_pattern_2.png"),
+            Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_skin_pattern_3.png")
     };
 
     public RenderTerrapin(EntityRendererProvider.Context renderManagerIn) {
@@ -41,7 +44,7 @@ public class RenderTerrapin extends MobRenderer<EntityTerrapin, ModelTerrapin> {
     }
 
 
-    public ResourceLocation getTextureLocation(EntityTerrapin entity) {
+    public Identifier getTextureLocation(EntityTerrapin entity) {
         if(entity.isKoopa()){
             return TerrapinTypes.KOOPA.getTexture();
         }
@@ -84,9 +87,9 @@ public class RenderTerrapin extends MobRenderer<EntityTerrapin, ModelTerrapin> {
             this.layer = layer;
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource buffer, int packedLightIn, EntityTerrapin turtle, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector buffer, int packedLightIn, EntityTerrapin turtle, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(turtle.getTurtleType() == TerrapinTypes.OVERLAY && !turtle.isKoopa()){
-                ResourceLocation tex = layer == 0 ? this.getTextureLocation(turtle) : layer == 1 ? SHELL_TEXTURES[turtle.getShellType() % SHELL_TEXTURES.length] : SKIN_PATTERN_TEXTURES[turtle.getSkinType() % SKIN_PATTERN_TEXTURES.length];
+                Identifier tex = layer == 0 ? this.getTextureLocation(turtle) : layer == 1 ? SHELL_TEXTURES[turtle.getShellType() % SHELL_TEXTURES.length] : SKIN_PATTERN_TEXTURES[turtle.getSkinType() % SKIN_PATTERN_TEXTURES.length];
                 int color = layer == 0 ? turtle.getTurtleColor() : layer == 1 ? turtle.getShellColor() : turtle.getSkinColor();
                 float r = (float) (color >> 16 & 255) / 255.0F;
                 float g = (float) (color >> 8 & 255) / 255.0F;

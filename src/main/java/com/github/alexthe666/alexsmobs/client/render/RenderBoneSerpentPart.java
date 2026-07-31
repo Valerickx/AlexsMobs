@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelBoneSerpentBody;
 import com.github.alexthe666.alexsmobs.client.model.ModelBoneSerpentTail;
 import com.github.alexthe666.alexsmobs.entity.EntityBoneSerpentPart;
@@ -7,11 +9,12 @@ import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderBoneSerpentPart extends LivingEntityRenderer<EntityBoneSerpentPart, AdvancedEntityModel<EntityBoneSerpentPart>> {
-    private static final ResourceLocation TEXTURE_BODY = new ResourceLocation("alexsmobs:textures/entity/bone_serpent_mid.png");
-    private static final ResourceLocation TEXTURE_TAIL = new ResourceLocation("alexsmobs:textures/entity/bone_serpent_tail.png");
+public class RenderBoneSerpentPart extends LivingEntityRenderer<EntityBoneSerpentPart, LivingEntityRenderState, AdvancedEntityModel<EntityBoneSerpentPart>> {
+    private static final Identifier TEXTURE_BODY = Identifier.parse("alexsmobs:textures/entity/bone_serpent_mid.png");
+    private static final Identifier TEXTURE_TAIL = Identifier.parse("alexsmobs:textures/entity/bone_serpent_tail.png");
     private final ModelBoneSerpentBody bodyModel = new ModelBoneSerpentBody();
     private final ModelBoneSerpentTail tailModel = new ModelBoneSerpentTail();
 
@@ -29,7 +32,7 @@ public class RenderBoneSerpentPart extends LivingEntityRenderer<EntityBoneSerpen
     }
 
 
-    public ResourceLocation getTextureLocation(EntityBoneSerpentPart entity) {
+    public Identifier getTextureLocation(EntityBoneSerpentPart entity) {
         return entity.isTail() ? TEXTURE_TAIL : TEXTURE_BODY;
     }
 }

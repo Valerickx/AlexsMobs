@@ -68,7 +68,7 @@ public class AnimalAILootChests extends MoveToBlockGoal {
             return false;
         }
         if (this.nextStartTick <= 0) {
-            if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entity.level(), this.entity)) {
+            if (!net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(this.entity.level(), this.entity)) {
                 return false;
             }
         }
@@ -121,13 +121,13 @@ public class AnimalAILootChests extends MoveToBlockGoal {
                 if (hasLineOfSightChest()) {
                     if (this.isReachedTarget() && distance <= 3) {
                         toggleChest(feeder, false);
-                        ItemStack stack = getFoodFromInventory(feeder, this.entity.level().random);
+                        ItemStack stack = getFoodFromInventory(feeder, this.entity.level().getRandom());
                         if (stack == ItemStack.EMPTY) {
                             this.stop();
                         } else {
                             ItemStack duplicate = stack.copy();
                             duplicate.setCount(1);
-                            if (!this.entity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.entity.level().isClientSide) {
+                            if (!this.entity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.entity.level().isClientSide()) {
                                 this.entity.spawnAtLocation(this.entity.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
                             }
                             this.entity.setItemInHand(InteractionHand.MAIN_HAND, duplicate);

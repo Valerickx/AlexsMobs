@@ -41,7 +41,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.Vec3;
 
@@ -71,8 +71,8 @@ public class EntityAnaconda extends Animal implements ISemiAquatic {
 
     protected EntityAnaconda(EntityType t, Level world) {
         super(t, world);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
         switchNavigator(true);
     }
 
@@ -97,12 +97,12 @@ public class EntityAnaconda extends Animal implements ISemiAquatic {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 40.0D).add(Attributes.MOVEMENT_SPEED, 0.15F);
     }
 
-    public static boolean canAnacondaSpawn(EntityType type, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static boolean canAnacondaSpawn(EntityType type, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         final boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.ANACONDA_SPAWNS);
         return spawnBlock && pos.getY() < worldIn.getSeaLevel() + 4;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.anacondaSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -152,22 +152,22 @@ public class EntityAnaconda extends Animal implements ISemiAquatic {
         return super.mobInteract(player, hand);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("ChildUUID")) {
-            this.setChildId(compound.getUUID("ChildUUID"));
+        if (compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setChildId(compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        feedings = compound.getInt("Feedings");
-        this.setSheddingTime(compound.getInt("ShedTime"));
-        this.setYellow(compound.getBoolean("Yellow"));
-        shedCooldown = compound.getInt("ShedCooldown");
-        passiveFor = compound.getInt("PassiveFor");
+        feedings = compound.getIntOr("Feedings", 0);
+        this.setSheddingTime(compound.getIntOr("ShedTime", 0));
+        this.setYellow(compound.getBooleanOr("Yellow", false));
+        shedCooldown = compound.getIntOr("ShedCooldown", 0);
+        passiveFor = compound.getIntOr("PassiveFor", 0);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getChildId() != null) {
-            compound.putUUID("ChildUUID", this.getChildId());
+            compound.store("ChildUUID", net.minecraft.core.UUIDUtil.CODEC, this.getChildId());
         }
         compound.putInt("Feedings", feedings);
         compound.putInt("ShedTime", getSheddingTime());
@@ -183,13 +183,13 @@ public class EntityAnaconda extends Animal implements ISemiAquatic {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CHILD_UUID, Optional.empty());
-        this.entityData.define(CHILD_ID, -1);
-        this.entityData.define(STRANGLING, false);
-        this.entityData.define(YELLOW, false);
-        this.entityData.define(SHEDTIME, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CHILD_UUID, Optional.empty());
+        builder.define(CHILD_ID, -1);
+        builder.define(STRANGLING, false);
+        builder.define(YELLOW, false);
+        builder.define(SHEDTIME, 0);
     }
 
     @Nullable
@@ -235,7 +235,7 @@ public class EntityAnaconda extends Animal implements ISemiAquatic {
 
     public Entity getChild() {
         UUID id = getChildId();
-        if (id != null && !level().isClientSide) {
+        if (id != null && !level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -279,7 +279,7 @@ public class EntityAnaconda extends Animal implements ISemiAquatic {
         this.yHeadRot = Mth.clamp(this.yHeadRot, this.yBodyRot - 70, this.yBodyRot + 70);
 
         if (this.isStrangling()) {
-            if (!level().isClientSide && this.getTarget() != null && this.getTarget().isAlive()) {
+            if (!level().isClientSide() && this.getTarget() != null && this.getTarget().isAlive()) {
                 this.setXRot(0);
                 final LivingEntity target = this.getTarget();
                 final float radius = this.getTarget().getBbWidth() * -0.5F;
@@ -320,7 +320,7 @@ public class EntityAnaconda extends Animal implements ISemiAquatic {
         }
         this.ringBuffer[this.ringBufferIndex] = this.getYRot();
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final int segments = 7;
             final Entity child = getChild();
             if (child == null) {
@@ -475,7 +475,7 @@ public class EntityAnaconda extends Animal implements ISemiAquatic {
     public ItemEntity spawnItemAtOffset(ItemStack stack, float f, float f1) {
         if (stack.isEmpty()) {
             return null;
-        } else if (this.level().isClientSide) {
+        } else if (this.level().isClientSide()) {
             return null;
         } else {
             final Vec3 vec = new Vec3(0, 0, f).yRot(-f * Mth.DEG_TO_RAD);
@@ -563,7 +563,7 @@ public class EntityAnaconda extends Animal implements ISemiAquatic {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setYellow(random.nextBoolean());
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }

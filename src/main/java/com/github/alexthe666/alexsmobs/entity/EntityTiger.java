@@ -49,7 +49,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
@@ -98,12 +98,12 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
 
     protected EntityTiger(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0);
+        this.setPathfindingMalus(PathType.WATER, 0);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0);
         this.moveControl = new MovementControllerCustomCollisions(this);
     }
 
-    public static boolean canTigerSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canTigerSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return worldIn.getRawBrightness(pos, 0) > 8;
     }
 
@@ -111,7 +111,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 50D).add(Attributes.ATTACK_DAMAGE, 12.0D).add(Attributes.MOVEMENT_SPEED, 0.25F).add(Attributes.FOLLOW_RANGE, 86);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.tigerSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -123,30 +123,30 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
         return !worldIn.containsAnyLiquid(this.getBoundingBox());
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("TigerSitting", this.isSitting());
         compound.putBoolean("TigerSleeping", this.isSleeping());
         compound.putBoolean("White", this.isWhite());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setSitting(compound.getBoolean("TigerSitting"));
-        this.setSleeping(compound.getBoolean("TigerSleeping"));
-        this.setWhite(compound.getBoolean("White"));
+        this.setSitting(compound.getBooleanOr("TigerSitting", false));
+        this.setSleeping(compound.getBooleanOr("TigerSleeping", false));
+        this.setWhite(compound.getBooleanOr("White", false));
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(WHITE, false);
-        this.entityData.define(RUNNING, false);
-        this.entityData.define(SITTING, false);
-        this.entityData.define(STEALTH_MODE, false);
-        this.entityData.define(HOLDING, false);
-        this.entityData.define(SLEEPING, false);
-        this.entityData.define(ANGER_TIME, 0);
-        this.entityData.define(LAST_SCARED_MOB_ID, -1);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(WHITE, false);
+        builder.define(RUNNING, false);
+        builder.define(SITTING, false);
+        builder.define(STEALTH_MODE, false);
+        builder.define(HOLDING, false);
+        builder.define(SLEEPING, false);
+        builder.define(ANGER_TIME, 0);
+        builder.define(LAST_SCARED_MOB_ID, -1);
     }
 
     protected void registerGoals() {
@@ -295,7 +295,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
     }
 
     protected void customServerAiStep() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.updatePersistentAnger((ServerLevel) this.level(), false);
         }
     }
@@ -352,26 +352,26 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
                 stealthProgress--;
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (isRunning() && !hasSpedUp) {
                 hasSpedUp = true;
-                this.setMaxUpStep(1F);
+                com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1F);
                 this.setSprinting(true);
                 this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.4F);
             }
             if (!isRunning() && hasSpedUp) {
                 hasSpedUp = false;
-                this.setMaxUpStep(0.6F);
+                com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 0.6F);
                 this.setSprinting(false);
                 this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25F);
             }
-            if ((isSitting() || isSleeping()) && (++sittingTime > maxSitTime || this.getTarget() != null || this.isInLove() || dontSitFlag || this.isInWaterOrBubble())) {
+            if ((isSitting() || isSleeping()) && (++sittingTime > maxSitTime || this.getTarget() != null || this.isInLove() || dontSitFlag || this.isInWater())) {
                 this.setSitting(false);
                 this.setSleeping(false);
                 sittingTime = 0;
                 maxSitTime = 100 + random.nextInt(50);
             }
-            if (this.getTarget() == null && !dontSitFlag && this.getDeltaMovement().lengthSqr() < 0.03D && this.getAnimation() == NO_ANIMATION && !this.isSleeping() && !this.isSitting() && !this.isInWaterOrBubble() && random.nextInt(100) == 0) {
+            if (this.getTarget() == null && !dontSitFlag && this.getDeltaMovement().lengthSqr() < 0.03D && this.getAnimation() == NO_ANIMATION && !this.isSleeping() && !this.isSitting() && !this.isInWater() && random.nextInt(100) == 0) {
                 sittingTime = 0;
                 if (this.getRandom().nextBoolean()) {
                     maxSitTime = 100 + random.nextInt(550);
@@ -391,7 +391,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
             this.setSprinting(false);
             this.setRunning(false);
             Entity target = this.getTarget();
-            if (!this.level().isClientSide && target != null && target.isAlive()) {
+            if (!this.level().isClientSide() && target != null && target.isAlive()) {
                 this.setXRot(0);
                 final float radius = 1.0F + target.getBbWidth() * 0.5F;
                 final float angle = (Maths.STARTING_ANGLE * this.yBodyRot);
@@ -417,7 +417,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
         } else {
             holdTime = 0;
         }
-        if (prevScaredMobId != this.entityData.get(LAST_SCARED_MOB_ID) && this.level().isClientSide) {
+        if (prevScaredMobId != this.entityData.get(LAST_SCARED_MOB_ID) && this.level().isClientSide()) {
             Entity e = level().getEntity(this.entityData.get(LAST_SCARED_MOB_ID));
             if (e != null) {
                 final double d2 = this.random.nextGaussian() * 0.1D;
@@ -574,8 +574,8 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
     }
 
     static class TigerNodeEvaluator extends WalkNodeEvaluator {
-        protected BlockPathTypes evaluateBlockPathType(BlockGetter level, BlockPos pos, BlockPathTypes typeIn) {
-            return typeIn == BlockPathTypes.LEAVES || level.getBlockState(pos).getBlock() == Blocks.BAMBOO ? BlockPathTypes.OPEN : super.evaluateBlockPathType(level, pos, typeIn);
+        protected PathType evaluateBlockPathType(BlockGetter level, BlockPos pos, PathType typeIn) {
+            return typeIn == PathType.LEAVES || level.getBlockState(pos).getBlock() == Blocks.BAMBOO ? PathType.OPEN : super.evaluateBlockPathType(level, pos, typeIn);
         }
     }
 
@@ -632,7 +632,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
                     tiger.setAnimation(ANIMATION_LEAP);
                     jumpAttemptCooldown = 70;
                 }
-                if ((jumpAttemptCooldown > 0 || tiger.isInWaterOrBubble()) && !tiger.isHolding() && tiger.getAnimation() == NO_ANIMATION && dist < 4 + target.getBbWidth()) {
+                if ((jumpAttemptCooldown > 0 || tiger.isInWater()) && !tiger.isHolding() && tiger.getAnimation() == NO_ANIMATION && dist < 4 + target.getBbWidth()) {
                     tiger.setAnimation(tiger.getRandom().nextBoolean() ? ANIMATION_PAW_L : ANIMATION_PAW_R);
                 }
                 if (dist < 4 + target.getBbWidth() && (tiger.getAnimation() == ANIMATION_PAW_L || tiger.getAnimation() == ANIMATION_PAW_R) && tiger.getAnimationTick() == 8) {

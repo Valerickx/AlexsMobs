@@ -1,21 +1,24 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelLaviathan;
 import com.github.alexthe666.alexsmobs.entity.EntityLaviathan;
 import com.github.alexthe666.alexsmobs.entity.EntityLaviathanPart;
 import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,12 +26,12 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
-public class RenderLaviathan extends MobRenderer<EntityLaviathan, ModelLaviathan> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/laviathan.png");
-    private static final ResourceLocation TEXTURE_GLOW = new ResourceLocation("alexsmobs:textures/entity/laviathan_glow.png");
-    private static final ResourceLocation TEXTURE_OBSIDIAN = new ResourceLocation("alexsmobs:textures/entity/laviathan_obsidian.png");
-    private static final ResourceLocation TEXTURE_GEAR = new ResourceLocation("alexsmobs:textures/entity/laviathan_gear.png");
-    private static final ResourceLocation TEXTURE_HELMET = new ResourceLocation("alexsmobs:textures/entity/laviathan_helmet.png");
+public class RenderLaviathan extends MobRenderer<EntityLaviathan, LivingEntityRenderState, ModelLaviathan> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/laviathan.png");
+    private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/laviathan_glow.png");
+    private static final Identifier TEXTURE_OBSIDIAN = Identifier.parse("alexsmobs:textures/entity/laviathan_obsidian.png");
+    private static final Identifier TEXTURE_GEAR = Identifier.parse("alexsmobs:textures/entity/laviathan_gear.png");
+    private static final Identifier TEXTURE_HELMET = Identifier.parse("alexsmobs:textures/entity/laviathan_helmet.png");
     private static final float REINS_COLOR_R = 98F / 255F;
     private static final float REINS_COLOR_G = 77F / 255F;
     private static final float REINS_COLOR_B = 52F / 255F;
@@ -75,7 +78,7 @@ public class RenderLaviathan extends MobRenderer<EntityLaviathan, ModelLaviathan
         }
     }
 
-    public void render(EntityLaviathan mob, float p_115456_, float partialTick, PoseStack ms, MultiBufferSource p_115459_, int p_115460_) {
+    public void render(EntityLaviathan mob, float p_115456_, float partialTick, PoseStack ms, OrderedSubmitNodeCollector p_115459_, int p_115460_) {
         super.render(mob, p_115456_, partialTick, ms, p_115459_, p_115460_);
         Entity entity = mob.getControllingPassenger();
         if (entity != null) {
@@ -94,10 +97,10 @@ public class RenderLaviathan extends MobRenderer<EntityLaviathan, ModelLaviathan
     }
 
     protected boolean isShaking(EntityLaviathan entity) {
-        return entity.isInWaterRainOrBubble() && !entity.isObsidian() && !renderWithoutShaking;
+        return entity.isInWaterOrRain() && !entity.isObsidian() && !renderWithoutShaking;
     }
 
-    public ResourceLocation getTextureLocation(EntityLaviathan entity) {
+    public Identifier getTextureLocation(EntityLaviathan entity) {
         return entity.isObsidian() ? TEXTURE_OBSIDIAN : TEXTURE;
     }
 
@@ -128,7 +131,7 @@ public class RenderLaviathan extends MobRenderer<EntityLaviathan, ModelLaviathan
         return 0.8F * Mth.cos(swing * idleSpeed * moveScale + boxOffset * (float) 2) * swingAmount * idleDegree * moveScale;
     }
 
-    private <E extends Entity> void renderRein(EntityLaviathan mob, float partialTick, PoseStack p_115464_, MultiBufferSource p_115465_, E rider, boolean left) {
+    private <E extends Entity> void renderRein(EntityLaviathan mob, float partialTick, PoseStack p_115464_, OrderedSubmitNodeCollector p_115465_, E rider, boolean left) {
         p_115464_.pushPose();
         Entity head = mob.headPart;
         if (head == null) {
@@ -209,7 +212,7 @@ public class RenderLaviathan extends MobRenderer<EntityLaviathan, ModelLaviathan
             super(render);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityLaviathan laviathan, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityLaviathan laviathan, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (!laviathan.isObsidian()) {
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.eyes(TEXTURE_GLOW));
                 this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);

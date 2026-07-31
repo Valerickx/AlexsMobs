@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ItemGhostlyPickaxe extends PickaxeItem {
+public class ItemGhostlyPickaxe extends Item {
 
     public ItemGhostlyPickaxe(Properties props) {
         super(Tiers.IRON, 1, -2.8F, props);
@@ -47,7 +47,7 @@ public class ItemGhostlyPickaxe extends PickaxeItem {
                 player.awardStat(Stats.BLOCK_MINED.get(state.getBlock()));
                 player.causeFoodExhaustion(0.005F);
             }
-            if(!level.isClientSide){
+            if(!level.isClientSide()){
                 BlockEntity blockentity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
                 Block.getDrops(state, (ServerLevel)level, pos, blockentity, user, stack).forEach((item) -> {
                     putItemInGhostInventoryOrDrop(user, stack, item);
@@ -55,7 +55,7 @@ public class ItemGhostlyPickaxe extends PickaxeItem {
                 state.spawnAfterBreak((ServerLevel)level, pos, stack, true);
                 int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack);
                 int silkTouchLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack);
-                int exp = state.getExpDrop((ServerLevel)level, level.random, pos, fortuneLevel, silkTouchLevel);
+                int exp = state.getExpDrop((ServerLevel)level, level.getRandom(), pos, fortuneLevel, silkTouchLevel);
                 if(exp > 0){
                     state.getBlock().popExperience((ServerLevel)level, pos, exp);
                 }
@@ -68,7 +68,7 @@ public class ItemGhostlyPickaxe extends PickaxeItem {
         CompoundTag compoundtag = pickaxe.getOrCreateTag();
         SimpleContainer container = new SimpleContainer(9);
         if(compoundtag.contains("Items")){
-            container.fromTag(compoundtag.getList("Items", 10));
+            container.fromTag(compoundtag.getListOrEmpty("Items"));
         }
         if(user instanceof Player){
             Player player = (Player) user;
@@ -96,7 +96,7 @@ public class ItemGhostlyPickaxe extends PickaxeItem {
                 SimpleContainer container = new SimpleContainer(9);
                 boolean flag = false;
                 if(compoundtag.contains("Items")){
-                    container.fromTag(compoundtag.getList("Items", 10));
+                    container.fromTag(compoundtag.getListOrEmpty("Items"));
                 }
                 for(int slot = 0; slot < container.getContainerSize(); slot++) {
                     ItemStack stackAt = container.getItem(slot);
@@ -122,9 +122,9 @@ public class ItemGhostlyPickaxe extends PickaxeItem {
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         CompoundTag compoundtag = stack.getTag();
-        if (compoundtag != null && compoundtag.contains("Items", 9)) {
+        if (compoundtag != null && compoundtag.contains("Items")) {
             SimpleContainer container = new SimpleContainer(9);
-            container.fromTag(compoundtag.getList("Items", 10));
+            container.fromTag(compoundtag.getListOrEmpty("Items"));
             int i = 0;
             int j = 0;
 
@@ -149,9 +149,9 @@ public class ItemGhostlyPickaxe extends PickaxeItem {
 
     private void dropAllContents(Level level, Vec3 vec3, ItemStack pickaxe){
         CompoundTag compoundtag = pickaxe.getTag();
-        if (compoundtag != null && compoundtag.contains("Items", 9)) {
+        if (compoundtag != null && compoundtag.contains("Items")) {
             SimpleContainer container = new SimpleContainer(9);
-            container.fromTag(compoundtag.getList("Items", 10));
+            container.fromTag(compoundtag.getListOrEmpty("Items"));
             for (int slot = 0; slot < container.getContainerSize(); slot++) {
                 ItemStack itemstack = container.getItem(slot);
                 if (!itemstack.isEmpty()) {

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PlayMessages;
+
 
 public class EntityPollenBall extends EntityMobProjectile {
 
@@ -20,10 +20,6 @@ public class EntityPollenBall extends EntityMobProjectile {
         super(AMEntityRegistry.POLLEN_BALL.get(), worldIn, flutter);
         Vec3 vec3 = flutter.position().add(calcOffsetVec(new Vec3(0, 0.4F * flutter.getScale(), 0), flutter.getFlutterPitch(), flutter.getYRot()));
         this.setPos(vec3.x, vec3.y, vec3.z);
-    }
-
-    public EntityPollenBall(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.POLLEN_BALL.get(), world);
     }
 
     public boolean isNoGravity() {
@@ -45,7 +41,7 @@ public class EntityPollenBall extends EntityMobProjectile {
             shoot(d0, d1, d2, speed, 0);
             this.setYRot(-((float) Mth.atan2(d0, d2)) * Mth.RAD_TO_DEG);
         }
-        if(this.level().isClientSide && random.nextInt(2) == 0){
+        if(this.level().isClientSide() && random.nextInt(2) == 0){
             final float r1 = (random.nextFloat() - 0.5F) * 0.5F;
             final float r2 = (random.nextFloat() - 0.5F) * 0.5F;
             final float r3 = (random.nextFloat() - 0.5F) * 0.5F;

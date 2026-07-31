@@ -13,15 +13,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -29,10 +29,10 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.animal.FlyingAnimal;
+
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -42,17 +42,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Random;
 
-public class EntitySoulVulture extends Monster implements FlyingAnimal {
+public class EntitySoulVulture extends Monster {
 
-    public static final ResourceLocation SOUL_LOOT = new ResourceLocation("alexsmobs", "entities/soul_vulture_heart");
+    public static final Identifier SOUL_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "entities/soul_vulture_heart");
     private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(EntitySoulVulture.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> TACKLING = SynchedEntityData.defineId(EntitySoulVulture.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Optional<BlockPos>> PERCH_POS = SynchedEntityData.defineId(EntitySoulVulture.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
@@ -71,23 +71,19 @@ public class EntitySoulVulture extends Monster implements FlyingAnimal {
         switchNavigator(true);
     }
 
-    public MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
     @Nullable
-    protected ResourceLocation getDefaultLootTable() {
+    protected Identifier getDefaultLootTable() {
         return hasSoulHeart() ? SOUL_LOOT : super.getDefaultLootTable();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.soulVultureSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canVultureSpawn(EntityType<? extends Mob> typeIn, ServerLevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static boolean canVultureSpawn(EntityType<? extends Mob> typeIn, ServerLevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         BlockPos blockpos = pos.below();
         boolean spawnBlock = worldIn.getBlockState(blockpos).is(AMTagRegistry.SOUL_VULTURE_SPAWNS);
-        return reason == MobSpawnType.SPAWNER || spawnBlock && checkMobSpawnRules(AMEntityRegistry.SOUL_VULTURE.get(), worldIn, reason, pos, randomIn);
+        return reason == EntitySpawnReason.SPAWNER || spawnBlock && checkMobSpawnRules(AMEntityRegistry.SOUL_VULTURE.get(), worldIn, reason, pos, randomIn);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -143,15 +139,15 @@ public class EntitySoulVulture extends Monster implements FlyingAnimal {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLYING, false);
-        this.entityData.define(TACKLING, false);
-        this.entityData.define(PERCH_POS, Optional.empty());
-        this.entityData.define(SOUL_LEVEL, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLYING, false);
+        builder.define(TACKLING, false);
+        builder.define(PERCH_POS, Optional.empty());
+        builder.define(SOUL_LEVEL, 0);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Flying", this.isFlying());
         if(this.getPerchPos() != null){
@@ -163,13 +159,13 @@ public class EntitySoulVulture extends Monster implements FlyingAnimal {
         compound.putInt("LandingCooldown", landingCooldown);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFlying(compound.getBoolean("Flying"));
-        this.setSoulLevel(compound.getInt("SoulLevel"));
-        this.landingCooldown = compound.getInt("LandingCooldown");
+        this.setFlying(compound.getBooleanOr("Flying", false));
+        this.setSoulLevel(compound.getIntOr("SoulLevel", 0));
+        this.landingCooldown = compound.getIntOr("LandingCooldown", 0);
         if(compound.contains("PerchX") && compound.contains("PerchY") && compound.contains("PerchZ")){
-            this.setPerchPos(new BlockPos(compound.getInt("PerchX"), compound.getInt("PerchY"), compound.getInt("PerchZ")));
+            this.setPerchPos(new BlockPos(compound.getIntOr("PerchX", 0), compound.getIntOr("PerchY", 0), compound.getIntOr("PerchZ", 0)));
         }
     }
 
@@ -209,7 +205,7 @@ public class EntitySoulVulture extends Monster implements FlyingAnimal {
         super.tick();
         this.prevTackleProgress = tackleProgress;
         this.prevFlyProgress = flyProgress;
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if(perchSearchCooldown > 0){
                 perchSearchCooldown--;
             }
@@ -269,7 +265,7 @@ public class EntitySoulVulture extends Monster implements FlyingAnimal {
         } else {
             this.setNoGravity(false);
         }
-        if (this.level().isClientSide  && hasSoulHeart()) {
+        if (this.level().isClientSide()  && hasSoulHeart()) {
             final float radius = 0.25F + random.nextFloat() * 1F;
             final float fly = this.flyProgress * 0.2F;
             final float wingSpread = 15F + 65 * fly + random.nextInt(5);

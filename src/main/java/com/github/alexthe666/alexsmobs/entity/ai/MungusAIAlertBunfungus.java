@@ -5,7 +5,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.level.GameRules;
+
 import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;

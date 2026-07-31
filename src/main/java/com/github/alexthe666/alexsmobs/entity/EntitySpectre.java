@@ -25,7 +25,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.FlyingAnimal;
+
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +42,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 
-public class EntitySpectre extends Animal implements FlyingAnimal {
+public class EntitySpectre extends Animal {
 
     private static final EntityDataAccessor<Integer> CARDINAL_ORDINAL = SynchedEntityData.defineId(EntitySpectre.class, EntityDataSerializers.INT);
     public float birdPitch = 0;
@@ -55,11 +55,11 @@ public class EntitySpectre extends Animal implements FlyingAnimal {
     }
 
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.spectreSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canSpectreSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canSpectreSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         BlockState blockstate = worldIn.getBlockState(pos.below());
         return true;
     }
@@ -81,9 +81,9 @@ public class EntitySpectre extends Animal implements FlyingAnimal {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CARDINAL_ORDINAL, Integer.valueOf(Direction.NORTH.get3DDataValue()));
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CARDINAL_ORDINAL, Integer.valueOf(Direction.NORTH.get3DDataValue()));
     }
 
     public int getCardinalInt() {
@@ -113,7 +113,7 @@ public class EntitySpectre extends Animal implements FlyingAnimal {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setXRot(0.0F);
         this.randomizeDirection();
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);

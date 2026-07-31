@@ -24,7 +24,7 @@ public class FlyingFishBootsUtil {
         lassoedTag.putInt(BOOST_TICKS, ticks);
 
         CitadelEntityData.setCitadelTag(entity, lassoedTag);
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             Citadel.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, entity.getId()));
         }else{
             Citadel.sendMSGToServer(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, entity.getId()));
@@ -34,7 +34,7 @@ public class FlyingFishBootsUtil {
     public static int getBoostTicks(LivingEntity entity) {
         CompoundTag lassoedTag = CitadelEntityData.getOrCreateCitadelTag(entity);
         if (lassoedTag.contains(BOOST_TICKS)) {
-            return lassoedTag.getInt(BOOST_TICKS);
+            return lassoedTag.getIntOr(BOOST_TICKS, 0);
         }
         return 0;
     }
@@ -45,7 +45,7 @@ public class FlyingFishBootsUtil {
 
     public static void tickFlyingFishBoots(LivingEntity fishy) {
         int boostTime = getBoostTicks(fishy);
-        if(boostTime <= 15 && fishy.isInWaterOrBubble() && !fishy.onGround()){
+        if(boostTime <= 15 && fishy.isInWater() && !fishy.onGround()){
             if(fishy.getFluidHeight(FluidTags.WATER) < 0.4F && fishy.jumping &&( !(fishy instanceof Player) || !((Player) fishy).getAbilities().flying)){
                 final RandomSource rand = fishy.getRandom();
                 boostTime = MIN_BOOST_TIME;
@@ -56,7 +56,7 @@ public class FlyingFishBootsUtil {
             }
         }
         if(boostTime > 0){
-            if(!fishy.isInWaterOrBubble() && !fishy.onGround()){
+            if(!fishy.isInWater() && !fishy.onGround()){
                 if(fishy.getDeltaMovement().y < 0){
                     fishy.setDeltaMovement(fishy.getDeltaMovement().multiply(1F, 0.75F, 1F));
                 }

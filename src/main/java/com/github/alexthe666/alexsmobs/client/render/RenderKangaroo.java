@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelKangaroo;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerKangarooArmor;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerKangarooBaby;
@@ -9,10 +11,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderKangaroo extends MobRenderer<EntityKangaroo, ModelKangaroo> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/kangaroo.png");
+public class RenderKangaroo extends MobRenderer<EntityKangaroo, LivingEntityRenderState, ModelKangaroo> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/kangaroo.png");
 
     public RenderKangaroo(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelKangaroo(), 0.5F);
@@ -32,7 +35,7 @@ public class RenderKangaroo extends MobRenderer<EntityKangaroo, ModelKangaroo> {
     protected void scale(EntityKangaroo entitylivingbaseIn, PoseStack matrixStackIn, float partialTickTime) {
     }
 
-    public ResourceLocation getTextureLocation(EntityKangaroo entity) {
+    public Identifier getTextureLocation(EntityKangaroo entity) {
         return TEXTURE;
     }
 }

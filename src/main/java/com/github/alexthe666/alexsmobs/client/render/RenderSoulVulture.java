@@ -1,15 +1,18 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelSoulVulture;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerSoulVultureGlow;
 import com.github.alexthe666.alexsmobs.entity.EntitySoulVulture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderSoulVulture extends MobRenderer<EntitySoulVulture, ModelSoulVulture> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/soul_vulture/soul_vulture.png");
+public class RenderSoulVulture extends MobRenderer<EntitySoulVulture, LivingEntityRenderState, ModelSoulVulture> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/soul_vulture/soul_vulture.png");
 
     public RenderSoulVulture(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelSoulVulture(), 0.3F);
@@ -21,7 +24,7 @@ public class RenderSoulVulture extends MobRenderer<EntitySoulVulture, ModelSoulV
     }
 
 
-    public ResourceLocation getTextureLocation(EntitySoulVulture entity) {
+    public Identifier getTextureLocation(EntitySoulVulture entity) {
         return TEXTURE;
     }
 }

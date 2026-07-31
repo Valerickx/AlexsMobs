@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelElephant;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerElephantItem;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerElephantOverlays;
@@ -7,11 +9,12 @@ import com.github.alexthe666.alexsmobs.entity.EntityElephant;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderElephant extends MobRenderer<EntityElephant, ModelElephant> {
-    private static final ResourceLocation TEXTURE_TUSK = new ResourceLocation("alexsmobs:textures/entity/elephant/elephant_tusks.png");
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/elephant/elephant.png");
+public class RenderElephant extends MobRenderer<EntityElephant, LivingEntityRenderState, ModelElephant> {
+    private static final Identifier TEXTURE_TUSK = Identifier.parse("alexsmobs:textures/entity/elephant/elephant_tusks.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/elephant/elephant.png");
 
     public RenderElephant(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelElephant(0), 1.4F);
@@ -26,7 +29,7 @@ public class RenderElephant extends MobRenderer<EntityElephant, ModelElephant> {
     }
 
 
-    public ResourceLocation getTextureLocation(EntityElephant entity) {
+    public Identifier getTextureLocation(EntityElephant entity) {
         return entity.isTusked() && !entity.isBaby() ? TEXTURE_TUSK : TEXTURE;
     }
 }

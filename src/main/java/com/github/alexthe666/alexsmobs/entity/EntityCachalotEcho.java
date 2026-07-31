@@ -17,10 +17,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -60,10 +60,6 @@ public class EntityCachalotEcho extends Entity {
         this.setDeltaMovement(p_i47274_8_, p_i47274_10_, p_i47274_12_);
     }
 
-    public EntityCachalotEcho(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.CACHALOT_ECHO.get(), world);
-    }
-
     protected static float lerpRotation(float p_234614_0_, float p_234614_1_) {
         while (p_234614_1_ - p_234614_0_ < -180.0F) {
             p_234614_0_ -= 360.0F;
@@ -94,7 +90,7 @@ public class EntityCachalotEcho extends Entity {
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     public void tick() {
@@ -116,7 +112,7 @@ public class EntityCachalotEcho extends Entity {
                 whale.recieveEcho();
             }
         }
-        if (!playerLaunched && !this.level().isClientSide && !this.isInWaterOrBubble()) {
+        if (!playerLaunched && !this.level().isClientSide() && !this.isInWater()) {
             remove(RemovalReason.DISCARDED);
         }
         if (this.tickCount > 100) {
@@ -161,7 +157,7 @@ public class EntityCachalotEcho extends Entity {
                 this.remove(RemovalReason.DISCARDED);
                 echo.setReturning(true);
                 echo.shoot(d0, d1, d2, 1, 0);
-                if (!this.level().isClientSide) {
+                if (!this.level().isClientSide()) {
                     level().addFreshEntity(echo);
                 }
             }
@@ -169,15 +165,15 @@ public class EntityCachalotEcho extends Entity {
     }
 
     protected void onHitBlock(BlockHitResult p_230299_1_) {
-        if (!this.level().isClientSide && !playerLaunched) {
+        if (!this.level().isClientSide() && !playerLaunched) {
             this.remove(RemovalReason.DISCARDED);
         }
     }
 
-    protected void defineSynchedData() {
-        this.entityData.define(RETURNING, false);
-        this.entityData.define(FASTER_ANIM, false);
-        this.entityData.define(GREEN, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        builder.define(RETURNING, false);
+        builder.define(FASTER_ANIM, false);
+        builder.define(GREEN, false);
     }
 
     public void setShooter(@Nullable Entity entityIn) {
@@ -197,9 +193,9 @@ public class EntityCachalotEcho extends Entity {
         }
     }
 
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         if (this.ownerUUID != null) {
-            compound.putUUID("Owner", this.ownerUUID);
+            compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
 
         if (this.leftOwner) {
@@ -211,12 +207,12 @@ public class EntityCachalotEcho extends Entity {
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.hasUUID("Owner")) {
-            this.ownerUUID = compound.getUUID("Owner");
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
+        if (compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
-        this.setGreen(compound.getBoolean("Green"));
-        this.leftOwner = compound.getBoolean("LeftOwner");
+        this.setGreen(compound.getBooleanOr("Green", false));
+        this.leftOwner = compound.getBooleanOr("LeftOwner", false);
     }
 
     private boolean checkLeftOwner() {

@@ -12,7 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -76,7 +76,7 @@ public class ItemFalconryGlove extends Item implements ILeftClick {
                         IFalconry falcon = (IFalconry)entity;
                         animal.removeVehicle();
                         animal.moveTo(playerIn.getX(), playerIn.getEyeY(), playerIn.getZ(), animal.getYRot(), animal.getXRot());
-                        if(animal.level().isClientSide){
+                        if(animal.level().isClientSide()){
                             AlexsMobs.sendMSGToServer(new MessageSyncEntityPos(animal.getId(), playerIn.getX(), playerIn.getEyeY(), playerIn.getZ()));
                         }else{
                             AlexsMobs.sendMSGToAll(new MessageSyncEntityPos(animal.getId(), playerIn.getX(), playerIn.getEyeY(), playerIn.getZ()));

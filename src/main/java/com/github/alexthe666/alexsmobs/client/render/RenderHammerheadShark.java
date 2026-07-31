@@ -1,14 +1,17 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelHammerheadShark;
 import com.github.alexthe666.alexsmobs.entity.EntityHammerheadShark;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderHammerheadShark extends MobRenderer<EntityHammerheadShark, ModelHammerheadShark> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/hammerhead_shark.png");
+public class RenderHammerheadShark extends MobRenderer<EntityHammerheadShark, LivingEntityRenderState, ModelHammerheadShark> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/hammerhead_shark.png");
 
     public RenderHammerheadShark(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelHammerheadShark(), 0.8F);
@@ -18,7 +21,7 @@ public class RenderHammerheadShark extends MobRenderer<EntityHammerheadShark, Mo
     }
 
 
-    public ResourceLocation getTextureLocation(EntityHammerheadShark entity) {
+    public Identifier getTextureLocation(EntityHammerheadShark entity) {
         return TEXTURE;
     }
 }

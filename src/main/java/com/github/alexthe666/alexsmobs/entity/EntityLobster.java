@@ -28,8 +28,8 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.Bucketable;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
@@ -54,8 +54,8 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
 
     protected EntityLobster(EntityType type, Level p_i48565_2_) {
         super(type, p_i48565_2_);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
     }
 
     public int getMaxSpawnClusterSize() {
@@ -70,7 +70,7 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 5D).add(Attributes.ARMOR, 2.0D).add(Attributes.ATTACK_DAMAGE, 2.0D).add(Attributes.MOVEMENT_SPEED, 0.15F);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.lobsterSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -106,10 +106,6 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)));
     }
 
-    public MobType getMobType() {
-        return MobType.ARTHROPOD;
-    }
-
     public void travel(Vec3 travelVector) {
         if (this.isEffectiveAi() && this.isInWater()) {
             this.moveRelative(this.getSpeed(), travelVector);
@@ -129,11 +125,11 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(ATTACK_TICK, 0);
-        this.entityData.define(FROM_BUCKET, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+        builder.define(ATTACK_TICK, 0);
+        builder.define(FROM_BUCKET, false);
     }
 
     @Override
@@ -141,7 +137,7 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.LOBSTER_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
         return stack;
     }
@@ -149,7 +145,7 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
+            bucket.setCustomName(this.getCustomName());
         }
         Bucketable.saveDefaultDataToBucketTag(this, bucket);
         CompoundTag compoundnbt = bucket.getOrCreateTag();
@@ -159,8 +155,8 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
     @Override
     public void loadFromBucketTag(@Nonnull CompoundTag compound) {
         Bucketable.loadDefaultDataFromBucketTag(this, compound);
-        if (compound.contains("BucketVariantTag", 3)) {
-            this.setVariant(compound.getInt("BucketVariantTag"));
+        if (compound.contains("BucketVariantTag")) {
+            this.setVariant(compound.getIntOr("BucketVariantTag", 0));
         }
     }
 
@@ -228,16 +224,16 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
         this.entityData.set(VARIANT, Integer.valueOf(variant));
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("Variant", this.getVariant());
         compound.putBoolean("FromBucket", this.fromBucket());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setVariant(compound.getInt("Variant"));
-        this.setFromBucket(compound.getBoolean("FromBucket"));
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.setFromBucket(compound.getBooleanOr("FromBucket", false));
     }
 
     @Override
@@ -257,7 +253,7 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         float variantChange = this.getRandom().nextFloat();
         if(variantChange <= 0.00001){
             this.setVariant(5);
@@ -304,7 +300,7 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
         return 5;
     }
 
-    public static <T extends Mob> boolean canLobsterSpawn(EntityType type, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static <T extends Mob> boolean canLobsterSpawn(EntityType type, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.LOBSTER_SPAWNS);
         return spawnBlock || worldIn.getFluidState(pos).is(FluidTags.WATER);
     }

@@ -24,12 +24,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
+
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -112,13 +112,13 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
         return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(source);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getParentId() != null) {
-            compound.putUUID("ParentUUID", this.getParentId());
+            compound.store("ParentUUID", net.minecraft.core.UUIDUtil.CODEC, this.getParentId());
         }
         if (this.getChildId() != null) {
-            compound.putUUID("ChildUUID", this.getChildId());
+            compound.store("ChildUUID", net.minecraft.core.UUIDUtil.CODEC, this.getChildId());
         }
         compound.putBoolean("TailPart", isTail());
         compound.putInt("BodyIndex", getBodyIndex());
@@ -129,34 +129,34 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
         compound.putFloat("PartYOffset", offsetY);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("ParentUUID")) {
-            this.setParentId(compound.getUUID("ParentUUID"));
+        if (compound.read("ParentUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setParentId(compound.read("ParentUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        if (compound.hasUUID("ChildUUID")) {
-            this.setChildId(compound.getUUID("ChildUUID"));
+        if (compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setChildId(compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        this.setTail(compound.getBoolean("TailPart"));
-        this.setBodyIndex(compound.getInt("BodyIndex"));
-        this.setPortalTicks(compound.getInt("PortalTicks"));
-        this.angleYaw = compound.getFloat("PartAngle");
-        this.setWormScale(compound.getFloat("WormScale"));
-        this.radius = compound.getFloat("PartRadius");
-        this.offsetY = compound.getFloat("PartYOffset");
+        this.setTail(compound.getBooleanOr("TailPart", false));
+        this.setBodyIndex(compound.getIntOr("BodyIndex", 0));
+        this.setPortalTicks(compound.getIntOr("PortalTicks", 0));
+        this.angleYaw = compound.getFloatOr("PartAngle", 0.0F);
+        this.setWormScale(compound.getFloatOr("WormScale", 0.0F));
+        this.radius = compound.getFloatOr("PartRadius", 0.0F);
+        this.offsetY = compound.getFloatOr("PartYOffset", 0.0F);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(PARENT_UUID, Optional.empty());
-        this.entityData.define(CHILD_UUID, Optional.empty());
-        this.entityData.define(TAIL, false);
-        this.entityData.define(BODYINDEX, 0);
-        this.entityData.define(WORM_SCALE, 1F);
-        this.entityData.define(WORM_YAW, 0F);
-        this.entityData.define(WORM_ANGLE, 0F);
-        this.entityData.define(PORTAL_TICKS, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(PARENT_UUID, Optional.empty());
+        builder.define(CHILD_UUID, Optional.empty());
+        builder.define(TAIL, false);
+        builder.define(BODYINDEX, 0);
+        builder.define(WORM_SCALE, 1F);
+        builder.define(WORM_YAW, 0F);
+        builder.define(WORM_ANGLE, 0F);
+        builder.define(PORTAL_TICKS, 0);
     }
 
     @Nullable
@@ -207,7 +207,7 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
         if (this.tickCount > 3) {
             Entity parent = getParent();
             refreshDimensions();
-            if (parent != null && !this.level().isClientSide) {
+            if (parent != null && !this.level().isClientSide()) {
                 this.setNoGravity(true);
                 Vec3 parentVec = parent.position().subtract(parent.xo, parent.yo, parent.zo);
                 double restrictRadius = Mth.clamp(radius - parentVec.lengthSqr() * 0.25F, radius * 0.5F, radius);
@@ -236,14 +236,14 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
                 this.yHeadRot = this.getYRot();
                 this.yBodyRot = pitch;
                 if (parent instanceof LivingEntity) {
-                    if (!this.level().isClientSide && (((LivingEntity) parent).hurtTime > 0 || ((LivingEntity) parent).deathTime > 0)) {
+                    if (!this.level().isClientSide() && (((LivingEntity) parent).hurtTime > 0 || ((LivingEntity) parent).deathTime > 0)) {
                         AlexsMobs.sendMSGToAll(new MessageHurtMultipart(this.getId(), parent.getId(), 0));
                         this.hurtTime = ((LivingEntity) parent).hurtTime;
                         this.deathTime = ((LivingEntity) parent).deathTime;
                     }
                 }
                 this.pushEntities();
-                if (parent.isRemoved() && !this.level().isClientSide) {
+                if (parent.isRemoved() && !this.level().isClientSide()) {
                     this.remove(RemovalReason.DISCARDED);
                 }
                 if (parent instanceof EntityVoidWorm) {
@@ -251,7 +251,7 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
                 } else if (parent instanceof EntityVoidWormPart) {
                     this.setWormAngle(((EntityVoidWormPart) parent).prevWormAngle);
                 }
-            } else if (tickCount > 20 && !this.level().isClientSide) {
+            } else if (tickCount > 20 && !this.level().isClientSide()) {
                 remove(RemovalReason.DISCARDED);
             }
         }
@@ -312,7 +312,7 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
                 worm2.setChildId(segment.getUUID());
                 worm2.setSegmentCount(segments);
                 segment.setParent(worm2);
-                if (!this.level().isClientSide) {
+                if (!this.level().isClientSide()) {
                     level().addFreshEntity(worm2);
                 }
                 worm2.setSplitter(true);
@@ -320,7 +320,7 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
                 worm2.setSplitFromUuid(worm.getUUID());
                 worm2.setWormSpeed((float) Mth.clamp(worm.getWormSpeed() * 0.8, 0.4F, 1F));
                 worm2.resetWormScales();
-                if (!this.level().isClientSide) {
+                if (!this.level().isClientSide()) {
                     if (cause != null && cause.getEntity() instanceof ServerPlayer) {
                         AMAdvancementTriggerRegistry.VOID_WORM_SPLIT.trigger((ServerPlayer) cause.getEntity());
                     }
@@ -348,7 +348,7 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
 
     public Entity getChild() {
         UUID id = getChildId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -356,7 +356,7 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
 
     public Entity getParent() {
         UUID id = getParentId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -389,7 +389,7 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     public void pushEntities() {

@@ -36,7 +36,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.GameRules;
+
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -87,12 +87,12 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
         this.targetSelector.addGoal(1, new CreatureAITargetItems(this, false));
     }
 
-    public static boolean canRainFrogSpawn(EntityType animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canRainFrogSpawn(EntityType animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.RAIN_FROG_SPAWNS);
         return spawnBlock && worldIn.getLevelData() != null && (worldIn.getLevelData().isThundering() || worldIn.getLevelData().isRaining());
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.rainFrogSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -159,14 +159,14 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(STANCE_TIME, 0);
-        this.entityData.define(ATTACK_TIME, 0);
-        this.entityData.define(DANCE_TIME, 0);
-        this.entityData.define(BURROWED, false);
-        this.entityData.define(DISTURBED, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+        builder.define(STANCE_TIME, 0);
+        builder.define(ATTACK_TIME, 0);
+        builder.define(DANCE_TIME, 0);
+        builder.define(BURROWED, false);
+        builder.define(DISTURBED, false);
     }
 
     public void tick() {
@@ -273,19 +273,19 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
     }
 
     @javax.annotation.Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
         this.setVariant(random.nextInt(3));
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setDisturbed(compound.getBoolean("Disturbed"));
-        this.setVariant(compound.getInt("Variant"));
-        this.weatherCooldown = compound.getInt("WeatherCooldown");
+        this.setDisturbed(compound.getBooleanOr("Disturbed", false));
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.weatherCooldown = compound.getIntOr("WeatherCooldown", 0);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Disturbed", isDisturbed());
         compound.putInt("Variant", getVariant());
@@ -296,7 +296,7 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
         ItemStack itemstack = player.getItemInHand(hand);
         Item item = itemstack.getItem();
         InteractionResult type = super.mobInteract(player, hand);
-        if (item instanceof ShovelItem && (this.isBurrowed() || !this.isDisturbed()) && !this.level().isClientSide) {
+        if (item instanceof ShovelItem && (this.isBurrowed() || !this.isDisturbed()) && !this.level().isClientSide()) {
             this.ambientSoundTime = 1000;
             if (!player.isCreative()) {
                 itemstack.hurt(1, this.getRandom(), player instanceof ServerPlayer ? (ServerPlayer) player : null);

@@ -13,7 +13,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
 
@@ -75,8 +75,8 @@ public class CrowAIFollowOwner extends Goal {
 
     public void start() {
         this.timeToRecalcPath = 0;
-        this.oldWaterCost = this.crow.getPathfindingMalus(BlockPathTypes.WATER);
-        this.crow.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.oldWaterCost = this.crow.getPathfindingMalus(PathType.WATER);
+        this.crow.setPathfindingMalus(PathType.WATER, 0.0F);
         clockwise = crow.getRandom().nextBoolean();
         yLevel = crow.getRandom().nextInt(1);
         circlingTime = 0;
@@ -88,7 +88,7 @@ public class CrowAIFollowOwner extends Goal {
         this.owner = null;
         this.navigator.stop();
         circlingTime = 0;
-        this.crow.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
+        this.crow.setPathfindingMalus(PathType.WATER, this.oldWaterCost);
     }
 
     public void tick() {
@@ -113,7 +113,7 @@ public class CrowAIFollowOwner extends Goal {
                     crow.getMoveControl().setWantedPosition(owner.getX(), owner.getY() + owner.getEyeHeight() + 0.2F, owner.getZ(), 0.7F);
                     if(crow.distanceTo(owner) < 2){
                         crow.startRiding(owner, true);
-                        if (!crow.level().isClientSide) {
+                        if (!crow.level().isClientSide()) {
                             AlexsMobs.sendMSGToAll(new MessageCrowMountPlayer(crow.getId(), owner.getId()));
                         }
                     }
@@ -171,8 +171,8 @@ public class CrowAIFollowOwner extends Goal {
     }
 
     private boolean isTeleportFriendlyBlock(BlockPos p_226329_1_) {
-        BlockPathTypes lvt_2_1_ = WalkNodeEvaluator.getBlockPathTypeStatic(this.world, p_226329_1_.mutable());
-        if (lvt_2_1_ != BlockPathTypes.WALKABLE) {
+        PathType lvt_2_1_ = WalkNodeEvaluator.getPathTypetatic(this.world, p_226329_1_.mutable());
+        if (lvt_2_1_ != PathType.WALKABLE) {
             return false;
         } else {
             BlockState lvt_3_1_ = this.world.getBlockState(p_226329_1_.below());

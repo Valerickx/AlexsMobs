@@ -2,7 +2,7 @@ package com.github.alexthe666.alexsmobs.entity;
 
 import com.github.alexthe666.alexsmobs.enchantment.AMEnchantmentRegistry;
 import com.github.alexthe666.alexsmobs.item.AMItemRegistry;
-import net.minecraft.BlockUtil;
+import net.minecraft.util.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -25,10 +25,10 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+
 
 import javax.annotation.Nullable;
 
@@ -68,10 +68,6 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
         this.blocksBuilding = true;
     }
 
-    public EntityStraddleboard(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.STRADDLEBOARD.get(), world);
-    }
-
     public EntityStraddleboard(Level worldIn, double x, double y, double z) {
         this(AMEntityRegistry.STRADDLEBOARD.get(), worldIn);
         this.setPos(x, y, z);
@@ -89,13 +85,13 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
         return sizeIn.height;
     }
 
-    protected void defineSynchedData() {
-        this.entityData.define(TIME_SINCE_HIT, 0);
-        this.entityData.define(ITEMSTACK, new ItemStack(AMItemRegistry.STRADDLEBOARD.get()));
-        this.entityData.define(DEFAULT_COLOR, true);
-        this.entityData.define(COLOR, 0);
-        this.entityData.define(BOARD_ROT, 0F);
-        this.entityData.define(REMOVE_SOON, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        builder.define(TIME_SINCE_HIT, 0);
+        builder.define(ITEMSTACK, new ItemStack(AMItemRegistry.STRADDLEBOARD.get()));
+        builder.define(DEFAULT_COLOR, true);
+        builder.define(COLOR, 0);
+        builder.define(BOARD_ROT, 0F);
+        builder.define(REMOVE_SOON, false);
     }
 
     public boolean shouldRiderSit() {
@@ -125,7 +121,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
     public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
-        } else if (!this.level().isClientSide && !this.isRemoved()) {
+        } else if (!this.level().isClientSide() && !this.isRemoved()) {
             this.entityData.set(REMOVE_SOON, true);
             return true;
         } else {
@@ -206,7 +202,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
         if (this.entityData.get(REMOVE_SOON)) {
             this.removeIn--;
             this.setBoardRot((float) Math.sin(this.removeIn * 0.3F * Math.PI) * 50F);
-            if (this.removeIn <= 0 && !this.level().isClientSide) {
+            if (this.removeIn <= 0 && !this.level().isClientSide()) {
                 this.removeIn = 0;
                 boolean drop;
                 if(this.getEnchant(AMEnchantmentRegistry.STRADDLE_BOARDRETURN.get()) > 0){
@@ -221,7 +217,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
             }
         }
         Entity controller = getControllingPlayer();
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             if (this.lSteps > 0) {
                 double d5 = this.getX() + (this.lx - this.getX()) / (double) this.lSteps;
                 double d6 = this.getY() + (this.ly - this.getY())  / (double) this.lSteps;
@@ -237,7 +233,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
             }
         } else {
             this.checkInsideBlocks();
-            float slowdown = this.isInWaterOrBubble() || onGround() ? 0.05F : 0.98F;
+            float slowdown = this.isInWater() || onGround() ? 0.05F : 0.98F;
             tickMovement();
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().multiply(slowdown, slowdown, slowdown));
@@ -389,7 +385,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
         if (player.isSecondaryUseActive()) {
             return InteractionResult.PASS;
         } else {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
             } else {
                 return InteractionResult.SUCCESS;
@@ -419,7 +415,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
 
@@ -429,16 +425,16 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        this.setDefaultColor(compound.getBoolean("IsDefColor"));
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
+        this.setDefaultColor(compound.getBooleanOr("IsDefColor", false));
         if (compound.contains("BoardStack")) {
             this.setItemStack(ItemStack.of(compound.getCompound("BoardStack")));
         }
-        this.setColor(compound.getInt("Color"));
+        this.setColor(compound.getIntOr("Color", 0));
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         compound.putBoolean("IsDefColor", this.isDefaultColor());
         compound.putInt("Color", this.getColor());
         if (!this.getItemStack().isEmpty()) {

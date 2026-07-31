@@ -1,14 +1,17 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelStradpole;
 import com.github.alexthe666.alexsmobs.entity.EntityStradpole;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderStradpole extends MobRenderer<EntityStradpole, ModelStradpole> {
-    public static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/stradpole.png");
+public class RenderStradpole extends MobRenderer<EntityStradpole, LivingEntityRenderState, ModelStradpole> {
+    public static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/stradpole.png");
 
     public RenderStradpole(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelStradpole(), 0.25F);
@@ -19,7 +22,7 @@ public class RenderStradpole extends MobRenderer<EntityStradpole, ModelStradpole
     }
 
 
-    public ResourceLocation getTextureLocation(EntityStradpole entity) {
+    public Identifier getTextureLocation(EntityStradpole entity) {
         return TEXTURE;
     }
 }

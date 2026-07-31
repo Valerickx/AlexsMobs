@@ -17,7 +17,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,10 +27,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.PartEntity;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
-import org.antlr.v4.runtime.misc.Triple;
+import net.neoforged.neoforge.entity.PartEntity;
+
+
+
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -56,10 +56,6 @@ public class EntityVoidPortal extends Entity {
         super(entityTypeIn, worldIn);
     }
 
-    public EntityVoidPortal(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.VOID_PORTAL.get(), world);
-    }
-
     public EntityVoidPortal(Level world, ItemDimensionalCarver item) {
         this(AMEntityRegistry.VOID_PORTAL.get(), world);
         if(item == AMItemRegistry.SHATTERED_DIMENSIONAL_CARVER.get()){
@@ -73,7 +69,7 @@ public class EntityVoidPortal extends Entity {
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     public void tick() {
@@ -117,7 +113,7 @@ public class EntityVoidPortal extends Entity {
         }
         AABB bb = new AABB(this.getX() + minX, this.getY() + minY, this.getZ() + minZ, this.getX() + maxX, this.getY() + maxY, this.getZ() + maxZ);
         this.setBoundingBox(bb);
-        if(this.level().isClientSide && random.nextFloat() < 0.5F && Math.min(tickCount, this.getLifespan()) >= 20){
+        if(this.level().isClientSide() && random.nextFloat() < 0.5F && Math.min(tickCount, this.getLifespan()) >= 20){
             final double particleX = this.getBoundingBox().minX + random.nextFloat() * (this.getBoundingBox().maxX - this.getBoundingBox().minX);
             final double particleY = this.getBoundingBox().minY + random.nextFloat() * (this.getBoundingBox().maxY - this.getBoundingBox().minY);
             final double particleZ = this.getBoundingBox().minZ + random.nextFloat() * (this.getBoundingBox().maxZ - this.getBoundingBox().minZ);
@@ -126,7 +122,7 @@ public class EntityVoidPortal extends Entity {
         List<Entity> entities = new ArrayList<>();
         entities.addAll(this.level().getEntities(this, bb.deflate(0.2F)));
         entities.addAll(this.level().getEntitiesOfClass(EntityVoidWorm.class, bb.inflate(1.5F)));
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             MinecraftServer server = level().getServer();
             if (this.getDestination() != null && this.getLifespan() > 20 && tickCount > 20) {
                 BlockPos offsetPos = this.getDestination().relative(this.getAttachmentFacing().getOpposite(), 2);
@@ -274,31 +270,31 @@ public class EntityVoidPortal extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(ATTACHED_FACE, Direction.DOWN);
-        this.entityData.define(LIFESPAN, 300);
-        this.entityData.define(SHATTERED, false);
-        this.entityData.define(SISTER_UUID, Optional.empty());
-        this.entityData.define(DESTINATION, Optional.empty());
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        builder.define(ATTACHED_FACE, Direction.DOWN);
+        builder.define(LIFESPAN, 300);
+        builder.define(SHATTERED, false);
+        builder.define(SISTER_UUID, Optional.empty());
+        builder.define(DESTINATION, Optional.empty());
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         this.entityData.set(ATTACHED_FACE, Direction.from3DDataValue(compound.getByte("AttachFace")));
-        this.setLifespan(compound.getInt("Lifespan"));
+        this.setLifespan(compound.getIntOr("Lifespan", 0));
         if(compound.contains("Shattered")){
-            this.setShattered(compound.getBoolean("Shattered"));
+            this.setShattered(compound.getBooleanOr("Shattered", false));
         }
         if (compound.contains("DX")) {
-            final int i = compound.getInt("DX");
-            final int j = compound.getInt("DY");
-            final int k = compound.getInt("DZ");
+            final int i = compound.getIntOr("DX", 0);
+            final int j = compound.getIntOr("DY", 0);
+            final int k = compound.getIntOr("DZ", 0);
             this.entityData.set(DESTINATION, Optional.of(new BlockPos(i, j, k)));
         } else {
             this.entityData.set(DESTINATION, Optional.empty());
         }
-        if (compound.hasUUID("SisterUUID")) {
-            this.setSisterId(compound.getUUID("SisterUUID"));
+        if (compound.read("SisterUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setSisterId(compound.read("SisterUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
         if (compound.contains("ExitDimension")) {
             this.exitDimension = Level.RESOURCE_KEY_CODEC.parse(NbtOps.INSTANCE, compound.get("ExitDimension")).resultOrPartial(AlexsMobs.LOGGER::error).orElse(Level.OVERWORLD);
@@ -306,7 +302,7 @@ public class EntityVoidPortal extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         compound.putByte("AttachFace", (byte) this.entityData.get(ATTACHED_FACE).get3DDataValue());
         compound.putInt("Lifespan", getLifespan());
         compound.putBoolean("Shattered", isShattered());
@@ -317,10 +313,10 @@ public class EntityVoidPortal extends Entity {
             compound.putInt("DZ", blockpos.getZ());
         }
         if (this.getSisterId() != null) {
-            compound.putUUID("SisterUUID", this.getSisterId());
+            compound.store("SisterUUID", net.minecraft.core.UUIDUtil.CODEC, this.getSisterId());
         }
         if(this.exitDimension != null){
-            ResourceLocation.CODEC.encodeStart(NbtOps.INSTANCE, this.exitDimension.location()).resultOrPartial(AlexsMobs.LOGGER::error).ifPresent((p_241148_1_) -> {
+            Identifier.CODEC.encodeStart(NbtOps.INSTANCE, this.exitDimension.location()).resultOrPartial(AlexsMobs.LOGGER::error).ifPresent((p_241148_1_) -> {
                 compound.put("ExitDimension", p_241148_1_);
             });
         }
@@ -329,7 +325,7 @@ public class EntityVoidPortal extends Entity {
 
     public Entity getSister() {
         UUID id = getSisterId();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;

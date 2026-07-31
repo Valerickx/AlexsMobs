@@ -4,11 +4,11 @@ import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityCapsid;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -17,7 +17,7 @@ import org.joml.Quaternionf;
 
 import java.util.Random;
 
-public class RenderCapsid<T extends TileEntityCapsid> implements BlockEntityRenderer<T> {
+public class RenderCapsid<T extends TileEntityCapsid> implements BlockEntityRenderer<T, BlockEntityRenderState> {
 
     private final Random random = new Random();
     public RenderCapsid(BlockEntityRendererProvider.Context rendererDispatcherIn) {
@@ -39,7 +39,7 @@ public class RenderCapsid<T extends TileEntityCapsid> implements BlockEntityRend
     }
 
     @Override
-    public void render(T entity, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(T entity, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
         ItemStack stack = entity.getItem(0);
         if (!stack.isEmpty()) {
             int i =  Item.getId(stack.getItem()) + stack.getDamageValue();
@@ -54,7 +54,7 @@ public class RenderCapsid<T extends TileEntityCapsid> implements BlockEntityRend
             matrixStackIn.translate(0, -0.1F, 0);
             if(entity.vibratingThisTick && entity.getLevel() != null){
                 float vibrate = 0.05F;
-                matrixStackIn.translate((entity.getLevel().random.nextFloat() - 0.5F)* vibrate, (entity.getLevel().random.nextFloat() - 0.5F) * vibrate, (entity.getLevel().random.nextFloat() - 0.5F)* vibrate);
+                matrixStackIn.translate((entity.getLevel().getRandom().nextFloat() - 0.5F)* vibrate, (entity.getLevel().getRandom().nextFloat() - 0.5F) * vibrate, (entity.getLevel().getRandom().nextFloat() - 0.5F)* vibrate);
             }
             matrixStackIn.scale(1.3F, 1.3F, 1.3F);
             BakedModel ibakedmodel = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.getLevel(), (LivingEntity)null, 0);

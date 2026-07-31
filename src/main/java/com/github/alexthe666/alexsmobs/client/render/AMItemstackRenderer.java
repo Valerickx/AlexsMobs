@@ -15,15 +15,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,7 +29,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.joml.Quaternionf;
 
 import java.util.ArrayList;
@@ -39,22 +37,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AMItemstackRenderer extends BlockEntityWithoutLevelRenderer {
+public class AMItemstackRenderer {
 
     public static int ticksExisted = 0;
     private static final ModelShieldOfTheDeep SHIELD_OF_THE_DEEP_MODEL = new ModelShieldOfTheDeep();
-    private static final ResourceLocation SHIELD_OF_THE_DEEP_TEXTURE = new ResourceLocation("alexsmobs:textures/armor/shield_of_the_deep.png");
+    private static final Identifier SHIELD_OF_THE_DEEP_TEXTURE = Identifier.parse("alexsmobs:textures/armor/shield_of_the_deep.png");
     private static final ModelMysteriousWorm MYTERIOUS_WORM_MODEL = new ModelMysteriousWorm();
-    private static final ResourceLocation MYTERIOUS_WORM_TEXTURE = new ResourceLocation("alexsmobs:textures/item/mysterious_worm_model.png");
+    private static final Identifier MYTERIOUS_WORM_TEXTURE = Identifier.parse("alexsmobs:textures/item/mysterious_worm_model.png");
     private static final ModelEndPirateAnchor ANCHOR_MODEL = new ModelEndPirateAnchor();
-    private static final ResourceLocation ANCHOR_TEXTURE = new ResourceLocation("alexsmobs:textures/entity/end_pirate/anchor.png");
+    private static final Identifier ANCHOR_TEXTURE = Identifier.parse("alexsmobs:textures/entity/end_pirate/anchor.png");
     private static final ModelEndPirateAnchorWinch WINCH_MODEL = new ModelEndPirateAnchorWinch();
-    private static final ResourceLocation WINCH_TEXTURE = new ResourceLocation("alexsmobs:textures/entity/end_pirate/anchor_winch.png");
+    private static final Identifier WINCH_TEXTURE = Identifier.parse("alexsmobs:textures/entity/end_pirate/anchor_winch.png");
     private static final ModelEndPirateShipWheel SHIP_WHEEL_MODEL = new ModelEndPirateShipWheel();
-    private static final ResourceLocation SHIP_WHEEL_TEXTURE = new ResourceLocation("alexsmobs:textures/entity/end_pirate/ship_wheel.png");
-    private static final ResourceLocation TRANSMUTATION_TABLE_TEXTURE = new ResourceLocation("alexsmobs:textures/entity/farseer/transmutation_table.png");
-    private static final ResourceLocation TRANSMUTATION_TABLE_GLOW_TEXTURE = new ResourceLocation("alexsmobs:textures/entity/farseer/transmutation_table_glow.png");
-    private static final ResourceLocation TRANSMUTATION_TABLE_OVERLAY = new ResourceLocation("alexsmobs:textures/entity/farseer/transmutation_table_overlay.png");
+    private static final Identifier SHIP_WHEEL_TEXTURE = Identifier.parse("alexsmobs:textures/entity/end_pirate/ship_wheel.png");
+    private static final Identifier TRANSMUTATION_TABLE_TEXTURE = Identifier.parse("alexsmobs:textures/entity/farseer/transmutation_table.png");
+    private static final Identifier TRANSMUTATION_TABLE_GLOW_TEXTURE = Identifier.parse("alexsmobs:textures/entity/farseer/transmutation_table_glow.png");
+    private static final Identifier TRANSMUTATION_TABLE_OVERLAY = Identifier.parse("alexsmobs:textures/entity/farseer/transmutation_table_overlay.png");
     private static final ModelTransmutationTable TRANSMUTATION_TABLE_MODEL = new ModelTransmutationTable(0F);
     private static final ModelTransmutationTable TRANSMUTATION_TABLE_OVERLAY_MODEL = new ModelTransmutationTable(0.01F);
     private static List<ItemStack> DIMENSIONAL_CARVER_SHARDS;
@@ -64,7 +62,6 @@ public class AMItemstackRenderer extends BlockEntityWithoutLevelRenderer {
     private final List<EntityType> blockedRenderEntities = new ArrayList<>();
 
     public AMItemstackRenderer() {
-        super(null, null);
     }
 
     public static void incrementTick() {
@@ -83,17 +80,17 @@ public class AMItemstackRenderer extends BlockEntityWithoutLevelRenderer {
     private static List<ItemStack> getDimensionalCarverShards() {
         if (DIMENSIONAL_CARVER_SHARDS == null || DIMENSIONAL_CARVER_SHARDS.isEmpty()) {
             DIMENSIONAL_CARVER_SHARDS = Util.make(Lists.newArrayList(), (list) -> {
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_0"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_1"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_2"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_3"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_4"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_5"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_6"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_7"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_8"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_9"))));
-                list.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("alexsmobs:dimensional_carver_shard_10"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_0"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_1"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_2"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_3"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_4"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_5"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_6"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_7"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_8"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_9"))));
+                list.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("alexsmobs:dimensional_carver_shard_10"))));
             });
         }
         return DIMENSIONAL_CARVER_SHARDS;
@@ -104,7 +101,7 @@ public class AMItemstackRenderer extends BlockEntityWithoutLevelRenderer {
         float f1 = (float) Math.atan(mouseY / 40.0F);
         matrixstack.scale(scale, scale, scale);
         entity.setOnGround(false);
-        float partialTicks = Minecraft.getInstance().getFrameTime();
+        float partialTicks = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
         Quaternionf quaternion1 = Axis.XP.rotationDegrees(20.0F);
         float partialTicksForRender = Minecraft.getInstance().isPaused() || entity instanceof EntityMimicOctopus ? 0 : partialTicks;
@@ -137,11 +134,11 @@ public class AMItemstackRenderer extends BlockEntityWithoutLevelRenderer {
         quaternion1.conjugate();
         entityrenderdispatcher.overrideCameraOrientation(quaternion1);
         entityrenderdispatcher.setRenderShadow(false);
-        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
+        OrderedSubmitNodeCollector.BufferSource OrderedSubmitNodeCollector$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
         RenderSystem.runAsFancy(() -> {
-            entityrenderdispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicksForRender, matrixstack, multibuffersource$buffersource, 15728880);
+            entityrenderdispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicksForRender, matrixstack, OrderedSubmitNodeCollector$buffersource, 15728880);
         });
-        multibuffersource$buffersource.endBatch();
+        OrderedSubmitNodeCollector$buffersource.endBatch();
         entityrenderdispatcher.setRenderShadow(true);
         entity.setYRot(0.0F);
         entity.setXRot(0.0F);
@@ -155,7 +152,7 @@ public class AMItemstackRenderer extends BlockEntityWithoutLevelRenderer {
     }
 
     @Override
-    public void renderByItem(ItemStack itemStackIn, ItemDisplayContext transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void renderByItem(ItemStack itemStackIn, ItemDisplayContext transformType, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
         int tick;
         if (Minecraft.getInstance().player == null || Minecraft.getInstance().isPaused()) {
             tick = ticksExisted;
@@ -194,7 +191,7 @@ public class AMItemstackRenderer extends BlockEntityWithoutLevelRenderer {
                     if (transformType.firstPerson()) {
                         matrixStackIn.translate(transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND ? -0.3F : 0.3F, 0.0f, -0.5f);
                     }
-                    matrixStackIn.mulPose(Axis.YP.rotation(tick + Minecraft.getInstance().getFrameTime()));
+                    matrixStackIn.mulPose(Axis.YP.rotation(tick + Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)));
                 }
                 Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(AMItemRegistry.VINE_LASSO_HAND.get()), transformType, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn, level, 0);
             } else {
@@ -227,7 +224,7 @@ public class AMItemstackRenderer extends BlockEntityWithoutLevelRenderer {
         }
         if (itemStackIn.getItem() == AMItemRegistry.SHATTERED_DIMENSIONAL_CARVER.get()) {
             matrixStackIn.translate(0.5F, 0.5f, 0.5f);
-            float f = tick + Minecraft.getInstance().getFrameTime();
+            float f = tick + Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
             List<ItemStack> shards = getDimensionalCarverShards();
             matrixStackIn.pushPose();
             if(transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND){

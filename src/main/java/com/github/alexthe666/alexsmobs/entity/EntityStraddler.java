@@ -32,7 +32,7 @@ import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Strider;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.level.Level;
@@ -43,13 +43,13 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.Set;
 
@@ -62,9 +62,9 @@ public class EntityStraddler extends Monster implements IAnimatedEntity {
 
     protected EntityStraddler(EntityType type, Level world) {
         super(type, world);
-        this.setPathfindingMalus(BlockPathTypes.LAVA, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, 0.0F);
+        this.setPathfindingMalus(PathType.LAVA, 0.0F);
+        this.setPathfindingMalus(PathType.DANGER_FIRE, 0.0F);
+        this.setPathfindingMalus(PathType.DAMAGE_FIRE, 0.0F);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -79,7 +79,7 @@ public class EntityStraddler extends Monster implements IAnimatedEntity {
         return AMSoundRegistry.STRADDLER_HURT.get();
     }
 
-    public static boolean canStraddlerSpawn(EntityType animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canStraddlerSpawn(EntityType animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         boolean spawnBlock = worldIn.getBlockState(pos.below()).is(BlockTags.BASE_STONE_NETHER);
         return spawnBlock;
     }
@@ -89,9 +89,9 @@ public class EntityStraddler extends Monster implements IAnimatedEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(STRADPOLE_COUNT, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(STRADPOLE_COUNT, 0);
     }
 
     public int getStradpoleCount() {
@@ -102,7 +102,7 @@ public class EntityStraddler extends Monster implements IAnimatedEntity {
         this.entityData.set(STRADPOLE_COUNT, index);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.straddlerSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -143,7 +143,7 @@ public class EntityStraddler extends Monster implements IAnimatedEntity {
     private void floatStrider() {
         if (this.isInLava()) {
             CollisionContext lvt_1_1_ = CollisionContext.of(this);
-            double d1 = this.getFluidTypeHeight(ForgeMod.LAVA_TYPE.get());
+            double d1 = this.getFluidTypeHeight(NeoForgeMod.LAVA_TYPE.get());
             if(d1 <= 0.5F && d1 > 0){
                 if(this.getDeltaMovement().y < 0){
                     this.setDeltaMovement(this.getDeltaMovement().multiply(1, 0, 1));
@@ -218,14 +218,14 @@ public class EntityStraddler extends Monster implements IAnimatedEntity {
         return p_230285_1_.is(FluidTags.LAVA);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("StradpoleCount", getStradpoleCount());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setStradpoleCount(compound.getInt("StradpoleCount"));
+        this.setStradpoleCount(compound.getIntOr("StradpoleCount", 0));
     }
 
     public void tick() {
@@ -251,7 +251,7 @@ public class EntityStraddler extends Monster implements IAnimatedEntity {
             pole.shoot(d1, d2 + (double)f3, d3, 2F, 0F);
             pole.setYRot(this.getYRot() % 360.0F);
             pole.setXRot(Mth.clamp(this.getYRot(), -90.0F, 90.0F) % 360.0F);
-            if(!this.level().isClientSide){
+            if(!this.level().isClientSide()){
                 this.level().addFreshEntity(pole);
             }
         }
@@ -301,8 +301,8 @@ public class EntityStraddler extends Monster implements IAnimatedEntity {
             return new PathFinder(this.nodeEvaluator, p_179679_1_);
         }
 
-        protected boolean hasValidPathType(BlockPathTypes p_230287_1_) {
-            return p_230287_1_ == BlockPathTypes.LAVA || p_230287_1_ == BlockPathTypes.DAMAGE_FIRE || p_230287_1_ == BlockPathTypes.DANGER_FIRE || super.hasValidPathType(p_230287_1_);
+        protected boolean hasValidPathType(PathType p_230287_1_) {
+            return p_230287_1_ == PathType.LAVA || p_230287_1_ == PathType.DAMAGE_FIRE || p_230287_1_ == PathType.DANGER_FIRE || super.hasValidPathType(p_230287_1_);
         }
 
         public boolean isStableDestination(BlockPos pos) {

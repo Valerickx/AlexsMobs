@@ -9,7 +9,7 @@ import com.github.alexthe666.citadel.animation.Animation;
 import com.github.alexthe666.citadel.animation.AnimationHandler;
 import com.github.alexthe666.citadel.animation.IAnimatedEntity;
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -36,13 +36,13 @@ import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -52,13 +52,13 @@ import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -96,7 +96,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
 
     protected EntityRaccoon(EntityType type, Level world) {
         super(type, world);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
     }
 
     protected float getWaterSlowDown() {
@@ -116,7 +116,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
         return AMSoundRegistry.RACCOON_HURT.get();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.raccoonSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -175,7 +175,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
     protected void dropEquipment() {
         super.dropEquipment();
         if (this.getColor() != null) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.spawnAtLocation(this.getCarpetItemBeingWorn());
             }
             this.setColor(null);
@@ -213,7 +213,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
             this.level().broadcastEntityEvent(this, (byte) 93);
             return InteractionResult.SUCCESS;
         } else if (this.isTame() && !this.getMainHandItem().isEmpty()) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.spawnAtLocation(this.getMainHandItem().copy());
             }
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
@@ -285,7 +285,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
     }
 
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("RacSitting", this.isSitting());
         compound.putBoolean("ForcedToSit", this.forcedSit);
@@ -294,13 +294,13 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
         compound.putInt("StealCooldown", stealCooldown);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setOrderedToSit(compound.getBoolean("RacSitting"));
-        this.forcedSit = compound.getBoolean("ForcedToSit");
-        this.setCommand(compound.getInt("RacCommand"));
+        this.setOrderedToSit(compound.getBooleanOr("RacSitting", false));
+        this.forcedSit = compound.getBooleanOr("ForcedToSit", false);
+        this.setCommand(compound.getIntOr("RacCommand", 0));
         this.entityData.set(CARPET_COLOR, compound.getInt("Carpet"));
-        this.stealCooldown = compound.getInt("StealCooldown");
+        this.stealCooldown = compound.getIntOr("StealCooldown", 0);
 
     }
 
@@ -395,7 +395,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
             standingTime = 0;
             maxStandTime = 75 + random.nextInt(50);
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (lookForWaterBeforeEatingTimer > 0) {
                 lookForWaterBeforeEatingTimer--;
             } else if (!isWashing() && canTargetItem(this.getMainHandItem())) {
@@ -422,7 +422,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
                 }
             }
         }
-        if (!this.level().isClientSide && this.getTarget() != null && this.hasLineOfSight(this.getTarget()) && this.distanceTo(this.getTarget()) < 4 && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 5) {
+        if (!this.level().isClientSide() && this.getTarget() != null && this.hasLineOfSight(this.getTarget()) && this.distanceTo(this.getTarget()) < 4 && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 5) {
             float f1 = this.getYRot() * Mth.DEG_TO_RAD;
             this.setDeltaMovement(this.getDeltaMovement().add((double) (-Mth.sin(f1) * -0.06F), 0.0D, (double) (Mth.cos(f1) * -0.06F)));
             this.getTarget().knockback(0.35F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ());
@@ -510,15 +510,15 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(STANDING, false);
-        this.entityData.define(SITTING, false);
-        this.entityData.define(BEGGING, false);
-        this.entityData.define(WASHING, false);
-        this.entityData.define(CARPET_COLOR, -1);
-        this.entityData.define(COMMAND, 0);
-        this.entityData.define(WASH_POS, Optional.empty());
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(STANDING, false);
+        builder.define(SITTING, false);
+        builder.define(BEGGING, false);
+        builder.define(WASHING, false);
+        builder.define(CARPET_COLOR, -1);
+        builder.define(COMMAND, 0);
+        builder.define(WASH_POS, Optional.empty());
     }
 
 
@@ -591,7 +591,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
         lookForWaterBeforeEatingTimer = 100;
         ItemStack duplicate = e.getItem().copy();
         duplicate.setCount(1);
-        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide) {
+        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         Entity thrower = e.getOwner();

@@ -61,10 +61,10 @@ public class EntitySkunk extends Animal {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 8.0D).add(Attributes.ATTACK_DAMAGE, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.25F);
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SPRAY_YAW, 0F);
-        this.entityData.define(SPRAY_TIME, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SPRAY_YAW, 0F);
+        builder.define(SPRAY_TIME, 0);
     }
 
     protected void registerGoals() {
@@ -101,7 +101,7 @@ public class EntitySkunk extends Animal {
         });
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.skunkSpawnRolls, this.getRandom(), spawnReasonIn) && super.checkSpawnRules(worldIn, spawnReasonIn);
     }
 
@@ -158,7 +158,7 @@ public class EntitySkunk extends Animal {
         if(this.getSprayTime() <= 0 && this.sprayProgress > 0F){
             this.sprayProgress--;
         }
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if(harassedTime > 200 && sprayCooldown == 0 && !this.isBaby()){
                 harassedTime = 0;
                 sprayCooldown = 200 + random.nextInt(200);

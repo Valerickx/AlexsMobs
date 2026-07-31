@@ -13,7 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BiomeTags;
@@ -38,13 +38,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.enchantment.FrostWalkerEnchantment;
+
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -54,7 +54,7 @@ import java.util.stream.Stream;
 
 public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemiAquatic {
 
-    public static final ResourceLocation SPIKED_LOOT = new ResourceLocation("alexsmobs", "entities/froststalker_spikes");
+    public static final Identifier SPIKED_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "entities/froststalker_spikes");
     public static final Animation ANIMATION_BITE = Animation.create(13);
     public static final Animation ANIMATION_SPEAK = Animation.create(11);
     public static final Animation ANIMATION_SLASH_L = Animation.create(12);
@@ -88,9 +88,9 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
 
     protected EntityFroststalker(EntityType<? extends Animal> type, Level level) {
         super(type, level);
-        this.setPathfindingMalus(BlockPathTypes.LAVA, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.LAVA, -1.0F);
+        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0F);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -105,16 +105,16 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
         return AMSoundRegistry.FROSTSTALKER_HURT.get();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.froststalkerSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public static boolean canFroststalkerSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canFroststalkerSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return worldIn.getRawBrightness(pos, 0) > 8 && (worldIn.getBlockState(pos.below()).is(AMTagRegistry.FROSTSTALKER_SPAWNS) || worldIn.getBlockState(pos.below()).isSolid());
     }
 
     @Nullable
-    protected ResourceLocation getDefaultLootTable() {
+    protected Identifier getDefaultLootTable() {
         return this.hasSpikes() ? SPIKED_LOOT : super.getDefaultLootTable();
     }
 
@@ -192,16 +192,16 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(TURN_ANGLE, 0F);
-        this.entityData.define(SPIKES, true);
-        this.entityData.define(BIPEDAL, false);
-        this.entityData.define(SPIKE_SHAKING, false);
-        this.entityData.define(TACKLING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(TURN_ANGLE, 0F);
+        builder.define(SPIKES, true);
+        builder.define(BIPEDAL, false);
+        builder.define(SPIKE_SHAKING, false);
+        builder.define(TACKLING, false);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Spiked", this.hasSpikes());
         compound.putBoolean("Bipedal", this.isBipedal());
@@ -209,12 +209,12 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
         compound.putInt("StandingTime", standingTime);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setSpiked(compound.getBoolean("Spiked"));
-        this.setBipedal(compound.getBoolean("Bipedal"));
-        this.setSpikeShaking(compound.getBoolean("SpikeShaking"));
-        this.standingTime = compound.getInt("StandingTime");
+        this.setSpiked(compound.getBooleanOr("Spiked", false));
+        this.setBipedal(compound.getBooleanOr("Bipedal", false));
+        this.setSpikeShaking(compound.getBooleanOr("SpikeShaking", false));
+        this.standingTime = compound.getIntOr("StandingTime", 0);
     }
 
     public BlockPos getRestrictCenter() {
@@ -289,14 +289,14 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
             }
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.tickCount % 200 == 0) {
-                if (isInWaterRainOrBubble() && !this.hasSpikes()) {
+                if (isInWaterOrRain() && !this.hasSpikes()) {
                     this.setSpiked(true);
                 }
-                if (this.isHotBiome() && !isInWaterRainOrBubble()) {
+                if (this.isHotBiome() && !isInWaterOrRain()) {
                     this.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 400));
-                    if (random.nextInt(2) == 0 && !this.isInWaterRainOrBubble()) {
+                    if (random.nextInt(2) == 0 && !this.isInWaterOrRain()) {
                         this.setSpiked(false);
                     }
                 }
@@ -382,7 +382,7 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
         if (fleeFireFlag > 0) {
             fleeFireFlag--;
         }
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if(resetLeaderCooldown > 0){
                 resetLeaderCooldown--;
             }else{
@@ -445,7 +445,7 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
         float f = this.getYRot() * Mth.DEG_TO_RAD;
         this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f) * 0.2F, 0, Mth.cos(f) * 0.2F));
         this.hasImpulse = true;
-        net.minecraftforge.common.ForgeHooks.onLivingJump(this);
+        net.neoforged.neoforge.common.ForgeHooks.onLivingJump(this);
     }
 
     public void frostJump() {
@@ -626,7 +626,7 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_27528_, DifficultyInstance p_27529_, MobSpawnType p_27530_, @Nullable SpawnGroupData p_27531_, @Nullable CompoundTag p_27532_) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_27528_, DifficultyInstance p_27529_, EntitySpawnReason p_27530_, @Nullable SpawnGroupData p_27531_, @Nullable CompoundTag p_27532_) {
         //do not call super here
         this.getAttribute(Attributes.FOLLOW_RANGE).addPermanentModifier(new AttributeModifier("Random spawn bonus", this.random.nextGaussian() * 0.05D, AttributeModifier.Operation.MULTIPLY_BASE));
         if (p_27531_ == null) {

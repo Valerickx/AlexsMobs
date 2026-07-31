@@ -7,16 +7,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import static com.github.alexthe666.alexsmobs.AlexsMobs.MODID;
 
-@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = AlexsMobs.MODID)
 public class CommonProxy {
 
     private CapsidRecipeManager capsidRecipeManager;
 
-    public void init() {
+    public void init(net.neoforged.bus.api.IEventBus modEventBus) {
     }
 
     public void clientInit() {

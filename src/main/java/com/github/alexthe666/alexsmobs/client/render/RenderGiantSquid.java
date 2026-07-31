@@ -1,23 +1,26 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelGiantSquid;
 import com.github.alexthe666.alexsmobs.entity.EntityGiantSquid;
 import com.github.alexthe666.alexsmobs.entity.EntityGiantSquidPart;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderGiantSquid extends MobRenderer<EntityGiantSquid, ModelGiantSquid> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/giant_squid.png");
-    private static final ResourceLocation TEXTURE_BLUE = new ResourceLocation("alexsmobs:textures/entity/giant_squid_blue.png");
-    private static final ResourceLocation TEXTURE_DEPRESSURIZED = new ResourceLocation("alexsmobs:textures/entity/giant_squid_depressurized.png");
+public class RenderGiantSquid extends MobRenderer<EntityGiantSquid, LivingEntityRenderState, ModelGiantSquid> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/giant_squid.png");
+    private static final Identifier TEXTURE_BLUE = Identifier.parse("alexsmobs:textures/entity/giant_squid_blue.png");
+    private static final Identifier TEXTURE_DEPRESSURIZED = Identifier.parse("alexsmobs:textures/entity/giant_squid_depressurized.png");
 
     public RenderGiantSquid(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelGiantSquid(), 1F);
@@ -47,7 +50,7 @@ public class RenderGiantSquid extends MobRenderer<EntityGiantSquid, ModelGiantSq
     protected void scale(EntityGiantSquid entitylivingbaseIn, PoseStack matrixStackIn, float partialTickTime) {
     }
 
-    public ResourceLocation getTextureLocation(EntityGiantSquid entity) {
+    public Identifier getTextureLocation(EntityGiantSquid entity) {
         return entity.isBlue() ? TEXTURE_BLUE : TEXTURE;
     }
 
@@ -57,7 +60,7 @@ public class RenderGiantSquid extends MobRenderer<EntityGiantSquid, ModelGiantSq
             super(render);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityGiantSquid squid, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityGiantSquid squid, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(TEXTURE_DEPRESSURIZED));
             float alpha = squid.prevDepressurization + (squid.getDepressurization() - squid.prevDepressurization) * partialTicks;
             this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(squid, 0.0F), 1.0F, 1.0F, 1.0F, alpha);

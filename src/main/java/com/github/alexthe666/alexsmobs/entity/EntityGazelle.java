@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -67,7 +67,7 @@ public class EntityGazelle extends Animal implements IAnimatedEntity, IHerdPanic
         return AMSoundRegistry.GAZELLE_HURT.get();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.gazelleSpawnRolls, this.getRandom(), spawnReasonIn) && super.checkSpawnRules(worldIn, spawnReasonIn);
     }
 
@@ -95,9 +95,9 @@ public class EntityGazelle extends Animal implements IAnimatedEntity, IHerdPanic
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(RUNNING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(RUNNING, false);
     }
 
     public boolean isRunning() {
@@ -124,7 +124,7 @@ public class EntityGazelle extends Animal implements IAnimatedEntity, IHerdPanic
 
     public void tick() {
         super.tick();
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if(this.getAnimation() == NO_ANIMATION && getRandom().nextInt(70) == 0 && (this.getLastHurtByMob() == null || this.distanceTo(this.getLastHurtByMob()) > 30)){
                 if(level().getBlockState(this.blockPosition().below()).is(Blocks.GRASS_BLOCK) && getRandom().nextInt(3) == 0){
                     this.setAnimation(ANIMATION_EAT_GRASS);
@@ -153,14 +153,14 @@ public class EntityGazelle extends Animal implements IAnimatedEntity, IHerdPanic
         AnimationHandler.INSTANCE.updateAnimations(this);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("GazelleRunning", this.isRunning());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setRunning(compound.getBoolean("GazelleRunning"));
+        this.setRunning(compound.getBooleanOr("GazelleRunning", false));
     }
 
     @Override

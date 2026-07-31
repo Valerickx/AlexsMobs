@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelBaldEagle;
 import com.github.alexthe666.alexsmobs.entity.EntityBaldEagle;
 import com.github.alexthe666.alexsmobs.item.AMItemRegistry;
@@ -9,22 +11,23 @@ import com.mojang.math.Axis;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 
-public class RenderBaldEagle extends MobRenderer<EntityBaldEagle, ModelBaldEagle> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/bald_eagle.png");
-    private static final ResourceLocation TEXTURE_CAP = new ResourceLocation("alexsmobs:textures/entity/bald_eagle_hood.png");
+public class RenderBaldEagle extends MobRenderer<EntityBaldEagle, LivingEntityRenderState, ModelBaldEagle> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/bald_eagle.png");
+    private static final Identifier TEXTURE_CAP = Identifier.parse("alexsmobs:textures/entity/bald_eagle_hood.png");
 
     public RenderBaldEagle(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelBaldEagle(), 0.3F);
@@ -71,7 +74,7 @@ public class RenderBaldEagle extends MobRenderer<EntityBaldEagle, ModelBaldEagle
     }
 
 
-    public ResourceLocation getTextureLocation(EntityBaldEagle entity) {
+    public Identifier getTextureLocation(EntityBaldEagle entity) {
         return TEXTURE;
     }
 
@@ -81,7 +84,7 @@ public class RenderBaldEagle extends MobRenderer<EntityBaldEagle, ModelBaldEagle
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityBaldEagle entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityBaldEagle entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (entitylivingbaseIn.hasCap()) {
                 VertexConsumer lead = bufferIn.getBuffer(RenderType.entityTranslucent(TEXTURE_CAP));
                 this.getParentModel().renderToBuffer(matrixStackIn, lead, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), 1.0F, 1.0F, 1.0F, 1.0F);

@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -44,7 +43,6 @@ public class BlockBananaSlugSlime extends HalfTransparentBlock {
 
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         entity.setDeltaMovement(entity.getDeltaMovement().scale(0.8));
-        super.entityInside(state, level, pos, entity);
     }
 
     @Override
@@ -72,12 +70,6 @@ public class BlockBananaSlugSlime extends HalfTransparentBlock {
         }
     }
 
-    public void neighborChanged(BlockState p_56801_, Level p_56802_, BlockPos p_56803_, Block p_56804_, BlockPos p_56805_, boolean p_56806_) {
-        this.tryAbsorbWater(p_56802_, p_56803_);
-        super.neighborChanged(p_56801_, p_56802_, p_56803_, p_56804_, p_56805_, p_56806_);
-    }
-
-
     protected void tryAbsorbWater(Level level, BlockPos pos) {
         if (this.removeWaterBreadthFirstSearch(level, pos)) {
             level.playSound(null, pos, AMSoundRegistry.BANANA_SLUG_SLIME_EXPAND.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -85,20 +77,20 @@ public class BlockBananaSlugSlime extends HalfTransparentBlock {
     }
 
     private boolean removeWaterBreadthFirstSearch(Level level, BlockPos pos) {
-        Queue<Tuple<BlockPos, Integer>> queue = Lists.newLinkedList();
-        queue.add(new Tuple<>(pos, 0));
+        Queue<com.mojang.datafixers.util.Pair<BlockPos, Integer>> queue = Lists.newLinkedList();
+        queue.add(com.mojang.datafixers.util.Pair.of(pos, 0));
         int i = 0;
         int fullBlocks = 0;
         FluidState lastFluidState = null;
         while (!queue.isEmpty()) {
-            Tuple<BlockPos, Integer> tuple = queue.poll();
-            BlockPos blockpos = tuple.getA();
+            com.mojang.datafixers.util.Pair<BlockPos, Integer> tuple = queue.poll();
+            BlockPos blockpos = tuple.getFirst();
             BlockState state = level.getBlockState(blockpos);
-            int j = tuple.getB();
+            int j = tuple.getSecond();
             if (!state.getFluidState().isEmpty()) {
                 fullBlocks++;
                 if (state.getBlock() instanceof BucketPickup) {
-                    ((BucketPickup) state.getBlock()).pickupBlock(level, blockpos, state);
+                    ((BucketPickup) state.getBlock()).pickupBlock(null, level, blockpos, state);
                     if(level.getBlockState(blockpos).isAir()){
                         level.setBlockAndUpdate(blockpos, AMBlockRegistry.CRYSTALIZED_BANANA_SLUG_MUCUS.get().defaultBlockState());
                     }
@@ -121,7 +113,7 @@ public class BlockBananaSlugSlime extends HalfTransparentBlock {
                     fullBlocks++;
                     level.setBlockAndUpdate(blockpos1, blockstate.setValue(BlockStateProperties.WATERLOGGED, false));
                     if (j < MAX_FLUID_SPREAD) {
-                        queue.add(new Tuple<>(blockpos1, j + 1));
+                        queue.add(com.mojang.datafixers.util.Pair.of(blockpos1, j + 1));
                     }
                 } else if (blockstate.getBlock() instanceof BucketPickup) {
                     if (!fluidstate.isEmpty()) {
@@ -129,12 +121,12 @@ public class BlockBananaSlugSlime extends HalfTransparentBlock {
                     }
                     ++i;
                     fullBlocks++;
-                    ((BucketPickup) blockstate.getBlock()).pickupBlock(level, blockpos1, blockstate);
+                    ((BucketPickup) blockstate.getBlock()).pickupBlock(null, level, blockpos1, blockstate);
                     if(level.getBlockState(blockpos).isAir()){
                         level.setBlockAndUpdate(blockpos, AMBlockRegistry.CRYSTALIZED_BANANA_SLUG_MUCUS.get().defaultBlockState());
                     }
                     if (j < MAX_FLUID_SPREAD) {
-                        queue.add(new Tuple<>(blockpos1, j + 1));
+                        queue.add(com.mojang.datafixers.util.Pair.of(blockpos1, j + 1));
                     }
                 } else if (blockstate.getBlock() instanceof LiquidBlock) {
                     if (!fluidstate.isEmpty()) {
@@ -146,7 +138,7 @@ public class BlockBananaSlugSlime extends HalfTransparentBlock {
                         fullBlocks++;
                     }
                     if (j < MAX_FLUID_SPREAD) {
-                        queue.add(new Tuple<>(blockpos1, j + 1));
+                        queue.add(com.mojang.datafixers.util.Pair.of(blockpos1, j + 1));
                     }
                 }
             }

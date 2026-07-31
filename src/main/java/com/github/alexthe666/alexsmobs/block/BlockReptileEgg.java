@@ -14,7 +14,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -34,7 +34,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -44,9 +44,9 @@ public class BlockReptileEgg extends Block {
     public static final IntegerProperty EGGS = BlockStateProperties.EGGS;
     private static final VoxelShape ONE_EGG_SHAPE = Block.box(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
     private static final VoxelShape MULTI_EGG_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 7.0D, 15.0D);
-    private final RegistryObject<EntityType> births;
+    private final DeferredHolder<EntityType<?>, ? extends EntityType<?>> births;
 
-    public BlockReptileEgg(RegistryObject births) {
+    public BlockReptileEgg(DeferredHolder<EntityType<?>, ? extends EntityType<?>> births) {
         super(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.5F).sound(SoundType.METAL).randomTicks().noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(HATCH, Integer.valueOf(0)).setValue(EGGS, Integer.valueOf(1)));
         this.births = births;
@@ -75,7 +75,7 @@ public class BlockReptileEgg extends Block {
 
     private void tryTrample(Level worldIn, BlockPos pos, Entity trampler, int chances) {
         if (this.canTrample(worldIn, trampler)) {
-            if (!worldIn.isClientSide && worldIn.random.nextInt(chances) == 0) {
+            if (!worldIn.isClientSide() && worldIn.getRandom().nextInt(chances) == 0) {
                 AABB bb = new AABB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1).inflate(25, 25, 25);
                 if (trampler instanceof LivingEntity) {
                     List<Mob> list = worldIn.getEntitiesOfClass(Mob.class, bb, living -> living.isAlive() && living.getType() == births.get());
@@ -94,7 +94,7 @@ public class BlockReptileEgg extends Block {
     }
 
     private void removeOneEgg(Level worldIn, BlockPos pos, BlockState state) {
-        worldIn.playSound(null, pos, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 0.7F, 0.9F + worldIn.random.nextFloat() * 0.2F);
+        worldIn.playSound(null, pos, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 0.7F, 0.9F + worldIn.getRandom().nextFloat() * 0.2F);
         int i = state.getValue(EGGS);
         if (i <= 1) {
             worldIn.destroyBlock(pos, false);
@@ -119,26 +119,27 @@ public class BlockReptileEgg extends Block {
                 worldIn.removeBlock(pos, false);
                 for (int j = 0; j < state.getValue(EGGS); ++j) {
                     worldIn.levelEvent(2001, pos, Block.getId(state));
-                    Entity fromType = births.get().create(worldIn);
-                    if(fromType instanceof Animal animal){
-                        animal.setAge(-24000);
-                        animal.restrictTo(pos, 20);
-                    }
-                    Holder<Biome> biome = worldIn.getBiome(pos);
-                    fromType.moveTo((double) pos.getX() + 0.3D + (double) j * 0.2D, pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-                    if (!worldIn.isClientSide) {
-                        Player closest = worldIn.getNearestPlayer(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, 20, EntitySelector.NO_SPECTATORS);
-                        if (closest != null) {
-                            if(fromType instanceof TamableAnimal tamableAnimal){
-                                tamableAnimal.setTame(true);
-                                tamableAnimal.setOrderedToSit(true);
-                                tamableAnimal.tame(closest);
-                            }
-                            if(fromType instanceof EntityCrocodile crocodile){
-                                crocodile.setDesert(biome.is(AMTagRegistry.SPAWNS_DESERT_CROCODILES));
-                            }
+                    Entity fromType = births.get().create(worldIn, EntitySpawnReason.BREEDING);
+                    if (fromType != null) {
+                        if(fromType instanceof Animal animal){
+                            animal.setAge(-24000);
                         }
-                        worldIn.addFreshEntity(fromType);
+                        Holder<Biome> biome = worldIn.getBiome(pos);
+                        fromType.setPos((double) pos.getX() + 0.3D + (double) j * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D);
+                        if (!worldIn.isClientSide()) {
+                            Player closest = worldIn.getNearestPlayer(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, 20, EntitySelector.NO_SPECTATORS);
+                            if (closest != null) {
+                                if(fromType instanceof TamableAnimal tamableAnimal){
+                                    tamableAnimal.setTame(true, true);
+                                    tamableAnimal.setOrderedToSit(true);
+                                    tamableAnimal.tame(closest);
+                                }
+                                if(fromType instanceof EntityCrocodile crocodile){
+                                    crocodile.setDesert(biome.is(AMTagRegistry.SPAWNS_DESERT_CROCODILES));
+                                }
+                            }
+                            worldIn.addFreshEntity(fromType);
+                        }
                     }
                 }
             }
@@ -147,19 +148,14 @@ public class BlockReptileEgg extends Block {
     }
 
     public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (hasProperHabitat(worldIn, pos) && !worldIn.isClientSide) {
+        if (hasProperHabitat(worldIn, pos) && !worldIn.isClientSide()) {
             worldIn.levelEvent(2005, pos, 0);
         }
 
     }
 
     private boolean canGrow(Level worldIn) {
-        float f = worldIn.getTimeOfDay(1.0F);
-        if ((double) f < 0.8D && (double) f > 0.65D) {
-            return true;
-        } else {
-            return worldIn.random.nextInt(15) == 0;
-        }
+        return worldIn.getRandom().nextInt(15) == 0;
     }
 
     public void playerDestroy(Level worldIn, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity te, ItemStack stack) {
@@ -190,7 +186,7 @@ public class BlockReptileEgg extends Block {
             if (!(trampler instanceof LivingEntity)) {
                 return false;
             } else {
-                return trampler instanceof Player || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, trampler);
+                return trampler instanceof Player || (worldIn instanceof ServerLevel sl && net.neoforged.neoforge.event.EventHooks.canEntityGrief(sl, trampler));
             }
         } else {
             return false;

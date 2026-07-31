@@ -10,13 +10,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +24,7 @@ import net.minecraft.world.entity.LivingEntity;
 public abstract class LayerVoidWormGlow<T extends LivingEntity> extends RenderLayer<T, EntityModel<T>>  {
 
     private final ResourceManager resourceManager;
-    private final Object2BooleanMap<ResourceLocation> mcmetaData;
+    private final Object2BooleanMap<Identifier> mcmetaData;
     private EntityModel<T> layerModel;
     private final EntityModel bodyModel = new ModelVoidWormBody(1.001F);
     private final EntityModel tailModel = new ModelVoidWormTail(1.001F);
@@ -37,8 +37,8 @@ public abstract class LayerVoidWormGlow<T extends LivingEntity> extends RenderLa
     }
 
     @Override
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T worm, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        ResourceLocation texture = getGlowTexture(worm);
+    public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, T worm, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        Identifier texture = getGlowTexture(worm);
         boolean special = isSpecialRenderer(texture);
 
         if (isGlowing(worm) || special) {
@@ -56,27 +56,27 @@ public abstract class LayerVoidWormGlow<T extends LivingEntity> extends RenderLa
         }
     }
 
-    public abstract ResourceLocation getGlowTexture(LivingEntity worm);
+    public abstract Identifier getGlowTexture(LivingEntity worm);
     public abstract boolean isGlowing(LivingEntity livingEntity);
     public abstract float getAlpha(LivingEntity livingEntity);
 
-    private boolean isSpecialRenderer(ResourceLocation resourceLocation){
-        if(mcmetaData.containsKey(resourceLocation)){
-            return mcmetaData.getBoolean(resourceLocation);
+    private boolean isSpecialRenderer(Identifier Identifier){
+        if(mcmetaData.containsKey(Identifier)){
+            return mcmetaData.getBoolean(Identifier);
         }
-        if(this.resourceManager.getResource(resourceLocation).isPresent()){
-            Resource resource = this.resourceManager.getResource(resourceLocation).get();
+        if(this.resourceManager.getResource(Identifier).isPresent()){
+            Resource resource = this.resourceManager.getResource(Identifier).get();
             try {
                 VoidWormMetadataSection section = resource.metadata().getSection(VoidWormMetadataSection.SERIALIZER).orElse(new VoidWormMetadataSection());
-                mcmetaData.put(resourceLocation, section.isEndPortalTexture());
+                mcmetaData.put(Identifier, section.isEndPortalTexture());
                 return section.isEndPortalTexture();
             } catch (Exception e) {
                 e.printStackTrace();
-                mcmetaData.put(resourceLocation, false);
+                mcmetaData.put(Identifier, false);
                 return false;
             }
         }
-        mcmetaData.put(resourceLocation, false);
+        mcmetaData.put(Identifier, false);
         return false;
     }
 

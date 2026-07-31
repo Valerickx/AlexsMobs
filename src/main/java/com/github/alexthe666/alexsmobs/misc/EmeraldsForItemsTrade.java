@@ -2,14 +2,14 @@ package com.github.alexthe666.alexsmobs.misc;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.trading.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
 
-public class EmeraldsForItemsTrade implements VillagerTrades.ItemListing {
+public class EmeraldsForItemsTrade {
     private final Item tradeItem;
     private final int count;
     private final int maxUses;

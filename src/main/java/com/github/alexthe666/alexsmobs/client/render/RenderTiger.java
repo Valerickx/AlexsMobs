@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelTiger;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerTigerEyes;
 import com.github.alexthe666.alexsmobs.entity.EntityTiger;
@@ -7,33 +9,34 @@ import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 
-public class RenderTiger extends MobRenderer<EntityTiger, ModelTiger> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/tiger/tiger.png");
-    private static final ResourceLocation TEXTURE_ANGRY = new ResourceLocation("alexsmobs:textures/entity/tiger/tiger_angry.png");
-    private static final ResourceLocation TEXTURE_SLEEPING = new ResourceLocation("alexsmobs:textures/entity/tiger/tiger_sleeping.png");
-    private static final ResourceLocation TEXTURE_WHITE = new ResourceLocation("alexsmobs:textures/entity/tiger/tiger_white.png");
-    private static final ResourceLocation TEXTURE_ANGRY_WHITE = new ResourceLocation("alexsmobs:textures/entity/tiger/tiger_white_angry.png");
-    private static final ResourceLocation TEXTURE_SLEEPING_WHITE = new ResourceLocation("alexsmobs:textures/entity/tiger/tiger_white_sleeping.png");
+public class RenderTiger extends MobRenderer<EntityTiger, LivingEntityRenderState, ModelTiger> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/tiger/tiger.png");
+    private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/tiger/tiger_angry.png");
+    private static final Identifier TEXTURE_SLEEPING = Identifier.parse("alexsmobs:textures/entity/tiger/tiger_sleeping.png");
+    private static final Identifier TEXTURE_WHITE = Identifier.parse("alexsmobs:textures/entity/tiger/tiger_white.png");
+    private static final Identifier TEXTURE_ANGRY_WHITE = Identifier.parse("alexsmobs:textures/entity/tiger/tiger_white_angry.png");
+    private static final Identifier TEXTURE_SLEEPING_WHITE = Identifier.parse("alexsmobs:textures/entity/tiger/tiger_white_sleeping.png");
 
     public RenderTiger(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelTiger(), 0.6F);
@@ -43,8 +46,8 @@ public class RenderTiger extends MobRenderer<EntityTiger, ModelTiger> {
     protected void scale(EntityTiger entitylivingbaseIn, PoseStack matrixStackIn, float partialTickTime) {
     }
 
-    public void render(EntityTiger entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<EntityTiger, ModelTiger>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn)))
+    public void render(EntityTiger entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+        if (net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.RenderLivingEvent.Pre<EntityTiger, ModelTiger>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn)))
             return;
         matrixStackIn.pushPose();
         this.model.attackTime = this.getAttackAnim(entityIn, partialTicks);
@@ -131,14 +134,14 @@ public class RenderTiger extends MobRenderer<EntityTiger, ModelTiger> {
             this.renderLeash(entityIn, partialTicks, matrixStackIn, bufferIn, entity);
         }
         RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.shouldShowName(entityIn))) {
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(renderNameplateEvent);
+        if (renderNameplateEvent.getResult() != net.neoforged.bus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.neoforged.bus.api.Event.Result.ALLOW || this.shouldShowName(entityIn))) {
             this.renderNameTag(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
         }
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<EntityTiger, ModelTiger>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.RenderLivingEvent.Post<EntityTiger, ModelTiger>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
     }
 
-    private <E extends Entity> void renderLeash(EntityTiger tiger, float p_115463_, PoseStack p_115464_, MultiBufferSource p_115465_, E p_115466_) {
+    private <E extends Entity> void renderLeash(EntityTiger tiger, float p_115463_, PoseStack p_115464_, OrderedSubmitNodeCollector p_115465_, E p_115466_) {
         p_115464_.pushPose();
         Vec3 vec3 = p_115466_.getRopeHoldPosition(p_115463_);
         double d0 = (double)(Mth.lerp(p_115463_, tiger.yBodyRot, tiger.yBodyRotO) * Mth.DEG_TO_RAD) + (Math.PI / 2D);
@@ -203,15 +206,15 @@ public class RenderTiger extends MobRenderer<EntityTiger, ModelTiger> {
     @Override
     protected RenderType getRenderType(EntityTiger tiger, boolean b0, boolean b1, boolean b2) {
         if (tiger.isStealth()) {
-            ResourceLocation resourcelocation = this.getTextureLocation(tiger);
-            return RenderType.itemEntityTranslucentCull(resourcelocation);
+            Identifier Identifier = this.getTextureLocation(tiger);
+            return RenderType.itemEntityTranslucentCull(Identifier);
         } else {
             return super.getRenderType(tiger, b0, b1, b2);
         }
     }
 
 
-    public ResourceLocation getTextureLocation(EntityTiger entity) {
+    public Identifier getTextureLocation(EntityTiger entity) {
         if (entity.isSleeping()) {
             return entity.isWhite() ? TEXTURE_SLEEPING_WHITE : TEXTURE_SLEEPING;
         } else if (entity.getRemainingPersistentAngerTime() > 0) {

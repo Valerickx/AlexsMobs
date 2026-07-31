@@ -101,7 +101,7 @@ public class EntityAnacondaPart extends LivingEntity implements IHurtableMultipa
         if (this.tickCount > 1) {
             final Entity parent = getParent();
             refreshDimensions();
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 if (parent == null) {
                     this.remove(RemovalReason.DISCARDED);
                 }
@@ -248,17 +248,17 @@ public class EntityAnacondaPart extends LivingEntity implements IHurtableMultipa
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CHILD_UUID, Optional.empty());
-        this.entityData.define(PARENT_UUID, Optional.empty());
-        this.entityData.define(BODYINDEX, 0);
-        this.entityData.define(BODY_TYPE, AnacondaPartIndex.NECK.ordinal());
-        this.entityData.define(TARGET_YAW, 0F);
-        this.entityData.define(SWELL, 0F);
-        this.entityData.define(YELLOW, false);
-        this.entityData.define(SHEDDING, false);
-        this.entityData.define(BABY, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CHILD_UUID, Optional.empty());
+        builder.define(PARENT_UUID, Optional.empty());
+        builder.define(BODYINDEX, 0);
+        builder.define(BODY_TYPE, AnacondaPartIndex.NECK.ordinal());
+        builder.define(TARGET_YAW, 0F);
+        builder.define(SWELL, 0F);
+        builder.define(YELLOW, false);
+        builder.define(SHEDDING, false);
+        builder.define(BABY, false);
     }
 
 
@@ -300,7 +300,7 @@ public class EntityAnacondaPart extends LivingEntity implements IHurtableMultipa
     }
 
     public Entity getParent() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final UUID id = getParentId();
             if (id != null) {
                 return ((ServerLevel) level()).getEntity(id);
@@ -324,7 +324,7 @@ public class EntityAnacondaPart extends LivingEntity implements IHurtableMultipa
     }
 
     public Entity getChild() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final UUID id = getChildId();
             if (id != null) {
                 return ((ServerLevel) level()).getEntity(id);
@@ -343,28 +343,28 @@ public class EntityAnacondaPart extends LivingEntity implements IHurtableMultipa
         this.entityData.set(CHILD_UUID, Optional.ofNullable(uniqueId));
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getParentId() != null) {
-            compound.putUUID("ParentUUID", this.getParentId());
+            compound.store("ParentUUID", net.minecraft.core.UUIDUtil.CODEC, this.getParentId());
         }
         if (this.getChildId() != null) {
-            compound.putUUID("ChildUUID", this.getChildId());
+            compound.store("ChildUUID", net.minecraft.core.UUIDUtil.CODEC, this.getChildId());
         }
         compound.putInt("BodyModel", getPartType().ordinal());
         compound.putInt("BodyIndex", getBodyIndex());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("ParentUUID")) {
-            this.setParentId(compound.getUUID("ParentUUID"));
+        if (compound.read("ParentUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setParentId(compound.read("ParentUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        if (compound.hasUUID("ChildUUID")) {
-            this.setChildId(compound.getUUID("ChildUUID"));
+        if (compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setChildId(compound.read("ChildUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        this.setPartType(AnacondaPartIndex.fromOrdinal(compound.getInt("BodyModel")));
-        this.setBodyIndex(compound.getInt("BodyIndex"));
+        this.setPartType(AnacondaPartIndex.fromOrdinal(compound.getIntOr("BodyModel", 0)));
+        this.setBodyIndex(compound.getIntOr("BodyIndex", 0));
     }
 
     @Override

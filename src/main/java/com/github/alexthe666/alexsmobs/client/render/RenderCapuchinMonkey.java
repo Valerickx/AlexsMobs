@@ -1,18 +1,21 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelCapuchinMonkey;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerCapuchinItem;
 import com.github.alexthe666.alexsmobs.entity.EntityCapuchinMonkey;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderCapuchinMonkey extends MobRenderer<EntityCapuchinMonkey, ModelCapuchinMonkey> {
-    private static final ResourceLocation TEXTURE_0 = new ResourceLocation("alexsmobs:textures/entity/capuchin_monkey_0.png");
-    private static final ResourceLocation TEXTURE_1 = new ResourceLocation("alexsmobs:textures/entity/capuchin_monkey_1.png");
-    private static final ResourceLocation TEXTURE_2 = new ResourceLocation("alexsmobs:textures/entity/capuchin_monkey_2.png");
-    private static final ResourceLocation TEXTURE_3 = new ResourceLocation("alexsmobs:textures/entity/capuchin_monkey_3.png");
+public class RenderCapuchinMonkey extends MobRenderer<EntityCapuchinMonkey, LivingEntityRenderState, ModelCapuchinMonkey> {
+    private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/capuchin_monkey_0.png");
+    private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/capuchin_monkey_1.png");
+    private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/capuchin_monkey_2.png");
+    private static final Identifier TEXTURE_3 = Identifier.parse("alexsmobs:textures/entity/capuchin_monkey_3.png");
 
     public RenderCapuchinMonkey(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelCapuchinMonkey(), 0.25F);
@@ -23,7 +26,7 @@ public class RenderCapuchinMonkey extends MobRenderer<EntityCapuchinMonkey, Mode
         matrixStackIn.scale(0.8F, 0.8F, 0.8F);
     }
 
-    public ResourceLocation getTextureLocation(EntityCapuchinMonkey entity) {
+    public Identifier getTextureLocation(EntityCapuchinMonkey entity) {
         return switch (entity.getVariant()) {
             case 1 -> TEXTURE_1;
             case 2 -> TEXTURE_2;

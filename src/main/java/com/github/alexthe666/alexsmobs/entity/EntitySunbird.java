@@ -29,7 +29,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.FlyingAnimal;
+
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +52,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EntitySunbird extends Animal implements FlyingAnimal {
+public class EntitySunbird extends Animal {
 
     public static final Predicate<? super Entity> SCORCH_PRED = new com.google.common.base.Predicate<Entity>() {
         @Override
@@ -78,20 +78,20 @@ public class EntitySunbird extends Animal implements FlyingAnimal {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SCORCHING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SCORCHING, false);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 20.0D).add(Attributes.FOLLOW_RANGE, 64.0D).add(Attributes.ATTACK_DAMAGE, 2.0D).add(Attributes.MOVEMENT_SPEED, 1F);
     }
 
-    public static boolean canSunbirdSpawn(EntityType<? extends Mob> typeIn, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static boolean canSunbirdSpawn(EntityType<? extends Mob> typeIn, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         return true;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.sunbirdSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -182,7 +182,7 @@ public class EntitySunbird extends Animal implements FlyingAnimal {
         prevScorchProgress = this.scorchProgress;
         float f2 = (float) -((float) this.getDeltaMovement().y * (double) Mth.RAD_TO_DEG);
         this.birdPitch = f2;
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             final float radius = 0.35F + random.nextFloat() * 3.5F;
             final float angle = (Maths.STARTING_ANGLE * ((random.nextBoolean() ? -85F : 85F) + this.yBodyRot));
             final float angleMotion = (Maths.STARTING_ANGLE * this.yBodyRot);
@@ -241,7 +241,7 @@ public class EntitySunbird extends Animal implements FlyingAnimal {
                 scorchProgress--;
         }
 
-        if (scorching && scorchProgress == 20F && !this.level().isClientSide) {
+        if (scorching && scorchProgress == 20F && !this.level().isClientSide()) {
             if(fullScorchTime > 30){
                 this.setScorching(false);
             }else if(fullScorchTime % 5 == 0){
@@ -271,19 +271,19 @@ public class EntitySunbird extends Animal implements FlyingAnimal {
     }
 
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("BeaconPosX")) {
-            int i = compound.getInt("BeaconPosX");
-            int j = compound.getInt("BeaconPosY");
-            int k = compound.getInt("BeaconPosZ");
+            int i = compound.getIntOr("BeaconPosX", 0);
+            int j = compound.getIntOr("BeaconPosY", 0);
+            int k = compound.getIntOr("BeaconPosZ", 0);
             this.beaconPos = new BlockPos(i, j, k);
         } else {
             this.beaconPos = null;
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         BlockPos blockpos = this.beaconPos;
         if (blockpos != null) {

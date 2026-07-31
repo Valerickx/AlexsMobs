@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelAnteater;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerAnteaterBaby;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerAnteaterTongueItem;
@@ -8,11 +10,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderAnteater extends MobRenderer<EntityAnteater, ModelAnteater> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/anteater.png");
-    private static final ResourceLocation TEXTURE_PETER = new ResourceLocation("alexsmobs:textures/entity/anteater_peter.png");
+public class RenderAnteater extends MobRenderer<EntityAnteater, LivingEntityRenderState, ModelAnteater> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/anteater.png");
+    private static final Identifier TEXTURE_PETER = Identifier.parse("alexsmobs:textures/entity/anteater_peter.png");
 
     public RenderAnteater(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelAnteater(), 0.45F);
@@ -31,7 +34,7 @@ public class RenderAnteater extends MobRenderer<EntityAnteater, ModelAnteater> {
     }
 
 
-    public ResourceLocation getTextureLocation(EntityAnteater entity) {
+    public Identifier getTextureLocation(EntityAnteater entity) {
         return entity.isPeter() ? TEXTURE_PETER : TEXTURE;
     }
 }

@@ -4,7 +4,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 
-public class ParticleBirdSong extends TextureSheetParticle {
+public class ParticleBirdSong extends SingleQuadParticle {
 
     private ParticleBirdSong(ClientLevel world, double x, double y, double z, double xd, double yd, double zd, SpriteSet sprites) {
         super(world, x, y, z);

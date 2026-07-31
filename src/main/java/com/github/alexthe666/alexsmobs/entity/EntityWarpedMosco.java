@@ -78,10 +78,6 @@ public class EntityWarpedMosco extends Monster implements IAnimatedEntity {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 100D).add(Attributes.FOLLOW_RANGE, 128.0D).add(Attributes.ATTACK_DAMAGE, 10.0D).add(Attributes.ARMOR, 10D).add(Attributes.KNOCKBACK_RESISTANCE, 1D).add(Attributes.ARMOR_TOUGHNESS, 2D).add(Attributes.MOVEMENT_SPEED, 0.3D);
     }
 
-    public MobType getMobType() {
-        return MobType.ARTHROPOD;
-    }
-
     private static Animation getRandomAttack(RandomSource rand) {
         return switch (rand.nextInt(4)) {
             case 0 -> ANIMATION_PUNCH_L;
@@ -129,10 +125,10 @@ public class EntityWarpedMosco extends Monster implements IAnimatedEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLYING, false);
-        this.entityData.define(HAND_SIDE, true);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLYING, false);
+        builder.define(HAND_SIDE, true);
     }
 
     public boolean causeFallDamage(float distance, float damageMultiplier) {
@@ -177,7 +173,7 @@ public class EntityWarpedMosco extends Monster implements IAnimatedEntity {
         if ((!flying || dashRight) && flyLeftProgress > 0F) {
             flyLeftProgress--;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (flying) {
                 if (this.isLandNavigator)
                     switchNavigator(false);
@@ -203,7 +199,7 @@ public class EntityWarpedMosco extends Monster implements IAnimatedEntity {
             timeFlying = 0;
             this.setNoGravity(false);
         }
-        if (this.horizontalCollision && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), this)) {
+        if (this.horizontalCollision && net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), this)) {
             boolean flag = false;
             AABB axisalignedbb = this.getBoundingBox().inflate(0.2D);
             for (BlockPos blockpos : BlockPos.betweenClosed(Mth.floor(axisalignedbb.minX), Mth.floor(axisalignedbb.minY), Mth.floor(axisalignedbb.minZ), Mth.floor(axisalignedbb.maxX), Mth.floor(axisalignedbb.maxY), Mth.floor(axisalignedbb.maxZ))) {
@@ -261,7 +257,7 @@ public class EntityWarpedMosco extends Monster implements IAnimatedEntity {
                 BlockPos ground = getMoscoGround(new BlockPos(Mth.floor(this.getX() + extraX), Mth.floor(this.getY() + extraY) - 1, Mth.floor(this.getZ() + extraZ)));
                 BlockState state = this.level().getBlockState(ground);
                 if (state.isSolid()) {
-                    if (this.level().isClientSide) {
+                    if (this.level().isClientSide()) {
                         level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), true, this.getX() + extraX, ground.getY() + extraY, this.getZ() + extraZ, motionX, motionY, motionZ);
                     }
                 }
@@ -418,7 +414,7 @@ public class EntityWarpedMosco extends Monster implements IAnimatedEntity {
         return false;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.warpedMoscoSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 

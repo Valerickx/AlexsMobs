@@ -24,9 +24,9 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.FlyingAnimal;
+
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,7 +38,7 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EntityMurmurHead extends Monster implements FlyingAnimal {
+public class EntityMurmurHead extends Monster {
 
     private static final EntityDataAccessor<Optional<UUID>> BODY_UUID = SynchedEntityData.defineId(EntityMurmurHead.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> BODY_ID = SynchedEntityData.defineId(EntityMurmurHead.class, EntityDataSerializers.INT);
@@ -87,12 +87,12 @@ public class EntityMurmurHead extends Monster implements FlyingAnimal {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(BODY_UUID, Optional.empty());
-        this.entityData.define(BODY_ID, -1);
-        this.entityData.define(PULLED_IN, true);
-        this.entityData.define(ANGRY, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(BODY_UUID, Optional.empty());
+        builder.define(BODY_ID, -1);
+        builder.define(PULLED_IN, true);
+        builder.define(ANGRY, false);
     }
 
     private void doSpawnPositioning(EntityMurmur parent){
@@ -159,10 +159,6 @@ public class EntityMurmurHead extends Monster implements FlyingAnimal {
         return true;
     }
 
-    public MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
     @Nullable
     public UUID getBodyId() {
         return this.entityData.get(BODY_UUID).orElse(null);
@@ -173,7 +169,7 @@ public class EntityMurmurHead extends Monster implements FlyingAnimal {
     }
 
     public Entity getBody() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final UUID id = getBodyId();
             return id == null ? null : ((ServerLevel) level()).getEntity(id);
         }else{
@@ -182,18 +178,18 @@ public class EntityMurmurHead extends Monster implements FlyingAnimal {
         }
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("BodyUUID")) {
-            this.setBodyId(compound.getUUID("BodyUUID"));
+        if (compound.read("BodyUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setBodyId(compound.read("BodyUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
     }
 
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.getBodyId() != null) {
-            compound.putUUID("BodyUUID", this.getBodyId());
+            compound.store("BodyUUID", net.minecraft.core.UUIDUtil.CODEC, this.getBodyId());
         }
     }
 
@@ -214,7 +210,7 @@ public class EntityMurmurHead extends Monster implements FlyingAnimal {
         }
         moveHair();
         Entity body = getBody();
-        if(!this.level().isClientSide) {
+        if(!this.level().isClientSide()) {
             if (body instanceof EntityMurmur) {
                 EntityMurmur murmur = (EntityMurmur) body;
                 this.entityData.set(BODY_ID, body.getId());

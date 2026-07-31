@@ -74,18 +74,18 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
 
     protected EntityAnteater(EntityType type, Level world) {
         super(type, world);
-        this.setMaxUpStep(1);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 20.0D).add(Attributes.ATTACK_DAMAGE, 6D).add(Attributes.MOVEMENT_SPEED, 0.25F);
     }
 
-    public static boolean canAnteaterSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canAnteaterSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return worldIn.getRawBrightness(pos, 0) > 8;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.anteaterSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -117,16 +117,16 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
         return AMSoundRegistry.ANTEATER_HURT.get();
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Standing", this.isStanding());
         compound.putInt("AntCooldown", this.eatAntCooldown);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setStanding(compound.getBoolean("Standing"));
-        this.eatAntCooldown = compound.getInt("AntCooldown");
+        this.setStanding(compound.getBooleanOr("Standing", false));
+        this.eatAntCooldown = compound.getIntOr("AntCooldown", 0);
     }
 
     public boolean isFood(ItemStack stack) {
@@ -134,12 +134,12 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(STANDING, Boolean.FALSE);
-        this.entityData.define(ANT_ON_TONGUE, Boolean.FALSE);
-        this.entityData.define(LEANING_DOWN, Boolean.FALSE);
-        this.entityData.define(ANGER_TIME, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(STANDING, Boolean.FALSE);
+        builder.define(ANT_ON_TONGUE, Boolean.FALSE);
+        builder.define(LEANING_DOWN, Boolean.FALSE);
+        builder.define(ANGER_TIME, 0);
     }
 
     public int getRemainingPersistentAngerTime() {
@@ -201,7 +201,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
     }
 
     protected void customServerAiStep() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.updatePersistentAnger((ServerLevel) this.level(), false);
         }
     }
@@ -290,7 +290,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
         } else {
             ticksAntOnTongue = 0;
         }
-        if (!this.level().isClientSide && getTongueStickOut() > 0.6F && !this.hasAntOnTongue() && antsEatenRecently < 3) {
+        if (!this.level().isClientSide() && getTongueStickOut() > 0.6F && !this.hasAntOnTongue() && antsEatenRecently < 3) {
             EntityLeafcutterAnt closestAnt = null;
             for (EntityLeafcutterAnt entity : this.level().getEntitiesOfClass(EntityLeafcutterAnt.class, this.getBoundingBox().inflate(2.6F))) {
                 if (closestAnt == null || entity.distanceTo(this) < closestAnt.distanceTo(this) && this.hasLineOfSight(entity)) {
@@ -321,7 +321,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
             heldItemTime = 0;
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (getRandom().nextInt(300) == 0)
                 this.setAnimation(ANIMATION_TOUNGE_IDLE);
 
@@ -399,7 +399,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
     public void onGetItem(ItemEntity e) {
         final ItemStack duplicate = e.getItem().copy();
         duplicate.setCount(1);
-        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide) {
+        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         this.setAnimation(ANIMATION_TOUNGE_IDLE);
@@ -424,7 +424,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
         return lowercaseName.contains("peter") || lowercaseName.contains("petr") || lowercaseName.contains("zot");
     }
 
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         if (spawnDataIn == null)
             spawnDataIn = new AgeableMob.AgeableMobGroupData(0.5F);
 

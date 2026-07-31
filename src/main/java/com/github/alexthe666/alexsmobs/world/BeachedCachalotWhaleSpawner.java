@@ -8,10 +8,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnPlacements.Type;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameRules;
+
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 
@@ -78,7 +77,7 @@ public class BeachedCachalotWhaleSpawner {
                 BlockPos upPos = new BlockPos(blockpos2.getX(), blockpos2.getY() + 2, blockpos2.getZ());
                 EntityCachalotWhale whale = AMEntityRegistry.CACHALOT_WHALE.get().create(world);
                 whale.moveTo(upPos.getX() + 0.5D, upPos.getY() + 0.5D, upPos.getZ() + 0.5D, random.nextFloat() * 360 - 180F, 0);
-                whale.finalizeSpawn(world, world.getCurrentDifficultyAt(upPos), MobSpawnType.SPAWNER, null, null);
+                whale.finalizeSpawn(world, world.getCurrentDifficultyAt(upPos), EntitySpawnReason.SPAWNER, null, null);
                 whale.setBeached(true);
                 AMWorldData worldinfo = AMWorldData.get(world);
                 worldinfo.setBeachedCachalotID(whale.getUUID());

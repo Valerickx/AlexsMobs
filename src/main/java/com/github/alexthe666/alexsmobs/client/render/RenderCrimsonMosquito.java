@@ -1,18 +1,21 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelCrimsonMosquito;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerCrimsonMosquitoBlood;
 import com.github.alexthe666.alexsmobs.entity.EntityCrimsonMosquito;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderCrimsonMosquito extends MobRenderer<EntityCrimsonMosquito, ModelCrimsonMosquito> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/crimson_mosquito.png");
-    private static final ResourceLocation TEXTURE_SICK = new ResourceLocation("alexsmobs:textures/entity/crimson_mosquito_blue.png");
-    private static final ResourceLocation TEXTURE_FLY = new ResourceLocation("alexsmobs:textures/entity/crimson_mosquito_fly.png");
-    private static final ResourceLocation TEXTURE_SICK_FLY = new ResourceLocation("alexsmobs:textures/entity/crimson_mosquito_fly_blue.png");
+public class RenderCrimsonMosquito extends MobRenderer<EntityCrimsonMosquito, LivingEntityRenderState, ModelCrimsonMosquito> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/crimson_mosquito.png");
+    private static final Identifier TEXTURE_SICK = Identifier.parse("alexsmobs:textures/entity/crimson_mosquito_blue.png");
+    private static final Identifier TEXTURE_FLY = Identifier.parse("alexsmobs:textures/entity/crimson_mosquito_fly.png");
+    private static final Identifier TEXTURE_SICK_FLY = Identifier.parse("alexsmobs:textures/entity/crimson_mosquito_fly_blue.png");
 
     public RenderCrimsonMosquito(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelCrimsonMosquito(), 0.6F);
@@ -37,7 +40,7 @@ public class RenderCrimsonMosquito extends MobRenderer<EntityCrimsonMosquito, Mo
         super.setupRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
     }
 
-    public ResourceLocation getTextureLocation(EntityCrimsonMosquito entity) {
+    public Identifier getTextureLocation(EntityCrimsonMosquito entity) {
         if (entity.isSick()) {
             return entity.isFromFly() ? TEXTURE_SICK_FLY : TEXTURE_SICK;
         }

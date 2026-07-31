@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class TileEntityEndPirateAnchorWinch extends BlockEntity {
 
@@ -42,7 +42,7 @@ public class TileEntityEndPirateAnchorWinch extends BlockEntity {
 
     private int calcChainLength(boolean goBelowAnchor) {
         BlockPos down = this.getBlockPos().below();
-        while (level != null && down.getY() > level.getMinBuildHeight() && !isAnchorTop(level, down) && (isEmptyBlock(down) || isAnchorChain(level, down))) {
+        while (level != null && down.getY() > level.getMinY() && !isAnchorTop(level, down) && (isEmptyBlock(down) || isAnchorChain(level, down))) {
             down = down.below();
         }
         int i = 0;
@@ -61,7 +61,7 @@ public class TileEntityEndPirateAnchorWinch extends BlockEntity {
     }
 
     private int keepMovingBelowAnchor(BlockPos below) {
-        while (below.getY() > level.getMinBuildHeight() && isEmptyBlock(below)) {
+        while (below.getY() > level.getMinY() && isEmptyBlock(below)) {
             below = below.below();
         }
         return below.getY();
@@ -243,15 +243,15 @@ public class TileEntityEndPirateAnchorWinch extends BlockEntity {
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
-        this.pullingUp = compound.getBoolean("PullingUp");
-        this.draggingAnchor = compound.getBoolean("DraggingAnchor");
-        this.anchorEW = compound.getBoolean("EWAnchor");
-        this.prevChainLength = this.chainLength = compound.getFloat("ChainLength");
-        this.targetChainLength = compound.getInt("TargetChainLength");
+        this.pullingUp = compound.getBooleanOr("PullingUp", false);
+        this.draggingAnchor = compound.getBooleanOr("DraggingAnchor", false);
+        this.anchorEW = compound.getBooleanOr("EWAnchor", false);
+        this.prevChainLength = this.chainLength = compound.getFloatOr("ChainLength", 0.0F);
+        this.targetChainLength = compound.getIntOr("TargetChainLength", 0);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
+    protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput compound) {
         super.saveAdditional(compound);
         compound.putBoolean("PullingUp", pullingUp);
         compound.putBoolean("DraggingAnchor", draggingAnchor);

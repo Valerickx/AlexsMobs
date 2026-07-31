@@ -10,7 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.GameRules;
+
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.phys.BlockHitResult;

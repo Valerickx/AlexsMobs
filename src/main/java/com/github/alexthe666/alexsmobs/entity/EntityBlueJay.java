@@ -45,12 +45,12 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -92,11 +92,11 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
 
     protected EntityBlueJay(EntityType<? extends Animal> animal, Level level) {
         super(animal, level);
-        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 16.0F);
-        this.setPathfindingMalus(BlockPathTypes.COCOA, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.FENCE, -1.0F);
+        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
+        this.setPathfindingMalus(PathType.COCOA, -1.0F);
+        this.setPathfindingMalus(PathType.FENCE, -1.0F);
         switchNavigator(false);
     }
 
@@ -118,7 +118,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
     }
 
 
-    public static boolean checkBlueJaySpawnRules(EntityType type, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static boolean checkBlueJaySpawnRules(EntityType type, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         return isBrightEnoughToSpawn(worldIn, pos);
     }
 
@@ -131,7 +131,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
         return false;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.blueJaySpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -147,16 +147,16 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLYING, false);
-        this.entityData.define(ATTACK_TICK, 0);
-        this.entityData.define(FEED_TIME, 0);
-        this.entityData.define(SING_TIME, 0);
-        this.entityData.define(CREST_TARGET, 0F);
-        this.entityData.define(BLUE_VISUAL_FLAG, false);
-        this.entityData.define(RACCOON_UUID, Optional.empty());
-        this.entityData.define(LAST_FEEDER_UUID, Optional.empty());
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLYING, false);
+        builder.define(ATTACK_TICK, 0);
+        builder.define(FEED_TIME, 0);
+        builder.define(SING_TIME, 0);
+        builder.define(CREST_TARGET, 0F);
+        builder.define(BLUE_VISUAL_FLAG, false);
+        builder.define(RACCOON_UUID, Optional.empty());
+        builder.define(LAST_FEEDER_UUID, Optional.empty());
     }
 
     private void switchNavigator(boolean onLand) {
@@ -215,7 +215,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
         }else{
             this.crestAmount = Mth.approach(this.crestAmount, this.getTargetCrest(), 0.3F);
         }
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if (isFlying()) {
                 if (this.isLandNavigator)
                     switchNavigator(false);
@@ -270,15 +270,15 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
             if(this.prevSingTime % 15 == 0){
                this.playSound(AMSoundRegistry.BLUE_JAY_SONG.get(), this.getSoundVolume(), this.getVoicePitch());
             }
-            if(this.level().isClientSide){
-                if(this.getSingTime() % 5 == 0 && this.level().isClientSide){
+            if(this.level().isClientSide()){
+                if(this.getSingTime() % 5 == 0 && this.level().isClientSide()){
                     Vec3 modelFront = new Vec3(0, 0.2F, 0.3F).scale(this.getScale()).xRot(-this.getXRot() * Mth.DEG_TO_RAD).yRot(-this.getYRot() * Mth.DEG_TO_RAD);
                     Vec3 particleFrom = this.position().add(modelFront);
                     this.level().addParticle(AMParticleRegistry.BIRD_SONG.get(), particleFrom.x, particleFrom.y, particleFrom.z, modelFront.x, modelFront.y, modelFront.z);
                 }
             }
         }
-        if(prevSingTime < getSingTime() && !this.level().isClientSide){
+        if(prevSingTime < getSingTime() && !this.level().isClientSide()){
             blueTime = 1200;
             this.entityData.set(BLUE_VISUAL_FLAG, true);
             highlightMonsters();
@@ -318,7 +318,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
 
     @Override
     public void remove(Entity.RemovalReason removalReason) {
-        if(this.getSingTime() > 0 && !this.level().isClientSide){
+        if(this.getSingTime() > 0 && !this.level().isClientSide()){
             this.entityData.set(BLUE_VISUAL_FLAG, false);
             this.level().broadcastEntityEvent(this, (byte) 68);
         }
@@ -440,27 +440,27 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
         this.entityData.set(FLYING, flying);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFlying(compound.getBoolean("Flying"));
-        this.blueTime = compound.getInt("BlueTime");
-        if (compound.hasUUID("FeederUUID")) {
-            this.setLastFeederUUID(compound.getUUID("FeederUUID"));
+        this.setFlying(compound.getBooleanOr("Flying", false));
+        this.blueTime = compound.getIntOr("BlueTime", 0);
+        if (compound.read("FeederUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setLastFeederUUID(compound.read("FeederUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
-        if (compound.hasUUID("RaccoonUUID")) {
-            this.setRaccoonUUID(compound.getUUID("RaccoonUUID"));
+        if (compound.read("RaccoonUUID", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.setRaccoonUUID(compound.read("RaccoonUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Flying", this.isFlying());
         compound.putInt("BlueTime", this.blueTime);
         if (this.getLastFeederUUID() != null) {
-            compound.putUUID("FeederUUID", this.getLastFeederUUID());
+            compound.store("FeederUUID", net.minecraft.core.UUIDUtil.CODEC, this.getLastFeederUUID());
         }
         if (this.getRaccoonUUID() != null) {
-            compound.putUUID("RaccoonUUID", this.getRaccoonUUID());
+            compound.store("RaccoonUUID", net.minecraft.core.UUIDUtil.CODEC, this.getRaccoonUUID());
         }
     }
 
@@ -500,7 +500,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
     @javax.annotation.Nullable
     public Entity getLastFeeder() {
         UUID id = getLastFeederUUID();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -526,7 +526,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
     @javax.annotation.Nullable
     public Entity getRaccoon() {
         UUID id = getRaccoonUUID();
-        if (id != null && !this.level().isClientSide) {
+        if (id != null && !this.level().isClientSide()) {
             return ((ServerLevel) level()).getEntity(id);
         }
         return null;
@@ -567,7 +567,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
 
     @Override
     public void onGetItem(ItemEntity e) {
-        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide) {
+        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         this.heal(3);

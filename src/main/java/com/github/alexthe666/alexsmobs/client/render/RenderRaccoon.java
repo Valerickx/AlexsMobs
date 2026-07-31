@@ -1,23 +1,26 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelRaccoon;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerRaccoonEyes;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerRaccoonItem;
 import com.github.alexthe666.alexsmobs.entity.EntityRaccoon;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.item.DyeColor;
 
-public class RenderRaccoon extends MobRenderer<EntityRaccoon, ModelRaccoon> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/raccoon.png");
-    private static final ResourceLocation TEXTURE_RIGBY = new ResourceLocation("alexsmobs:textures/entity/raccoon_rigby.png");
-    private static final ResourceLocation TEXTURE_BANDANA = new ResourceLocation("alexsmobs:textures/entity/raccoon_bandana.png");
+public class RenderRaccoon extends MobRenderer<EntityRaccoon, LivingEntityRenderState, ModelRaccoon> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/raccoon.png");
+    private static final Identifier TEXTURE_RIGBY = Identifier.parse("alexsmobs:textures/entity/raccoon_rigby.png");
+    private static final Identifier TEXTURE_BANDANA = Identifier.parse("alexsmobs:textures/entity/raccoon_bandana.png");
 
     public RenderRaccoon(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelRaccoon(), 0.4F);
@@ -31,7 +34,7 @@ public class RenderRaccoon extends MobRenderer<EntityRaccoon, ModelRaccoon> {
     }
 
 
-    public ResourceLocation getTextureLocation(EntityRaccoon entity) {
+    public Identifier getTextureLocation(EntityRaccoon entity) {
         return entity.isRigby() ? TEXTURE_RIGBY : TEXTURE;
     }
 
@@ -40,7 +43,7 @@ public class RenderRaccoon extends MobRenderer<EntityRaccoon, ModelRaccoon> {
             super(renderRaccoon);
         }
 
-        public void render(PoseStack p_225628_1_, MultiBufferSource p_225628_2_, int p_225628_3_, EntityRaccoon raccoon, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
+        public void render(PoseStack p_225628_1_, OrderedSubmitNodeCollector p_225628_2_, int p_225628_3_, EntityRaccoon raccoon, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
             if (raccoon.getColor() != null && !raccoon.isInvisible()) {
                 float lvt_11_2_;
                 float lvt_12_2_;

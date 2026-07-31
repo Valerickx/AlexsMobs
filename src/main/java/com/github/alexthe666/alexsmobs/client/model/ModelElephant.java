@@ -328,7 +328,7 @@ public class ModelElephant extends AdvancedEntityModel<EntityElephant> {
         float walkDegree = 0.4F;
         float idleSpeed = 0.1F;
         float idleDegree = 0.2F;
-        float partialTick = Minecraft.getInstance().getFrameTime();
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         float sitProgress = entityIn.prevSitProgress + (entityIn.sitProgress - entityIn.prevSitProgress) * partialTick;
         float standProgress = entityIn.prevStandProgress + (entityIn.standProgress - entityIn.prevStandProgress) * partialTick;
         progressRotationPrev(body, standProgress, Maths.rad(-60),  0, 0, 5F);

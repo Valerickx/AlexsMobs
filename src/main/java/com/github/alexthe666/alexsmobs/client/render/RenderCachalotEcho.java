@@ -1,34 +1,36 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.entity.EntityCachalotEcho;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho> {
-    private static final ResourceLocation TEXTURE_0 = new ResourceLocation("alexsmobs:textures/entity/cachalot/whale_echo_0.png");
-    private static final ResourceLocation TEXTURE_1 = new ResourceLocation("alexsmobs:textures/entity/cachalot/whale_echo_1.png");
-    private static final ResourceLocation TEXTURE_2 = new ResourceLocation("alexsmobs:textures/entity/cachalot/whale_echo_2.png");
-    private static final ResourceLocation TEXTURE_3 = new ResourceLocation("alexsmobs:textures/entity/cachalot/whale_echo_3.png");
-    private static final ResourceLocation GREEN_TEXTURE_0 = new ResourceLocation("alexsmobs:textures/entity/cachalot/whale_echo_0_green.png");
-    private static final ResourceLocation GREEN_TEXTURE_1 = new ResourceLocation("alexsmobs:textures/entity/cachalot/whale_echo_1_green.png");
-    private static final ResourceLocation GREEN_TEXTURE_2 = new ResourceLocation("alexsmobs:textures/entity/cachalot/whale_echo_2_green.png");
-    private static final ResourceLocation GREEN_TEXTURE_3 = new ResourceLocation("alexsmobs:textures/entity/cachalot/whale_echo_3_green.png");
+public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho, EntityRenderState> {
+    private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/cachalot/whale_echo_0.png");
+    private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/cachalot/whale_echo_1.png");
+    private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/cachalot/whale_echo_2.png");
+    private static final Identifier TEXTURE_3 = Identifier.parse("alexsmobs:textures/entity/cachalot/whale_echo_3.png");
+    private static final Identifier GREEN_TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/cachalot/whale_echo_0_green.png");
+    private static final Identifier GREEN_TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/cachalot/whale_echo_1_green.png");
+    private static final Identifier GREEN_TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/cachalot/whale_echo_2_green.png");
+    private static final Identifier GREEN_TEXTURE_3 = Identifier.parse("alexsmobs:textures/entity/cachalot/whale_echo_3_green.png");
 
     public RenderCachalotEcho(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn);
     }
 
-    public void render(EntityCachalotEcho entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityCachalotEcho entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.0D, 0.25F, 0.0D);
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 90.0F));
@@ -45,9 +47,9 @@ public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho> {
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
-    private void renderArc(PoseStack matrixStackIn, MultiBufferSource bufferIn, int age, boolean fast, boolean green) {
+    private void renderArc(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int age, boolean fast, boolean green) {
         matrixStackIn.pushPose();
-        ResourceLocation res;
+        Identifier res;
         if(fast){
             res = getEntityTextureFaster(age, green);
         }else{
@@ -65,7 +67,7 @@ public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityCachalotEcho entity) {
+    public Identifier getTextureLocation(EntityCachalotEcho entity) {
         return TEXTURE_0;
     }
 
@@ -77,7 +79,7 @@ public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho> {
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getEntityTexture(int age) {
+    public Identifier getEntityTexture(int age) {
         if (age < 5) {
             return TEXTURE_0;
         } else if (age < 10) {
@@ -89,7 +91,7 @@ public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho> {
         }
     }
 
-    public ResourceLocation getEntityTextureFaster(int age, boolean green) {
+    public Identifier getEntityTextureFaster(int age, boolean green) {
         if (age < 3) {
             return green ? GREEN_TEXTURE_0 : TEXTURE_0;
         } else if (age < 6) {

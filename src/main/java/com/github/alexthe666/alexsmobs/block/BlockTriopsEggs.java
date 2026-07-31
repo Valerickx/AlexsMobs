@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.MapColor;
 
 public class BlockTriopsEggs extends FrogspawnBlock {
     public BlockTriopsEggs() {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).instabreak().noOcclusion().noCollission().sound(SoundType.FROGSPAWN).offsetType(OffsetType.XZ));
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).instabreak().noOcclusion().noCollision().sound(SoundType.FROGSPAWN).offsetType(OffsetType.XZ));
     }
 
     public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
@@ -24,12 +24,12 @@ public class BlockTriopsEggs extends FrogspawnBlock {
             serverLevel.destroyBlock(blockPos, false);
             int i = 2 + randomSource.nextInt(2);
             for (int j = 1; j <= i; ++j) {
-                EntityTriops tadpole = AMEntityRegistry.TRIOPS.get().create(serverLevel);
+                EntityTriops tadpole = AMEntityRegistry.TRIOPS.get().create(serverLevel, net.minecraft.world.entity.EntitySpawnReason.BREEDING);
                 if (tadpole != null) {
                     double d0 = (double) blockPos.getX();
                     double d1 = (double) blockPos.getZ();
                     int k = randomSource.nextInt(1, 361);
-                    tadpole.moveTo(d0, (double) blockPos.getY() - 0.5D, d1, (float) k, 0.0F);
+                    tadpole.setPos(d0, (double) blockPos.getY() - 0.5D, d1);
                     tadpole.setPersistenceRequired();
                     tadpole.setBabyAge(-12000);
                     serverLevel.addFreshEntity(tadpole);

@@ -23,7 +23,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -71,19 +71,19 @@ public class EntityRoadrunner extends Animal {
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, EntityRattlesnake.class, 55, true, true, null));
         this.targetSelector.addGoal(2, (new HurtByTargetGoal(this, EntityRattlesnake.class, Player.class)).setAlertOthers());
     }
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("FeatherTime")) {
-            this.timeUntilNextFeather = compound.getInt("FeatherTime");
+            this.timeUntilNextFeather = compound.getIntOr("FeatherTime", 0);
         }
 
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.roadrunnerSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("FeatherTime", this.timeUntilNextFeather);
     }
@@ -102,9 +102,9 @@ public class EntityRoadrunner extends Animal {
 
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ATTACK_TICK, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ATTACK_TICK, 0);
 
     }
 
@@ -132,7 +132,7 @@ public class EntityRoadrunner extends Animal {
         if (!this.onGround() && this.wingRotDelta < 1.0F) {
             this.wingRotDelta = 1.0F;
         }
-        if (!this.level().isClientSide && this.isAlive() && !this.isBaby() && --this.timeUntilNextFeather <= 0) {
+        if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilNextFeather <= 0) {
             this.spawnAtLocation(AMItemRegistry.ROADRUNNER_FEATHER.get());
             this.timeUntilNextFeather = this.random.nextInt(24000) + 24000;
         }
@@ -173,7 +173,7 @@ public class EntityRoadrunner extends Animal {
             }
         }
 
-        if (this.level().isClientSide && this.isMeep() && this.onGround() && !this.isInWaterOrBubble() && this.getDeltaMovement().lengthSqr() > 0.03D) {
+        if (this.level().isClientSide() && this.isMeep() && this.onGround() && !this.isInWater() && this.getDeltaMovement().lengthSqr() > 0.03D) {
             Vec3 vector3d = this.getViewVector(0.0F);
             final float yRotRad = this.getYRot() * Mth.DEG_TO_RAD;
             float f = Mth.cos(yRotRad) * 0.2F;
@@ -209,7 +209,7 @@ public class EntityRoadrunner extends Animal {
         return AMEntityRegistry.ROADRUNNER.get().create(p_241840_1_);
     }
 
-    public static boolean canRoadrunnerSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canRoadrunnerSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.ROADRUNNER_SPAWNS);
         return spawnBlock && worldIn.getRawBrightness(pos, 0) > 8;
     }

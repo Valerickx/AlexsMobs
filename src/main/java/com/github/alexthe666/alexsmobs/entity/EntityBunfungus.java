@@ -98,11 +98,11 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
         return false;
     }
 
-    public static boolean canBunfungusSpawn(EntityType type, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static boolean canBunfungusSpawn(EntityType type, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         return worldIn.getBlockState(pos.below()).canOcclude();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.mungusSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -136,7 +136,7 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
         });
         this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (mob) -> {
-            return mob instanceof Enemy && !(mob instanceof Creeper) && !(mob.getMobType() == MobType.WATER && mob.isInWaterOrBubble()) && !mob.getType().is(AMTagRegistry.BUNFUNGUS_IGNORES);
+            return mob instanceof Enemy && !(mob instanceof Creeper) && !(mob.getMobType() == MobType.WATER && mob.isInWater()) && !mob.getType().is(AMTagRegistry.BUNFUNGUS_IGNORES);
         }));
     }
 
@@ -149,13 +149,13 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(JUMP_ACTIVE, false);
-        this.entityData.define(SLEEPING, false);
-        this.entityData.define(BEGGING, false);
-        this.entityData.define(CARROTED, false);
-        this.entityData.define(TRANSFORMS_IN, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(JUMP_ACTIVE, false);
+        builder.define(SLEEPING, false);
+        builder.define(BEGGING, false);
+        builder.define(CARROTED, false);
+        builder.define(TRANSFORMS_IN, 0);
     }
 
     public boolean causeFallDamage(float distance, float damageMultiplier) {
@@ -173,11 +173,11 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
         prevInterestedProgress = interestedProgress;
         prevTransformTime = this.transformsIn();
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.entityData.set(JUMP_ACTIVE, !this.onGround());
         }
 
-        if (this.entityData.get(JUMP_ACTIVE) && !isInWaterOrBubble()) {
+        if (this.entityData.get(JUMP_ACTIVE) && !isInWater()) {
             if (jumpProgress < 5F) {
                 jumpProgress += 0.5F;
                 if (reboundProgress > 0) {
@@ -214,7 +214,7 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
                 interestedProgress--;
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final LivingEntity target = this.getTarget();
             if (target != null && target.isAlive()) {
                 if (this.isSleeping()) {
@@ -275,13 +275,13 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
                 }
             }
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.transformsIn() > 0) {
                 this.setTransformsIn(this.transformsIn() - 1);
             }
         }
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             if (isRabbitForm()){
                 for (int i = 0; i < 3; i++) {
                     final double d2 = this.random.nextGaussian() * 0.02D;
@@ -303,7 +303,7 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
                 this.level().addParticle(data, this.getX() + extraX, this.getY() + random.nextFloat() * 0.1F, this.getZ() + extraZ, 0, d0, 0);
             }
         } else {
-            if (this.level().isDay() && this.getTarget() == null && !this.isBegging() && !this.isInWaterOrBubble()) {
+            if (this.level().isDay() && this.getTarget() == null && !this.isBegging() && !this.isInWater()) {
                 if (tickCount % 10 == 0 && this.getRandom().nextInt(300) == 0) {
                     this.setSleeping(true);
                 }

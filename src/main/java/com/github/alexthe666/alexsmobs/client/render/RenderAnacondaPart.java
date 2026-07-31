@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelAnaconda;
 import com.github.alexthe666.alexsmobs.entity.EntityAnacondaPart;
 import com.github.alexthe666.alexsmobs.entity.util.AnacondaPartIndex;
@@ -9,11 +11,12 @@ import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderAnacondaPart extends LivingEntityRenderer<EntityAnacondaPart, AdvancedEntityModel<EntityAnacondaPart>> {
+public class RenderAnacondaPart extends LivingEntityRenderer<EntityAnacondaPart, LivingEntityRenderState, AdvancedEntityModel<EntityAnacondaPart>> {
     private final ModelAnaconda<EntityAnacondaPart> neckModel = new ModelAnaconda<>(AnacondaPartIndex.NECK);
     private final ModelAnaconda<EntityAnacondaPart> bodyModel = new ModelAnaconda<>(AnacondaPartIndex.BODY);
     private final ModelAnaconda<EntityAnacondaPart> tailModel = new ModelAnaconda<>(AnacondaPartIndex.TAIL);
@@ -72,7 +75,7 @@ public class RenderAnacondaPart extends LivingEntityRenderer<EntityAnacondaPart,
     }
 
 
-    public ResourceLocation getTextureLocation(EntityAnacondaPart entity) {
+    public Identifier getTextureLocation(EntityAnacondaPart entity) {
         return RenderAnaconda.getAnacondaTexture(entity.isYellow(), entity.isShedding());
     }
 }

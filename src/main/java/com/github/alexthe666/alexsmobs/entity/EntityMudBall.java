@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PlayMessages;
+
 
 public class EntityMudBall extends EntityMobProjectile {
 
@@ -24,10 +24,6 @@ public class EntityMudBall extends EntityMobProjectile {
         super(AMEntityRegistry.MUD_BALL.get(), worldIn, mudskipper);
         Vec3 vec3 = mudskipper.position().add(calcOffsetVec(new Vec3(0, 0, 0.2F * mudskipper.getScale()), 0F, mudskipper.getYRot()));
         this.setPos(vec3.x, vec3.y, vec3.z);
-    }
-
-    public EntityMudBall(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.MUD_BALL.get(), world);
     }
 
     public void doBehavior() {
@@ -72,7 +68,7 @@ public class EntityMudBall extends EntityMobProjectile {
 
     @Override
     protected void onImpact(HitResult result) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.level().broadcastEntityEvent(this, (byte)3);
         }
         super.onImpact(result);

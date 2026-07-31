@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.entity.ai.FlightMoveController;
 import com.github.alexthe666.alexsmobs.entity.util.Maths;
 import com.github.alexthe666.alexsmobs.item.AMItemRegistry;
 import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,7 +25,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.animal.Bucketable;
+import net.minecraft.world.entity.Bucketable;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -62,11 +62,11 @@ public class EntityCosmicCod extends Mob implements Bucketable {
 
     protected EntityCosmicCod(EntityType<? extends Mob> mob, Level level) {
         super(mob, level);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
         this.moveControl = new FlightMoveController(this, 1F, false, true);
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.cosmicCodSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -90,10 +90,10 @@ public class EntityCosmicCod extends Mob implements Bucketable {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FISH_PITCH, 0F);
-        this.entityData.define(FROM_BUCKET, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FISH_PITCH, 0F);
+        builder.define(FROM_BUCKET, false);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class EntityCosmicCod extends Mob implements Bucketable {
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.COSMIC_COD_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
         return stack;
     }
@@ -125,7 +125,7 @@ public class EntityCosmicCod extends Mob implements Bucketable {
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
+            bucket.setCustomName(this.getCustomName());
         }
         CompoundTag platTag = new CompoundTag();
         this.addAdditionalSaveData(platTag);
@@ -148,14 +148,14 @@ public class EntityCosmicCod extends Mob implements Bucketable {
         return !this.fromBucket() && !this.hasCustomName();
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("FromBucket", this.fromBucket());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setFromBucket(compound.getBoolean("FromBucket"));
+        this.setFromBucket(compound.getBooleanOr("FromBucket", false));
     }
 
     public boolean isSensitiveToWater() {
@@ -185,7 +185,7 @@ public class EntityCosmicCod extends Mob implements Bucketable {
     public void tick() {
         super.tick();
         this.prevFishPitch = this.getFishPitch();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             final double ydist = (this.yo - this.getY());//down 0.4 up -0.38
             final float fishDist = (float) ((Math.abs(this.getDeltaMovement().x) + Math.abs(this.getDeltaMovement().z)) * 6F) / getPitchSensitivity();
             this.incrementFishPitch((float) (ydist) * 10 * getPitchSensitivity());
@@ -207,7 +207,7 @@ public class EntityCosmicCod extends Mob implements Bucketable {
         }
         if(teleportIn > 0){
             teleportIn--;
-            if(teleportIn == 0 && !this.level().isClientSide){
+            if(teleportIn == 0 && !this.level().isClientSide()){
                 final double range = 8;
                 final AABB bb = new AABB(this.getX() - range, this.getY() - range, this.getZ() - range, this.getX() + range, this.getY() + range, this.getZ() + range);
                 final List<EntityCosmicCod> list = this.level().getEntitiesOfClass(EntityCosmicCod.class, bb);
@@ -313,7 +313,7 @@ public class EntityCosmicCod extends Mob implements Bucketable {
         final boolean flag = blockstate.isAir();
         if (flag && !blockstate.getFluidState().is(FluidTags.WATER)) {
             this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
-            net.minecraftforge.event.entity.EntityTeleportEvent.EnderEntity event = net.minecraftforge.event.ForgeEventFactory.onEnderTeleport(this, x, y, z);
+            net.neoforged.neoforge.event.entity.EntityTeleportEvent.EnderEntity event = net.neoforged.neoforge.event.ForgeEventFactory.onEnderTeleport(this, x, y, z);
             if (event.isCanceled()) return false;
             level().broadcastEntityEvent(this, (byte) 46);
             this.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
@@ -393,13 +393,13 @@ public class EntityCosmicCod extends Mob implements Bucketable {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         if (spawnDataIn == null) {
             spawnDataIn = new EntityCosmicCod.GroupData(this);
         } else {
             this.createAndSetLeader(((EntityCosmicCod.GroupData) spawnDataIn).groupLeader);
         }
-        if (reason == MobSpawnType.NATURAL && spawnDataIn instanceof EntityCosmicCod.GroupData) {
+        if (reason == EntitySpawnReason.NATURAL && spawnDataIn instanceof EntityCosmicCod.GroupData) {
             doInitialPosing(worldIn, (GroupData) spawnDataIn);
         }
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
@@ -421,12 +421,12 @@ public class EntityCosmicCod extends Mob implements Bucketable {
             final ItemStack itemstack2 = ItemUtils.createFilledResult(itemstack, player, itemstack1, false);
             player.setItemInHand(hand, itemstack2);
             final Level level = this.level();
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer)player, itemstack1);
             }
 
             this.discard();
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
         return super.mobInteract(player, hand);
     }

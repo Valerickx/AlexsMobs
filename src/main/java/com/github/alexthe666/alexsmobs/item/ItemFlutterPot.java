@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DispensibleContainerItem;
 import net.minecraft.world.item.Item;
@@ -31,11 +31,11 @@ public class ItemFlutterPot extends Item implements DispensibleContainerItem {
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
-        if(!world.isClientSide){
+        if(!world.isClientSide()){
             if(this.placeFish((ServerLevel)world, context.getItemInHand(), blockpos) && (context.getPlayer() == null || !context.getPlayer().isCreative())){
                 context.getItemInHand().shrink(1);
             }
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return InteractionResult.sidedSuccess(world.isClientSide());
         }else{
             return InteractionResult.PASS;
         }
@@ -47,7 +47,7 @@ public class ItemFlutterPot extends Item implements DispensibleContainerItem {
     }
 
     private boolean placeFish(ServerLevel worldIn, ItemStack stack, BlockPos pos) {
-        Entity entity = AMEntityRegistry.FLUTTER.get().spawn(worldIn, stack, (Player)null, pos, MobSpawnType.BUCKET, true, false);
+        Entity entity = AMEntityRegistry.FLUTTER.get().spawn(worldIn, stack, (Player)null, pos, EntitySpawnReason.BUCKET, true, false);
         if (entity != null && entity instanceof EntityFlutter) {
             CompoundTag compoundnbt = stack.getOrCreateTag();
             if(compoundnbt.contains("FlutterData")){

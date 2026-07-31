@@ -1,20 +1,23 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelMurmurBody;
 import com.github.alexthe666.alexsmobs.client.model.ModelMurmurHead;
 import com.github.alexthe666.alexsmobs.client.model.ModelMurmurNeck;
 import com.github.alexthe666.alexsmobs.entity.EntityMurmur;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class RenderMurmurBody extends MobRenderer<EntityMurmur, ModelMurmurBody> {
-    public static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/murmur.png");
-    public static final ResourceLocation TEXTURE_ANGRY = new ResourceLocation("alexsmobs:textures/entity/murmur_angry.png");
+public class RenderMurmurBody extends MobRenderer<EntityMurmur, LivingEntityRenderState, ModelMurmurBody> {
+    public static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/murmur.png");
+    public static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/murmur_angry.png");
     public static boolean renderWithHead = false;
     private static final ModelMurmurNeck NECK_MODEL = new ModelMurmurNeck();
     private static final ModelMurmurHead HEAD_MODEL = new ModelMurmurHead();
@@ -27,12 +30,12 @@ public class RenderMurmurBody extends MobRenderer<EntityMurmur, ModelMurmurBody>
         matrixStackIn.scale(0.85F, 0.85F, 0.85F);
     }
 
-    public void render(EntityMurmur body, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityMurmur body, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         super.render(body, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         if (renderWithHead || body.shouldRenderFakeHead()) {
             float f = Mth.rotLerp(partialTicks, body.yBodyRotO, body.yBodyRot);
             float f7 = this.getBob(body, partialTicks);
-            ResourceLocation loc = this.getTextureLocation(body);
+            Identifier loc = this.getTextureLocation(body);
             int overlayCoords = getOverlayCoords(body, this.getWhiteOverlayProgress(body, partialTicks));
             matrixStackIn.pushPose();
             this.setupRotations(body, matrixStackIn, f7, f, partialTicks);
@@ -52,7 +55,7 @@ public class RenderMurmurBody extends MobRenderer<EntityMurmur, ModelMurmurBody>
         }
     }
 
-    public ResourceLocation getTextureLocation(EntityMurmur entity) {
+    public Identifier getTextureLocation(EntityMurmur entity) {
         return entity.isAngry() ? TEXTURE_ANGRY : TEXTURE;
     }
 }

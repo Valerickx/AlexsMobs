@@ -12,17 +12,17 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+
 
 public class EntityTossedItem extends ThrowableItemProjectile {
 
@@ -40,14 +40,10 @@ public class EntityTossedItem extends ThrowableItemProjectile {
         super(AMEntityRegistry.TOSSED_ITEM.get(), x, y, z, worldIn);
     }
 
-    public EntityTossedItem(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(AMEntityRegistry.TOSSED_ITEM.get(), world);
-    }
-
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DART, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DART, false);
     }
 
     public boolean isDart() {
@@ -60,7 +56,7 @@ public class EntityTossedItem extends ThrowableItemProjectile {
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -121,17 +117,17 @@ public class EntityTossedItem extends ThrowableItemProjectile {
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         compound.putBoolean("Dart", this.isDart());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
-        this.setDart(compound.getBoolean("Dart"));
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
+        this.setDart(compound.getBooleanOr("Dart", false));
     }
 
     protected void onHit(HitResult result) {
         super.onHit(result);
-        if (!this.level().isClientSide && (!this.isDart() || result.getType() == HitResult.Type.BLOCK)) {
+        if (!this.level().isClientSide() && (!this.isDart() || result.getType() == HitResult.Type.BLOCK)) {
             this.level().broadcastEntityEvent(this, (byte)3);
             this.remove(RemovalReason.DISCARDED);
         }

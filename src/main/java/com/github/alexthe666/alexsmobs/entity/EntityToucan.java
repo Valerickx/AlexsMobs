@@ -20,7 +20,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -51,11 +51,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -84,14 +84,14 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
     protected EntityToucan(EntityType type, Level worldIn) {
         super(type, worldIn);
         initFeedingData();
-        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.COCOA, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.LEAVES, 0.0F);
+        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.COCOA, -1.0F);
+        this.setPathfindingMalus(PathType.LEAVES, 0.0F);
         switchNavigator(true);
     }
 
-    public static boolean canToucanSpawn(EntityType type, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static boolean canToucanSpawn(EntityType type, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         return true;
     }
 
@@ -102,7 +102,7 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
                 String[] split = str.split("\\|");
                 if (split.length >= 2) {
                     FEEDING_DATA.put(split[0], split[1]);
-                    FEEDING_STACKS.add(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(split[0]))));
+                    FEEDING_STACKS.add(new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(split[0]))));
                 }
             }
         }
@@ -136,16 +136,16 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
         return false;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.toucanSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
     @Nullable
     private BlockState getSaplingFor(ItemStack stack) {
-        ResourceLocation name = ForgeRegistries.ITEMS.getKey(stack.getItem());
+        Identifier name = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (!stack.isEmpty() && name != null && FEEDING_DATA.containsKey(name.toString())) {
             String str = FEEDING_DATA.get(name.toString());
-            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(str));
+            Block block = BuiltInRegistries.BLOCK.getValue(Identifier.parse(str));
             if (block != null) {
                 return block.defaultBlockState();
             }
@@ -199,15 +199,15 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SAPLING_STATE, Optional.empty());
-        this.entityData.define(FLYING, false);
-        this.entityData.define(PECK_TICK, 0);
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(GOLDEN_TIME, 0);
-        this.entityData.define(SAPLING_TIME, 0);
-        this.entityData.define(ENCHANTED, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SAPLING_STATE, Optional.empty());
+        builder.define(FLYING, false);
+        builder.define(PECK_TICK, 0);
+        builder.define(VARIANT, 0);
+        builder.define(GOLDEN_TIME, 0);
+        builder.define(SAPLING_TIME, 0);
+        builder.define(ENCHANTED, false);
     }
 
     @Override
@@ -219,7 +219,7 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
         super.tick();
         prevFlyProgress = flyProgress;
         prevPeckProgress = peckProgress;
-        if (this.getGoldenTime() > 0 && !this.level().isClientSide) {
+        if (this.getGoldenTime() > 0 && !this.level().isClientSide()) {
             this.setGoldenTime(this.getGoldenTime() - 1);
         }
 
@@ -231,7 +231,7 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
             if (flyProgress > 0F)
                 flyProgress--;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (flying) {
                 if (this.isLandNavigator)
                     switchNavigator(false);
@@ -242,7 +242,7 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
             if (flying) {
                 this.setNoGravity(true);
                 if (this.isFlying() && !this.onGround()) {
-                    if (!this.isInWaterOrBubble()) {
+                    if (!this.isInWater()) {
                         this.setDeltaMovement(this.getDeltaMovement().multiply(1F, 0.6F, 1F));
                     }
                 }
@@ -394,7 +394,7 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         BlockState blockstate = this.getSaplingState();
         if (blockstate != null) {
@@ -405,19 +405,19 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
         compound.putBoolean("Enchanted", this.isEnchanted());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         BlockState blockstate = null;
-        if (compound.contains("SaplingState", 10)) {
-            blockstate = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compound.getCompound("SaplingState"));
+        if (compound.contains("SaplingState")) {
+            blockstate = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compound.getCompoundOrEmpty("SaplingState"));
             if (blockstate.isAir()) {
                 blockstate = null;
             }
         }
         this.setSaplingState(blockstate);
-        this.setVariant(compound.getInt("Variant"));
-        this.setGoldenTime(compound.getInt("GoldenTime"));
-        this.setEnchanted(compound.getBoolean("Enchanted"));
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.setGoldenTime(compound.getIntOr("GoldenTime", 0));
+        this.setEnchanted(compound.getBooleanOr("Enchanted", false));
     }
 
     public boolean isSam() {
@@ -471,7 +471,7 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         this.setVariant(this.getRandom().nextInt(4));
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
@@ -512,7 +512,7 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
 
     private void peckBlockEffect() {
         BlockState beneath = this.getBlockStateOn();
-        if (this.level().isClientSide && !beneath.isAir() && beneath.getFluidState().isEmpty()) {
+        if (this.level().isClientSide() && !beneath.isAir() && beneath.getFluidState().isEmpty()) {
             for (int i = 0; i < 2 + random.nextInt(2); i++) {
                 final double d2 = this.random.nextGaussian() * 0.02D;
                 final double d0 = this.random.nextGaussian() * 0.02D;
@@ -549,7 +549,7 @@ public class EntityToucan extends Animal implements ITargetsDroppedItems {
     public void onGetItem(ItemEntity e) {
         ItemStack duplicate = e.getItem().copy();
         duplicate.setCount(1);
-        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide) {
+        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         peck();

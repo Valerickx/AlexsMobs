@@ -18,7 +18,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -48,6 +48,14 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockTerrapinEgg extends BaseEntityBlock {
+
+    public static final com.mojang.serialization.MapCodec<BlockTerrapinEgg> CODEC = simpleCodec(p -> new BlockTerrapinEgg());
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
     public static final IntegerProperty HATCH = BlockStateProperties.HATCH;
     public static final IntegerProperty EGGS = BlockStateProperties.EGGS;
     private static final VoxelShape ONE_EGG_SHAPE = Block.box(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
@@ -85,7 +93,7 @@ public class BlockTerrapinEgg extends BaseEntityBlock {
 
     private void tryTrample(Level worldIn, BlockPos pos, Entity trampler, int chances) {
         if (this.canTrample(worldIn, trampler)) {
-            if (!worldIn.isClientSide && worldIn.random.nextInt(chances) == 0) {
+            if (!worldIn.isClientSide() && worldIn.getRandom().nextInt(chances) == 0) {
                 BlockState blockstate = worldIn.getBlockState(pos);
                 this.removeOneEgg(worldIn, pos, blockstate);
 
@@ -95,7 +103,7 @@ public class BlockTerrapinEgg extends BaseEntityBlock {
     }
 
     private void removeOneEgg(Level worldIn, BlockPos pos, BlockState state) {
-        worldIn.playSound(null, pos, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 0.7F, 0.9F + worldIn.random.nextFloat() * 0.2F);
+        worldIn.playSound(null, pos, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 0.7F, 0.9F + worldIn.getRandom().nextFloat() * 0.2F);
         int i = state.getValue(EGGS);
         if (i <= 1) {
             worldIn.destroyBlock(pos, false);
@@ -120,14 +128,16 @@ public class BlockTerrapinEgg extends BaseEntityBlock {
                 worldIn.removeBlock(pos, false);
                 for (int j = 0; j < state.getValue(EGGS); ++j) {
                     worldIn.levelEvent(2001, pos, Block.getId(state));
-                    EntityTerrapin turtleentity = AMEntityRegistry.TERRAPIN.get().create(worldIn);
-                    turtleentity.setAge(-24000);
-                    if(worldIn.getBlockEntity(pos) instanceof TileEntityTerrapinEgg eggTE){
-                        eggTE.addAttributesToOffspring(turtleentity, random);
+                    EntityTerrapin turtleentity = AMEntityRegistry.TERRAPIN.get().create(worldIn, net.minecraft.world.entity.EntitySpawnReason.BREEDING);
+                    if (turtleentity != null) {
+                        turtleentity.setAge(-24000);
+                        if(worldIn.getBlockEntity(pos) instanceof TileEntityTerrapinEgg eggTE){
+                            eggTE.addAttributesToOffspring(turtleentity, random);
+                        }
+                        turtleentity.setFromBucket(true);
+                        turtleentity.setPos((double) pos.getX() + 0.3D + (double) j * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D);
+                        worldIn.addFreshEntity(turtleentity);
                     }
-                    turtleentity.setFromBucket(true);
-                    turtleentity.moveTo((double) pos.getX() + 0.3D + (double) j * 0.2D, pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-                    worldIn.addFreshEntity(turtleentity);
                 }
             }
         }
@@ -135,19 +145,14 @@ public class BlockTerrapinEgg extends BaseEntityBlock {
     }
 
     public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (hasProperHabitat(worldIn, pos) && !worldIn.isClientSide) {
+        if (hasProperHabitat(worldIn, pos) && !worldIn.isClientSide()) {
             worldIn.levelEvent(2005, pos, 0);
         }
 
     }
 
     private boolean canGrow(Level worldIn) {
-        float f = worldIn.getTimeOfDay(1.0F);
-        if ((double) f < 0.69D && (double) f > 0.65D) {
-            return true;
-        } else {
-            return worldIn.random.nextInt(15) == 0;
-        }
+        return worldIn.getRandom().nextInt(15) == 0;
     }
 
     public void playerDestroy(Level worldIn, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity te, ItemStack stack) {
@@ -178,7 +183,7 @@ public class BlockTerrapinEgg extends BaseEntityBlock {
             if (!(trampler instanceof LivingEntity)) {
                 return false;
             } else {
-                return trampler instanceof Player || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, trampler);
+                return trampler instanceof Player || (worldIn instanceof ServerLevel sl && net.neoforged.neoforge.event.EventHooks.canEntityGrief(sl, trampler));
             }
         } else {
             return false;
@@ -186,53 +191,15 @@ public class BlockTerrapinEgg extends BaseEntityBlock {
     }
 
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-        ItemStack pickaxe = builder.getOptionalParameter(LootContextParams.TOOL);
         BlockEntity blockentity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        boolean silkTouch = false;
-        if(pickaxe != null){
-            silkTouch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, pickaxe) > 0;
-        }
-        if (silkTouch && blockentity instanceof TileEntityTerrapinEgg) {
+        if (blockentity instanceof TileEntityTerrapinEgg) {
             ItemStack stack = new ItemStack(AMBlockRegistry.TERRAPIN_EGG.get());
-            TileEntityTerrapinEgg egg = (TileEntityTerrapinEgg)blockentity;
-            CompoundTag tag = stack.getOrCreateTagElement("BlockEntityTag");
-            CompoundTag parent1 = new CompoundTag();
-            CompoundTag parent2 = new CompoundTag();
-            boolean flag = false;
-            if(egg.parent1 != null){
-                flag = true;
-                egg.parent1.writeToNBT(parent1);
-            }
-            if(egg.parent2 != null){
-                flag = true;
-                egg.parent2.writeToNBT(parent2);
-            }
-            if(flag){
-                tag.put("Parent1Data", parent1);
-                tag.put("Parent2Data", parent2);
-            }
             return List.of(stack);
         }
         return List.of();
     }
 
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter w, List<Component> list, TooltipFlag flags) {
-        super.appendHoverText(stack, w, list, flags);
-        CompoundTag compoundtag = BlockItem.getBlockEntityData(stack);
-        if (compoundtag != null && compoundtag.contains("Parent1Data") && compoundtag.contains("Parent2Data")) {
-            TerrapinTypes parent1Type = TerrapinTypes.values()[Mth.clamp(compoundtag.getCompound("Parent1Data").getInt("TerrapinType"), 0, TerrapinTypes.values().length - 1)];
-            TerrapinTypes parent2Type = TerrapinTypes.values()[Mth.clamp(compoundtag.getCompound("Parent2Data").getInt("TerrapinType"), 0, TerrapinTypes.values().length - 1)];
-            String s1 = Component.translatable(parent1Type.getTranslationName()).getString();
-            String s2 = Component.translatable(parent2Type.getTranslationName()).getString();
-            list.add(Component.translatable("block.alexsmobs.terrapin_egg.desc", s1, s2).withStyle(ChatFormatting.GRAY));
-        }
-    }
 
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState state2, boolean b) {
-        if (state.is(AMBlockRegistry.TERRAPIN_EGG.get()) && state.getValue(EGGS) <= 1) {
-            super.onRemove(state, level, pos, state2, b);
-        }
-    }
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

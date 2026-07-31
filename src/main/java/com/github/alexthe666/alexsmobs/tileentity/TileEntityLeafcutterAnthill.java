@@ -45,11 +45,11 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
     @Nullable
     public static Entity loadEntityAndExecute(CompoundTag compound, Level worldIn, Function<Entity, Entity> p_220335_2_) {
         return loadEntity(compound, worldIn).map(p_220335_2_).map((p_220346_3_) -> {
-            if (compound.contains("Passengers", 9)) {
-                ListTag listnbt = compound.getList("Passengers", 10);
+            if (compound.contains("Passengers")) {
+                ListTag listnbt = compound.getListOrEmpty("Passengers");
 
                 for (int i = 0; i < listnbt.size(); ++i) {
-                    Entity entity = loadEntityAndExecute(listnbt.getCompound(i), worldIn, p_220335_2_);
+                    Entity entity = loadEntityAndExecute(listnbt.getCompoundOrEmpty(i), worldIn, p_220335_2_);
                     if (entity != null) {
                         entity.startRiding(p_220346_3_, true);
                     }
@@ -189,7 +189,7 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
             CompoundTag compoundnbt = new CompoundTag();
             p_226962_1_.save(compoundnbt);
             if (p_226962_2_) {
-                if (!level.isClientSide && p_226962_1_.getRandom().nextFloat() < AMConfig.leafcutterAntFungusGrowChance) {
+                if (!level.isClientSide() && p_226962_1_.getRandom().nextFloat() < AMConfig.leafcutterAntFungusGrowChance) {
                     growFungus();
                 }
                 leafFeedings++;
@@ -361,7 +361,7 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
         for (BlockState blockstate = this.getBlockState(); iterator.hasNext(); ant.ticksInHive++) {
             ant = iterator.next();
             if (ant.ticksInHive > ant.minOccupationTicks && !ant.queen) {
-                BeehiveBlockEntity.BeeReleaseStatus beehivetileentity$state = ant.entityData.getBoolean("HasNectar") ? BeehiveBlockEntity.BeeReleaseStatus.HONEY_DELIVERED : BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED;
+                BeehiveBlockEntity.BeeReleaseStatus beehivetileentity$state = ant.entityData.getBooleanOr("HasNectar", false) ? BeehiveBlockEntity.BeeReleaseStatus.HONEY_DELIVERED : BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED;
                 if (this.addAntToWorld(blockstate, ant, null, beehivetileentity$state)) {
                     iterator.remove();
                 }
@@ -373,12 +373,12 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
     public void load(CompoundTag nbt) {
         super.load(nbt);
         this.ants.clear();
-        this.leafFeedings = nbt.getInt("LeafFeedings");
-        ListTag listnbt = nbt.getList("Ants", 10);
+        this.leafFeedings = nbt.getIntOr("LeafFeedings", 0);
+        ListTag listnbt = nbt.getListOrEmpty("Ants");
 
         for (int i = 0; i < listnbt.size(); ++i) {
-            CompoundTag compoundnbt = listnbt.getCompound(i);
-            Ant beehiveTileEntity$ant = new Ant(compoundnbt.getCompound("EntityData"), compoundnbt.getInt("TicksInHive"), compoundnbt.getInt("MinOccupationTicks"), compoundnbt.getBoolean("Queen"));
+            CompoundTag compoundnbt = listnbt.getCompoundOrEmpty(i);
+            Ant beehiveTileEntity$ant = new Ant(compoundnbt.getCompoundOrEmpty("EntityData"), compoundnbt.getInt("TicksInHive"), compoundnbt.getInt("MinOccupationTicks"), compoundnbt.getBoolean("Queen"));
             this.ants.add(beehiveTileEntity$ant);
         }
     }
@@ -399,7 +399,7 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
+    public void saveAdditional(net.minecraft.world.level.storage.ValueOutput compound) {
         super.saveAdditional(compound);
         compound.put("Ants", this.getAnts());
         compound.putInt("LeafFeedings", leafFeedings);

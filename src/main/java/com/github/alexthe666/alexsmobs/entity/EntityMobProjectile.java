@@ -14,9 +14,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -53,11 +53,11 @@ public abstract class EntityMobProjectile extends Entity {
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return (Packet<ClientGamePacketListener>) NetworkHooks.getEntitySpawningPacket(this);
+        return super.getAddEntityPacket();
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
 
     }
 
@@ -78,7 +78,7 @@ public abstract class EntityMobProjectile extends Entity {
         this.updateRotation();
         if (this.isInWall() && (!isInWater() || removeInWater())) {
             this.remove(RemovalReason.DISCARDED);
-        } else if (this.isInWaterOrBubble() && this.removeInWater()) {
+        } else if (this.isInWater() && this.removeInWater()) {
             this.remove(RemovalReason.DISCARDED);
         } else {
             this.setDeltaMovement(vector3d.scale(0.99F));
@@ -105,7 +105,7 @@ public abstract class EntityMobProjectile extends Entity {
 
     protected void onHitBlock(BlockHitResult p_230299_1_) {
         BlockState blockstate = this.level().getBlockState(p_230299_1_.getBlockPos());
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -127,9 +127,9 @@ public abstract class EntityMobProjectile extends Entity {
 
     }
 
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         if (this.ownerUUID != null) {
-            compound.putUUID("Owner", this.ownerUUID);
+            compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
 
         if (this.leftOwner) {
@@ -138,12 +138,12 @@ public abstract class EntityMobProjectile extends Entity {
 
     }
 
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.hasUUID("Owner")) {
-            this.ownerUUID = compound.getUUID("Owner");
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
+        if (compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).isPresent()) {
+            this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
 
-        this.leftOwner = compound.getBoolean("LeftOwner");
+        this.leftOwner = compound.getBooleanOr("LeftOwner", false);
     }
 
     private boolean checkLeftOwner() {

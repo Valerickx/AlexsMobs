@@ -13,12 +13,12 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ParticleBearFreddy extends Particle {
     private final ModelGrizzlyBear model = new ModelGrizzlyBear();
@@ -47,8 +47,8 @@ public class ParticleBearFreddy extends Particle {
         posestack.mulPose(Axis.XP.rotationDegrees(10F - laterFlip * 35F));
         posestack.scale(-scale, -scale, scale);
         posestack.translate(0.0D, 0.5F, 2 + (1F - initalFlip));
-        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer vertexconsumer = multibuffersource$buffersource.getBuffer(AMRenderTypes.getFreddy(RenderGrizzlyBear.TEXTURE_FREDDY));
+        OrderedSubmitNodeCollector.BufferSource OrderedSubmitNodeCollector$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer vertexconsumer = OrderedSubmitNodeCollector$buffersource.getBuffer(AMRenderTypes.getFreddy(RenderGrizzlyBear.TEXTURE_FREDDY));
         posestack.mulPose(Axis.XP.rotationDegrees(initalFlip * 20F - 5F));
         float swing = laterFlip * (float) Math.sin((age + partialTick) * 0.3F) * 20;
         posestack.mulPose(Axis.ZP.rotationDegrees((1F - initalFlip) * 45F + swing));
@@ -57,7 +57,7 @@ public class ParticleBearFreddy extends Particle {
         this.model.positionForParticle(partialTick, age + partialTick);
         this.model.renderToBuffer(posestack, vertexconsumer, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         this.model.young = baby;
-        multibuffersource$buffersource.endBatch();
+        OrderedSubmitNodeCollector$buffersource.endBatch();
         RenderSystem.setShaderFogEnd(fogBefore);
     }
 

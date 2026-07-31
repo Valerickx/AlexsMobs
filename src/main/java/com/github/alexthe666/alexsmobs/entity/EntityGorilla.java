@@ -9,7 +9,7 @@ import com.github.alexthe666.citadel.animation.Animation;
 import com.github.alexthe666.citadel.animation.AnimationHandler;
 import com.github.alexthe666.citadel.animation.IAnimatedEntity;
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -40,7 +40,7 @@ import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -51,7 +51,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -91,9 +91,9 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
 
     protected EntityGorilla(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.LEAVES, 0.0F);
-        this.setMaxUpStep(1.1F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.LEAVES, 0.0F);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1.1F);
     }
 
     protected PathNavigation createNavigation(Level worldIn) {
@@ -108,12 +108,12 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         return stack.is(AMTagRegistry.BANANAS);
     }
 
-    public static boolean canGorillaSpawn(EntityType<EntityGorilla> gorilla, LevelAccessor worldIn, MobSpawnType reason, BlockPos p_223317_3_, RandomSource random) {
+    public static boolean canGorillaSpawn(EntityType<EntityGorilla> gorilla, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos p_223317_3_, RandomSource random) {
         BlockState blockstate = worldIn.getBlockState(p_223317_3_.below());
         return (blockstate.is(AMTagRegistry.GORILLA_SPAWNS) || blockstate.is(Blocks.AIR)) && worldIn.getRawBrightness(p_223317_3_, 0) > 8;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.gorillaSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -193,7 +193,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         if (spawnDataIn instanceof AgeableMob.AgeableMobGroupData) {
             AgeableMob.AgeableMobGroupData lvt_6_1_ = (AgeableMob.AgeableMobGroupData) spawnDataIn;
             if (lvt_6_1_.getGroupSize() == 0) {
@@ -254,12 +254,12 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SILVERBACK, false);
-        this.entityData.define(STANDING, false);
-        this.entityData.define(SITTING, false);
-        this.entityData.define(EATING, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SILVERBACK, false);
+        builder.define(STANDING, false);
+        builder.define(SITTING, false);
+        builder.define(EATING, false);
     }
 
     public boolean isSilverback() {
@@ -294,7 +294,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         this.entityData.set(EATING, eating);
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("Silverback", this.isSilverback());
         compound.putBoolean("Standing", this.isStanding());
@@ -302,12 +302,12 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         compound.putBoolean("ForcedToSit", this.forcedSit);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setSilverback(compound.getBoolean("Silverback"));
-        this.setStanding(compound.getBoolean("Standing"));
-        this.setOrderedToSit(compound.getBoolean("GorillaSitting"));
-        this.forcedSit = compound.getBoolean("ForcedToSit");
+        this.setSilverback(compound.getBooleanOr("Silverback", false));
+        this.setStanding(compound.getBooleanOr("Standing", false));
+        this.setOrderedToSit(compound.getBooleanOr("GorillaSitting", false));
+        this.forcedSit = compound.getBooleanOr("ForcedToSit", false);
     }
 
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -452,7 +452,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         if (!forcedSit && this.isSitting() && (this.getTarget() != null || this.isStanding()) && !this.isEating()) {
             this.setOrderedToSit(false);
         }
-        if (!this.level().isClientSide && this.getAnimation() == NO_ANIMATION && !this.isStanding() && !this.isSitting() && random.nextInt(1500) == 0) {
+        if (!this.level().isClientSide() && this.getAnimation() == NO_ANIMATION && !this.isStanding() && !this.isSitting() && random.nextInt(1500) == 0) {
             maxSitTime = 300 + random.nextInt(250);
             this.setOrderedToSit(true);
         }
@@ -462,7 +462,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         if (sitProgress == 0 && poundChestCooldown <= 0 && this.isSilverback() && random.nextInt(800) == 0 && this.getAnimation() == NO_ANIMATION && !this.isSitting() && !this.isNoAi() && this.getMainHandItem().isEmpty()) {
             this.setAnimation(ANIMATION_POUNDCHEST);
         }
-        if (!this.level().isClientSide && this.getTarget() != null && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 10) {
+        if (!this.level().isClientSide() && this.getTarget() != null && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 10) {
             float f1 = this.getYRot() * Mth.DEG_TO_RAD;
             this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f1) * 0.02F, 0.0D, Mth.cos(f1) * 0.02F));
             getTarget().knockback(1F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ());
@@ -520,7 +520,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
     public void onGetItem(ItemEntity targetEntity) {
         ItemStack duplicate = targetEntity.getItem().copy();
         duplicate.setCount(1);
-        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide) {
+        if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         this.setItemInHand(InteractionHand.MAIN_HAND, duplicate);

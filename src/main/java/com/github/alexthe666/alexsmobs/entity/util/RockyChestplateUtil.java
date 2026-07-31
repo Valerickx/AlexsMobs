@@ -29,7 +29,7 @@ public class RockyChestplateUtil {
             lassoedTag.putInt(ROCKY_ROLL_TIMESTAMP, roller.tickCount);
         }
         CitadelEntityData.setCitadelTag(roller, lassoedTag);
-        if (!roller.level().isClientSide) {
+        if (!roller.level().isClientSide()) {
             Citadel.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, roller.getId()));
         }else{
             Citadel.sendMSGToServer(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, roller.getId()));
@@ -39,7 +39,7 @@ public class RockyChestplateUtil {
     public static int getRollingTicksLeft(LivingEntity entity) {
         CompoundTag lassoedTag = CitadelEntityData.getOrCreateCitadelTag(entity);
         if (lassoedTag.contains(ROCKY_ROLL_TICKS)) {
-            return lassoedTag.getInt(ROCKY_ROLL_TICKS);
+            return lassoedTag.getIntOr(ROCKY_ROLL_TICKS, 0);
         }
         return 0;
     }
@@ -48,7 +48,7 @@ public class RockyChestplateUtil {
     public static int getRollingTimestamp(LivingEntity entity) {
         CompoundTag lassoedTag = CitadelEntityData.getOrCreateCitadelTag(entity);
         if (lassoedTag.contains(ROCKY_ROLL_TIMESTAMP)) {
-            return lassoedTag.getInt(ROCKY_ROLL_TIMESTAMP);
+            return lassoedTag.getIntOr(ROCKY_ROLL_TIMESTAMP, 0);
         }
         return 0;
     }
@@ -63,7 +63,7 @@ public class RockyChestplateUtil {
     }
 
     public static void tickRockyRolling(LivingEntity roller) {
-        if(roller.isInWaterOrBubble()){
+        if(roller.isInWater()){
             roller.setDeltaMovement(roller.getDeltaMovement().add(0, -0.015F, 0));
         }
         CompoundTag tag = CitadelEntityData.getOrCreateCitadelTag(roller);
@@ -81,7 +81,7 @@ public class RockyChestplateUtil {
             if(roller instanceof Player){
                 ((Player)roller).setForcedPose(Pose.SWIMMING);
             }
-            if(!roller.level().isClientSide){
+            if(!roller.level().isClientSide()){
                 for (Entity entity : roller.level().getEntitiesOfClass(LivingEntity.class, roller.getBoundingBox().inflate(1.0F))) {
                     if (!roller.isAlliedTo(entity) && !entity.isAlliedTo(roller) && entity != roller) {
                         entity.hurt(entity.damageSources().mobAttack(roller), 2.0F + roller.getRandom().nextFloat() * 1.0F);
@@ -94,9 +94,9 @@ public class RockyChestplateUtil {
             roller.refreshDimensions();
             Vec3 vec3 = roller.onGround() ? roller.getDeltaMovement() : roller.getDeltaMovement().multiply(0.9D, 1D, 0.9D);
             float f = roller.getYRot() * Mth.DEG_TO_RAD;
-            float f1 = roller.isInWaterOrBubble() ? 0.05F : 0.15F;
+            float f1 = roller.isInWater() ? 0.05F : 0.15F;
             Vec3 rollDelta = new Vec3(vec3.x + (double) (-Mth.sin(f) * f1), 0.0D, vec3.z + (double) (Mth.cos(f) * f1));
-            double rollY = roller.isInWaterOrBubble() || roller.isShiftKeyDown() ? -0.1F : rollCounter >= MAX_ROLL_TICKS ? 0.27D : vec3.y;
+            double rollY = roller.isInWater() || roller.isShiftKeyDown() ? -0.1F : rollCounter >= MAX_ROLL_TICKS ? 0.27D : vec3.y;
             roller.setDeltaMovement(rollDelta.add(0.0D, rollY, 0.0D));
             if(rollCounter > 1 || !roller.isSprinting()){
                 rollFor(roller, rollCounter - 1);
@@ -109,7 +109,7 @@ public class RockyChestplateUtil {
                 update = true;
             }
         }
-        if (!roller.level().isClientSide && update) {
+        if (!roller.level().isClientSide() && update) {
             CitadelEntityData.setCitadelTag(roller, tag);
             Citadel.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", tag, roller.getId()));
         }

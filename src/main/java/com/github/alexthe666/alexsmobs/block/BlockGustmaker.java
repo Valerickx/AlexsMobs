@@ -16,12 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec3;
 
 public class BlockGustmaker extends Block {
-    public static final DirectionProperty FACING = DirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = DirectionalBlock.FACING;
     public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
 
     public BlockGustmaker() {
@@ -50,14 +50,15 @@ public class BlockGustmaker extends Block {
         if (flag && !flag1) {
             if(worldIn.isLoaded(pos)){
                 Vec3 dispensePosition = getDispensePosition(pos, state.getValue(FACING));
-                Vec3 gustDir = Vec3.atLowerCornerOf(state.getValue(FACING).getNormal()).multiply(0.1, 0.1, 0.1);
+                Direction dir = state.getValue(FACING);
+                Vec3 gustDir = new Vec3(dir.getStepX(), dir.getStepY(), dir.getStepZ()).scale(0.1);
                 EntityGust gust = new EntityGust(worldIn);
                 gust.setGustDir((float) gustDir.x, (float) gustDir.y, (float) gustDir.z);
                 gust.setPos(dispensePosition.x, dispensePosition.y, dispensePosition.z);
                 if(state.getValue(FACING).getAxis() == Direction.Axis.Y){
                     gust.setVertical(true);
                 }
-                if (!worldIn.isClientSide) {
+                if (!worldIn.isClientSide()) {
                     worldIn.addFreshEntity(gust);
                 }
             }

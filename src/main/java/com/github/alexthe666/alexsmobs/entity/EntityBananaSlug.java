@@ -21,7 +21,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -79,20 +79,20 @@ public class EntityBananaSlug extends Animal {
     }
 
 
-    public static boolean checkBananaSlugSpawnRules(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean checkBananaSlugSpawnRules(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         return !worldIn.getBlockState(pos.below()).isAir();
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.bananaSlugSpawnRolls, this.getRandom(), spawnReasonIn) && super.checkSpawnRules(worldIn, spawnReasonIn);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CLIMBING, (byte) 0);
-        this.entityData.define(ATTACHED_FACE, Direction.DOWN);
-        this.entityData.define(VARIANT, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CLIMBING, (byte) 0);
+        builder.define(ATTACHED_FACE, Direction.DOWN);
+        builder.define(VARIANT, 0);
     }
 
     public boolean canTrample(BlockState state, BlockPos pos, float fallDistance) {
@@ -115,7 +115,7 @@ public class EntityBananaSlug extends Animal {
     }
 
     @javax.annotation.Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
         this.setVariant(random.nextInt(4));
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
@@ -195,10 +195,10 @@ public class EntityBananaSlug extends Animal {
         }
 
         Vec3 vector3d = this.getDeltaMovement();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.setBesideClimbableBlock(this.horizontalCollision);
             this.setBesideClimbableBlock(this.horizontalCollision || this.verticalCollision && !this.onGround());
-            if (this.onGround() || this.isInWaterOrBubble() || this.isInLava()) {
+            if (this.onGround() || this.isInWater() || this.isInLava()) {
                 this.entityData.set(ATTACHED_FACE, Direction.DOWN);
             } else  if (this.verticalCollision) {
                 this.entityData.set(ATTACHED_FACE, Direction.UP);
@@ -244,7 +244,7 @@ public class EntityBananaSlug extends Animal {
                 this.setDeltaMovement(vector3d.multiply(1.0D, 0.4D, 1.0D));
             }
         }
-        if (!this.level().isClientSide && this.isAlive() && !this.isBaby() && --this.timeUntilSlime <= 0) {
+        if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilSlime <= 0) {
             this.spawnAtLocation(AMItemRegistry.BANANA_SLUG_SLIME.get());
             this.timeUntilSlime = this.random.nextInt(12000) + 24000;
         }
@@ -267,7 +267,7 @@ public class EntityBananaSlug extends Animal {
     }
 
     private boolean isTrailVisible() {
-        if(this.isInWaterOrBubble()){
+        if(this.isInWater()){
             return false;
         }
         if(this.onGround()){
@@ -314,18 +314,18 @@ public class EntityBananaSlug extends Animal {
         return slug;
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("Variant", this.getVariant());
         compound.putInt("SlimeTime", this.timeUntilSlime);
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("SlimeTime")) {
-            this.timeUntilSlime = compound.getInt("SlimeTime");
+            this.timeUntilSlime = compound.getIntOr("SlimeTime", 0);
         }
-        this.setVariant(compound.getInt("Variant"));
+        this.setVariant(compound.getIntOr("Variant", 0));
     }
 
 

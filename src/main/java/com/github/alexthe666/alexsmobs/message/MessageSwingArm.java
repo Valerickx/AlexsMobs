@@ -5,7 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.Supplier;
 
@@ -28,9 +28,9 @@ public class MessageSwingArm {
         public Handler() {
         }
 
-        public static void handle(MessageSwingArm message, Supplier<NetworkEvent.Context> context) {
-            context.get().setPacketHandled(true);
-            context.get().enqueueWork(() -> {
+        public static void handle(MessageSwingArm message, IPayloadContext context) {
+            
+            context.enqueueWork(() -> {
                 Player player = context.get().getSender();
                 if (player != null) {
                     ItemStack leftItem = player.getItemInHand(InteractionHand.OFF_HAND);

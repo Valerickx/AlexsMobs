@@ -7,7 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -16,7 +16,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.entity.PartEntity;
+import net.neoforged.neoforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -47,7 +47,7 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
-        if(this.level().isClientSide && this.getParent() != null){
+        if(this.level().isClientSide() && this.getParent() != null){
             AlexsMobs.sendMSGToServer(new MessageInteractMultipart(this.getParent().getId(), hand == InteractionHand.OFF_HAND));
         }
         return this.getParent() == null ? InteractionResult.PASS : this.getParent().mobInteract(player, hand);
@@ -69,8 +69,8 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if(this.level().isClientSide && this.getParent() != null && !this.getParent().isInvulnerableTo(source)){
-            ResourceLocation key = this.level().registryAccess().registry(Registries.DAMAGE_TYPE).get().getKey(source.type());
+        if(this.level().isClientSide() && this.getParent() != null && !this.getParent().isInvulnerableTo(source)){
+            Identifier key = this.level().registryAccess().registry(Registries.DAMAGE_TYPE).get().getKey(source.type());
             if(key != null){
                 AlexsMobs.sendMSGToServer(new MessageHurtMultipart(this.getId(), this.getParent().getId(), amount, key.toString()));
             }
@@ -91,7 +91,7 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
 
     }
 
@@ -100,12 +100,12 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
 
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
 
     }
 }

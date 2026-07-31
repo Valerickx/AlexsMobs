@@ -34,7 +34,7 @@ import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -44,7 +44,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
 
@@ -76,8 +76,8 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
 
     protected EntityWarpedToad(EntityType entityType, Level world) {
         super(entityType, world);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-        this.setPathfindingMalus(BlockPathTypes.LAVA, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.LAVA, 0.0F);
         switchNavigator(false);
     }
 
@@ -86,10 +86,10 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
         return s != null && s.toLowerCase().contains("pepe");
     }
 
-    public static boolean canWarpedToadSpawn(EntityType<? extends Mob> typeIn, ServerLevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource randomIn) {
+    public static boolean canWarpedToadSpawn(EntityType<? extends Mob> typeIn, ServerLevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource randomIn) {
         BlockPos blockpos = pos.below();
         boolean spawnBlock = worldIn.getFluidState(blockpos).is(FluidTags.LAVA) || worldIn.getBlockState(blockpos).canOcclude();
-        return reason == MobSpawnType.SPAWNER || spawnBlock;
+        return reason == EntitySpawnReason.SPAWNER || spawnBlock;
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -112,7 +112,7 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
         return true;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.warpedToadSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -141,16 +141,16 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("ToadSitting", this.isOrderedToSit());
         compound.putInt("Command", this.getCommand());
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setOrderedToSit(compound.getBoolean("ToadSitting"));
-        this.setCommand(compound.getInt("Command"));
+        this.setOrderedToSit(compound.getBooleanOr("ToadSitting", false));
+        this.setCommand(compound.getIntOr("Command", 0));
     }
 
     protected void registerGoals() {
@@ -293,7 +293,7 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
         if(this.isBaby() && this.getEyeHeight() > this.getBbHeight()){
             this.refreshDimensions();
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (isInWater() || isInLava()) {
                 if (swimTimer < 0) {
                     swimTimer = 0;
@@ -321,13 +321,13 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(TONGUE_LENGTH, 1F);
-        this.entityData.define(TONGUE_OUT, false);
-        this.entityData.define(COMMAND, 0);
-        this.entityData.define(SITTING, false);
-        this.entityData.define(JUMP_ACTIVE, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(TONGUE_LENGTH, 1F);
+        builder.define(TONGUE_OUT, false);
+        builder.define(COMMAND, 0);
+        builder.define(SITTING, false);
+        builder.define(JUMP_ACTIVE, false);
     }
 
     public int getCommand() {
@@ -356,7 +356,7 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
         prevSwimProgress = swimProgress;
         prevJumpProgress = jumpProgress;
         prevReboundProgress = reboundProgress;
-        this.setMaxUpStep(1);
+        com.github.alexthe666.alexsmobs.misc.AMPortUtil.setStepHeight(this, 1);
 
         final boolean isTechnicalBlinking = this.tickCount % 50 > 42;
         if (isTechnicalBlinking) {
@@ -371,10 +371,10 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
         if (isTongueOut && attackProgress < 5F) {
             attackProgress++;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.entityData.set(JUMP_ACTIVE, !this.onGround());
         }
-        if (this.entityData.get(JUMP_ACTIVE) && !isInWaterOrBubble()) {
+        if (this.entityData.get(JUMP_ACTIVE) && !isInWater()) {
             this.yBodyRot = this.getYRot();
             this.yHeadRot = this.getYRot();
             if (jumpProgress < 5F) {
@@ -433,7 +433,7 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
 //            if (attackProgress == 5 && (entityIn.getBbHeight() < 0.89D || entityIn instanceof EntityCrimsonMosquito) && !entityIn.hasPassenger(this)) {
 //            }
         }
-        if (!this.level().isClientSide && attackProgress == 5F && isTongueOut) {
+        if (!this.level().isClientSide() && attackProgress == 5F && isTongueOut) {
             setTongueOut(false);
             attackProgress = 4F;
         }
@@ -630,14 +630,14 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
 
         public void start() {
             this.timeToRecalcPath = 0;
-            this.oldWaterCost = this.tameable.getPathfindingMalus(BlockPathTypes.WATER);
-            this.tameable.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+            this.oldWaterCost = this.tameable.getPathfindingMalus(PathType.WATER);
+            this.tameable.setPathfindingMalus(PathType.WATER, 0.0F);
         }
 
         public void stop() {
             this.owner = null;
             this.tameable.getNavigation().stop();
-            this.tameable.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
+            this.tameable.setPathfindingMalus(PathType.WATER, this.oldWaterCost);
         }
 
         public void tick() {
@@ -683,8 +683,8 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
         }
 
         private boolean isTeleportFriendlyBlock(BlockPos p_226329_1_) {
-            BlockPathTypes lvt_2_1_ = WalkNodeEvaluator.getBlockPathTypeStatic(this.world, p_226329_1_.mutable());
-            if (lvt_2_1_ != BlockPathTypes.WALKABLE) {
+            PathType lvt_2_1_ = WalkNodeEvaluator.getPathTypetatic(this.world, p_226329_1_.mutable());
+            if (lvt_2_1_ != PathType.WALKABLE) {
                 return false;
             } else {
                 BlockState lvt_3_1_ = this.world.getBlockState(p_226329_1_.below());

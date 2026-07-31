@@ -1,14 +1,17 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelGazelle;
 import com.github.alexthe666.alexsmobs.entity.EntityGazelle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderGazelle extends MobRenderer<EntityGazelle, ModelGazelle> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/gazelle.png");
+public class RenderGazelle extends MobRenderer<EntityGazelle, LivingEntityRenderState, ModelGazelle> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/gazelle.png");
 
     public RenderGazelle(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelGazelle(), 0.4F);
@@ -19,7 +22,7 @@ public class RenderGazelle extends MobRenderer<EntityGazelle, ModelGazelle> {
     }
 
 
-    public ResourceLocation getTextureLocation(EntityGazelle entity) {
+    public Identifier getTextureLocation(EntityGazelle entity) {
         return TEXTURE;
     }
 }

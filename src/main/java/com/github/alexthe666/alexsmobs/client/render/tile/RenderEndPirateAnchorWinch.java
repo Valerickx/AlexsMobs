@@ -6,16 +6,17 @@ import com.github.alexthe666.alexsmobs.client.model.ModelEndPirateAnchorWinch;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityEndPirateAnchorWinch;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class RenderEndPirateAnchorWinch<T extends TileEntityEndPirateAnchorWinch> implements BlockEntityRenderer<T> {
+public class RenderEndPirateAnchorWinch<T extends TileEntityEndPirateAnchorWinch> implements BlockEntityRenderer<T, BlockEntityRenderState> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/end_pirate/anchor_winch.png");
-    private static final ResourceLocation TEXTURE_CHAIN = new ResourceLocation("alexsmobs:textures/entity/end_pirate/anchor_chain.png");
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/end_pirate/anchor_winch.png");
+    private static final Identifier TEXTURE_CHAIN = Identifier.parse("alexsmobs:textures/entity/end_pirate/anchor_chain.png");
     private static final ModelEndPirateAnchorWinch WINCH_MODEL = new ModelEndPirateAnchorWinch();
     private static final ModelEndPirateAnchorChain CHAIN_MODEL = new ModelEndPirateAnchorChain();
 
@@ -23,7 +24,7 @@ public class RenderEndPirateAnchorWinch<T extends TileEntityEndPirateAnchorWinch
     }
 
     @Override
-    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
         boolean east = tileEntityIn.getBlockState().getValue(BlockEndPirateAnchorWinch.EASTORWEST);
         matrixStackIn.translate(0.5F, 1.5F, 0.5F);

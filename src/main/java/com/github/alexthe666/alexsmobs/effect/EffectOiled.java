@@ -12,7 +12,7 @@ public class EffectOiled extends MobEffect {
     }
 
     public void applyEffectTick(LivingEntity entity, int amplifier) {
-       if(entity.isInWaterRainOrBubble()){
+       if(entity.isInWaterOrRain()){
            if(!entity.isShiftKeyDown()){
                entity.setDeltaMovement(entity.getDeltaMovement().add(0, 0.1D, 0));
            }else{

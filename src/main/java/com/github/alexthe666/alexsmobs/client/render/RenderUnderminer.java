@@ -1,5 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelUnderminerDwarf;
 import com.github.alexthe666.alexsmobs.client.model.layered.AMModelLayers;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerUnderminerItem;
@@ -10,33 +12,34 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class RenderUnderminer extends MobRenderer<EntityUnderminer, EntityModel<EntityUnderminer>> {
-    private static final ResourceLocation TEXTURE_DWARF = new ResourceLocation("alexsmobs:textures/entity/underminer_dwarf.png");
-    private static final ResourceLocation TEXTURE_0 = new ResourceLocation("alexsmobs:textures/entity/underminer_0.png");
-    private static final ResourceLocation TEXTURE_1 = new ResourceLocation("alexsmobs:textures/entity/underminer_1.png");
-    public static final List<ResourceLocation> BREAKING_LOCATIONS = IntStream.range(0, 10).mapToObj((destroyStage) -> new ResourceLocation("alexsmobs:textures/block/ghostly_pickaxe/destroy_stage_" + destroyStage + ".png")).collect(Collectors.toList());
+public class RenderUnderminer extends MobRenderer<EntityUnderminer, LivingEntityRenderState, EntityModel<EntityUnderminer>> {
+    private static final Identifier TEXTURE_DWARF = Identifier.parse("alexsmobs:textures/entity/underminer_dwarf.png");
+    private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/underminer_0.png");
+    private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/underminer_1.png");
+    public static final List<Identifier> BREAKING_LOCATIONS = IntStream.range(0, 10).mapToObj((destroyStage) -> Identifier.parse("alexsmobs:textures/block/ghostly_pickaxe/destroy_stage_" + destroyStage + ".png")).collect(Collectors.toList());
     private static final ModelUnderminerDwarf DWARF_MODEL = new ModelUnderminerDwarf();
     private static HumanoidModel<EntityUnderminer> NORMAL_MODEL = null;
     private static final List<RenderType> DESTROY_TYPES = BREAKING_LOCATIONS.stream().map(AMRenderTypes::getGhostCrumbling).collect(Collectors.toList());
@@ -72,8 +75,8 @@ public class RenderUnderminer extends MobRenderer<EntityUnderminer, EntityModel<
         return 0.0F;
     }
 
-    public void render(EntityUnderminer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<EntityUnderminer, EntityModel<EntityUnderminer>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn)))
+    public void render(EntityUnderminer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+        if (net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.RenderLivingEvent.Pre<EntityUnderminer, EntityModel<EntityUnderminer>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn)))
             return;
         matrixStackIn.pushPose();
         this.model.attackTime = this.getAttackAnim(entityIn, partialTicks);
@@ -161,11 +164,11 @@ public class RenderUnderminer extends MobRenderer<EntityUnderminer, EntityModel<
 
         matrixStackIn.popPose();
         RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.shouldShowName(entityIn))) {
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(renderNameplateEvent);
+        if (renderNameplateEvent.getResult() != net.neoforged.bus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.neoforged.bus.api.Event.Result.ALLOW || this.shouldShowName(entityIn))) {
             this.renderNameTag(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
         }
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<EntityUnderminer, EntityModel<EntityUnderminer>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.RenderLivingEvent.Post<EntityUnderminer, EntityModel<EntityUnderminer>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
 
         BlockPos miningPos = entityIn.getMiningPos();
         if (miningPos != null) {
@@ -179,13 +182,13 @@ public class RenderUnderminer extends MobRenderer<EntityUnderminer, EntityModel<
             PoseStack.Pose posestack$pose = matrixStackIn.last();
             VertexConsumer vertexconsumer1 = new SheetedDecalTextureGenerator(bufferIn.getBuffer(DESTROY_TYPES.get(progress)), posestack$pose.pose(), posestack$pose.normal(), 1.0F);
 
-            net.minecraftforge.client.model.data.ModelData modelData = entityIn.level().getModelDataManager().getAt(miningPos);
-            Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(entityIn.level().getBlockState(miningPos), miningPos, entityIn.level(), matrixStackIn, vertexconsumer1, modelData == null ? net.minecraftforge.client.model.data.ModelData.EMPTY : modelData);
+            net.neoforged.neoforge.client.model.data.ModelData modelData = entityIn.level().getModelDataManager().getAt(miningPos);
+            Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(entityIn.level().getBlockState(miningPos), miningPos, entityIn.level(), matrixStackIn, vertexconsumer1, modelData == null ? net.neoforged.neoforge.client.model.data.ModelData.EMPTY : modelData);
             matrixStackIn.popPose();
         }
     }
 
-    private void renderUnderminerModel(PoseStack matrixStackIn, MultiBufferSource source, RenderType defRenderType, float partialTicks, int packedLightIn, int overlayColors, float alphaIn, EntityUnderminer entityIn) {
+    private void renderUnderminerModel(PoseStack matrixStackIn, OrderedSubmitNodeCollector source, RenderType defRenderType, float partialTicks, int packedLightIn, int overlayColors, float alphaIn, EntityUnderminer entityIn) {
         boolean hurt = Math.max(entityIn.hurtTime, entityIn.deathTime) > 0;
         this.model.renderToBuffer(matrixStackIn, source.getBuffer(defRenderType), packedLightIn, LivingEntityRenderer.getOverlayCoords(entityIn, 0.0F), hurt ? 0.4F : 1.0F, hurt ? 0.8F : 1.0F, hurt ? 0.7F : 1.0F, alphaIn);
     }
@@ -193,11 +196,11 @@ public class RenderUnderminer extends MobRenderer<EntityUnderminer, EntityModel<
 
     @Nullable
     protected RenderType getRenderType(EntityUnderminer farseer, boolean normal, boolean invis, boolean outline) {
-        ResourceLocation resourcelocation = this.getTextureLocation(farseer);
-        return outline ? RenderType.outline(resourcelocation) : AMRenderTypes.getUnderminer(resourcelocation);
+        Identifier Identifier = this.getTextureLocation(farseer);
+        return outline ? RenderType.outline(Identifier) : AMRenderTypes.getUnderminer(Identifier);
     }
 
-    public ResourceLocation getTextureLocation(EntityUnderminer entity) {
+    public Identifier getTextureLocation(EntityUnderminer entity) {
         return entity.isDwarf() ? TEXTURE_DWARF : entity.getVariant() == 0 ? TEXTURE_0 : TEXTURE_1;
     }
 

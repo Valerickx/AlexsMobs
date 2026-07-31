@@ -8,7 +8,7 @@ import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
-import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -86,7 +86,7 @@ public class GrizzlyBearAIBeehive extends MoveToBlockGoal {
     }
 
     private void eatHive() {
-        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(bear.level(), bear)) {
+        if (net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(bear.level(), bear)) {
             BlockState blockstate = bear.level().getBlockState(this.blockPos);
             if (blockstate.is(AMTagRegistry.GRIZZLY_BEEHIVE)) {
                 if (bear.level().getBlockEntity(this.blockPos) instanceof BeehiveBlockEntity) {

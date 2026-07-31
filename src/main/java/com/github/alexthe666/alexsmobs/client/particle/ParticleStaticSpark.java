@@ -10,29 +10,29 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class ParticleStaticSpark extends Particle {
-    private static final ResourceLocation[] TEXTURES = new ResourceLocation[]{
-            new ResourceLocation("textures/particle/generic_0.png"),
-            new ResourceLocation("textures/particle/generic_1.png"),
-            new ResourceLocation("textures/particle/generic_2.png"),
-            new ResourceLocation("textures/particle/generic_3.png"),
-            new ResourceLocation("textures/particle/generic_4.png"),
-            new ResourceLocation("textures/particle/generic_5.png"),
-            new ResourceLocation("textures/particle/generic_6.png"),
-            new ResourceLocation("textures/particle/generic_7.png")
+    private static final Identifier[] TEXTURES = new Identifier[]{
+            Identifier.parse("textures/particle/generic_0.png"),
+            Identifier.parse("textures/particle/generic_1.png"),
+            Identifier.parse("textures/particle/generic_2.png"),
+            Identifier.parse("textures/particle/generic_3.png"),
+            Identifier.parse("textures/particle/generic_4.png"),
+            Identifier.parse("textures/particle/generic_5.png"),
+            Identifier.parse("textures/particle/generic_6.png"),
+            Identifier.parse("textures/particle/generic_7.png")
     };
     private int decrement = 1;
     private int textureIndex = 0;
@@ -78,8 +78,8 @@ public class ParticleStaticSpark extends Particle {
             float f3 = Mth.lerp(partialTick, this.oRoll, this.roll);
             quaternion.mul(Axis.ZP.rotation(f3));
         }
-        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer portalStatic = AMRenderTypes.createMergedVertexConsumer(multibuffersource$buffersource.getBuffer(AMRenderTypes.STATIC_PARTICLE), multibuffersource$buffersource.getBuffer(RenderType.entityTranslucent(TEXTURES[textureIndex])));
+        OrderedSubmitNodeCollector.BufferSource OrderedSubmitNodeCollector$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer portalStatic = AMRenderTypes.createMergedVertexConsumer(OrderedSubmitNodeCollector$buffersource.getBuffer(AMRenderTypes.STATIC_PARTICLE), OrderedSubmitNodeCollector$buffersource.getBuffer(RenderType.entityTranslucent(TEXTURES[textureIndex])));
         PoseStack posestack = new PoseStack();
         PoseStack.Pose posestack$pose = posestack.last();
         //Matrix4f matrix4f = posestack$pose.pose();
@@ -106,7 +106,7 @@ public class ParticleStaticSpark extends Particle {
         portalStatic.vertex((double)avector3f[2].x(), (double)avector3f[2].y(), (double)avector3f[2].z()).color(this.rCol, this.gCol, this.bCol, this.alpha).uv(f7, f5).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(j).normal(matrix3f, 0.0F, -1.0F, 0.0F).endVertex();
         portalStatic.vertex((double)avector3f[3].x(), (double)avector3f[3].y(), (double)avector3f[3].z()).color(this.rCol, this.gCol, this.bCol, this.alpha).uv(f7, f6).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(j).normal(matrix3f, 0.0F, -1.0F, 0.0F).endVertex();
 
-        multibuffersource$buffersource.endBatch();
+        OrderedSubmitNodeCollector$buffersource.endBatch();
     }
     @Override
     public ParticleRenderType getRenderType() {

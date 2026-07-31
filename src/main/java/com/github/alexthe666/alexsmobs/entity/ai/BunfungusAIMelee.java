@@ -48,7 +48,7 @@ public class BunfungusAIMelee extends Goal {
                     chungus.setAnimation(EntityBunfungus.ANIMATION_BELLY);
                 }
             }
-        }else if(dist < 5.0D || !chungus.hasLineOfSight(chungus.getTarget()) || jumpCooldown > 0 || chungus.isInWaterOrBubble()){
+        }else if(dist < 5.0D || !chungus.hasLineOfSight(chungus.getTarget()) || jumpCooldown > 0 || chungus.isInWater()){
             chungus.getNavigation().moveTo(chungus.getTarget(), 1.0D);
         }else{
             chungus.getNavigation().stop();

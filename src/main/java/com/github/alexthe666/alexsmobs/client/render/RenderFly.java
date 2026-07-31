@@ -1,14 +1,17 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.github.alexthe666.alexsmobs.client.model.ModelFly;
 import com.github.alexthe666.alexsmobs.entity.EntityFly;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
-public class RenderFly extends MobRenderer<EntityFly, ModelFly> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexsmobs:textures/entity/fly.png");
+public class RenderFly extends MobRenderer<EntityFly, LivingEntityRenderState, ModelFly> {
+    private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/fly.png");
 
     public RenderFly(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelFly(), 0.2F);
@@ -30,7 +33,7 @@ public class RenderFly extends MobRenderer<EntityFly, ModelFly> {
         super.setupRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
     }
 
-    public ResourceLocation getTextureLocation(EntityFly entity) {
+    public Identifier getTextureLocation(EntityFly entity) {
         return TEXTURE;
     }
 }

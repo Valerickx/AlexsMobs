@@ -3,13 +3,13 @@ package com.github.alexthe666.alexsmobs.client.render;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -18,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class LavaVisionFluidRenderer extends LiquidBlockRenderer {
+public class LavaVisionFluidRenderer extends FluidRenderer {
 
     /* Copied from the vanilla superclass */
     private static boolean isFaceOccludedByNeighbor(BlockGetter p_239283_0_, BlockPos p_239283_1_, Direction p_239283_2_, float p_239283_3_) {
@@ -47,8 +47,8 @@ public class LavaVisionFluidRenderer extends LiquidBlockRenderer {
     public void tesselate(BlockAndTintGetter lightReaderIn, BlockPos posIn, VertexConsumer vertexBuilderIn, BlockState blockstateIn, FluidState fluidStateIn) {
         try {
             if (fluidStateIn.is(FluidTags.LAVA)) {
-                TextureAtlasSprite[] atextureatlassprite = net.minecraftforge.client.ForgeHooksClient.getFluidSprites(lightReaderIn, posIn, fluidStateIn);
-                final int i = net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions.of(fluidStateIn).getTintColor(fluidStateIn, lightReaderIn, posIn);
+                TextureAtlasSprite[] atextureatlassprite = net.neoforged.neoforge.client.ClientHooks.getFluidSprites(lightReaderIn, posIn, fluidStateIn);
+                final int i = net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions.of(fluidStateIn).getTintColor(fluidStateIn, lightReaderIn, posIn);
                 final float alpha = (float) AMConfig.lavaOpacity;
                 final float f = (float)(i >> 16 & 255) / 255.0F;
                 final float f1 = (float)(i >> 8 & 255) / 255.0F;

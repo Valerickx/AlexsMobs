@@ -27,9 +27,9 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Pillager;
+import net.minecraft.world.entity.monster.illager.Pillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -64,12 +64,12 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
     }
 
 
-    public static <T extends Mob> boolean canEmuSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static <T extends Mob> boolean canEmuSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         boolean spawnBlock = worldIn.getBlockState(pos.below()).is(AMTagRegistry.EMU_SPAWNS);
         return spawnBlock && worldIn.getRawBrightness(pos, 0) > 8;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, MobSpawnType spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.emuSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
@@ -95,9 +95,9 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, 0);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
     }
 
     protected void registerGoals() {
@@ -166,7 +166,7 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
 
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.getLastHurtByMob() == null && this.getTarget() == null) {
                 if (this.getDeltaMovement().lengthSqr() < 0.03D && this.getRandom().nextInt(190) == 0 && this.getAnimation() == NO_ANIMATION) {
                     if (getRandom().nextInt(3) == 0) {
@@ -191,7 +191,7 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
                 target.hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
             }
         }
-        if (!this.level().isClientSide && this.isAlive() && !this.isBaby() && --this.timeUntilNextEgg <= 0) {
+        if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilNextEgg <= 0) {
             this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             this.spawnAtLocation(AMItemRegistry.EMU_EGG.get());
             this.timeUntilNextEgg = this.random.nextInt(6000) + 6000;
@@ -240,22 +240,22 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
         return true;
     }
 
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setVariant(compound.getInt("Variant"));
+        this.setVariant(compound.getIntOr("Variant", 0));
         if (compound.contains("EggLayTime")) {
-            this.timeUntilNextEgg = compound.getInt("EggLayTime");
+            this.timeUntilNextEgg = compound.getIntOr("EggLayTime", 0);
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("Variant", this.getVariant());
         compound.putInt("EggLayTime", this.timeUntilNextEgg);
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
         if(this.random.nextInt(200) == 0){
             this.setVariant(2);
         }else if(random.nextInt(3) == 0){

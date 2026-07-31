@@ -1,11 +1,10 @@
 package com.github.alexthe666.alexsmobs.item;
 
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.crafting.Ingredient;
 
-public class AMArmorMaterial implements ArmorMaterial {
+public class AMArmorMaterial {
 
     protected static final int[] MAX_DAMAGE_ARRAY = new int[]{13, 15, 16, 11};
     private final String name;
@@ -39,12 +38,12 @@ public class AMArmorMaterial implements ArmorMaterial {
 
 
     @Override
-    public int getDurabilityForType(ArmorItem.Type type) {
+    public int getDurabilityForType(ArmorType type) {
         return MAX_DAMAGE_ARRAY[type.ordinal()] * this.durability;
     }
 
     @Override
-    public int getDefenseForType(ArmorItem.Type type) {
+    public int getDefenseForType(ArmorType type) {
         return this.damageReduction[type.ordinal()];
     }
 
