@@ -58,28 +58,25 @@ public class MessageMungusBiomeChange {
         public static void handle(MessageMungusBiomeChange message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
 
                 if (player != null) {
                     if (player.level() != null) {
                         Entity entity = player.level().getEntity(message.mungusID);
-                        Registry<Biome> registry = player.level().registryAccess().registryOrThrow(Registries.BIOME);
-                        Biome biome = registry.get(Identifier.parse(message.biomeOption));
-                        ResourceKey<Biome> resourceKey = registry.getResourceKey(biome).orElse(null);
-                        Holder<Biome> holder = registry.getHolder(resourceKey).orElse(null);
+                        ResourceKey<Biome> resourceKey = ResourceKey.create(Registries.BIOME, Identifier.parse(message.biomeOption));
+                        Holder<Biome> holder = player.level().registryAccess().lookupOrThrow(Registries.BIOME).get(resourceKey).orElse(null);
                         if (AMConfig.mungusBiomeTransformationType == 2) {
-                            if (entity instanceof EntityMungus && entity.distanceToSqr(message.posX, entity.getY(), message.posZ) < 1000 && biome != null) {
+                            if (entity instanceof EntityMungus && entity.distanceToSqr(message.posX, entity.getY(), message.posZ) < 1000 && holder != null) {
                                 LevelChunk chunk = player.level().getChunkAt(new BlockPos(message.posX, 0, message.posZ));
                                 int i = QuartPos.fromBlock(chunk.getMinY());
                                 int k = i + QuartPos.fromBlock(chunk.getHeight()) - 1;
                                 int l = Mth.clamp(QuartPos.fromBlock((int)entity.getY()), i, k);
                                 int j = chunk.getSectionIndex(QuartPos.toBlock(l));
                                 LevelChunkSection section = chunk.getSection(j);
-                                if(section != null){
-                                    PalettedContainer<Holder<Biome>> container = section.getBiomes().recreate();
+                                if(section != null && section.getBiomes() instanceof PalettedContainer<Holder<Biome>> container){
                                     for (int biomeX = 0; biomeX < 4; ++biomeX) {
                                         for (int biomeY = 0; biomeY < 4; ++biomeY) {
                                             for (int biomeZ = 0; biomeZ < 4; ++biomeZ) {
@@ -87,7 +84,6 @@ public class MessageMungusBiomeChange {
                                             }
                                         }
                                     }
-                                    section.biomes = container;
                                 }
                                 AlexsMobs.PROXY.updateBiomeVisuals(message.posX, message.posZ);
                             }

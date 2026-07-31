@@ -24,18 +24,31 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.Bucketable;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -64,7 +77,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
     private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(EntityStradpole.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DESPAWN_SOON = SynchedEntityData.defineId(EntityStradpole.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> LAUNCHED = SynchedEntityData.defineId(EntityStradpole.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Optional<UUID>> PARENT_UUID = SynchedEntityData.defineId(EntityStradpole.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> PARENT_UUID = SynchedEntityData.defineId(EntityStradpole.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     public float swimPitch = 0;
     public float prevSwimPitch = 0;
     private int despawnTimer = 0;
@@ -271,7 +284,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
             this.setDeltaMovement(this.getDeltaMovement().add((this.random.nextFloat() * 2.0F - 1.0F) * 0.2F, 0.5D, (this.random.nextFloat() * 2.0F - 1.0F) * 0.2F));
             this.setYRot( this.random.nextFloat() * 360.0F);
             this.setOnGround(false);
-            this.hasImpulse = true;
+            // this.hasImpulse removed in 26.2
         }
         this.setNoGravity(false);
         if (liquid) {

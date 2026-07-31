@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
@@ -29,7 +30,7 @@ import java.util.UUID;
 
 public class EntitySquidGrapple extends Entity {
 
-    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(EntitySquidGrapple.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> OWNER_UUID = SynchedEntityData.defineId(EntitySquidGrapple.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Direction> ATTACHED_FACE = SynchedEntityData.defineId(EntitySquidGrapple.class, EntityDataSerializers.DIRECTION);
     private static final EntityDataAccessor<Boolean> WITHDRAWING = SynchedEntityData.defineId(EntitySquidGrapple.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Optional<BlockPos>> ATTACHED_POS = SynchedEntityData.defineId(EntitySquidGrapple.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);

@@ -115,7 +115,7 @@ public class KomodoDragonAIJostle  extends Goal {
                 this.komodo.jostleTimer++;
                 this.targetKomodoDragon.jostleTimer++;
                 if(this.komodo.jostleTimer > 500 || y > 2.0F){
-                    komodo.hasImpulse = true;
+                    // komodo.hasImpulse removed in 26.2
                     if(komodo.onGround()){
                         komodo.pushBackJostling(targetKomodoDragon, 0.4F);
                     }

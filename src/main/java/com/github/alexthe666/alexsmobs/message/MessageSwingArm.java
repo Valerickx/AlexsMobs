@@ -31,7 +31,7 @@ public class MessageSwingArm {
         public static void handle(MessageSwingArm message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
+                Player player = context.player();
                 if (player != null) {
                     ItemStack leftItem = player.getItemInHand(InteractionHand.OFF_HAND);
                     ItemStack rightItem = player.getItemInHand(InteractionHand.MAIN_HAND);

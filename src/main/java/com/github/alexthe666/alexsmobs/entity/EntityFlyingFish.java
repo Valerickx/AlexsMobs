@@ -5,37 +5,68 @@ import com.github.alexthe666.alexsmobs.entity.ai.AnimalAIRandomSwimming;
 import com.github.alexthe666.alexsmobs.entity.ai.AquaticMoveController;
 import com.github.alexthe666.alexsmobs.entity.ai.SwimmerJumpPathNavigator;
 import com.github.alexthe666.alexsmobs.item.AMItemRegistry;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.TryFindWaterGoal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Bucketable;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
@@ -111,8 +142,8 @@ public class EntityFlyingFish extends WaterAnimal implements Bucketable {
         return AMEntityRegistry.rollSpawn(AMConfig.flyingFishSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if(prev && source.getEntity() != null){
             double range = 15;
             this.glideIn = 0;

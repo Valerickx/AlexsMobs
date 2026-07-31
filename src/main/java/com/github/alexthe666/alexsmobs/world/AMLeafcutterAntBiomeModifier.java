@@ -17,7 +17,7 @@ import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class AMLeafcutterAntBiomeModifier implements BiomeModifier {
-    private static final DeferredHolder<MapCodec<? extends BiomeModifier>, MapCodec<AMLeafcutterAntBiomeModifier>> SERIALIZER = DeferredHolder.create(Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "am_leafcutter_ant_spawns"), NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS, AlexsMobs.MODID);
+    private static final DeferredHolder<MapCodec<? extends BiomeModifier>, MapCodec<AMLeafcutterAntBiomeModifier>> SERIALIZER = DeferredHolder.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "am_leafcutter_ant_spawns"));
     private final HolderSet<PlacedFeature> features;
 
     public AMLeafcutterAntBiomeModifier(HolderSet<PlacedFeature> features) {

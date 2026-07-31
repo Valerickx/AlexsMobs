@@ -173,8 +173,8 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
     protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             final Entity entity = source.getEntity();
@@ -186,7 +186,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
             if(this.isPassenger()){
                 this.stopRiding();
             }
-            final boolean prev = super.hurt(source, amount);
+            final boolean prev = super.hurtServer(level, source, amount);
             if (prev) {
                 if (!this.getMainHandItem().isEmpty()) {
                     this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().copy());
@@ -487,7 +487,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.FALL) || source.is(DamageTypes.CACTUS) || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.FALL) || source.is(DamageTypes.CACTUS) || super.isInvulnerableTo(level, source);
     }
 
     @Nullable
@@ -760,7 +760,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
             this.targetEntitySelector = new Predicate<Entity>() {
                 @Override
                 public boolean apply(@Nullable Entity e) {
-                    return e.isAlive() && e.getType().is(AMTagRegistry.SCATTERS_CROWS) || e instanceof Player && !((Player) e).isCreative();
+                    return e.isAlive() && e.getType().builtInRegistryHolder().is(AMTagRegistry.SCATTERS_CROWS) || e instanceof Player && !((Player) e).isCreative();
                 }
             };
         }

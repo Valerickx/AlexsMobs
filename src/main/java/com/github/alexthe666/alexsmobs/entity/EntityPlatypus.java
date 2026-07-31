@@ -199,8 +199,8 @@ public class EntityPlatypus extends Animal implements ISemiAquatic, ITargetsDrop
         });
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if(prev && source.getDirectEntity() instanceof LivingEntity){
             LivingEntity entity = (LivingEntity)source.getDirectEntity();
             entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
@@ -273,8 +273,8 @@ public class EntityPlatypus extends Animal implements ISemiAquatic, ITargetsDrop
         builder.define(HAS_EGG, false);
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.hasFedora()) {
             this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.FEDORA.get());
         }

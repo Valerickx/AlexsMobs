@@ -41,8 +41,8 @@ public class MessageMosquitoMountPlayer {
         public static void handle(MessageMosquitoMountPlayer message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
 
@@ -51,7 +51,7 @@ public class MessageMosquitoMountPlayer {
                         Entity entity = player.level().getEntity(message.rider);
                         Entity mountEntity = player.level().getEntity(message.mount);
                         if ((entity instanceof EntityCrimsonMosquito || entity instanceof EntityEnderiophage || entity instanceof EntityBaldEagle) && mountEntity instanceof Player && entity.distanceTo(mountEntity) < 16D) {
-                            entity.startRiding(mountEntity, true);
+                            entity.startRiding(mountEntity, true, false);
                         }
                     }
                 }

@@ -352,8 +352,8 @@ public class EntityLaviathan extends Animal implements ISemiAquatic, IHerdPanic 
         return (double) this.getBbHeight() - 0.4F;
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.hasBodyGear()) {
             if (!this.level().isClientSide()) {
                 this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.STRADDLE_SADDLE.get());
@@ -392,7 +392,7 @@ public class EntityLaviathan extends Animal implements ISemiAquatic, IHerdPanic 
             }
         });
         this.goalSelector.addGoal(1, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.LAVIATHAN_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.LAVIATHAN_FOODSTUFFS))), false));
+        this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.LAVIATHAN_BREEDABLES, AMTagRegistry.LAVIATHAN_FOODSTUFFS), false));
         this.goalSelector.addGoal(4, new AnimalAIFindWaterLava(this, 1.0D));
         this.goalSelector.addGoal(5, new LaviathanAIRandomSwimming(this, 1.0D, 22) {
             @Override
@@ -474,8 +474,8 @@ public class EntityLaviathan extends Animal implements ISemiAquatic, IHerdPanic 
         return type == NeoForgeMod.WATER_TYPE.get() || type == NeoForgeMod.LAVA_TYPE.get() ? 1.0F : super.getFluidMotionScale(type);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev && source.getEntity() != null) {
             int fleeTime = 100 + getRandom().nextInt(150);
             this.revengeCooldown = fleeTime;
@@ -723,8 +723,8 @@ public class EntityLaviathan extends Animal implements ISemiAquatic, IHerdPanic 
     }
 
 
-    public void customServerAiStep() {
-        super.customServerAiStep();
+    public void customServerAiStep(ServerLevel level) {
+        super.customServerAiStep(level);
         breakBlock();
     }
 
@@ -734,7 +734,7 @@ public class EntityLaviathan extends Animal implements ISemiAquatic, IHerdPanic 
             return;
         }
         boolean flag = false;
-        if (!this.level().isClientSide() && this.isVehicle() && this.blockBreakCounter == 0 && net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(level(), this)) {
+        if (!this.level().isClientSide() && this.isVehicle() && this.blockBreakCounter == 0 && net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(level(), this)) {
             for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
                 for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
                     for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {

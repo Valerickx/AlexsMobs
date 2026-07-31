@@ -118,7 +118,7 @@ public class EntitySeaBear extends WaterAnimal implements IAnimatedEntity {
             this.setDeltaMovement(this.getDeltaMovement().add((this.random.nextFloat() * 2.0F - 1.0F) * 0.2F, 0.5D, (this.random.nextFloat() * 2.0F - 1.0F) * 0.2F));
             this.setYRot(this.random.nextFloat() * 360.0F);
             this.setOnGround(false);
-            this.hasImpulse = true;
+            // this.hasImpulse removed in 26.2
         }
         if (circleCooldown > 0) {
             circleCooldown--;

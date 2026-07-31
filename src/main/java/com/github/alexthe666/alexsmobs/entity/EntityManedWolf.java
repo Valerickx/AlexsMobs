@@ -60,7 +60,7 @@ public class EntityManedWolf extends Animal implements ITargetsDroppedItems, IDa
     private static final EntityDataAccessor<Float> EAR_YAW = SynchedEntityData.defineId(EntityManedWolf.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> DANCING = SynchedEntityData.defineId(EntityManedWolf.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> SHAKING_TIME = SynchedEntityData.defineId(EntityManedWolf.class, EntityDataSerializers.INT);
-    private static final Ingredient allFoods = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.MANED_WOLF_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.MANED_WOLF_STENCH_FOODS)));
+    private static final Ingredient allFoods = Ingredient.of(AMTagRegistry.MANED_WOLF_BREEDABLES, AMTagRegistry.MANED_WOLF_STENCH_FOODS);
     public float prevEarPitch;
     public float prevEarYaw;
     public float prevDanceProgress;

@@ -39,8 +39,8 @@ public class MessageCrowMountPlayer {
         public static void handle(MessageCrowMountPlayer message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
 
@@ -49,7 +49,7 @@ public class MessageCrowMountPlayer {
                         Entity entity = player.level().getEntity(message.rider);
                         Entity mountEntity = player.level().getEntity(message.mount);
                         if (entity instanceof EntityCrow && mountEntity instanceof Player && entity.distanceTo(mountEntity) < 16D) {
-                            entity.startRiding(mountEntity, true);
+                            entity.startRiding(mountEntity, true, false);
                         }
                     }
                 }

@@ -46,8 +46,8 @@ public class MessageSyncEntityPos {
         public static void handle(MessageSyncEntityPos message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
                 if (player != null) {
@@ -55,7 +55,7 @@ public class MessageSyncEntityPos {
                         Entity entity = player.level().getEntity(message.eagleId);
                         if (entity instanceof IFalconry || entity instanceof EntityStraddleboard) {
                             entity.setPos(message.posX, message.posY, message.posZ);
-                            entity.teleportToWithTicket(message.posX, message.posY, message.posZ);
+                            entity.teleportTo(message.posX, message.posY, message.posZ);
                         }
                     }
                 }

@@ -129,7 +129,7 @@ public class MudskipperAIDisplay extends Goal {
                 if(this.mudskipper.displayTimer > 400 || y > 2.0F){
                     this.mudskipper.getNavigation().stop();
                     this.partner.getNavigation().stop();
-                    mudskipper.hasImpulse = true;
+                    // mudskipper.hasImpulse removed in 26.2
                     this.mudskipper.displayTimer = 0;
                     this.partner.displayTimer = 0;
                     this.mudskipper.displayCooldown = 200 + this.mudskipper.getRandom().nextInt(200);

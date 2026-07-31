@@ -49,7 +49,7 @@ public class BoneSerpentNodeProcessor extends NodeEvaluator {
         if (fluidstate.isEmpty() && blockstate.isPathfindable(blockaccessIn, blockpos.below(), PathComputationType.WATER) && blockstate.isAir()) {
             return PathType.BREACH;
         } else {
-            return fluidstate.is(FluidTags.LAVA) || fluidstate.is(FluidTags.WATER) && blockstate.isPathfindable(blockaccessIn, blockpos, PathComputationType.WATER) ? PathType.WATER : PathType.BLOCKED;
+            return fluidstate.is(FluidTags.LAVA) || fluidstate.is(FluidTags.WATER) && blockstate.isPathfindable(PathComputationType.WATER) ? PathType.WATER : PathType.BLOCKED;
         }
     }
 
@@ -99,6 +99,6 @@ public class BoneSerpentNodeProcessor extends NodeEvaluator {
         }
 
         BlockState blockstate1 = this.level.getBlockState(blockpos$mutable);
-        return blockstate1.getFluidState().is(FluidTags.LAVA) || blockstate1.isPathfindable(this.level, blockpos$mutable, PathComputationType.WATER) ? PathType.WATER : PathType.BLOCKED;
+        return blockstate1.getFluidState().is(FluidTags.LAVA) || blockstate1.isPathfindable(PathComputationType.WATER) ? PathType.WATER : PathType.BLOCKED;
     }
 }

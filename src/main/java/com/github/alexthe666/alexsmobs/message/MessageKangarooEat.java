@@ -4,7 +4,7 @@ import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.entity.EntityKangaroo;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,13 +26,13 @@ public class MessageKangarooEat {
     public MessageKangarooEat() {
     }
 
-    public static MessageKangarooEat read(FriendlyByteBuf buf) {
-        return new MessageKangarooEat(buf.readInt(), buf.readItem());
+    public static MessageKangarooEat read(RegistryFriendlyByteBuf buf) {
+        return new MessageKangarooEat(buf.readInt(), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
     }
 
-    public static void write(MessageKangarooEat message, FriendlyByteBuf buf) {
+    public static void write(MessageKangarooEat message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.kangaroo);
-        buf.writeItem(message.stack);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, message.stack);
     }
 
     public static class Handler {
@@ -42,8 +42,8 @@ public class MessageKangarooEat {
         public static void handle(MessageKangarooEat message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
 

@@ -158,7 +158,7 @@ public class EntitySpectre extends Animal {
                 entity.setDeltaMovement(entity.getDeltaMovement().multiply(1, 0.7F, 1));
             }
             if (entity.isShiftKeyDown()) {
-                this.dropLeash(true, true);
+                this.dropLeash();
             }
         }
     }
@@ -189,7 +189,7 @@ public class EntitySpectre extends Animal {
 
         if (this.getLeashHolder() != null) {
             if (!this.isAlive() || !this.getLeashHolder().isAlive()) {
-                this.dropLeash(true, true);
+                this.dropLeash();
             }
 
         }

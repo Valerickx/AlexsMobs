@@ -238,8 +238,8 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
         }
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev && source.getDirectEntity() instanceof LivingEntity) {
             if (this.getStanceTime() <= 0) {
                 this.setStanceTime(30 + random.nextInt(20));
@@ -259,7 +259,7 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(level, source);
     }
 
     public boolean isSleeping() {

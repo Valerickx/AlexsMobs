@@ -6,41 +6,77 @@ import com.github.alexthe666.alexsmobs.entity.ai.AnimalAIWanderRanged;
 import com.github.alexthe666.alexsmobs.entity.ai.GroundPathNavigatorWide;
 import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
 import com.github.alexthe666.alexsmobs.misc.AMTagRegistry;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.ChatFormatting;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -144,14 +180,14 @@ public class EntityGuster extends Monster {
     }
 
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             if (source.is(DamageTypeTags.IS_PROJECTILE)) {
                 amount = (amount + 1.0F) / 3.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 
@@ -254,7 +290,7 @@ public class EntityGuster extends Monster {
             double d0 = (extraX - lifted.getX()) * resist;
             double d1 = (extraZ - lifted.getZ()) * resist;
             lifted.setDeltaMovement(d0, 0.1 * resist, d1);
-            lifted.hasImpulse = true;
+            // lifted.hasImpulse removed in 26.2
             if (liftingTime > maxLiftTime) {
                 this.setLiftedEntity(0);
                 liftingTime = -20;

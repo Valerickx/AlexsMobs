@@ -21,7 +21,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -44,7 +46,7 @@ public class EntityVoidPortal extends Entity {
     protected static final EntityDataAccessor<Integer> LIFESPAN = SynchedEntityData.defineId(EntityVoidPortal.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Boolean> SHATTERED = SynchedEntityData.defineId(EntityVoidPortal.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Optional<BlockPos>> DESTINATION = SynchedEntityData.defineId(EntityVoidPortal.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
-    private static final EntityDataAccessor<Optional<UUID>> SISTER_UUID = SynchedEntityData.defineId(EntityVoidPortal.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> SISTER_UUID = SynchedEntityData.defineId(EntityVoidPortal.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     public ResourceKey<Level> exitDimension;
     private boolean madeOpenNoise = false;
     private boolean madeCloseNoise = false;
@@ -127,7 +129,7 @@ public class EntityVoidPortal extends Entity {
             if (this.getDestination() != null && this.getLifespan() > 20 && tickCount > 20) {
                 BlockPos offsetPos = this.getDestination().relative(this.getAttachmentFacing().getOpposite(), 2);
                 for (Entity e : entities) {
-                    if(e.isOnPortalCooldown() || e.isShiftKeyDown() || e instanceof EntityVoidPortal || e.getParts() != null || e instanceof PartEntity<?> || e.getType().is(AMTagRegistry.VOID_PORTAL_IGNORES)){
+                    if(e.isOnPortalCooldown() || e.isShiftKeyDown() || e instanceof EntityVoidPortal || e.getParts() != null || e instanceof PartEntity<?> || e.getType().builtInRegistryHolder().is(AMTagRegistry.VOID_PORTAL_IGNORES)){
                         continue;
                     }
                     if (e instanceof EntityVoidWormPart) {

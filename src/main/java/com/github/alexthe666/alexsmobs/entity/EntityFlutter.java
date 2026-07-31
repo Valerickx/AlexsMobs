@@ -474,8 +474,8 @@ public class EntityFlutter extends TamableAnimal implements IFollower {
         return this.getCommand() == 1;
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.isPotted()) {
             if (!this.level().isClientSide()) {
                 this.spawnAtLocation((ServerLevel) this.level(), Items.FLOWER_POT);

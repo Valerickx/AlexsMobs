@@ -54,7 +54,7 @@ public class AnteaterAIRaidNest extends MoveToBlockGoal {
         if (lootList.size() > 0) {
             for (ItemStack stack : lootList) {
                 ItemEntity e = this.anteater.spawnAtLocation((ServerLevel) anteater.level(), stack.copy());
-                e.hasImpulse = true;
+                // e.hasImpulse removed in 26.2
                 e.setDeltaMovement(e.getDeltaMovement().multiply(0.2, 0.2, 0.2));
             }
         }
@@ -132,7 +132,7 @@ public class AnteaterAIRaidNest extends MoveToBlockGoal {
     }
 
     private void breakHiveEffect(){
-        if (net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(anteater.level(), anteater)) {
+        if (net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(anteater.level(), anteater)) {
             BlockState blockstate = anteater.level().getBlockState(this.blockPos);
             if (blockstate.is(AMBlockRegistry.LEAFCUTTER_ANTHILL.get())) {
                 if (anteater.level().getBlockEntity(this.blockPos) instanceof TileEntityLeafcutterAnthill) {
@@ -152,7 +152,7 @@ public class AnteaterAIRaidNest extends MoveToBlockGoal {
     }
 
     private void eatHive() {
-        if (net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(anteater.level(), anteater)) {
+        if (net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(anteater.level(), anteater)) {
             BlockState blockstate = anteater.level().getBlockState(this.blockPos);
             if (blockstate.is(AMBlockRegistry.LEAFCUTTER_ANTHILL.get())) {
                 if (anteater.level().getBlockEntity(this.blockPos) instanceof TileEntityLeafcutterAnthill) {

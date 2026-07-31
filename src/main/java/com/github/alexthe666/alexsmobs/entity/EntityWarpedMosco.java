@@ -199,7 +199,7 @@ public class EntityWarpedMosco extends Monster implements IAnimatedEntity {
             timeFlying = 0;
             this.setNoGravity(false);
         }
-        if (this.horizontalCollision && net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), this)) {
+        if (this.horizontalCollision && net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(this.level(), this)) {
             boolean flag = false;
             AABB axisalignedbb = this.getBoundingBox().inflate(0.2D);
             for (BlockPos blockpos : BlockPos.betweenClosed(Mth.floor(axisalignedbb.minX), Mth.floor(axisalignedbb.minY), Mth.floor(axisalignedbb.minZ), Mth.floor(axisalignedbb.maxX), Mth.floor(axisalignedbb.maxY), Mth.floor(axisalignedbb.maxZ))) {
@@ -216,7 +216,7 @@ public class EntityWarpedMosco extends Monster implements IAnimatedEntity {
         LivingEntity target = this.getTarget();
         if (target != null && this.isAlive()) {
             if (this.getAnimation() == ANIMATION_SUCK && this.getAnimationTick() == 3 && this.distanceTo(target) < 4.7F) {
-                target.startRiding(this, true);
+                target.startRiding(this, true, false);
             }
             if (this.getAnimation() == ANIMATION_SLAM) {
                 if (this.getAnimationTick() == 19) {

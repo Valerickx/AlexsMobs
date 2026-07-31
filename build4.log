@@ -1,0 +1,39 @@
+﻿To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :createMinecraftArtifacts UP-TO-DATE
+
+> Task :compileJava
+gradlew.bat : WARNING: A restricted method in java.lang.System has been called
+At line:1 char:1
++ & .\gradlew.bat compileJava --continue 2>&1 | Out-File -FilePath buil ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (WARNING: A rest...has been called:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnam
+ed module (file:/C:/Users/justi/.gradle/wrapper/dists/gradle-8.10-bin/deqhafrv1ntovfmgh0nh3npr9/gradle-8.10/lib/native-
+platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPotoo.java:66
+0: error: <identifier> expected
+            return (perchingTime < 300 || EntityPotoo.(this.level().getDayTime() % 24000L < 13000L)) && (EntityPotoo.th
+is.getTarget() == null || !EntityPotoo.this.getTarget().isAlive()) && !EntityPotoo.this.isPassenger();
+                                                      ^
+1 error
+
+> Task :compileJava FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+> Run with --info option to get more log output.
+> Run with --scan to get full insights.
+
+BUILD FAILED in 26s
+2 actionable tasks: 1 executed, 1 up-to-date

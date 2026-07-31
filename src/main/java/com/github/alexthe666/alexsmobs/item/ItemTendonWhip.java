@@ -3,20 +3,15 @@ package com.github.alexthe666.alexsmobs.item;
 import com.github.alexthe666.alexsmobs.entity.AMEntityRegistry;
 import com.github.alexthe666.alexsmobs.entity.EntityTendonSegment;
 import com.github.alexthe666.alexsmobs.entity.util.TendonWhipUtil;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -27,14 +22,8 @@ import net.neoforged.neoforge.common.ItemAbilities;
 
 public class ItemTendonWhip extends Item implements ILeftClick {
 
-    private final ImmutableMultimap<Attribute, AttributeModifier> tendonModifiers;
-
     public ItemTendonWhip(Item.Properties props) {
         super(props);
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", (double)4F, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", (double)-3.0F, AttributeModifier.Operation.ADDITION));
-        this.tendonModifiers = builder.build();
     }
 
     public static boolean isActive(ItemStack stack, LivingEntity holder) {
@@ -42,20 +31,6 @@ public class ItemTendonWhip extends Item implements ILeftClick {
             return !TendonWhipUtil.canLaunchTendons(holder.level(), holder);
         }
         return false;
-    }
-
-
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
-        return slot == EquipmentSlot.MAINHAND ? this.tendonModifiers : super.getDefaultAttributeModifiers(slot);
-    }
-
-    public boolean hurtEnemy(ItemStack stack, LivingEntity entity, LivingEntity player) {
-        launchTendonsAt(stack, player, entity);
-        return super.hurtEnemy(stack, entity, player);
-    }
-
-    private boolean isCharged(Player player, ItemStack stack){
-        return player.getAttackStrengthScale(0.5F) > 0.9F;
     }
 
     public boolean onLeftClick(ItemStack stack, LivingEntity playerIn){
@@ -79,13 +54,21 @@ public class ItemTendonWhip extends Item implements ILeftClick {
                 }
             }
             if(closestValid != null){
-                stack.hurtAndBreak(1, playerIn, (player) -> {
-                    player.broadcastBreakEvent(playerIn.getUsedItemHand());
-                });
+                stack.hurtAndBreak(1, playerIn, playerIn.getUsedItemHand());
             }
             return launchTendonsAt(stack, playerIn, closestValid);
         }
         return false;
+    }
+
+    private boolean isCharged(Player player, ItemStack stack){
+        return player.getAttackStrengthScale(0.5F) > 0.9F;
+    }
+
+    @Override
+    public void hurtEnemy(ItemStack stack, LivingEntity entity, LivingEntity player) {
+        launchTendonsAt(stack, player, entity);
+        super.hurtEnemy(stack, entity, player);
     }
 
     public boolean launchTendonsAt(ItemStack stack, LivingEntity playerIn, Entity closestValid) {
@@ -94,7 +77,7 @@ public class ItemTendonWhip extends Item implements ILeftClick {
             TendonWhipUtil.retractFarTendons(worldIn, playerIn);
             if (!worldIn.isClientSide()) {
                 if (closestValid != null) {
-                    EntityTendonSegment segment = AMEntityRegistry.TENDON_SEGMENT.get().create(worldIn, EntitySpawnReason.MOB_SUMMONED);
+                    EntityTendonSegment segment = AMEntityRegistry.TENDON_SEGMENT.get().create(worldIn, MobSpawnType.MOB_SUMMONED);
                     segment.copyPosition(playerIn);
                     worldIn.addFreshEntity(segment);
                     segment.setCreatorEntityUUID(playerIn.getUUID());
@@ -110,21 +93,4 @@ public class ItemTendonWhip extends Item implements ILeftClick {
         }
         return false;
     }
-
-    public boolean canPerformAction(ItemStack stack, ItemAbility ItemAbility) {
-        return ItemAbility != ItemAbilities.SWORD_SWEEP && super.canPerformAction(stack, ItemAbility);
-    }
-
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return !ItemStack.isSameItem(oldStack, newStack);
-    }
-
-    public int getMaxDamage(ItemStack stack) {
-        return 450;
-    }
-
-    public boolean isValidRepairItem(ItemStack pickaxe, ItemStack stack) {
-        return stack.is(AMItemRegistry.ELASTIC_TENDON.get());
-    }
-
 }

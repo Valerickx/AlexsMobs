@@ -115,8 +115,8 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
         return AMEntityRegistry.rollSpawn(AMConfig.grizzlyBearSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -124,7 +124,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
             if (entity != null && this.isTame() && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
                 amount = (amount + 1.0F) / 3.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 
@@ -182,17 +182,17 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
         this.angerTime = time;
     }
 
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.angerTarget;
     }
 
-    public void setPersistentAngerTarget(@Nullable UUID target) {
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> target) {
         this.angerTarget = target;
     }
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.getMsgId() != null && source.getMsgId().equals("sting") || source.is(DamageTypes.IN_WALL) ||super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.getMsgId() != null && source.getMsgId().equals("sting") || source.is(DamageTypes.IN_WALL) ||super.isInvulnerableTo(level, source);
     }
 
     protected void registerGoals() {

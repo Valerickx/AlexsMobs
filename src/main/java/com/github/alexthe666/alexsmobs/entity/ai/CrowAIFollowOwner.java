@@ -112,7 +112,7 @@ public class CrowAIFollowOwner extends Goal {
                 if(circlingTime > maxCircleTime && crow.getRidingCrows(owner) < 2){
                     crow.getMoveControl().setWantedPosition(owner.getX(), owner.getY() + owner.getEyeHeight() + 0.2F, owner.getZ(), 0.7F);
                     if(crow.distanceTo(owner) < 2){
-                        crow.startRiding(owner, true);
+                        crow.startRiding(owner, true, false);
                         if (!crow.level().isClientSide()) {
                             AlexsMobs.sendMSGToAll(new MessageCrowMountPlayer(crow.getId(), owner.getId()));
                         }

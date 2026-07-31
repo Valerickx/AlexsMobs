@@ -1,0 +1,116 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :createMinecraftArtifacts UP-TO-DATE
+
+> Task :compileJava
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/justi/.gradle/wrapper/dists/gradle-8.10-bin/deqhafrv1ntovfmgh0nh3npr9/gradle-8.10/lib/native-platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+System.Management.Automation.RemoteException
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityAnteater.java:337: error: illegal start of expression
+                            doHurtTarget((ServerLevel) this.level(, attackTarget.damageSources().generic(), 0.0F), attackTarget);
+                                                                  ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityElephant.java:384: error: illegal start of expression
+                target.setDeltaMovement(target.getDeltaMovement(, target.damageSources().generic(), 0.0F).add(0, 0.7F, 0));
+                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityElephant.java:393: error: illegal start of expression
+                target.setDeltaMovement(target.getDeltaMovement(, target.damageSources().generic(), 0.0F).add(0, 0.3F, 0));
+                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityGrizzlyBear.java:505: error: illegal start of expression
+                    doHurtTarget((ServerLevel) this.level(, attackTarget.damageSources().generic(), 0.0F), attackTarget);
+                                                          ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityGrizzlyBear.java:527: error: illegal start of expression
+            this.spawnAtLocation((ServerLevel) this.level(, attackTarget.damageSources().generic(), 0.0F), AMItemRegistry.BEAR_FUR.get());
+                                                          ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityKangaroo.java:550: error: illegal start of expression
+                    this.doHurtTarget((ServerLevel) this.level(, attackTarget.damageSources().generic(), 0.0F), this.getTarget());
+                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityKangaroo.java:555: error: illegal start of expression
+                    this.doHurtTarget((ServerLevel) this.level(, attackTarget.damageSources().generic(), 0.0F), this.getTarget());
+                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityKangaroo.java:560: error: illegal start of expression
+                    this.doHurtTarget((ServerLevel) this.level(, attackTarget.damageSources().generic(), 0.0F), this.getTarget());
+                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMantisShrimp.java:438: error: ')' expected
+                float knockbackResist = (float) Mth.clamp((1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), this.getTarget().damageSources().generic(), 0.0F), 0, 1);
+                                                                                                                         ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMantisShrimp.java:438: error: <identifier> expected
+                float knockbackResist = (float) Mth.clamp((1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), this.getTarget().damageSources().generic(), 0.0F), 0, 1);
+                                                                                                                                                                             ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityOrca.java:296: error: ')' expected
+                float knockbackResist = (float) Mth.clamp((1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), attackTarget.damageSources().generic(), 0.0F), 0, 1);
+                                                                                                                         ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityOrca.java:296: error: <identifier> expected
+                float knockbackResist = (float) Mth.clamp((1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), attackTarget.damageSources().generic(), 0.0F), 0, 1);
+                                                                                                                                                                         ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySnowLeopard.java:254: error: illegal start of expression
+                    doHurtTarget((ServerLevel) this.level(, attackTarget.damageSources().generic(), 0.0F), attackTarget);
+                                                          ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityStradpole.java:334: error: ')' expected
+                    this.damageShieldFor(((Player) this.getTarget(), target.damageSources().generic(), 0.0F), 3.0F);
+                                                                   ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityStradpole.java:334: error: ';' expected
+                    this.damageShieldFor(((Player) this.getTarget(), target.damageSources().generic(), 0.0F), 3.0F);
+                                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityTusklin.java:478: error: <identifier> expected
+    public void setAnimation(Animation animation, entity.damageSources().generic(), 0.0F) {
+                                                                      ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityWarpedMosco.java:356: error: ')' expected
+        float knockbackResist = (float) Mth.clamp((1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), target.damageSources().generic(), 0.0F), 0, 1);
+                                                                                                                 ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityWarpedMosco.java:356: error: <identifier> expected
+        float knockbackResist = (float) Mth.clamp((1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), target.damageSources().generic(), 0.0F), 0, 1);
+                                                                                                                                                           ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\event\ServerEvents.java:518: error: illegal start of expression
+                AABB bb = new AABB(event.getEntity().getX(, living.damageSources().generic(), 0.0F) - 32, event.getEntity().getY() - 32, event.getEntity().getZ() - 32, event.getEntity().getZ() + 32, event.getEntity().getY() + 32, event.getEntity().getZ() + 32);
+                                                          ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\event\ServerEvents.java:590: error: illegal start of expression
+                    final boolean sand = player.level().getBlockState(getDownPos(player.blockPosition(, attacker.damageSources().generic(), 0.0F), player.level()))
+                                                                                                      ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: ')' expected
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                       ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: ';' expected
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: not a statement
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                                                                      ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: ';' expected
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                                                                         ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: not a statement
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                                                                           ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: ';' expected
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: not a statement
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                                                                                             ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: ';' expected
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                                                                                                    ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: not a statement
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                                                                                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\tileentity\TileEntitySculkBoomer.java:69: error: ';' expected
+                level.playSound((Player, entity.damageSources().generic(), 0.0F)null, pos, sound, SoundSource.BLOCKS, 4F, level.getRandom().nextFloat() * 0.2F + 0.9F);
+                                                                                                                                                                     ^
+30 errors
+
+> Task :compileJava FAILED
+System.Management.Automation.RemoteException
+FAILURE: Build failed with an exception.
+System.Management.Automation.RemoteException
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler error output for details.
+System.Management.Automation.RemoteException
+* Try:
+> Run with --info option to get more log output.
+> Run with --scan to get full insights.
+System.Management.Automation.RemoteException
+BUILD FAILED in 11s
+2 actionable tasks: 1 executed, 1 up-to-date

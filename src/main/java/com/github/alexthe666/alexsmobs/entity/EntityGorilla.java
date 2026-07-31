@@ -130,8 +130,8 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         return false;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -139,7 +139,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
             if (entity != null && this.isTame() && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
                 amount = (amount + 1.0F) / 2.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 

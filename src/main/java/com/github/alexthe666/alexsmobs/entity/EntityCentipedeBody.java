@@ -12,11 +12,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -35,8 +41,8 @@ public class EntityCentipedeBody extends Mob implements IHurtableMultipart {
 
     private static final EntityDataAccessor<Integer> BODYINDEX = SynchedEntityData.defineId(EntityCentipedeBody.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> BODY_XROT = SynchedEntityData.defineId(EntityCentipedeBody.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Optional<UUID>> PARENT_UUID = SynchedEntityData.defineId(EntityCentipedeBody.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(EntityCentipedeBody.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> PARENT_UUID = SynchedEntityData.defineId(EntityCentipedeBody.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> CHILD_UUID = SynchedEntityData.defineId(EntityCentipedeBody.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     public EntityDimensions multipartSize;
     protected float radius;
     protected float angleYaw;
@@ -160,7 +166,7 @@ public class EntityCentipedeBody extends Mob implements IHurtableMultipart {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float damage) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         final Entity parent = getParent();
         final boolean prev = parent != null && parent.hurt(source, damage * this.damageMultiplier);
         if (prev && !this.level().isClientSide()) {

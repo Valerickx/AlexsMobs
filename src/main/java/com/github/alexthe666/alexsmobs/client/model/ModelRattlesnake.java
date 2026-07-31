@@ -84,7 +84,7 @@ public class ModelRattlesnake extends AdvancedEntityModel<EntityRattlesnake> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (this.young) {
+        if (entity != null && entity.isBaby()) {
             float f = 1.75F;
             head.setScale(f, f, f);
             head.setShouldScaleChildren(true);

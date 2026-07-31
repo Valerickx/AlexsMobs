@@ -222,7 +222,7 @@ public class ModelAnteater extends AdvancedEntityModel<EntityAnteater> {
 
     @Override
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-        if (this.young) {
+        if (entity != null && entity.isBaby()) {
             float f = 1.35F;
             head.setScale(f, f, f);
             head.setShouldScaleChildren(true);

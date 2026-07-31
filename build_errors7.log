@@ -1,0 +1,215 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :createMinecraftArtifacts UP-TO-DATE
+
+> Task :compileJava
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/justi/.gradle/wrapper/dists/gradle-8.10-bin/deqhafrv1ntovfmgh0nh3npr9/gradle-8.10/lib/native-platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+System.Management.Automation.RemoteException
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityBoneSerpentPart.java:182: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityBoneSerpentPart.java:182: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityBoneSerpentPart.java:182: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCachalotEcho.java:93: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCachalotEcho.java:93: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCachalotEcho.java:93: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCockroachEgg.java:39: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCockroachEgg.java:39: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCockroachEgg.java:39: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityEmuEgg.java:35: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityEmuEgg.java:35: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityEmuEgg.java:35: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityEnderiophageRocket.java:57: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityEnderiophageRocket.java:57: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityEnderiophageRocket.java:57: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityFart.java:153: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityFart.java:153: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityFart.java:153: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityGust.java:60: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityGust.java:60: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityGust.java:60: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityHemolymph.java:71: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityHemolymph.java:71: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityHemolymph.java:71: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityIceShard.java:64: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityIceShard.java:64: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityIceShard.java:64: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMobProjectile.java:56: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMobProjectile.java:56: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMobProjectile.java:56: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMosquitoSpit.java:58: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMosquitoSpit.java:58: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMosquitoSpit.java:58: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySandShot.java:87: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySandShot.java:87: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySandShot.java:87: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySharkToothArrow.java:86: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySharkToothArrow.java:86: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySharkToothArrow.java:86: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySquidGrapple.java:280: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySquidGrapple.java:280: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySquidGrapple.java:280: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityStraddleboard.java:418: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityStraddleboard.java:418: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityStraddleboard.java:418: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityTendonSegment.java:57: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityTendonSegment.java:57: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityTendonSegment.java:57: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityTossedItem.java:59: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityTossedItem.java:59: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityTossedItem.java:59: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVineLasso.java:67: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVineLasso.java:67: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVineLasso.java:67: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidPortal.java:72: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidPortal.java:72: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidPortal.java:72: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidWormPart.java:392: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidWormPart.java:392: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidWormPart.java:392: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidWormShot.java:83: error: ')' or ',' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidWormShot.java:83: error: not a statement
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidWormShot.java:83: error: ';' expected
+        return super.getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity);
+                                                                                            ^
+63 errors
+
+> Task :compileJava FAILED
+System.Management.Automation.RemoteException
+FAILURE: Build failed with an exception.
+System.Management.Automation.RemoteException
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler error output for details.
+System.Management.Automation.RemoteException
+* Try:
+> Run with --info option to get more log output.
+> Run with --scan to get full insights.
+System.Management.Automation.RemoteException
+BUILD FAILED in 10s
+2 actionable tasks: 1 executed, 1 up-to-date

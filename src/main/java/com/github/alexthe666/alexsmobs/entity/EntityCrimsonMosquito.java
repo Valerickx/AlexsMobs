@@ -19,6 +19,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -212,17 +213,17 @@ public class EntityCrimsonMosquito extends Monster {
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(level, source);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (source.getEntity() != null && this.getRootVehicle() == source.getEntity().getRootVehicle()) {
             return super.hurt(source, amount * 0.333F);
         }
         if (flightTicks < 0) {
             flightTicks = 0;
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     public void rideTick() {
@@ -470,7 +471,7 @@ public class EntityCrimsonMosquito extends Monster {
             this.setFlying(true);
             this.setDeltaMovement(this.getDeltaMovement().add((this.random.nextFloat() * 2.0F - 1.0F) * 0.2F, 0.5D, (this.random.nextFloat() * 2.0F - 1.0F) * 0.2F));
             this.setOnGround(false);
-            this.hasImpulse = true;
+            // this.hasImpulse removed in 26.2
         }
         if (flightTicks < 0) {
             flightTicks++;

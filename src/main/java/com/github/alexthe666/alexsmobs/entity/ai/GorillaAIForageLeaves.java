@@ -81,7 +81,7 @@ public class GorillaAIForageLeaves extends MoveToBlockGoal {
     }
 
     private void breakLeaves() {
-        if (net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(gorilla.level(), gorilla)) {
+        if (net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(gorilla.level(), gorilla)) {
             BlockState blockstate = gorilla.level().getBlockState(this.blockPos);
             if (blockstate.is(AMTagRegistry.GORILLA_BREAKABLES)) {
                 gorilla.level().destroyBlock(blockPos, false);

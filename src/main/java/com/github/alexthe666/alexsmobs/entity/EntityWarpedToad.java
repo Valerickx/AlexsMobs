@@ -128,8 +128,8 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
         return worldIn.isUnobstructed(this);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -137,7 +137,7 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
             if (entity != null && this.isTame() && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
                 amount = (amount + 1.0F) / 3.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 
@@ -208,8 +208,8 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
     protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
-    public void customServerAiStep() {
-        super.customServerAiStep();
+    public void customServerAiStep(ServerLevel level) {
+        super.customServerAiStep(level);
     }
 
     public boolean isFood(ItemStack stack) {

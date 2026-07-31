@@ -1,5 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
+import net.minecraft.core.Vec3i;
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;

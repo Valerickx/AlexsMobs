@@ -151,7 +151,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
         this.targetSelector.addGoal(1, new SeagullAIRevealTreasure(this));
         this.targetSelector.addGoal(2, new SeagullAIStealFromPlayers(this));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.SEAGULL_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.SEAGULL_OFFERINGS))), false){
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.SEAGULL_BREEDABLES, AMTagRegistry.SEAGULL_OFFERINGS), false){
             public boolean canUse(){
                 return !EntitySeagull.this.aiItemFlag && super.canUse();
             }
@@ -240,11 +240,11 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
         this.entityData.set(TREASURE_POS, Optional.ofNullable(pos));
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
-            final boolean prev = super.hurt(source, amount);
+            final boolean prev = super.hurtServer(level, source, amount);
             if (prev) {
                 this.setSitting(false);
                 if (!this.getMainHandItem().isEmpty()) {
@@ -578,7 +578,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
             this.targetEntitySelector = new Predicate<Entity>() {
                 @Override
                 public boolean apply(@Nullable Entity e) {
-                    return e.isAlive() && e.getType().is(AMTagRegistry.SCATTERS_CROWS) || e instanceof Player && !((Player) e).isCreative();
+                    return e.isAlive() && e.getType().builtInRegistryHolder().is(AMTagRegistry.SCATTERS_CROWS) || e instanceof Player && !((Player) e).isCreative();
                 }
             };
         }

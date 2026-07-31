@@ -1,0 +1,47 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :createMinecraftArtifacts UP-TO-DATE
+
+> Task :compileJava
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/justi/.gradle/wrapper/dists/gradle-8.10-bin/deqhafrv1ntovfmgh0nh3npr9/gradle-8.10/lib/native-platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+System.Management.Automation.RemoteException
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\client\render\RenderVoidWormShot.java:45: error: ')' expected
+        MODEL.renderToBuffer(matrixStackIn, ivertexbuilder, 210, NO_OVERLAY, net.minecraft.util.ARGB.color((int)((0.2F) * 255F), (int)((Math.max(colorize) * 255F), (int)((0.2F)) * 255F), (int)((Math.max(colorize) * 255F))), 1.0F, 1.0F);
+                                                                                                                                                                  ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\client\render\RenderVoidWormShot.java:45: error: ';' expected
+        MODEL.renderToBuffer(matrixStackIn, ivertexbuilder, 210, NO_OVERLAY, net.minecraft.util.ARGB.color((int)((0.2F) * 255F), (int)((Math.max(colorize) * 255F), (int)((0.2F)) * 255F), (int)((Math.max(colorize) * 255F))), 1.0F, 1.0F);
+                                                                                                                                                                                                                              ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\client\render\tile\RenderTransmutationTable.java:49: error: illegal start of expression
+        MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(AMRenderTypes.getEyesAlphaEnabled(GLOW_TEXTURE)), 240, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((0.5F + (float) * 255F), (int)((1) * 255F), (int)((1) * 255F), (int)((1) * 255F)))Math.sin(ageInTicks * 0.05F) * 0.25F);
+                                                                                                                                                                                             ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\client\render\tile\RenderTransmutationTable.java:49: error: ')' expected
+        MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(AMRenderTypes.getEyesAlphaEnabled(GLOW_TEXTURE)), 240, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((0.5F + (float) * 255F), (int)((1) * 255F), (int)((1) * 255F), (int)((1) * 255F)))Math.sin(ageInTicks * 0.05F) * 0.25F);
+                                                                                                                                                                                                    ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\client\render\tile\RenderTransmutationTable.java:49: error: ';' expected
+        MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(AMRenderTypes.getEyesAlphaEnabled(GLOW_TEXTURE)), 240, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((0.5F + (float) * 255F), (int)((1) * 255F), (int)((1) * 255F), (int)((1) * 255F)))Math.sin(ageInTicks * 0.05F) * 0.25F);
+                                                                                                                                                                                                                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\client\render\tile\RenderTransmutationTable.java:49: error: not a statement
+        MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(AMRenderTypes.getEyesAlphaEnabled(GLOW_TEXTURE)), 240, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((0.5F + (float) * 255F), (int)((1) * 255F), (int)((1) * 255F), (int)((1) * 255F)))Math.sin(ageInTicks * 0.05F) * 0.25F);
+                                                                                                                                                                                                                                                                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\client\render\tile\RenderTransmutationTable.java:49: error: ';' expected
+        MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(AMRenderTypes.getEyesAlphaEnabled(GLOW_TEXTURE)), 240, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((0.5F + (float) * 255F), (int)((1) * 255F), (int)((1) * 255F), (int)((1) * 255F)))Math.sin(ageInTicks * 0.05F) * 0.25F);
+                                                                                                                                                                                                                                                                                                   ^
+7 errors
+
+> Task :compileJava FAILED
+System.Management.Automation.RemoteException
+FAILURE: Build failed with an exception.
+System.Management.Automation.RemoteException
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler error output for details.
+System.Management.Automation.RemoteException
+* Try:
+> Run with --info option to get more log output.
+2 actionable tasks: 1 executed, 1 up-to-date
+> Run with --scan to get full insights.
+System.Management.Automation.RemoteException
+BUILD FAILED in 10s

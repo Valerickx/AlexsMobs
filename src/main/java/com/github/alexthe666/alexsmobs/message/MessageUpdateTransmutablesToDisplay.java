@@ -2,7 +2,7 @@ package com.github.alexthe666.alexsmobs.message;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.citadel.server.message.PacketBufferUtils;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.LogicalSide;
@@ -27,15 +27,15 @@ public class MessageUpdateTransmutablesToDisplay {
     public MessageUpdateTransmutablesToDisplay() {
     }
 
-    public static MessageUpdateTransmutablesToDisplay read(FriendlyByteBuf buf) {
-        return new MessageUpdateTransmutablesToDisplay(buf.readInt(), PacketBufferUtils.readItemStack(buf), PacketBufferUtils.readItemStack(buf), PacketBufferUtils.readItemStack(buf));
+    public static MessageUpdateTransmutablesToDisplay read(RegistryFriendlyByteBuf buf) {
+        return new MessageUpdateTransmutablesToDisplay(buf.readInt(), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
     }
 
-    public static void write(MessageUpdateTransmutablesToDisplay message, FriendlyByteBuf buf) {
+    public static void write(MessageUpdateTransmutablesToDisplay message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.playerId);
-        PacketBufferUtils.writeItemStack(buf, message.stack1);
-        PacketBufferUtils.writeItemStack(buf, message.stack2);
-        PacketBufferUtils.writeItemStack(buf, message.stack3);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, message.stack1);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, message.stack2);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, message.stack3);
     }
 
     public static class Handler {
@@ -45,8 +45,8 @@ public class MessageUpdateTransmutablesToDisplay {
         public static void handle(MessageUpdateTransmutablesToDisplay message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
                 if (player.getId() == message.playerId) {

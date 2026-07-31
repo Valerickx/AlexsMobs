@@ -220,7 +220,7 @@ public class ModelLaviathan extends AdvancedEntityModel<EntityLaviathan> {
 
     @Override
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (this.young) {
+        if (entity != null && entity.isBaby()) {
             float f = 1.45F;
             head.setScale(f, f, f);
             head.setShouldScaleChildren(true);

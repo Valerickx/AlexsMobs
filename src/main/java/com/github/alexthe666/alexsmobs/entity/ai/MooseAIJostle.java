@@ -116,7 +116,7 @@ public class MooseAIJostle extends Goal {
                 this.moose.jostleTimer++;
                 this.targetMoose.jostleTimer++;
                 if(this.moose.jostleTimer > 1000 || f1 > 2.0F){
-                    moose.hasImpulse = true;
+                    // moose.hasImpulse removed in 26.2
                     if(moose.onGround()){
                         moose.pushBackJostling(targetMoose, 0.9F);
                     }

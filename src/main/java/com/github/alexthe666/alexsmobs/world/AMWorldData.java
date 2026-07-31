@@ -3,19 +3,25 @@ package com.github.alexthe666.alexsmobs.world;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.level.storage.SavedDataStorage;
+
+import net.minecraft.util.datafix.DataFixTypes;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -24,9 +30,14 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import com.mojang.serialization.Codec;
+
 public class AMWorldData extends SavedData {
 
-    private static final String IDENTIFIER = "alexsmobs_world_data";
+    private static final Identifier IDENTIFIER = Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "alexsmobs_world_data");
+    public static final Codec<AMWorldData> CODEC = CompoundTag.CODEC.xmap(tag -> AMWorldData.load(tag, null), data -> data.save(new CompoundTag(), null));
+    public static final SavedDataType<AMWorldData> TYPE = new SavedDataType<>(IDENTIFIER, AMWorldData::new, CODEC, (DataFixTypes) null);
+
     private ServerLevel level;
     private int tickCounter;
     private int beachedCachalotSpawnDelay;
@@ -50,7 +61,7 @@ public class AMWorldData extends SavedData {
             AMWorldData fromMap = dataMap.get(overworld);
             if(fromMap == null){
                 SavedDataStorage storage = overworld.getDataStorage();
-                AMWorldData data = storage.computeIfAbsent(AMWorldData::load, AMWorldData::new, IDENTIFIER);
+                AMWorldData data = storage.computeIfAbsent(TYPE);
                 if (data != null) {
                     data.level =  overworld;
                     data.setDirty();
@@ -63,7 +74,7 @@ public class AMWorldData extends SavedData {
         return null;
     }
 
-    public static AMWorldData load(CompoundTag nbt) {
+    public static AMWorldData load(CompoundTag nbt, HolderLookup.Provider provider) {
         AMWorldData data = new AMWorldData();
         if (nbt.contains("BeachedCachalotSpawnDelay")) {
             data.beachedCachalotSpawnDelay = nbt.getIntOr("BeachedCachalotSpawnDelay", 0);
@@ -110,16 +121,15 @@ public class AMWorldData extends SavedData {
         ++this.tickCounter;
     }
 
-    @Override
-    public CompoundTag save(CompoundTag compound) {
+    public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
         compound.putInt("beachedCachalotSpawnDelay", this.beachedCachalotSpawnDelay);
         compound.putInt("beachedCachalotSpawnChance", this.beachedCachalotSpawnChance);
         if (this.beachedCachalotID != null) {
             compound.putString("beachedCachalotId", this.beachedCachalotID.toString());
         }
         if (this.pupfishChunk != null) {
-            compound.putInt("PupfishChunkX", this.pupfishChunk.x);
-            compound.putInt("PupfishChunkZ", this.pupfishChunk.z);
+            compound.putInt("PupfishChunkX", this.pupfishChunk.x());
+            compound.putInt("PupfishChunkZ", this.pupfishChunk.z());
         }
         if(this.noPupfishChunk){
             compound.putBoolean("NoPupfishChunk", noPupfishChunk);
@@ -131,8 +141,6 @@ public class AMWorldData extends SavedData {
     public ChunkPos getPupfishChunk() {
         return pupfishChunk;
     }
-
-
 
     public boolean isInPupfishChunk(BlockPos pos) {
         if(pupfishChunk != null){
@@ -176,11 +184,13 @@ public class AMWorldData extends SavedData {
     }
 
     public int getWaterHeight(NoiseBasedChunkGenerator generator, RandomState rand, int x, int z, LevelHeightAccessor level) {
-        NoiseSettings noisesettings = generator.settings.value().noiseSettings();
-        int i = Math.max(noisesettings.minY(), level.getMinY());
-        int j = Math.min(noisesettings.minY() + noisesettings.height(), (level.getMaxY() + 1));
-        int k = Mth.floorDiv(i, noisesettings.getCellHeight());
-        int l = Mth.floorDiv(j - i, noisesettings.getCellHeight());
-        return generator.iterateNoiseColumn(level, rand, x, z, null, IS_WATER).orElse(level.getMinY());
+        NoiseColumn column = generator.getBaseColumn(x, z, level, rand);
+        for (int y = level.getMaxY(); y >= level.getMinY(); y--) {
+            BlockState state = column.getBlock(y);
+            if (IS_WATER.test(state)) {
+                return y;
+            }
+        }
+        return level.getMinY();
     }
 }

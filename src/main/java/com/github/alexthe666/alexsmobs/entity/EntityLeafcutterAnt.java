@@ -85,7 +85,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
     private EntityLeafcutterAnt caravanHead;
     @Nullable
     private EntityLeafcutterAnt caravanTail;
-    private UUID lastHurtBy;
+    private EntityReference<LivingEntity> lastHurtBy;
     @Nullable
     private BlockPos hivePos = null;
     private int stayOutOfHiveCountdown;
@@ -383,11 +383,11 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
         this.entityData.set(ANGER_TIME, time);
     }
 
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.lastHurtBy;
     }
 
-    public void setPersistentAngerTarget(@Nullable UUID target) {
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> target) {
         this.lastHurtBy = target;
     }
 
@@ -395,7 +395,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
         this.setRemainingPersistentAngerTime(ANGRY_TIMER.sample(this.random));
     }
 
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel level) {
         if (!this.level().isClientSide()) {
             this.updatePersistentAnger((ServerLevel)this.level(), false);
         }

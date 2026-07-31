@@ -1,0 +1,77 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :createMinecraftArtifacts UP-TO-DATE
+
+> Task :compileJava
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/justi/.gradle/wrapper/dists/gradle-8.10-bin/deqhafrv1ntovfmgh0nh3npr9/gradle-8.10/lib/native-platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+System.Management.Automation.RemoteException
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMudskipper.java:410: error: ';' expected
+    public void saveToBucketTag(ItemStack bucket) {
+                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMudskipper.java:410: error: ';' expected
+    public void saveToBucketTag(ItemStack bucket) {
+                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMudskipper.java:420: error: ';' expected
+    public void loadFromBucketTag(CompoundTag compound) {
+                                 ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMudskipper.java:420: error: ';' expected
+    public void loadFromBucketTag(CompoundTag compound) {
+                                                      ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMudskipper.java:429: error: ';' expected
+    public SoundEvent getPickupSound() {
+                                    ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMudskipper.java:434: error: ';' expected
+    public boolean shouldFollow() {
+                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMudskipper.java:438: error: illegal start of expression
+    public boolean isFood(ItemStack stack) {
+    ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:121: error: ';' expected
+    public void saveToBucketTag(ItemStack bucket) {
+                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:121: error: ';' expected
+    public void saveToBucketTag(ItemStack bucket) {
+                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:131: error: ';' expected
+    public void loadFromBucketTag(CompoundTag compound) {
+                                 ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:131: error: ';' expected
+    public void loadFromBucketTag(CompoundTag compound) {
+                                                      ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:140: error: ';' expected
+    public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
+                                        ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:140: error: <identifier> expected
+    public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
+                                                                ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:140: error: illegal start of type
+    public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
+                                                                 ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:140: error: ';' expected
+    public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
+                                                                         ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:140: error: ';' expected
+    public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
+                                                                                              ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityPlatypus.java:160: error: illegal start of expression
+    protected void registerGoals() {
+    ^
+17 errors
+
+> Task :compileJava FAILED
+System.Management.Automation.RemoteException
+FAILURE: Build failed with an exception.
+System.Management.Automation.RemoteException
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler error output for details.
+System.Management.Automation.RemoteException
+* Try:
+> Run with --info option to get more log output.
+> Run with --scan to get full insights.
+System.Management.Automation.RemoteException
+BUILD FAILED in 10s
+2 actionable tasks: 1 executed, 1 up-to-date

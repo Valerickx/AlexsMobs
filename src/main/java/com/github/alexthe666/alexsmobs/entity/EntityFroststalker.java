@@ -129,11 +129,11 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
     protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if(source.is(DamageTypeTags.IS_FIRE)){
             amount *= 2F;
         }
-        boolean prev = super.hurt(source, amount);
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev && this.hasSpikes() && !this.isSpikeShaking() && source.getEntity() != null && source.getEntity().distanceTo(this) < 10) {
             this.setSpikeShaking(true);
             shakeTime = 20 + random.nextInt(60);
@@ -444,7 +444,7 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
         this.setDeltaMovement(vec3.x, d0, vec3.z);
         float f = this.getYRot() * Mth.DEG_TO_RAD;
         this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f) * 0.2F, 0, Mth.cos(f) * 0.2F));
-        this.hasImpulse = true;
+        // this.hasImpulse removed in 26.2
         net.neoforged.neoforge.common.ForgeHooks.onLivingJump(this);
     }
 

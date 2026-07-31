@@ -43,8 +43,8 @@ public class MessageTarantulaHawkSting {
         public static void handle(MessageTarantulaHawkSting message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
 
@@ -52,7 +52,7 @@ public class MessageTarantulaHawkSting {
                     if (player.level() != null) {
                         Entity entity = player.level().getEntity(message.hawk);
                         Entity spider = player.level().getEntity(message.spider);
-                        if (entity instanceof EntityTarantulaHawk && spider instanceof LivingEntity && ((LivingEntity) spider).getMobType() == MobType.ARTHROPOD) {
+                        if (entity instanceof EntityTarantulaHawk && spider instanceof LivingEntity && spider.getType().builtInRegistryHolder().is(net.minecraft.tags.EntityTypeTags.SENSITIVE_TO_BANE_OF_ARTHROPODS)) {
                             ((LivingEntity) spider).addEffect(new MobEffectInstance(AMEffectRegistry.DEBILITATING_STING, EntityTarantulaHawk.STING_DURATION));
                         }
                     }

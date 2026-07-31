@@ -22,7 +22,7 @@ public class AMCreativeTabRegistry {
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .icon(() -> new ItemStack(AMItemRegistry.TAB_ICON.get()))
             .displayItems((enabledFeatures, output) -> {
-                for(DeferredHolder<Item, Item> item : AMItemRegistry.DEF_REG.getEntries()){
+                for(DeferredHolder<Item, ? extends Item> item : AMItemRegistry.DEF_REG.getEntries()){
                     if(item.get() instanceof CustomTabBehavior customTabBehavior){
                         customTabBehavior.fillItemCategory(output);
                     }else{

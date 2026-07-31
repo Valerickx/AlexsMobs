@@ -51,7 +51,7 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
                 for (int i = 0; i < listnbt.size(); ++i) {
                     Entity entity = loadEntityAndExecute(listnbt.getCompoundOrEmpty(i), worldIn, p_220335_2_);
                     if (entity != null) {
-                        entity.startRiding(p_220346_3_, true);
+                        entity.startRiding(p_220346_3_, true, false);
                     }
                 }
             }

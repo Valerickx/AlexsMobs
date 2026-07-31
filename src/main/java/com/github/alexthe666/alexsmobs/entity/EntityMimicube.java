@@ -37,6 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TridentItem;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -202,7 +203,7 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
         return this.getMainHandItem().canPerformAction(ItemAbilities.SHIELD_BLOCK) || this.getOffhandItem().canPerformAction(ItemAbilities.SHIELD_BLOCK);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         Entity trueSource = source.getEntity();
         if (trueSource != null && trueSource instanceof LivingEntity attacker) {
             if (!attacker.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
@@ -215,7 +216,7 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
                 this.setItemSlot(EquipmentSlot.MAINHAND, mimicStack(attacker.getItemBySlot(EquipmentSlot.MAINHAND)));
             }
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     private ItemStack mimicStack(ItemStack stack){
@@ -345,7 +346,7 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
     protected void jumpFromGround() {
         Vec3 vector3d = this.getDeltaMovement();
         this.setDeltaMovement(vector3d.x, this.getJumpPower(), vector3d.z);
-        this.hasImpulse = true;
+        // this.hasImpulse removed in 26.2
     }
 
     protected int getJumpDelay() {

@@ -261,8 +261,8 @@ public class EntitySnowLeopard extends Animal implements IAnimatedEntity, ITarge
         AnimationHandler.INSTANCE.updateAnimations(this);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        final boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        final boolean prev = super.hurtServer(level, source, amount);
         if (prev) {
             sittingTime = 0;
             this.setSleeping(false);

@@ -272,8 +272,8 @@ public class EntityEndergrade extends Animal {
         return AMEntityRegistry.ENDERGRADE.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.isSaddled()) {
             if (!this.level().isClientSide()) {
                 this.spawnAtLocation((ServerLevel) this.level(), Items.SADDLE);

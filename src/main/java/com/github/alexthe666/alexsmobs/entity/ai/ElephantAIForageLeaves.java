@@ -105,7 +105,7 @@ public class ElephantAIForageLeaves extends MoveToBlockGoal {
     }
 
     private void breakLeaves() {
-        if (net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(elephant.level(), elephant)) {
+        if (net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(elephant.level(), elephant)) {
             BlockState blockstate = elephant.level().getBlockState(this.blockPos);
             if (blockstate.is(AMTagRegistry.ELEPHANT_FOODBLOCKS)) {
                 elephant.level().destroyBlock(blockPos, false);

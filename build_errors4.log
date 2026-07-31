@@ -1,0 +1,89 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :createMinecraftArtifacts UP-TO-DATE
+
+> Task :compileJava
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/justi/.gradle/wrapper/dists/gradle-8.10-bin/deqhafrv1ntovfmgh0nh3npr9/gradle-8.10/lib/native-platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+System.Management.Automation.RemoteException
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCentipedeHead.java:176: error: ';' expected
+            compound.store("ChildUUID"));
+                                       ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCockroachEgg.java:61: error: ';' expected
+                croc.finalizeSpawn((ServerLevel)level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.TRIGGERED, (SpawnGroupData)null)null);
+                                                                                                                                                                 ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCombJelly.java:276: error: not a statement
+        entityData.set(JELLYPITCH) + pitch);
+                                   ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityCombJelly.java:276: error: ';' expected
+        entityData.set(JELLYPITCH) + pitch);
+                                          ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityDropBear.java:313: error: ';' expected
+            level().broadcastEntityEvent(this) 39);
+                                              ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityGiantSquid.java:136: error: not a statement
+        this.setPos(down.getX() + 0.5F) + 3 + random.nextInt(3), down.getZ() + 0.5F);
+                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityGiantSquid.java:136: error: ';' expected
+        this.setPos(down.getX() + 0.5F) + 3 + random.nextInt(3), down.getZ() + 0.5F);
+                                                               ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityGiantSquid.java:136: error: not a statement
+        this.setPos(down.getX() + 0.5F) + 3 + random.nextInt(3), down.getZ() + 0.5F);
+                                                                             ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityGiantSquid.java:136: error: ';' expected
+        this.setPos(down.getX() + 0.5F) + 3 + random.nextInt(3), down.getZ() + 0.5F);
+                                                                                   ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMimicOctopus.java:169: error: ';' expected
+        this.entityData.set(MIMIC_ORDINAL));
+                                          ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityMungus.java:556: error: ';' expected
+        this.entityData.set(MUSHROOM_COUNT));
+                                           ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityOrca.java:398: error: ';' expected
+        compound.putInt("Moistness"));
+                                    ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySeal.java:357: error: ';' expected
+        compound.putBoolean("Arctic"));
+                                     ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySkelewag.java:262: error: '}' expected
+        return new Animation[]{ANIMATION_SLASH) {
+                                              ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySkelewag.java:267: error: ';' expected
+        public boolean canUse() {
+                             ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySkelewag.java:271: error: illegal start of expression
+        public void tick(){
+        ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySkelewag.java:290: error: class, interface, enum, or record expected
+}
+^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntitySkreecher.java:245: error: ';' expected
+                        warden.finalizeSpawn((ServerLevel)level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.TRIGGERED, (SpawnGroupData)null)null);
+                                                                                                                                                                           ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityTusklin.java:493: error: '}' expected
+        return new Animation[]{ANIMATION_RUT) {
+                                            ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityTusklin.java:496: error: reached end of file while parsing
+}
+ ^
+C:\Users\justi\Documents\GitHub\AlexsMobs-26.2\src\main\java\com\github\alexthe666\alexsmobs\entity\EntityVoidWorm.java:486: error: ';' expected
+        builder.define(SPLIT_FROM_UUID));
+                                       ^
+21 errors
+
+> Task :compileJava FAILED
+System.Management.Automation.RemoteException
+FAILURE: Build failed with an exception.
+System.Management.Automation.RemoteException
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler error output for details.
+System.Management.Automation.RemoteException
+* Try:
+> Run with --info option to get more log output.
+> Run with --scan to get full insights.
+System.Management.Automation.RemoteException
+BUILD FAILED in 16s
+2 actionable tasks: 1 executed, 1 up-to-date

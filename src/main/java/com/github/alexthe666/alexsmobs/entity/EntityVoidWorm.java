@@ -33,14 +33,23 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
@@ -62,8 +71,8 @@ import java.util.*;
 public class EntityVoidWorm extends Monster {
 
     public static final Identifier SPLITTER_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "entities/void_worm_splitter");
-    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final EntityDataAccessor<Optional<UUID>> SPLIT_FROM_UUID = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> CHILD_UUID = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> SPLIT_FROM_UUID = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Integer> SEGMENT_COUNT = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> JAW_TICKS = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> WORM_ANGLE = SynchedEntityData.defineId(EntityVoidWorm.class, EntityDataSerializers.FLOAT);
@@ -645,7 +654,7 @@ public class EntityVoidWorm extends Monster {
             return;
         }
         boolean flag = false;
-        if (!this.level().isClientSide() && this.blockBreakCounter == 0 && net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(level(), this)) {
+        if (!this.level().isClientSide() && this.blockBreakCounter == 0 && net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(level(), this)) {
             for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
                 for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
                     for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {

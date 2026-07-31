@@ -22,16 +22,27 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -52,7 +63,7 @@ import java.util.UUID;
 
 public class EntityAnaconda extends Animal implements ISemiAquatic {
 
-    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(EntityAnaconda.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> CHILD_UUID = SynchedEntityData.defineId(EntityAnaconda.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Integer> CHILD_ID = SynchedEntityData.defineId(EntityAnaconda.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> STRANGLING = SynchedEntityData.defineId(EntityAnaconda.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> YELLOW = SynchedEntityData.defineId(EntityAnaconda.class, EntityDataSerializers.BOOLEAN);

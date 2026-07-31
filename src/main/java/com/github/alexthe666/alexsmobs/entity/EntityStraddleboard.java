@@ -2,28 +2,51 @@ package com.github.alexthe666.alexsmobs.entity;
 
 import com.github.alexthe666.alexsmobs.enchantment.AMEnchantmentRegistry;
 import com.github.alexthe666.alexsmobs.item.AMItemRegistry;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.BlockUtil;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -118,8 +141,8 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
         this.entityData.set(BOARD_ROT, f);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else if (!this.level().isClientSide() && !this.isRemoved()) {
             this.entityData.set(REMOVE_SOON, true);
@@ -298,7 +321,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
     }
 
     private void tickMovement() {
-        this.hasImpulse = true;
+        // this.hasImpulse removed in 26.2
         float moveForwards = Math.min(boardForwards, 1.0F);
         float yRot = this.getYRot();
         Vec3 prev = this.getDeltaMovement();
@@ -457,7 +480,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
 
     @Override
     public void handleStartJump(int i) {
-        this.hasImpulse = true;
+        // this.hasImpulse removed in 26.2
         if(canJump()){
             float f = 0.075F + getEnchant(AMEnchantmentRegistry.STRADDLE_JUMP.get()) * 0.05F;
             jumpFor = 5 + (int)(i * f);

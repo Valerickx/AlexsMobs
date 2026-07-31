@@ -394,8 +394,8 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
         }
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev) {
             this.setBeamTarget(null);
             beamCounter = Math.min(beamCounter, -1200);

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 
@@ -51,7 +52,7 @@ public class BeachedCachalotWhaleSpawner {
             worldinfo.setBeachedCachalotSpawnDelay(this.delay);
             if (this.delay <= 0) {
                 this.delay = AMConfig.beachedCachalotWhaleSpawnDelay;
-                if (this.world.getGameRules().getBooleanOr(GameRules.RULE_DOMOBSPAWNING, false)) {
+                if (this.world.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
                     int i = this.chance;
                     this.chance = Mth.clamp(this.chance + AMConfig.beachedCachalotWhaleSpawnChance, 5, 100);
                     worldinfo.setBeachedCachalotSpawnChance(this.chance);

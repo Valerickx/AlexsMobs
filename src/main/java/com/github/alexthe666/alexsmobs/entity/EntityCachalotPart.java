@@ -3,18 +3,31 @@ package com.github.alexthe666.alexsmobs.entity;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.message.MessageHurtMultipart;
 import com.github.alexthe666.alexsmobs.message.MessageInteractMultipart;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.entity.PartEntity;
 
@@ -68,14 +81,14 @@ public class EntityCachalotPart extends PartEntity<EntityCachalotWhale> {
         return parent != null ? parent.getPickResult() : ItemStack.EMPTY;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if(this.level().isClientSide() && this.getParent() != null && !this.getParent().isInvulnerableTo(source)){
             Identifier key = this.level().registryAccess().registry(Registries.DAMAGE_TYPE).get().getKey(source.type());
             if(key != null){
                 AlexsMobs.sendMSGToServer(new MessageHurtMultipart(this.getId(), this.getParent().getId(), amount, key.toString()));
             }
         }
-        return !this.isInvulnerableTo((ServerLevel) this.level(), source) && this.getParent().attackEntityPartFrom(this, source, amount);
+        return !this.isInvulnerableTo(level, source) && this.getParent().attackEntityPartFrom(this, source, amount);
     }
 
     public boolean is(Entity entityIn) {

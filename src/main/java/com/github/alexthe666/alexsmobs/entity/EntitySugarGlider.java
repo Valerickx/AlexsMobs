@@ -122,7 +122,7 @@ public class EntitySugarGlider extends TamableAnimal implements IFollower {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
         this.goalSelector.addGoal(2, new FlyingAIFollowOwner(this, 1.0D, 5.0F, 2.0F, true));
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.SUGAR_GLIDER_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.SUGAR_GLIDER_TAMEABLES))), false){
+        this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.SUGAR_GLIDER_BREEDABLES, AMTagRegistry.SUGAR_GLIDER_TAMEABLES), false){
             public void start(){
                 super.start();
                 EntitySugarGlider.this.entityData.set(ATTACHED_FACE, Direction.DOWN);
@@ -303,7 +303,7 @@ public class EntitySugarGlider extends TamableAnimal implements IFollower {
                         for (ItemStack stack : lootList) {
                             ItemEntity e = this.spawnAtLocation((ServerLevel) this.level(), stack.copy());
                             if(e != null){
-                                e.hasImpulse = true;
+                                // e.hasImpulse removed in 26.2
                                 e.setDeltaMovement(e.getDeltaMovement().multiply(0.2, 0.2, 0.2));
                             }
                         }

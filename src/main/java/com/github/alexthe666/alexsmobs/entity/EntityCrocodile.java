@@ -311,7 +311,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
                     boolean flag = this.getTarget().isBlocking();
                     if (!flag) {
                         if (this.getTarget().getBbWidth() < this.getBbWidth() && this.getPassengers().isEmpty() && !this.getTarget().isShiftKeyDown()) {
-                            this.getTarget().startRiding(this, true);
+                            this.getTarget().startRiding(this, true, false);
                         }
                     }
                     if (flag) {
@@ -477,7 +477,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(level, source);
     }
 
     public boolean canBreatheUnderwater() {
@@ -580,8 +580,8 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
         });
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -589,7 +589,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
             if (entity != null && this.isTame() && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
                 amount = (amount + 1.0F) / 3.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 

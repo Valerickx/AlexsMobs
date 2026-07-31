@@ -20,16 +20,27 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.Bucketable;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -67,7 +78,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
     public int displayCooldown = 100 + random.nextInt(100);
     private static final EntityDataAccessor<Boolean> DISPLAYING = SynchedEntityData.defineId(EntityMudskipper.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> DISPLAY_ANGLE = SynchedEntityData.defineId(EntityMudskipper.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Optional<UUID>> DISPLAYER_UUID = SynchedEntityData.defineId(EntityMudskipper.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DISPLAYER_UUID = SynchedEntityData.defineId(EntityMudskipper.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Integer> MOUTH_TICKS = SynchedEntityData.defineId(EntityMudskipper.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(EntityMudskipper.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SITTING = SynchedEntityData.defineId(EntityMudskipper.class, EntityDataSerializers.BOOLEAN);
@@ -252,8 +263,8 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
         }
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev && source.getDirectEntity() instanceof LivingEntity) {
             this.openMouth(10);
         }

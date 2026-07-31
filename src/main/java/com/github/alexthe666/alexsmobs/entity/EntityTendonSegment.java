@@ -12,10 +12,15 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -33,7 +38,7 @@ import java.util.UUID;
 
 public class EntityTendonSegment  extends Entity {
 
-    private static final EntityDataAccessor<Optional<UUID>> CREATOR_ID = SynchedEntityData.defineId(EntityTendonSegment.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> CREATOR_ID = SynchedEntityData.defineId(EntityTendonSegment.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Integer> FROM_ID = SynchedEntityData.defineId(EntityTendonSegment.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> TARGET_COUNT = SynchedEntityData.defineId(EntityTendonSegment.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> CURRENT_TARGET_ID = SynchedEntityData.defineId(EntityTendonSegment.class, EntityDataSerializers.INT);

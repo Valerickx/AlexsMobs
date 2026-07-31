@@ -523,7 +523,7 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
                             if (!lootList.isEmpty()) {
                                 for (ItemStack stack : lootList) {
                                     ItemEntity e = pupfish.spawnAtLocation((ServerLevel) pupfish.level(), stack.copy());
-                                    e.hasImpulse = true;
+                                    // e.hasImpulse removed in 26.2
                                     e.setDeltaMovement(e.getDeltaMovement().multiply(0.2, 0.2, 0.2));
                                 }
                             }

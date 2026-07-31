@@ -105,15 +105,15 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
     }
 
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
             if (entity instanceof Shulker || entity instanceof ShulkerBullet) {
                 amount = (amount + 1.0F) * 0.33F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 
@@ -165,7 +165,7 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
         this.goalSelector.addGoal(4, new AnimalAIFindWater(this));
         this.goalSelector.addGoal(4, new AnimalAILeaveWater(this));
         this.goalSelector.addGoal(5, new BreedGoal(this, 0.8D));
-        this.goalSelector.addGoal(6, new TemptGoal(this, 1.0D, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.MANTIS_SHRIMP_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.MANTIS_SHRIMP_TAMEABLES))), false));
+        this.goalSelector.addGoal(6, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.MANTIS_SHRIMP_BREEDABLES, AMTagRegistry.MANTIS_SHRIMP_TAMEABLES), false));
         this.goalSelector.addGoal(7, new SemiAquaticAIRandomSwimming(this, 1.0D, 30));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 6.0F));
@@ -211,7 +211,7 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(level, source);
     }
 
     public boolean canBreatheUnderwater() {

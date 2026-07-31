@@ -380,7 +380,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             }
             if (this.distanceTo(target) < 2.1D && charging) {
                 target.knockback(1F, target.getX() - this.getX(), target.getZ() - this.getZ(), null, 0.0F);
-                target.hasImpulse = true;
+                // target.hasImpulse removed in 26.2
                 target.setDeltaMovement(target.getDeltaMovement().add(0, 0.7F, 0));
                 target.hurt(this.damageSources().mobAttack(this), 2.4F * (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
                 launch(target, true);
@@ -460,7 +460,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             }
             this.despawnDelay = this.despawnDelay - 1;
             if (this.despawnDelay <= 0) {
-                this.dropLeash(true, false);
+                this.dropLeash();
                 this.elephantInventory.clearContent();
                 if(this.getControllingVillager() != null){
                     this.getControllingVillager().remove(RemovalReason.DISCARDED);
@@ -615,8 +615,8 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         return Items.AIR;
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.isChested()) {
             if (!this.level().isClientSide()) {
                 this.spawnAtLocation((ServerLevel) this.level(), Blocks.CHEST);

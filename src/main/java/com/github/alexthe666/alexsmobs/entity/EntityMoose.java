@@ -25,13 +25,21 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +68,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
     private static final EntityDataAccessor<Boolean> ANTLERED = SynchedEntityData.defineId(EntityMoose.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> JOSTLING = SynchedEntityData.defineId(EntityMoose.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> JOSTLE_ANGLE = SynchedEntityData.defineId(EntityMoose.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Optional<UUID>> JOSTLER_UUID = SynchedEntityData.defineId(EntityMoose.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> JOSTLER_UUID = SynchedEntityData.defineId(EntityMoose.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Boolean> SNOWY = SynchedEntityData.defineId(EntityMoose.class, EntityDataSerializers.BOOLEAN);
     public float prevJostleAngle;
     public float prevJostleProgress;
@@ -252,15 +260,15 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
         AnimationHandler.INSTANCE.updateAnimations(this);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
             if (entity instanceof EntityOrca || entity instanceof Wolf) {
                 amount = (amount + 1.0F) * 3.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 
@@ -365,13 +373,13 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
     }
 
     private void applyKnockbackFromMoose(float strength, double ratioX, double ratioZ) {
-        net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event = net.neoforged.neoforge.common.ForgeHooks.onLivingKnockBack(this, strength, ratioX, ratioZ);
+        net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event = net.neoforged.neoforge.common.NeoForgeEventFactory.onLivingKnockBack(this, strength, ratioX, ratioZ);
         if (event.isCanceled()) return;
         strength = event.getStrength();
         ratioX = event.getRatioX();
         ratioZ = event.getRatioZ();
         if (!(strength <= 0.0F)) {
-            this.hasImpulse = true;
+            // this.hasImpulse removed in 26.2
             Vec3 vector3d = this.getDeltaMovement();
             Vec3 vector3d1 = (new Vec3(ratioX, 0.0D, ratioZ)).normalize().scale(strength);
             this.setDeltaMovement(vector3d.x / 2.0D - vector3d1.x, 0.3F, vector3d.z / 2.0D - vector3d1.z);

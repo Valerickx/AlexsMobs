@@ -106,10 +106,10 @@ public class ServerEvents {
 
     public static final UUID ALEX_UUID = UUID.fromString("71363abe-fd03-49c9-940d-aae8b8209b7c");
     public static final UUID CARRO_UUID = UUID.fromString("98905d4a-1cbc-41a4-9ded-2300404e2290");
-    private static final UUID SAND_SPEED_MODIFIER = UUID.fromString("7E0292F2-9434-48D5-A29F-9583AF7DF28E");
-    private static final UUID SNEAK_SPEED_MODIFIER = UUID.fromString("7E0292F2-9434-48D5-A29F-9583AF7DF28F");
-    private static final AttributeModifier SAND_SPEED_BONUS = new AttributeModifier(SAND_SPEED_MODIFIER, "roadrunner speed bonus", 0.1F, AttributeModifier.Operation.ADDITION);
-    private static final AttributeModifier SNEAK_SPEED_BONUS = new AttributeModifier(SNEAK_SPEED_MODIFIER, "frontier cap speed bonus", 0.1F, AttributeModifier.Operation.ADDITION);
+    private static final net.minecraft.resources.ResourceLocation SAND_SPEED_MODIFIER = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("alexsmobs", "sand_speed_bonus");
+    private static final net.minecraft.resources.ResourceLocation SNEAK_SPEED_MODIFIER = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("alexsmobs", "sneak_speed_bonus");
+    private static final AttributeModifier SAND_SPEED_BONUS = new AttributeModifier(SAND_SPEED_MODIFIER, 0.1F, AttributeModifier.Operation.ADD_VALUE);
+    private static final AttributeModifier SNEAK_SPEED_BONUS = new AttributeModifier(SNEAK_SPEED_MODIFIER, 0.1F, AttributeModifier.Operation.ADD_VALUE);
     private static final Map<ServerLevel, BeachedCachalotWhaleSpawner> BEACHED_CACHALOT_WHALE_SPAWNER_MAP = new HashMap<>();
     public static final ObjectList<Triple<ServerPlayer, ServerLevel, BlockPos>> teleportPlayers = new ObjectArrayList<>();
 
@@ -268,7 +268,7 @@ public class ServerEvents {
                 }
                 Vec3 vector3d2 = event.getEntity().getDeltaMovement().yRot((float) ((left ? -0.5F : 0.5F) * Math.PI)).normalize();
                 emu.setAnimation(left ? EntityEmu.ANIMATION_DODGE_LEFT : EntityEmu.ANIMATION_DODGE_RIGHT);
-                emu.hasImpulse = true;
+                // emu.hasImpulse removed in 26.2
                 if (!emu.horizontalCollision) {
                     emu.move(MoverType.SELF, new Vec3(vector3d2.x() * 0.25F, 0.1F, vector3d2.z() * 0.25F));
                 }
@@ -287,7 +287,7 @@ public class ServerEvents {
 
     @SubscribeEvent
     public void onEntityDespawnAttempt(MobDespawnEvent event) {
-        if (event.getEntity().hasEffect(AMEffectRegistry.DEBILITATING_STING.getHolder().orElseThrow()) && event.getEntity().getEffect(AMEffectRegistry.DEBILITATING_STING.getHolder().orElseThrow()) != null && event.getEntity().getEffect(AMEffectRegistry.DEBILITATING_STING.getHolder().orElseThrow()).getAmplifier() > 0) {
+        if (event.getEntity().hasEffect(AMEffectRegistry.DEBILITATING_STING) && event.getEntity().getEffect(AMEffectRegistry.DEBILITATING_STING) != null && event.getEntity().getEffect(AMEffectRegistry.DEBILITATING_STING).getAmplifier() > 0) {
             event.setResult(MobDespawnEvent.Result.DENY);
         }
     }
@@ -466,7 +466,7 @@ public class ServerEvents {
                         elephant.setChested(true);
                         if (!event.getLevel().isClientSide()) {
                             trader.level().addFreshEntity(elephant);
-                            trader.startRiding(elephant, true);
+                            trader.startRiding(elephant, true, false);
                         }
                         elephant.addElephantLoot(null, RAND.nextInt());
                     }
@@ -567,7 +567,7 @@ public class ServerEvents {
                     return;
                 }
             }
-            if (mob.getMobType() == MobType.UNDEAD && !mob.getType().is(AMTagRegistry.IGNORES_KIMONO)) {
+            if (mob.getMobType() == MobType.UNDEAD && !mob.getType().builtInRegistryHolder().is(AMTagRegistry.IGNORES_KIMONO)) {
                 if (event.getNewTarget().getItemBySlot(EquipmentSlot.CHEST).is(AMItemRegistry.UNSETTLING_KIMONO.get()) && event.getEntity().getLastHurtByMob() != event.getNewTarget()) {
                     event.setCanceled(true);
                     return;
@@ -586,28 +586,28 @@ public class ServerEvents {
             if(entity.getAttributes().hasAttribute(Attributes.MOVEMENT_SPEED)){
                 final var attributes = entity.getAttribute(Attributes.MOVEMENT_SPEED);
                 if (player.getItemBySlot(EquipmentSlot.FEET).getItem() == AMItemRegistry.ROADDRUNNER_BOOTS.get()
-                        || attributes.hasModifier(SAND_SPEED_BONUS)) {
+                        || attributes.hasModifier(SAND_SPEED_MODIFIER)) {
                     final boolean sand = player.level().getBlockState(getDownPos(player.blockPosition(), player.level()))
                             .is(BlockTags.SAND);
-                    if (sand && !attributes.hasModifier(SAND_SPEED_BONUS)) {
+                    if (sand && !attributes.hasModifier(SAND_SPEED_MODIFIER)) {
                         attributes.addPermanentModifier(SAND_SPEED_BONUS);
                     }
                     if (player.tickCount % 25 == 0
                             && (player.getItemBySlot(EquipmentSlot.FEET).getItem() != AMItemRegistry.ROADDRUNNER_BOOTS.get()
                             || !sand)
-                            && attributes.hasModifier(SAND_SPEED_BONUS)) {
-                        attributes.removeModifier(SAND_SPEED_BONUS);
+                            && attributes.hasModifier(SAND_SPEED_MODIFIER)) {
+                        attributes.removeModifier(SAND_SPEED_MODIFIER);
                     }
                 }
                 if (player.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.FRONTIER_CAP.get()
-                        || attributes.hasModifier(SNEAK_SPEED_BONUS)) {
+                        || attributes.hasModifier(SNEAK_SPEED_MODIFIER)) {
                     final var shift = player.isShiftKeyDown();
-                    if (shift && !attributes.hasModifier(SNEAK_SPEED_BONUS)) {
+                    if (shift && !attributes.hasModifier(SNEAK_SPEED_MODIFIER)) {
                         attributes.addPermanentModifier(SNEAK_SPEED_BONUS);
                     }
                     if ((!shift || player.getItemBySlot(EquipmentSlot.HEAD).getItem() != AMItemRegistry.FRONTIER_CAP.get())
-                            && attributes.hasModifier(SNEAK_SPEED_BONUS)) {
-                        attributes.removeModifier(SNEAK_SPEED_BONUS);
+                            && attributes.hasModifier(SNEAK_SPEED_MODIFIER)) {
+                        attributes.removeModifier(SNEAK_SPEED_MODIFIER);
                     }
                 }
             }
@@ -618,7 +618,7 @@ public class ServerEvents {
             }
         }
         final ItemStack boots = entity.getItemBySlot(EquipmentSlot.FEET);
-        if (!boots.isEmpty() && boots.hasTag() && boots.getOrCreateTag().contains("BisonFur") && boots.getOrCreateTag().getBooleanOr("BisonFur", false)) {
+        if (!boots.isEmpty() && boots.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA) != null && boots.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA).copyTag().getBoolean("BisonFur")) {
             BlockPos posBelow = new BlockPos((int) event.getEntity().getX(), (int) (entity.getBoundingBox().minY - 0.1F), (int) entity.getZ());
             if (entity.level().getBlockState(posBelow).is(Blocks.POWDER_SNOW)) {
                 entity.setOnGround(true);
@@ -708,8 +708,8 @@ public class ServerEvents {
                 if (event.getSource().getEntity() instanceof LivingEntity living) {
                     boolean flag = false;
                     if (living.distanceTo(event.getEntity()) <= 4
-                        && !living.hasEffect(AMEffectRegistry.EXSANGUINATION.getHolder().orElseThrow())) {
-                        living.addEffect(new MobEffectInstance(AMEffectRegistry.EXSANGUINATION.getHolder().orElseThrow(), 60, 2));
+                        && !living.hasEffect(AMEffectRegistry.EXSANGUINATION)) {
+                        living.addEffect(new MobEffectInstance(AMEffectRegistry.EXSANGUINATION, 60, 2));
                         flag = true;
                     }
                     if (event.getEntity().isInWater()) {
@@ -736,7 +736,7 @@ public class ServerEvents {
     @SubscribeEvent
     public void onAddReloadListener(AddServerReloadListenersEvent event){
         AlexsMobs.LOGGER.info("Adding datapack listener capsid_recipes");
-        event.addListener(AlexsMobs.PROXY.getCapsidRecipeManager());
+        event.addListener(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("alexsmobs", "capsid_recipes"), AlexsMobs.PROXY.getCapsidRecipeManager());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

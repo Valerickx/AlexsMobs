@@ -139,7 +139,7 @@ public class EntityCachalotWhale extends Animal {
         if (this.canDespawn()) {
             this.despawnDelay = this.despawnDelay - 1;
             if (this.despawnDelay <= 0) {
-                this.dropLeash(true, false);
+                this.dropLeash();
                 this.remove(RemovalReason.DISCARDED);
             }
         }
@@ -254,8 +254,8 @@ public class EntityCachalotWhale extends Animal {
         return new WaterBoundPathNavigation(this, worldIn);
     }
 
-    public void customServerAiStep() {
-        super.customServerAiStep();
+    public void customServerAiStep(ServerLevel level) {
+        super.customServerAiStep(level);
         breakBlock();
     }
 
@@ -265,7 +265,7 @@ public class EntityCachalotWhale extends Animal {
             return;
         }
         boolean flag = false;
-        if (!this.level().isClientSide() && this.blockBreakCounter == 0 && net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(level(), this)) {
+        if (!this.level().isClientSide() && this.blockBreakCounter == 0 && net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(level(), this)) {
             final TagKey<Block> breakables = this.isCharging() && this.getTarget() != null && AMConfig.cachalotDestruction ? AMTagRegistry.CACHALOT_WHALE_BREAKABLES : AMTagRegistry.ORCA_BREAKABLES;
             for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
                 for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
@@ -960,7 +960,7 @@ public class EntityCachalotWhale extends Animal {
 
         private boolean canBreatheAt(LevelReader p_205140_1_, BlockPos p_205140_2_) {
             final BlockState lvt_3_1_ = p_205140_1_.getBlockState(p_205140_2_);
-            return (p_205140_1_.getFluidState(p_205140_2_).isEmpty() || lvt_3_1_.is(Blocks.BUBBLE_COLUMN)) && lvt_3_1_.isPathfindable(p_205140_1_, p_205140_2_, PathComputationType.LAND);
+            return (p_205140_1_.getFluidState(p_205140_2_).isEmpty() || lvt_3_1_.is(Blocks.BUBBLE_COLUMN)) && lvt_3_1_.isPathfindable(PathComputationType.LAND);
         }
     }
 }

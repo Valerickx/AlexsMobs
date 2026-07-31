@@ -291,7 +291,7 @@ public class ModelElephant extends AdvancedEntityModel<EntityElephant> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (this.young) {
+        if (entity != null && entity.isBaby()) {
             float f = 1.5F;
             float f2 = 0.75F;
             head.rotationPointY = -10;

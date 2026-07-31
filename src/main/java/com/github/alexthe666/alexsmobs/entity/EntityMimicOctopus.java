@@ -272,7 +272,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
         this.goalSelector.addGoal(2, new TameableAIFollowOwnerWater(this, 1.3D, 4.0F, 2.0F, false));
         this.goalSelector.addGoal(3, new AnimalAIFindWater(this));
         this.goalSelector.addGoal(3, new AnimalAILeaveWater(this));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.MIMIC_OCTOPUS_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.MIMIC_OCTOPUS_TAMEABLES))), false) {
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.MIMIC_OCTOPUS_BREEDABLES, AMTagRegistry.MIMIC_OCTOPUS_TAMEABLES), false) {
             @Override
             public void tick() {
                 EntityMimicOctopus.this.setMimickedBlock(null);
@@ -922,7 +922,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
             this.targetEntitySelector = new Predicate<Entity>() {
                 @Override
                 public boolean apply(@Nullable Entity e) {
-                    return e.isAlive() && e.getType().is(AMTagRegistry.MIMIC_OCTOPUS_FEARS) || e instanceof Player && !((Player) e).isCreative();
+                    return e.isAlive() && e.getType().builtInRegistryHolder().is(AMTagRegistry.MIMIC_OCTOPUS_FEARS) || e instanceof Player && !((Player) e).isCreative();
                 }
             };
         }

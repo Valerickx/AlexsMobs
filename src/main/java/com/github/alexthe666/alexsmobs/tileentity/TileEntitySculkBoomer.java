@@ -3,6 +3,8 @@ package com.github.alexthe666.alexsmobs.tileentity;
 import com.github.alexthe666.alexsmobs.block.BlockSculkBoomer;
 import com.github.alexthe666.alexsmobs.client.particle.AMParticleRegistry;
 import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.VibrationParticleOption;
@@ -78,13 +80,13 @@ public class TileEntitySculkBoomer extends BlockEntity implements GameEventListe
 
     }
 
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (tag.contains("ScreamCooldown")) {
-            this.screamTime = tag.getIntOr("ScreamCooldown", 0);
-        }
+    @Override
+    protected void loadAdditional(net.minecraft.world.level.storage.ValueInput tag) {
+        super.loadAdditional(tag);
+        this.screamTime = tag.getIntOr("ScreamCooldown", 0);
     }
 
+    @Override
     protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput tag) {
         super.saveAdditional(tag);
         tag.putInt("ScreamCooldown", this.screamTime);
@@ -101,8 +103,8 @@ public class TileEntitySculkBoomer extends BlockEntity implements GameEventListe
     }
 
     @Override
-    public boolean handleGameEvent(ServerLevel serverLevel, GameEvent event, GameEvent.Context message, Vec3 from) {
-        if(event == GameEvent.SCULK_SENSOR_TENDRILS_CLICKING && !isOccluded(serverLevel, Vec3.atCenterOf(this.getBlockPos()), from)){
+    public boolean handleGameEvent(ServerLevel serverLevel, Holder<GameEvent> event, GameEventListener.Context message, Vec3 from) {
+        if(event.is(GameEvent.SCULK_SENSOR_TENDRILS_CLICKING) && !isOccluded(serverLevel, Vec3.atCenterOf(this.getBlockPos()), from)){
             double distance = from.distanceTo(Vec3.atCenterOf(this.getBlockPos()));
             serverLevel.sendParticles(new VibrationParticleOption(new BlockPositionSource(this.getBlockPos()), Mth.floor(distance)), from.x, from.y, from.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
             if(screamTime == 0){

@@ -19,17 +19,29 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.BreathAirGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -45,7 +57,7 @@ import java.util.function.Predicate;
 
 public class EntityBoneSerpent extends Monster {
 
-    private static final EntityDataAccessor<Optional<UUID>> CHILD_UUID = SynchedEntityData.defineId(EntityBoneSerpent.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> CHILD_UUID = SynchedEntityData.defineId(EntityBoneSerpent.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     private static final Predicate<LivingEntity> NOT_RIDING_STRADDLEBOARD_FRIENDLY = (entity) -> {
         return entity.isAlive() && (entity.getVehicle() == null || !(entity.getVehicle() instanceof EntityStraddleboard) || !((EntityStraddleboard)entity.getVehicle()).shouldSerpentFriend());
     };;

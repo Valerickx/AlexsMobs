@@ -117,7 +117,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(9, new AvoidEntityGoal(this, EntityOrca.class, 20F, 1.3D, 1.0D));
-        this.goalSelector.addGoal(10, new TemptGoal(this, 1.1D, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.SEAL_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.SEAL_OFFERINGS))), false));
+        this.goalSelector.addGoal(10, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.SEAL_BREEDABLES, AMTagRegistry.SEAL_OFFERINGS), false));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, EntityFlyingFish.class, 55, true, true, null));
         this.targetSelector.addGoal(2, new CreatureAITargetItems(this, false));
     }
@@ -134,8 +134,8 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
         }
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        final boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        final boolean prev = super.hurtServer(level, source, amount);
         if (prev) {
             final double range = 15;
             final int fleeTime = 100 + getRandom().nextInt(150);

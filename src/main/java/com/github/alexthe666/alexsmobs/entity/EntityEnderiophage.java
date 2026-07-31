@@ -609,8 +609,8 @@ public class EntityEnderiophage extends Animal implements Enemy {
         return this.level().clip(new ClipContext(Vector3d, target, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() != HitResult.Type.MISS;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -618,7 +618,7 @@ public class EntityEnderiophage extends Animal implements Enemy {
                 amount = (amount + 1.0F) * 0.35F;
                 angryEnderman = (EnderMan) entity;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 

@@ -4,7 +4,7 @@ import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityCapsid;
 import com.github.alexthe666.citadel.server.message.PacketBufferUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.LogicalSide;
@@ -26,13 +26,13 @@ public class MessageUpdateCapsid  {
     public MessageUpdateCapsid() {
     }
 
-    public static MessageUpdateCapsid read(FriendlyByteBuf buf) {
-        return new MessageUpdateCapsid(buf.readLong(), PacketBufferUtils.readItemStack(buf));
+    public static MessageUpdateCapsid read(RegistryFriendlyByteBuf buf) {
+        return new MessageUpdateCapsid(buf.readLong(), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
     }
 
-    public static void write(MessageUpdateCapsid message, FriendlyByteBuf buf) {
+    public static void write(MessageUpdateCapsid message, RegistryFriendlyByteBuf buf) {
         buf.writeLong(message.blockPos);
-        PacketBufferUtils.writeItemStack(buf, message.heldStack);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, message.heldStack);
     }
 
     public static class Handler {
@@ -42,8 +42,8 @@ public class MessageUpdateCapsid  {
         public static void handle(MessageUpdateCapsid message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
                 if (player != null) {

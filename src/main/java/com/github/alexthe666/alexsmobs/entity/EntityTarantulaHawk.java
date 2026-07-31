@@ -134,7 +134,7 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
         this.goalSelector.addGoal(4, new AIMelee());
         this.goalSelector.addGoal(5, new AIBury());
         this.goalSelector.addGoal(6, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new TemptGoal(this, 1.1D, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.TARANTULA_HAWK_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.TARANTULA_HAWK_TAMEABLES), new Ingredient.TagValue(AMTagRegistry.TARANTULA_HAWK_FOODSTUFFS))), false));
+        this.goalSelector.addGoal(7, new TemptGoal(this, 1.1D, Ingredient.fromValues(Stream.of(Ingredient.of(AMTagRegistry.TARANTULA_HAWK_BREEDABLES), Ingredient.of(AMTagRegistry.TARANTULA_HAWK_TAMEABLES), Ingredient.of(AMTagRegistry.TARANTULA_HAWK_FOODSTUFFS))), false));
         this.goalSelector.addGoal(8, new AIWalkIdle());
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
@@ -187,11 +187,11 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
         builder.define(COMMAND, 0);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (source.getEntity() instanceof LivingEntity && ((LivingEntity) source.getEntity()).getMobType() == MobType.ARTHROPOD && ((LivingEntity) source.getEntity()).hasEffect(AMEffectRegistry.DEBILITATING_STING)) {
             return false;
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
@@ -507,7 +507,7 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.CACTUS) || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.CACTUS) || super.isInvulnerableTo(level, source);
     }
 
     @Override
@@ -763,7 +763,7 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
                 if (hawk.distanceTo(target) < target.getBbWidth() + 1.5F && !target.isPassenger()) {
                     hawk.setDragging(true);
                     hawk.setFlying(false);
-                    target.startRiding(hawk, true);
+                    target.startRiding(hawk, true, false);
                 }
             } else {
                 if (target != null && !paralizedWithChild) {

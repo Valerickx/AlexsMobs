@@ -209,7 +209,7 @@ public class EntityPotoo extends Animal implements IFalconry {
                 this.timeFlying = 0;
             }
             if (this.isPerching() && !this.isVehicle()) {
-                this.setSleeping(this.level().isDay() && (this.getTarget() == null || !this.getTarget().isAlive()));
+                this.setSleeping((this.level().getDayTime() % 24000L < 13000L) && (this.getTarget() == null || !this.getTarget().isAlive()));
             } else if (isSleeping()) {
                 this.setSleeping(false);
             }
@@ -261,8 +261,8 @@ public class EntityPotoo extends Animal implements IFalconry {
         return AMSoundRegistry.POTOO_HURT.get();
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev && source.getDirectEntity() instanceof LivingEntity) {
             this.setPerching(false);
         }
@@ -271,7 +271,7 @@ public class EntityPotoo extends Animal implements IFalconry {
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(level, source);
     }
 
     public void rideTick() {
@@ -455,7 +455,7 @@ public class EntityPotoo extends Animal implements IFalconry {
         if (!this.isBaby() && getRidingFalcons(player) <= 0 && (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == AMItemRegistry.FALCONRY_GLOVE.get() || player.getItemInHand(InteractionHand.OFF_HAND).getItem() == AMItemRegistry.FALCONRY_GLOVE.get())) {
             boardingCooldown = 30;
             this.ejectPassengers();
-            this.startRiding(player, true);
+            this.startRiding(player, true, false);
             if (!this.level().isClientSide()) {
                 AlexsMobs.sendMSGToAll(new MessageMosquitoMountPlayer(this.getId(), player.getId()));
             }
@@ -657,7 +657,7 @@ public class EntityPotoo extends Animal implements IFalconry {
 
         @Override
         public boolean canContinueToUse() {
-            return (perchingTime < 300 || EntityPotoo.this.level().isDay()) && (EntityPotoo.this.getTarget() == null || !EntityPotoo.this.getTarget().isAlive()) && !EntityPotoo.this.isPassenger();
+            return (perchingTime < 300 || (EntityPotoo.this.level().getDayTime() % 24000L < 13000L)) && (EntityPotoo.this.getTarget() == null || !EntityPotoo.this.getTarget().isAlive()) && !EntityPotoo.this.isPassenger();
         }
 
         public void tick() {

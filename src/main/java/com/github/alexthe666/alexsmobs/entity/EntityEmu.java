@@ -139,8 +139,8 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
         return !this.isBaby() && super.canAttack(target);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev) {
             double range = 15;
             int fleeTime = 100 + getRandom().nextInt(5);

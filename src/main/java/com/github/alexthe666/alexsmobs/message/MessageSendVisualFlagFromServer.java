@@ -38,8 +38,8 @@ public class MessageSendVisualFlagFromServer {
         public static void handle(MessageSendVisualFlagFromServer message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if(context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT){
+                Player player = context.player();
+                if(context.flow().isClientbound()){
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
 

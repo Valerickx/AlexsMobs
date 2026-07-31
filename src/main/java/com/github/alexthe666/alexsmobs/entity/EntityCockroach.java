@@ -24,13 +24,21 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -55,7 +63,7 @@ public class EntityCockroach extends Animal implements Shearable, net.neoforged.
     private static final EntityDataAccessor<Boolean> DANCING = SynchedEntityData.defineId(EntityCockroach.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HEADLESS = SynchedEntityData.defineId(EntityCockroach.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> MARACAS = SynchedEntityData.defineId(EntityCockroach.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Optional<UUID>> NEAREST_MUSICIAN = SynchedEntityData.defineId(EntityCockroach.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> NEAREST_MUSICIAN = SynchedEntityData.defineId(EntityCockroach.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Boolean> BREADED = SynchedEntityData.defineId(EntityCockroach.class, EntityDataSerializers.BOOLEAN);
     public int randomWingFlapTick = 0;
     public float prevDanceProgress;
@@ -133,8 +141,8 @@ public class EntityCockroach extends Animal implements Shearable, net.neoforged.
         this.targetSelector.addGoal(1, new CreatureAITargetItems(this, false));
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if(prev){
             randomWingFlapTick = 5 + random.nextInt(15);
             if (this.getHealth() <= 1.0F && amount > 0 && !this.isHeadless() && this.getRandom().nextInt(3) == 0) {
@@ -187,7 +195,7 @@ public class EntityCockroach extends Animal implements Shearable, net.neoforged.
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypeTags.IS_EXPLOSION) || source.getMsgId().equals("anvil") || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypeTags.IS_EXPLOSION) || source.getMsgId().equals("anvil") || super.isInvulnerableTo(level, source);
     }
 
     public InteractionResult mobInteract(Player p_230254_1_, InteractionHand p_230254_2_) {

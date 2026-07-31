@@ -24,18 +24,31 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -61,9 +74,9 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
     private static final EntityDataAccessor<Integer> ATTACK_TICK = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> CREST_TARGET = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.FLOAT);
 
-    private static final EntityDataAccessor<Optional<UUID>> LAST_FEEDER_UUID = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> LAST_FEEDER_UUID = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
 
-    private static final EntityDataAccessor<Optional<UUID>> RACCOON_UUID = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> RACCOON_UUID = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
 
     private static final EntityDataAccessor<Integer> FEED_TIME = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> SING_TIME = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.INT);
@@ -727,7 +740,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
             this.targetEntitySelector = new Predicate<Entity>() {
                 @Override
                 public boolean apply(@javax.annotation.Nullable Entity e) {
-                    return e.isAlive() && e.getType().is(AMTagRegistry.SCATTERS_CROWS) || e instanceof Player && !((Player) e).isCreative();
+                    return e.isAlive() && e.getType().builtInRegistryHolder().is(AMTagRegistry.SCATTERS_CROWS) || e instanceof Player && !((Player) e).isCreative();
                 }
             };
         }
@@ -929,7 +942,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
                     EntityBlueJay.this.getMoveControl().setWantedPosition(this.following.getX(), this.following.getY(), this.following.getZ(), 1);
                 }
                 if(dist < 1F && raccoon.getPassengers().isEmpty()){
-                    EntityBlueJay.this.startRiding(raccoon, false);
+                    EntityBlueJay.this.startRiding(raccoon, false, false);
                 }
             }
         }

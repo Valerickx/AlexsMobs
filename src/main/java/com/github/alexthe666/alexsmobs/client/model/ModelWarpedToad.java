@@ -249,7 +249,7 @@ public class ModelWarpedToad extends AdvancedEntityModel<EntityWarpedToad> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (this.young) {
+        if (entity != null && entity.isBaby()) {
             matrixStackIn.pushPose();
             matrixStackIn.scale(0.35F, 0.35F, 0.35F);
             matrixStackIn.translate(0.0D, 2.75D, 0.125D);

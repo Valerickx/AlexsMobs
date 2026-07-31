@@ -2,7 +2,7 @@ package com.github.alexthe666.alexsmobs.message;
 
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.entity.EntityKangaroo;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,14 +26,14 @@ public class MessageKangarooInventorySync {
     public MessageKangarooInventorySync() {
     }
 
-    public static MessageKangarooInventorySync read(FriendlyByteBuf buf) {
-        return new MessageKangarooInventorySync(buf.readInt(), buf.readInt(), buf.readItem());
+    public static MessageKangarooInventorySync read(RegistryFriendlyByteBuf buf) {
+        return new MessageKangarooInventorySync(buf.readInt(), buf.readInt(), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
     }
 
-    public static void write(MessageKangarooInventorySync message, FriendlyByteBuf buf) {
+    public static void write(MessageKangarooInventorySync message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.kangaroo);
         buf.writeInt(message.slotId);
-        buf.writeItem(message.stack);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, message.stack);
     }
 
     public static class Handler {
@@ -43,8 +43,8 @@ public class MessageKangarooInventorySync {
         public static void handle(MessageKangarooInventorySync message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
 

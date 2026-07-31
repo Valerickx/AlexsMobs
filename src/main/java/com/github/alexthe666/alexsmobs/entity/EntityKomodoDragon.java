@@ -23,18 +23,31 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +77,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
     private static final EntityDataAccessor<Integer> COMMAND = SynchedEntityData.defineId(EntityKomodoDragon.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> JOSTLING = SynchedEntityData.defineId(EntityKomodoDragon.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> JOSTLE_ANGLE = SynchedEntityData.defineId(EntityKomodoDragon.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Optional<UUID>> JOSTLER_UUID = SynchedEntityData.defineId(EntityKomodoDragon.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> JOSTLER_UUID = SynchedEntityData.defineId(EntityKomodoDragon.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Boolean> SADDLED = SynchedEntityData.defineId(EntityKomodoDragon.class, EntityDataSerializers.BOOLEAN);
     public float prevJostleAngle;
     public float prevJostleProgress;
@@ -152,8 +165,8 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
         return (float)(this.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -161,7 +174,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
             if (entity != null && this.isTame() && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
                 amount = (amount + 1.0F) / 3.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 
@@ -489,13 +502,13 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
     }
 
     private void applyKnockbackFromMoose(float strength, double ratioX, double ratioZ) {
-        net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event = net.neoforged.neoforge.common.ForgeHooks.onLivingKnockBack(this, strength, ratioX, ratioZ);
+        net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event = net.neoforged.neoforge.common.NeoForgeEventFactory.onLivingKnockBack(this, strength, ratioX, ratioZ);
         if (event.isCanceled()) return;
         strength = event.getStrength();
         ratioX = event.getRatioX();
         ratioZ = event.getRatioZ();
         if (!(strength <= 0.0F)) {
-            this.hasImpulse = true;
+            // this.hasImpulse removed in 26.2
             Vec3 vector3d = this.getDeltaMovement();
             Vec3 vector3d1 = (new Vec3(ratioX, 0.0D, ratioZ)).normalize().scale(strength);
             this.setDeltaMovement(vector3d.x / 2.0D - vector3d1.x, 0.3F, vector3d.z / 2.0D - vector3d1.z);
@@ -509,8 +522,8 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
     public void playJostleSound() {
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.isSaddled()) {
             if (!this.level().isClientSide()) {
                 this.spawnAtLocation((ServerLevel) this.level(), Items.SADDLE);

@@ -15,7 +15,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class AMMobSpawnStructureModifier implements StructureModifier {
 
-    private static final DeferredHolder<MapCodec<? extends StructureModifier>, MapCodec<AMMobSpawnStructureModifier>> SERIALIZER = DeferredHolder.create(Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "am_structure_spawns"), NeoForgeRegistries.STRUCTURE_MODIFIER_SERIALIZERS, AlexsMobs.MODID);
+    private static final DeferredHolder<MapCodec<? extends StructureModifier>, MapCodec<AMMobSpawnStructureModifier>> SERIALIZER = DeferredHolder.create(NeoForgeRegistries.Keys.STRUCTURE_MODIFIER_SERIALIZERS, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "am_structure_spawns"));
 
     public AMMobSpawnStructureModifier() {
     }

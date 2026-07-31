@@ -124,7 +124,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
         this.goalSelector.addGoal(3, new AITackle());
         this.goalSelector.addGoal(4, new AILandOnGlove());
         this.goalSelector.addGoal(5, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(6, new TemptGoal(this, 1.1D, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.BALD_EAGLE_TAMEABLES), new Ingredient.TagValue(AMTagRegistry.BALD_EAGLE_FOODSTUFFS))), false));
+        this.goalSelector.addGoal(6, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.BALD_EAGLE_TAMEABLES, AMTagRegistry.BALD_EAGLE_FOODSTUFFS), false));
         this.goalSelector.addGoal(7, new AIWanderIdle());
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 6.0F) {
             @Override
@@ -336,7 +336,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo(level, source);
     }
 
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -391,7 +391,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                 boardingCooldown = 30;
                 this.setLaunched(false);
                 this.ejectPassengers();
-                this.startRiding(player, true);
+                this.startRiding(player, true, false);
                 if (!this.level().isClientSide()) {
                     AlexsMobs.sendMSGToAll(new MessageMosquitoMountPlayer(this.getId(), player.getId()));
                 }
@@ -842,15 +842,15 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
     }
 
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             final Entity entity = source.getEntity();
             if (entity != null && this.isTame() && !(entity instanceof Player) && !(entity instanceof AbstractArrow) && this.isLaunched()) {
                 amount = (amount + 1.0F) / 4.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 
@@ -859,8 +859,8 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
             ServerLevel serverWorld = (ServerLevel) level();
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    ChunkPos pos = new ChunkPos(this.blockPosition().offset(i * 16, 0, j * 16));
-                    serverWorld.setChunkForced(pos.x, pos.z, true);
+                    ChunkPos pos = new ChunkPos((this.blockPosition().getX() >> 4) + i, (this.blockPosition().getZ() >> 4) + j);
+                    serverWorld.setChunkForced(pos.x(), pos.z(), true);
 
                 }
             }
@@ -1158,7 +1158,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                                 living.yBodyRot = eagle.yBodyRot + 90F;
                             }
                             target.setPos(eagle.getX() + extraX, eagle.getY() - 0.4F + target.getBbHeight() * 0.45F, eagle.getZ() + extraZ);
-                            target.startRiding(eagle, true);
+                            target.startRiding(eagle, true, false);
                         } else {
                             target.hurt(eagle.damageSources().mobAttack(eagle), 5);
                             eagle.setFlying(false);

@@ -183,7 +183,7 @@ public class EntityJerboa extends Animal {
         }
 
         if (!this.level().isClientSide()) {
-            if (this.level().isDay() && this.getLastHurtByMob() == null && !this.isBegging()) {
+            if ((this.level().getDayTime() % 24000L < 13000L) && this.getLastHurtByMob() == null && !this.isBegging()) {
                 if (tickCount % 10 == 0 && this.getRandom().nextInt(750) == 0) {
                     this.setSleeping(true);
                 }
@@ -247,8 +247,8 @@ public class EntityJerboa extends Animal {
         return type;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev) {
             this.setSleeping(false);
             if (source.getEntity() != null) {
@@ -362,8 +362,8 @@ public class EntityJerboa extends Animal {
 
     }
 
-    public void customServerAiStep() {
-        super.customServerAiStep();
+    public void customServerAiStep(ServerLevel level) {
+        super.customServerAiStep(level);
 
         if (this.currentMoveTypeDuration > 0) {
             --this.currentMoveTypeDuration;

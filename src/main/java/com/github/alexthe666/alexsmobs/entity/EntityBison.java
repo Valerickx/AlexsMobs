@@ -296,7 +296,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         final float rotRad = rot * Mth.DEG_TO_RAD;
         final float x = Mth.sin(rotRad);
         final float z = -Mth.cos(rotRad);
-        launch.hasImpulse = true;
+        // launch.hasImpulse removed in 26.2
         final Vec3 vec3 = this.getDeltaMovement();
         final Vec3 vec31 = vec3.add((new Vec3(x, 0.0D, z)).normalize().scale(strength));
         launch.setDeltaMovement(vec31.x, huge ? 1F : 0.5F, vec31.z);
@@ -339,8 +339,8 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         return type;
     }
 
-    public void customServerAiStep() {
-        super.customServerAiStep();
+    public void customServerAiStep(ServerLevel level) {
+        super.customServerAiStep(level);
         breakBlock();
     }
 
@@ -350,7 +350,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
             return;
         }
         boolean flag = false;
-        if (!this.level().isClientSide() && this.blockBreakCounter == 0 && net.neoforged.neoforge.event.ForgeEventFactory.getMobGriefingEvent(level(), this)) {
+        if (!this.level().isClientSide() && this.blockBreakCounter == 0 && net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(level(), this)) {
             for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
                 for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
                     for (int c = (int) Math.round(this.getBoundingBox().minZ); c <= (int) Math.round(this.getBoundingBox().maxZ); c++) {
@@ -449,13 +449,13 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
     }
 
     private void applyKnockbackFromBuffalo(float strength, double ratioX, double ratioZ) {
-        net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event = net.neoforged.neoforge.common.ForgeHooks.onLivingKnockBack(this, strength, ratioX, ratioZ);
+        net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event = net.neoforged.neoforge.common.NeoForgeEventFactory.onLivingKnockBack(this, strength, ratioX, ratioZ);
         if (event.isCanceled()) return;
         strength = event.getStrength();
         ratioX = event.getRatioX();
         ratioZ = event.getRatioZ();
         if (!(strength <= 0.0F)) {
-            this.hasImpulse = true;
+            // this.hasImpulse removed in 26.2
             Vec3 vector3d = this.getDeltaMovement();
             Vec3 vector3d1 = (new Vec3(ratioX, 0.0D, ratioZ)).normalize().scale(strength);
             this.setDeltaMovement(vector3d.x / 2.0D - vector3d1.x, 0.3F, vector3d.z / 2.0D - vector3d1.z);

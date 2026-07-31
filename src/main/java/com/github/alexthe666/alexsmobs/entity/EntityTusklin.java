@@ -317,8 +317,8 @@ public class EntityTusklin extends Animal implements IAnimatedEntity {
         this.entityData.set(SADDLED, Boolean.valueOf(saddled));
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.isSaddled()) {
             if (!this.level().isClientSide()) {
                 this.spawnAtLocation((ServerLevel) this.level(), Items.SADDLE);
@@ -367,7 +367,7 @@ public class EntityTusklin extends Animal implements IAnimatedEntity {
                     float x = Mth.sin(rot * Mth.DEG_TO_RAD);
                     float z = -Mth.cos(rot * Mth.DEG_TO_RAD);
                     if (!(strength <= 0.0D)) {
-                        launch.hasImpulse = true;
+                        // launch.hasImpulse removed in 26.2
                         Vec3 vec3 = this.getDeltaMovement();
                         Vec3 vec31 = vec3.add((new Vec3(x, 0.0D, z)).normalize().scale(strength));
                         launch.setDeltaMovement(vec31.x, strength, vec31.z);

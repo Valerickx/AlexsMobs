@@ -14,12 +14,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -34,7 +41,7 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
 
     private static final EntityDataAccessor<Boolean> TAIL = SynchedEntityData.defineId(EntityBoneSerpentPart.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> BODYINDEX = SynchedEntityData.defineId(EntityBoneSerpentPart.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Optional<UUID>> PARENT_UUID = SynchedEntityData.defineId(EntityBoneSerpentPart.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> PARENT_UUID = SynchedEntityData.defineId(EntityBoneSerpentPart.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
     public EntityDimensions multipartSize;
     protected float radius;
     protected float angleYaw;
@@ -197,7 +204,7 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
     }
 
     @Override
-    public boolean hurt(DamageSource source, float damage) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         final Entity parent = getParent();
         final boolean prev = parent != null && parent.hurt(source, damage * this.damageMultiplier);
         if (prev && !this.level().isClientSide()) {

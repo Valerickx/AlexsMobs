@@ -59,8 +59,8 @@ public class MessageHurtMultipart {
         public static void handle(MessageHurtMultipart message, IPayloadContext context) {
             
             context.enqueueWork(() -> {
-                Player player = context.get().getSender();
-                if (context.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+                Player player = context.player();
+                if (context.flow().isClientbound()) {
                     player = AlexsMobs.PROXY.getClientSidePlayer();
                 }
 
@@ -68,22 +68,17 @@ public class MessageHurtMultipart {
                     if (player.level() != null) {
                         Entity part = player.level().getEntity(message.part);
                         Entity parent = player.level().getEntity(message.parent);
-                        Registry<DamageType> registry = player.level().registryAccess().registry(Registries.DAMAGE_TYPE).get();
-                        DamageType dmg = registry.get(Identifier.parse(message.damageType));
-                        if (dmg != null) {
-                            Holder<DamageType> holder = registry.getHolder(registry.getId(dmg)).orElseGet(null);
-                            if (holder != null) {
-                                DamageSource source = new DamageSource(registry.getHolder(registry.getId(dmg)).get());
-                                if (part instanceof IHurtableMultipart && parent instanceof LivingEntity) {
-                                    ((IHurtableMultipart) part).onAttackedFromServer((LivingEntity) parent, message.damage, source);
-                                }
-                                if (part == null && parent != null && parent.isMultipartEntity()) {
-                                    parent.hurt(source, message.damage);
-                                }
-
+                        var registry = player.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE);
+                        var holder = registry.get(net.minecraft.resources.ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.parse(message.damageType))).orElse(null);
+                        if (holder != null) {
+                            DamageSource source = new DamageSource(holder);
+                            if (part instanceof IHurtableMultipart && parent instanceof LivingEntity) {
+                                ((IHurtableMultipart) part).onAttackedFromServer((LivingEntity) parent, message.damage, source);
+                            }
+                            if (part == null && parent != null && parent.isMultipartEntity()) {
+                                parent.hurt(source, message.damage);
                             }
                         }
-
                     }
                 }
             });

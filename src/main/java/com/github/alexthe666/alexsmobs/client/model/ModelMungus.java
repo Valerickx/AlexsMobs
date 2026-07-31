@@ -140,7 +140,7 @@ public class ModelMungus extends AdvancedEntityModel<EntityMungus> {
 	}
 
 	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if (this.young) {
+		if (entity != null && entity.isBaby()) {
 			this.eye.setScale(1.5F, 1.5F, 1.5F);
 			this.nose.setScale(1.5F, 1.5F, 1.5F);
 			matrixStackIn.pushPose();

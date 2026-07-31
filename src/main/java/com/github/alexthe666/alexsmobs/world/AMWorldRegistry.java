@@ -28,21 +28,21 @@ public class AMWorldRegistry {
 
     public static void modifyStructure(Holder<Structure> structure, ModifiableStructureInfo.StructureInfo.Builder builder) {
         if (AMConfig.mimicubeSpawnInEndCity && structure.is(BuiltinStructures.END_CITY) && AMConfig.mimicubeSpawnWeight > 0) {
-            builder.getStructureSettings().getOrAddSpawnOverrides(MobCategory.MONSTER).addSpawn(new MobSpawnSettings.SpawnerData(AMConfig.mimicubeSpawnWeight, 3, $5), 1);
+            builder.getStructureSettings().getOrAddSpawnOverrides(MobCategory.MONSTER).addSpawn(new MobSpawnSettings.SpawnerData(AMEntityRegistry.MIMICUBE.get(), 1, 3), AMConfig.mimicubeSpawnWeight);
         }
         if (AMConfig.soulVultureSpawnOnFossil && structure.is(BuiltinStructures.NETHER_FOSSIL) && AMConfig.soulVultureSpawnWeight > 0) {
-            builder.getStructureSettings().getOrAddSpawnOverrides(MobCategory.MONSTER).addSpawn(new MobSpawnSettings.SpawnerData(AMConfig.soulVultureSpawnWeight, 1, $5), 1);
+            builder.getStructureSettings().getOrAddSpawnOverrides(MobCategory.MONSTER).addSpawn(new MobSpawnSettings.SpawnerData(AMEntityRegistry.SOUL_VULTURE.get(), 1, 3), AMConfig.soulVultureSpawnWeight);
         }
         if (AMConfig.restrictSkelewagSpawns && structure.is(BuiltinStructures.SHIPWRECK) && AMConfig.skelewagSpawnWeight > 0) {
-            builder.getStructureSettings().getOrAddSpawnOverrides(MobCategory.MONSTER).addSpawn(new MobSpawnSettings.SpawnerData(AMConfig.skelewagSpawnWeight, 2, $5), 1);
+            builder.getStructureSettings().getOrAddSpawnOverrides(MobCategory.MONSTER).addSpawn(new MobSpawnSettings.SpawnerData(AMEntityRegistry.SKELEWAG.get(), 1, 2), AMConfig.skelewagSpawnWeight);
         }
         if (AMConfig.restrictUnderminerSpawns && structure.is(AMTagRegistry.SPAWNS_UNDERMINERS) && AMConfig.underminerSpawnWeight > 0) {
-            builder.getStructureSettings().getOrAddSpawnOverrides(MobCategory.AMBIENT).addSpawn(new MobSpawnSettings.SpawnerData(AMConfig.underminerSpawnWeight, 1, $5), 1);
+            builder.getStructureSettings().getOrAddSpawnOverrides(MobCategory.AMBIENT).addSpawn(new MobSpawnSettings.SpawnerData(AMEntityRegistry.UNDERMINER.get(), 1, 1), AMConfig.underminerSpawnWeight);
         }
     }
 
     private static Identifier getBiomeName(Holder<Biome> biome) {
-        return biome.unwrap().map((resourceKey) -> resourceKey.location(), (noKey) -> null);
+        return biome.unwrap().map((resourceKey) -> resourceKey.identifier(), (noKey) -> null);
     }
 
     public static boolean testBiome(Pair<String, SpawnBiomeData> entry, Holder<Biome> biome) {

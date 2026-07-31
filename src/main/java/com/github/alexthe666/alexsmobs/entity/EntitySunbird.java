@@ -57,7 +57,7 @@ public class EntitySunbird extends Animal {
     public static final Predicate<? super Entity> SCORCH_PRED = new com.google.common.base.Predicate<Entity>() {
         @Override
         public boolean apply(@Nullable Entity e) {
-            return e.isAlive() && e.getType().is(AMTagRegistry.SUNBIRD_SCORCH_TARGETS);
+            return e.isAlive() && e.getType().builtInRegistryHolder().is(AMTagRegistry.SUNBIRD_SCORCH_TARGETS);
         }
     };
     private static final EntityDataAccessor<Boolean> SCORCHING = SynchedEntityData.defineId(EntitySunbird.class, EntityDataSerializers.BOOLEAN);
@@ -128,8 +128,8 @@ public class EntitySunbird extends Animal {
     protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev) {
             if (source.getEntity() != null) {
                 if (source.getEntity() instanceof LivingEntity) {

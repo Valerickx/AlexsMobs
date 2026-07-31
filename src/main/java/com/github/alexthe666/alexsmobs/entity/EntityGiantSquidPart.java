@@ -3,18 +3,31 @@ package com.github.alexthe666.alexsmobs.entity;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import com.github.alexthe666.alexsmobs.message.MessageHurtMultipart;
 import com.github.alexthe666.alexsmobs.message.MessageInteractMultipart;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 
@@ -77,11 +90,11 @@ public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implement
         return parent != null ? parent.getPickResult() : ItemStack.EMPTY;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if(this.level().isClientSide() && this.getParent() != null && !this.getParent().isInvulnerableTo(source) && !collisionOnly){
             AlexsMobs.sendMSGToServer(new MessageHurtMultipart(this.getId(), this.getParent().getId(), amount, source.getMsgId()));
         }
-        return !collisionOnly && !this.isInvulnerableTo((ServerLevel) this.level(), source) && this.getParent().attackEntityPartFrom(this, source, amount);
+        return !collisionOnly && !this.isInvulnerableTo(level, source) && this.getParent().attackEntityPartFrom(this, source, amount);
     }
 
     public boolean is(Entity entityIn) {

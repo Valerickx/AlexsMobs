@@ -135,7 +135,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
             float lvt_2_1_ = this.distanceTo(lvt_1_1_);
             if (this.isSitting()) {
                 if (lvt_2_1_ > 10.0F) {
-                    this.dropLeash(true, true);
+                    this.dropLeash();
                 }
 
                 return;
@@ -143,7 +143,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
 
             this.onLeashDistance(lvt_2_1_);
             if (lvt_2_1_ > 10.0F) {
-                this.dropLeash(true, true);
+                this.dropLeash();
                 this.goalSelector.disableControlFlag(Goal.Flag.MOVE);
             } else if (lvt_2_1_ > 6.0F) {
                 double lvt_3_1_ = (lvt_1_1_.getX() - this.getX()) / (double) lvt_2_1_;
@@ -212,8 +212,8 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
     }
 
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         for (int i = 0; i < kangarooInventory.getContainerSize(); i++) {
             this.spawnAtLocation((ServerLevel) this.level(), kangarooInventory.getItem(i));
         }
@@ -702,8 +702,8 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
         return false;
     }
 
-    public void customServerAiStep() {
-        super.customServerAiStep();
+    public void customServerAiStep(ServerLevel level) {
+        super.customServerAiStep(level);
 
         if (this.currentMoveTypeDuration > 0) {
             --this.currentMoveTypeDuration;

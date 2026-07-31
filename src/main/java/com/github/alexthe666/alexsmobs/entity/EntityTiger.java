@@ -89,7 +89,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
     private int animationTick;
     private Animation currentAnimation;
     private boolean hasSpedUp = false;
-    private UUID lastHurtBy;
+    private EntityReference<LivingEntity> lastHurtBy;
     private int sittingTime;
     private int maxSitTime;
     private int holdTime = 0;
@@ -282,11 +282,11 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
         this.entityData.set(ANGER_TIME, time);
     }
 
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.lastHurtBy;
     }
 
-    public void setPersistentAngerTarget(@Nullable UUID target) {
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> target) {
         this.lastHurtBy = target;
     }
 
@@ -294,7 +294,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
         this.setRemainingPersistentAngerTime(ANGRY_TIMER.sample(this.random));
     }
 
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel level) {
         if (!this.level().isClientSide()) {
             this.updatePersistentAnger((ServerLevel) this.level(), false);
         }
@@ -400,7 +400,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
                 final double extraY = -0.5F;
                 Vec3 minus = new Vec3(this.getX() + extraX - target.getX(), this.getY() + extraY - target.getY(), this.getZ() + extraZ - target.getZ());
                 target.setDeltaMovement(minus);
-                target.hasImpulse = true;
+                // target.hasImpulse removed in 26.2
                 if (holdTime % 20 == 0) {
                     target.hurt(this.damageSources().mobAttack(this), 5 + this.getRandom().nextInt(2));
                 }
@@ -434,8 +434,8 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
         AnimationHandler.INSTANCE.updateAnimations(this);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        final boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        final boolean prev = super.hurtServer(level, source, amount);
         if (prev) {
             if (source.getEntity() != null) {
                 if (source.getEntity() instanceof LivingEntity) {

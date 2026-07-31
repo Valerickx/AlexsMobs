@@ -6,6 +6,7 @@ import net.minecraft.world.item.trading.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.block.Block;
 
@@ -43,6 +44,6 @@ public class ItemsForEmeraldsTrade {
     }
 
     public MerchantOffer getOffer(Entity trader, RandomSource rand) {
-        return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCount), new ItemStack(this.sellingItem.getItem(), this.sellingItemCount), this.maxUses, this.xpValue, this.priceMultiplier);
+        return new MerchantOffer(new ItemCost(Items.EMERALD, this.emeraldCount), new ItemStack(this.sellingItem.getItem(), this.sellingItemCount), this.maxUses, this.xpValue, this.priceMultiplier);
     }
 }

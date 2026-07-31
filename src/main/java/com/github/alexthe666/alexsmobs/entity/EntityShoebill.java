@@ -99,8 +99,8 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
         return false;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        boolean prev = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        boolean prev = super.hurtServer(level, source, amount);
         if (prev && source.getEntity() != null && !(source.getEntity() instanceof AbstractFish)) {
             double range = 15;
             int fleeTime = 100 + getRandom().nextInt(150);

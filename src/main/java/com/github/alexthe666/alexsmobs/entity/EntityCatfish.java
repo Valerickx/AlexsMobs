@@ -1,5 +1,6 @@
 package com.github.alexthe666.alexsmobs.entity;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.ContainerListener;
 
 import com.github.alexthe666.alexsmobs.config.AMConfig;
@@ -7,50 +8,94 @@ import com.github.alexthe666.alexsmobs.entity.ai.AnimalAISwimBottom;
 import com.github.alexthe666.alexsmobs.entity.ai.AquaticMoveController;
 import com.github.alexthe666.alexsmobs.item.AMItemRegistry;
 import com.github.alexthe666.alexsmobs.misc.AMTagRegistry;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.TryFindWaterGoal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Bucketable;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Items;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
@@ -128,8 +173,8 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         }
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.catfishInventory != null) {
             for (int i = 0; i < catfishInventory.getContainerSize(); i++) {
                 this.spawnAtLocation((ServerLevel) this.level(), catfishInventory.getItem(i));
@@ -531,7 +576,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
 
     private boolean isFood(Entity entity) {
         if (this.getCatfishSize() == 2) {
-            return !entity.getType().is(AMTagRegistry.CATFISH_IGNORE_EATING) && entity instanceof Mob && !(entity instanceof EntityCatfish) && entity.getBbHeight() <= 1.0F;
+            return !entity.getType().builtInRegistryHolder().is(AMTagRegistry.CATFISH_IGNORE_EATING) && entity instanceof Mob && !(entity instanceof EntityCatfish) && entity.getBbHeight() <= 1.0F;
         } else {
             return entity instanceof ItemEntity && ((ItemEntity) entity).getAge() > 35;
         }

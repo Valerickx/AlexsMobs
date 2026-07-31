@@ -109,20 +109,20 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
 
     public Ingredient getAllFoods(){
         if(temptItems == null){
-            temptItems = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.CAPUCHIN_MONKEY_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.CAPUCHIN_MONKEY_FOODSTUFFS)));
+            temptItems = Ingredient.of(AMTagRegistry.CAPUCHIN_MONKEY_BREEDABLES, AMTagRegistry.CAPUCHIN_MONKEY_FOODSTUFFS);
         }
         return temptItems;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
             if (entity != null && this.isTame() && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
                 amount = (amount + 1.0F) / 4.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 
@@ -285,8 +285,8 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
         super.travel(vec3d);
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (hasDart()) {
             this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.ANCIENT_DART.get());
         }
@@ -431,7 +431,7 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
 
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
+        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(level, source);
     }
 
     public InteractionResult mobInteract(Player player, InteractionHand hand) {

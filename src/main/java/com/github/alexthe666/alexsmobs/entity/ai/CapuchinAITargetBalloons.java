@@ -30,7 +30,7 @@ public class CapuchinAITargetBalloons extends Goal {
     protected int unseenMemoryTicks = 60;
     protected final int targetChance;
     public static final Predicate<Entity> TARGET_BLOON = (balloon) -> {
-        return balloon.getEncodeId() != null && (balloon.getType().is(AMTagRegistry.MONKEY_TARGET_WITH_DART) || balloon.getEncodeId().contains("balloom"));
+        return balloon.getEncodeId() != null && (balloon.getType().builtInRegistryHolder().is(AMTagRegistry.MONKEY_TARGET_WITH_DART) || balloon.getEncodeId().contains("balloom"));
     };
 
     public CapuchinAITargetBalloons(EntityCapuchinMonkey mobIn, boolean checkSight) {

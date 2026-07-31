@@ -84,7 +84,7 @@ public class PlatypusAIDigForItems extends Goal {
                 if (lootList.size() > 0) {
                     for (ItemStack stack : lootList) {
                         ItemEntity e = this.platypus.spawnAtLocation((ServerLevel) platypus.level(), stack.copy());
-                        e.hasImpulse = true;
+                        // e.hasImpulse removed in 26.2
                         e.setDeltaMovement(e.getDeltaMovement().multiply(0.2, 0.2, 0.2));
                     }
                 }

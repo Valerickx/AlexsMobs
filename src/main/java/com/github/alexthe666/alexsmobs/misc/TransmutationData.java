@@ -3,8 +3,8 @@ package com.github.alexthe666.alexsmobs.misc;
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -22,7 +22,7 @@ public class TransmutationData {
 
     public double getWeight(ItemStack stack){
         for(Object2DoubleMap.Entry<ItemStack> entry : itemstackData.object2DoubleEntrySet()){
-            if(ItemStack.areEqual(stack, entry.getKey())){
+            if(ItemStack.isSameItemSameComponents(stack, entry.getKey())){
                 return entry.getDoubleValue();
             }
         }
@@ -40,7 +40,7 @@ public class TransmutationData {
     public void putWeight(ItemStack stack, double newWeight){
         ItemStack replace = stack;
         for(ItemStack entry : itemstackData.keySet()){
-            if(ItemStack.areEqual(stack, entry)){
+            if(ItemStack.isSameItemSameComponents(stack, entry)){
                 replace = entry;
                 break;
             }
@@ -55,7 +55,7 @@ public class TransmutationData {
         for(Object2DoubleMap.Entry<ItemStack> entry : itemstackData.object2DoubleEntrySet()){
             if(entry.getDoubleValue() <= 0.0){
                 continue;
-            }else{
+            } else {
                 final double value = -Math.log(random.nextDouble()) / entry.getDoubleValue();
                 if (value < bestValue) {
                     bestValue = value;
@@ -66,30 +66,32 @@ public class TransmutationData {
         return result;
     }
 
-    public void saveToValueOutput(ValueOutput output){
+    public CompoundTag toCompoundTag(){
+        CompoundTag tag = new CompoundTag();
         int i = 0;
         for(Object2DoubleMap.Entry<ItemStack> entry : itemstackData.object2DoubleEntrySet()) {
-            ValueOutput itemEntry = output.write("Entry" + i);
-            ItemStack.CODEC.encode(entry.getKey(), itemEntry.write("Item"));
-            itemEntry.writeDouble("Weight", entry.getDoubleValue());
+            CompoundTag itemEntry = new CompoundTag();
+            ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, entry.getKey())
+                .result().ifPresent(nbt -> itemEntry.put("Item", nbt));
+            itemEntry.putDouble("Weight", entry.getDoubleValue());
+            tag.put("Entry" + i, itemEntry);
             i++;
         }
-        output.writeInt("Size", i);
+        tag.putInt("Size", i);
+        return tag;
     }
 
-    public static TransmutationData fromValueInput(ValueInput input){
+    public static TransmutationData fromCompoundTag(CompoundTag tag){
         TransmutationData data = new TransmutationData();
-        int size = input.getIntOr("Size", 0);
+        int size = tag.getIntOr("Size", 0);
         for (int i = 0; i < size; ++i) {
-            java.util.Optional<ValueInput> entryOpt = input.read("Entry" + i);
-            if (entryOpt.isPresent()) {
-                ValueInput itemEntry = entryOpt.get();
+            if (tag.contains("Entry" + i)) {
+                CompoundTag itemEntry = tag.getCompoundOrEmpty("Entry" + i);
                 try {
-                    java.util.Optional<ValueInput> itemIn = itemEntry.read("Item");
                     double weight = itemEntry.getDoubleOr("Weight", 0.0);
-                    if (itemIn.isPresent()) {
-                        ItemStack from = ItemStack.CODEC.decode(itemIn.get()).result()
-                                .map(p -> p.getFirst()).orElse(ItemStack.EMPTY);
+                    if (itemEntry.contains("Item")) {
+                        ItemStack from = ItemStack.CODEC.decode(NbtOps.INSTANCE, itemEntry.get("Item"))
+                                .result().map(p -> p.getFirst()).orElse(ItemStack.EMPTY);
                         if (!from.isEmpty() && weight > 0.0) {
                             data.putWeight(from, weight);
                         }

@@ -172,8 +172,8 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
         return true;
     }
 
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.getColor() != null) {
             if (!this.level().isClientSide()) {
                 this.spawnAtLocation((ServerLevel) this.level(), this.getCarpetItemBeingWorn());
@@ -328,8 +328,8 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 9D).add(Attributes.ATTACK_DAMAGE, 2.0D).add(Attributes.MOVEMENT_SPEED, 0.25F);
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -337,7 +337,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
             if (entity != null && this.isTame() && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
                 amount = (amount + 1.0F) / 4.0F;
             }
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 

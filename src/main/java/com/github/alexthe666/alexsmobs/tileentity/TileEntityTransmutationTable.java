@@ -10,9 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -70,33 +68,24 @@ public class TileEntityTransmutationTable  extends BlockEntity {
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         totalTransmuteCount = input.getIntOr("TotalCount", 0);
-        // Load player transmutation data - stored as compound tags inside the value input
-        // We use a nested compound approach since ValueInput doesn't have direct list support for complex data
-        Optional<ValueInput> playerData = input.read("PlayerTransmutationData");
-        if (playerData.isPresent()) {
-            ValueInput pd = playerData.get();
-            int size = pd.getIntOr("Size", 0);
-            for (int i = 0; i < size; i++) {
-                Optional<ValueInput> entry = pd.read("Entry" + i);
-                if (entry.isPresent()) {
-                    ValueInput e = entry.get();
-                    String uuidStr = e.getStringOr("UUID", null);
-                    if (uuidStr != null) {
-                        try {
-                            UUID uuid = UUID.fromString(uuidStr);
-                            Optional<ValueInput> dataIn = e.read("TransmutationData");
-                            if (dataIn.isPresent()) {
-                                playerToData.put(uuid, TransmutationData.fromValueInput(dataIn.get()));
-                            }
-                        } catch (IllegalArgumentException ignored) {}
-                    }
-                }
+        CompoundTag playerDataTag = input.getCompoundOrEmpty("PlayerTransmutationData");
+        int size = playerDataTag.getIntOr("Size", 0);
+        for (int i = 0; i < size; i++) {
+            CompoundTag entry = playerDataTag.getCompoundOrEmpty("Entry" + i);
+            String uuidStr = entry.getStringOr("UUID", null);
+            if (uuidStr != null) {
+                try {
+                    UUID uuid = UUID.fromString(uuidStr);
+                    CompoundTag dataIn = entry.getCompoundOrEmpty("TransmutationData");
+                    playerToData.put(uuid, TransmutationData.fromCompoundTag(dataIn));
+                } catch (IllegalArgumentException ignored) {}
             }
         }
         for(int i = 0; i < 3; i++){
-            Optional<ValueInput> possItem = input.read("Possiblity" + i);
-            if(possItem.isPresent()){
-                possiblities[i] = ItemStack.CODEC.decode(possItem.get()).result().map(p -> p.getFirst()).orElse(ItemStack.EMPTY);
+            CompoundTag possItem = input.getCompoundOrEmpty("Possiblity" + i);
+            if(!possItem.isEmpty()){
+                possiblities[i] = ItemStack.CODEC.decode(NbtOps.INSTANCE, possItem)
+                        .result().map(p -> p.getFirst()).orElse(ItemStack.EMPTY);
             }
         }
     }
@@ -105,18 +94,21 @@ public class TileEntityTransmutationTable  extends BlockEntity {
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.writeInt("TotalCount", totalTransmuteCount);
-        ValueOutput playerData = output.write("PlayerTransmutationData");
+        CompoundTag playerDataTag = new CompoundTag();
         int size = 0;
         for(Map.Entry<UUID, TransmutationData> entry : playerToData.entrySet()){
-            ValueOutput e = playerData.write("Entry" + size);
-            e.writeString("UUID", entry.getKey().toString());
-            entry.getValue().saveToValueOutput(e.write("TransmutationData"));
+            CompoundTag e = new CompoundTag();
+            e.putString("UUID", entry.getKey().toString());
+            e.put("TransmutationData", entry.getValue().toCompoundTag());
+            playerDataTag.put("Entry" + size, e);
             size++;
         }
-        playerData.writeInt("Size", size);
+        playerDataTag.putInt("Size", size);
+        output.store("PlayerTransmutationData", CompoundTag.CODEC, playerDataTag);
         for(int i = 0; i < 3; i++){
             if(possiblities[i] != null && !possiblities[i].isEmpty()){
-                ItemStack.CODEC.encode(possiblities[i], output.write("Possiblity" + i));
+                ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, possiblities[i])
+                        .result().ifPresent(nbt -> output.store("Possiblity" + i, CompoundTag.CODEC, (CompoundTag)nbt));
             }
         }
     }

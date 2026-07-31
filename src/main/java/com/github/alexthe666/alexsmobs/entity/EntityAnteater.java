@@ -69,7 +69,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
     private int standingTime = 0;
     private int antsEatenRecently = 0;
     private int heldItemTime;
-    private UUID lastHurtBy;
+    private EntityReference<LivingEntity> lastHurtBy;
     private static final UniformInt ANGRY_TIMER = TimeUtil.rangeOfSeconds(30, 60);
 
     protected EntityAnteater(EntityType type, Level world) {
@@ -150,11 +150,11 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
         this.entityData.set(ANGER_TIME, time);
     }
 
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.lastHurtBy;
     }
 
-    public void setPersistentAngerTarget(@Nullable UUID target) {
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> target) {
         this.lastHurtBy = target;
     }
 
@@ -200,7 +200,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
         return super.isImmobile();
     }
 
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel level) {
         if (!this.level().isClientSide()) {
             this.updatePersistentAnger((ServerLevel) this.level(), false);
         }

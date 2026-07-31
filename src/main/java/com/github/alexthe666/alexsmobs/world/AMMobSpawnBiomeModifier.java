@@ -14,7 +14,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class AMMobSpawnBiomeModifier implements BiomeModifier {
-    private static final DeferredHolder<MapCodec<? extends BiomeModifier>, MapCodec<AMMobSpawnBiomeModifier>> SERIALIZER = DeferredHolder.create(Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "am_mob_spawns"), NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS, AlexsMobs.MODID);
+    private static final DeferredHolder<MapCodec<? extends BiomeModifier>, MapCodec<AMMobSpawnBiomeModifier>> SERIALIZER = DeferredHolder.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "am_mob_spawns"));
 
     public AMMobSpawnBiomeModifier() {
     }

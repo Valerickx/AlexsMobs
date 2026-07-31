@@ -21,19 +21,19 @@ public class AMAdvancementTriggerRegistry {
     public static final AMAdvancementTrigger SKUNK_SPRAY = new AMAdvancementTrigger(Identifier.parse("alexsmobs:skunk_spray"));
 
     public static void init(){
-        CriteriaTriggers.register(MOSQUITO_SICK);
-        CriteriaTriggers.register(EMU_DODGE);
-        CriteriaTriggers.register(STOMP_LEAFCUTTER_ANTHILL);
-        CriteriaTriggers.register(BALD_EAGLE_CHALLENGE);
-        CriteriaTriggers.register(VOID_WORM_SUMMON);
-        CriteriaTriggers.register(VOID_WORM_SPLIT);
-        CriteriaTriggers.register(VOID_WORM_SLAY_HEAD);
-        CriteriaTriggers.register(SEAGULL_STEAL);
-        CriteriaTriggers.register(LAVIATHAN_FOUR_PASSENGERS);
-        CriteriaTriggers.register(TRANSMUTE_1000_ITEMS);
-        CriteriaTriggers.register(UNDERMINE_UNDERMINER);
-        CriteriaTriggers.register(ELEPHANT_SWAG);
-        CriteriaTriggers.register(SKUNK_SPRAY);
+        CriteriaTriggers.register(MOSQUITO_SICK.identifier.toString(), MOSQUITO_SICK);
+        CriteriaTriggers.register(EMU_DODGE.identifier.toString(), EMU_DODGE);
+        CriteriaTriggers.register(STOMP_LEAFCUTTER_ANTHILL.identifier.toString(), STOMP_LEAFCUTTER_ANTHILL);
+        CriteriaTriggers.register(BALD_EAGLE_CHALLENGE.identifier.toString(), BALD_EAGLE_CHALLENGE);
+        CriteriaTriggers.register(VOID_WORM_SUMMON.identifier.toString(), VOID_WORM_SUMMON);
+        CriteriaTriggers.register(VOID_WORM_SPLIT.identifier.toString(), VOID_WORM_SPLIT);
+        CriteriaTriggers.register(VOID_WORM_SLAY_HEAD.identifier.toString(), VOID_WORM_SLAY_HEAD);
+        CriteriaTriggers.register(SEAGULL_STEAL.identifier.toString(), SEAGULL_STEAL);
+        CriteriaTriggers.register(LAVIATHAN_FOUR_PASSENGERS.identifier.toString(), LAVIATHAN_FOUR_PASSENGERS);
+        CriteriaTriggers.register(TRANSMUTE_1000_ITEMS.identifier.toString(), TRANSMUTE_1000_ITEMS);
+        CriteriaTriggers.register(UNDERMINE_UNDERMINER.identifier.toString(), UNDERMINE_UNDERMINER);
+        CriteriaTriggers.register(ELEPHANT_SWAG.identifier.toString(), ELEPHANT_SWAG);
+        CriteriaTriggers.register(SKUNK_SPRAY.identifier.toString(), SKUNK_SPRAY);
     }
 
 }

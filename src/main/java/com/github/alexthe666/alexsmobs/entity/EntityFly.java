@@ -147,7 +147,7 @@ public class EntityFly extends Animal {
 
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(2, new TemptGoal(this, 1.25D, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(AMTagRegistry.FLY_BREEDABLES), new Ingredient.TagValue(AMTagRegistry.FLY_FOODSTUFFS))), false));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1.25D, Ingredient.of(AMTagRegistry.FLY_BREEDABLES, AMTagRegistry.FLY_FOODSTUFFS), false));
         this.goalSelector.addGoal(3, new FollowParentGoal(this, 1.25D));
         this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Spider.class, 6.0F, 1.0D, 1.2D));
         this.goalSelector.addGoal(4, new AnnoyZombieGoal());
@@ -302,7 +302,7 @@ public class EntityFly extends Animal {
             this.targetEntitySelector = new Predicate<Entity>() {
                 @Override
                 public boolean apply(@Nullable Entity e) {
-                    return e.isAlive() && e.getType().is(AMTagRegistry.FLY_TARGETS) && (!(e instanceof LivingEntity) || ((LivingEntity) e).getHealth() >= 2D);
+                    return e.isAlive() && e.getType().builtInRegistryHolder().is(AMTagRegistry.FLY_TARGETS) && (!(e instanceof LivingEntity) || ((LivingEntity) e).getHealth() >= 2D);
                 }
             };
         }

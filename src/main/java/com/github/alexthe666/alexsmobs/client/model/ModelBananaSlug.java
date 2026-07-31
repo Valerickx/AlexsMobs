@@ -97,7 +97,7 @@ public class ModelBananaSlug extends AdvancedEntityModel<EntityBananaSlug> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (this.young) {
+        if (entity != null && entity.isBaby()) {
             matrixStackIn.pushPose();
             matrixStackIn.scale(0.65F, 0.65F, 0.65F);
             matrixStackIn.translate(0.0D, 0.8D, 0.125D);
