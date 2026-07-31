@@ -375,7 +375,7 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
                     this.getAnimation() == ANIMATION_SLASH_L && this.getAnimationTick() == 7 ||
                     this.getAnimation() == ANIMATION_SLASH_R && this.getAnimationTick() == 7;
             if (this.getTarget() != null && attackAnim) {
-                getTarget().knockback(0.2F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ());
+                getTarget().knockback(0.2F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ(), null, 0.0F);
                 this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
             }
         }
@@ -532,7 +532,7 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
         }
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             final int anim = this.random.nextInt(4);
             switch (anim) {
@@ -626,7 +626,7 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_27528_, DifficultyInstance p_27529_, EntitySpawnReason p_27530_, @Nullable SpawnGroupData p_27531_, @Nullable CompoundTag p_27532_) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_27528_, DifficultyInstance p_27529_, EntitySpawnReason p_27530_, @Nullable SpawnGroupData p_27531_) {
         //do not call super here
         this.getAttribute(Attributes.FOLLOW_RANGE).addPermanentModifier(new AttributeModifier("Random spawn bonus", this.random.nextGaussian() * 0.05D, AttributeModifier.Operation.MULTIPLY_BASE));
         if (p_27531_ == null) {
@@ -641,7 +641,7 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
-        return AMEntityRegistry.FROSTSTALKER.get().create(p_146743_);
+        return AMEntityRegistry.FROSTSTALKER.get().create(p_146743_, EntitySpawnReason.MOB_SUMMONED);
     }
 
     @Override

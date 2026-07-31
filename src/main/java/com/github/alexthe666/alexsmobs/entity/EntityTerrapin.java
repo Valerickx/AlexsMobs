@@ -116,7 +116,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
         this.goalSelector.addGoal(0, new BreathAirGoal(this));
         this.goalSelector.addGoal(1, new MateGoal(this, 1.0D));
         this.goalSelector.addGoal(1, new LayEggGoal(this, 1.0D));
-        this.goalSelector.addGoal(2, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.TERRAPIN_BREEDABLES), false));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.TERRAPIN_BREEDABLES)), false));
         this.goalSelector.addGoal(3, new AnimalAIFindWater(this));
         this.goalSelector.addGoal(3, new AnimalAILeaveWater(this));
         this.goalSelector.addGoal(4, new SemiAquaticAIRandomSwimming(this, 1.0D, 30));
@@ -316,7 +316,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH;
+        return SoundEvents.BUCKET_FILL_FISH.value();
     }
 
     public boolean requiresCustomPersistence() {
@@ -465,7 +465,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
 
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setAirSupply(this.getMaxAirSupply());
         this.setTurtleType(TerrapinTypes.getRandomType(random));
         this.setShellType(random.nextInt(7));
@@ -473,12 +473,12 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
         this.setTurtleColor(TerrapinTypes.generateRandomColor(random));
         this.setShellColor(TerrapinTypes.generateRandomColor(random));
         this.setSkinColor(TerrapinTypes.generateRandomColor(random));
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     @Override
-    public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
-        return AMEntityRegistry.TERRAPIN.get().create(p_146743_);
+    public AgeableMob getBreedOffspring(ServerLevel p_146743_) {
+        return AMEntityRegistry.TERRAPIN.get().create(p_146743_, EntitySpawnReason.MOB_SUMMONED);
     }
 
     @Override
@@ -552,7 +552,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     @Override
     public void loadFromBucketTag(@Nonnull CompoundTag compound) {
         if (compound.contains("TerrapinData")) {
-            this.readAdditionalSaveData(compound.getCompound("TerrapinData"));
+            this.readAdditionalSaveData(compound.getCompoundOrEmpty("TerrapinData"));
         }
     }
 
@@ -569,7 +569,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     public void calculateEntityAnimation(boolean flying) {
         final float f1 = (float) Mth.length(this.getX() - this.xo, 0, this.getZ() - this.zo);
         final float f2 = Math.min(f1 * (isSpinning() ? 4.0F : 32.0F), 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
 
@@ -613,7 +613,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
             this.animal.setAge(6000);
             this.partner.setAge(6000);
             RandomSource random = this.animal.getRandom();
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            if (this.level.getGameRules().getBooleanOr(GameRules.RULE_DOMOBLOOT, false)) {
                 this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }
 

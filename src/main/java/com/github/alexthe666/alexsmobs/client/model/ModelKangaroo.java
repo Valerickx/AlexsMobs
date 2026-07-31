@@ -342,11 +342,11 @@ public class ModelKangaroo extends AdvancedEntityModel<EntityKangaroo> {
 			matrixStackIn.translate(0.0D, 1.5D, 0D);
 			if(renderOnlyHead){
 				neck.setPos(0.0F, 0F, 0.0F);
-				this.neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+				this.neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
 			}else{
 				neck.setPos(0.0F, 2.0F, -8.0F);
 				parts().forEach((p_228292_8_) -> {
-					p_228292_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+					p_228292_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
 				});
 			}
 			matrixStackIn.popPose();
@@ -354,7 +354,7 @@ public class ModelKangaroo extends AdvancedEntityModel<EntityKangaroo> {
 		} else {
 			matrixStackIn.pushPose();
 			parts().forEach((p_228290_8_) -> {
-				p_228290_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+				p_228290_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
 			});
 			matrixStackIn.popPose();
 		}

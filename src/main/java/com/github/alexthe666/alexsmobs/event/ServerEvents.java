@@ -166,8 +166,8 @@ public class ServerEvents {
     @SubscribeEvent
     public static void onItemUseLast(LivingEntityUseItemEvent.Finish event) {
         if (event.getItem().getItem() == Items.CHORUS_FRUIT && RAND.nextInt(3) == 0
-            && event.getEntity().hasEffect(AMEffectRegistry.ENDER_FLU.get())) {
-            event.getEntity().removeEffect(AMEffectRegistry.ENDER_FLU.get());
+            && event.getEntity().hasEffect(AMEffectRegistry.ENDER_FLU)) {
+            event.getEntity().removeEffect(AMEffectRegistry.ENDER_FLU);
         }
     }
 
@@ -191,7 +191,7 @@ public class ServerEvents {
         if (AMConfig.giveBookOnStartup) {
             CompoundTag playerData = event.getEntity().getPersistentData();
             CompoundTag data = playerData.getCompoundOrEmpty(Player.PERSISTED_NBT_TAG);
-            if (data != null && !data.getBoolean("alexsmobs_has_book")) {
+            if (data != null && !data.getBooleanOr("alexsmobs_has_book", false)) {
                 ItemHandlerHelper.giveItemToPlayer(event.getEntity(), new ItemStack(AMItemRegistry.ANIMAL_DICTIONARY.get()));
                 final boolean isAlex = Objects.equals(event.getEntity().getUUID(), ALEX_UUID);
                 if (isAlex || Objects.equals(event.getEntity().getUUID(), CARRO_UUID)) {
@@ -229,9 +229,9 @@ public class ServerEvents {
         if (event.getEntity().getType() == EntityType.SQUID && !event.getEntity().level().isClientSide()) {
             ServerLevel level = (ServerLevel) event.getEntity().level();
             event.setCanceled(true);
-            EntityGiantSquid squid = AMEntityRegistry.GIANT_SQUID.get().create(level);
+            EntityGiantSquid squid = AMEntityRegistry.GIANT_SQUID.get().create(level, EntitySpawnReason.MOB_SUMMONED);
             squid.moveTo(event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), event.getEntity().getYRot(), event.getEntity().getXRot());
-            squid.finalizeSpawn(level, level.getCurrentDifficultyAt(squid.blockPosition()), EntitySpawnReason.CONVERSION, null, null);
+            squid.finalizeSpawn(level, level.getCurrentDifficultyAt(squid.blockPosition()), EntitySpawnReason.CONVERSION, null);
             if (event.getEntity().hasCustomName()) {
                 squid.setCustomName(event.getEntity().getCustomName());
                 squid.setCustomNameVisible(event.getEntity().isCustomNameVisible());
@@ -324,7 +324,7 @@ public class ServerEvents {
                         player.awardStat(Stats.ITEM_USED.get(Items.GLASS_BOTTLE));
                         player.setSecondsOnFire(6);
                         if (!player.addItem(new ItemStack(AMItemRegistry.LAVA_BOTTLE.get()))) {
-                            player.spawnAtLocation(new ItemStack(AMItemRegistry.LAVA_BOTTLE.get()));
+                            player.spawnAtLocation((ServerLevel) player.level(), new ItemStack(AMItemRegistry.LAVA_BOTTLE.get()));
                         }
                         player.swing(event.getHand());
                         if (!player.isCreative()) {
@@ -348,15 +348,15 @@ public class ServerEvents {
                 event.setCancellationResult(InteractionResult.SUCCESS);
             }
             if (!(event.getTarget() instanceof Player) && !(event.getTarget() instanceof EntityEndergrade)
-                    && living.hasEffect(AMEffectRegistry.ENDER_FLU.get())) {
+                    && living.hasEffect(AMEffectRegistry.ENDER_FLU)) {
                 if (event.getItemStack().getItem() == Items.CHORUS_FRUIT) {
                     if (!event.getEntity().isCreative()) {
                         event.getItemStack().shrink(1);
                     }
                     event.getTarget().gameEvent(GameEvent.EAT);
-                    event.getTarget().playSound(SoundEvents.GENERIC_EAT, 1.0F, 0.5F + event.getEntity().getRandom().nextFloat());
+                    event.getTarget().playSound(SoundEvents.GENERIC_EAT.value(), 1.0F, 0.5F + event.getEntity().getRandom().nextFloat());
                     if (event.getEntity().getRandom().nextFloat() < 0.4F) {
-                        living.removeEffect(AMEffectRegistry.ENDER_FLU.get());
+                        living.removeEffect(AMEffectRegistry.ENDER_FLU);
                         Items.CHORUS_FRUIT.finishUsingItem(event.getItemStack().copy(), event.getLevel(), ((LivingEntity) event.getTarget()));
                     }
                     event.setCanceled(true);
@@ -459,7 +459,7 @@ public class ServerEvents {
             if (RAND.nextFloat() <= AMConfig.elephantTraderSpawnChance && (!AMConfig.limitElephantTraderBiomes || biome.getBaseTemperature() >= 1.0F)) {
                 ChunkPos chunkPos = new ChunkPos(trader.blockPosition());
                 if(event.getLevel().getChunkSource().getChunkNow(chunkPos.x, chunkPos.z) != null) {
-                    EntityElephant elephant = AMEntityRegistry.ELEPHANT.get().create(trader.level());
+                    EntityElephant elephant = AMEntityRegistry.ELEPHANT.get().create(trader.level(), EntitySpawnReason.MOB_SUMMONED);
                     elephant.copyPosition(trader);
                     if (elephant.canSpawnWithTraderHere()) {
                         elephant.setTrader(true);
@@ -511,10 +511,9 @@ public class ServerEvents {
     public void onPlayerAttackEntityEvent(AttackEntityEvent event) {
         if (event.getTarget() instanceof LivingEntity living) {
             if (event.getEntity().getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.MOOSE_HEADGEAR.get()) {
-                living.knockback(1F, Mth.sin(event.getEntity().getYRot() * Mth.DEG_TO_RAD),
-                        -Mth.cos(event.getEntity().getYRot() * Mth.DEG_TO_RAD));
+                living.knockback(1F, Mth.sin(event.getEntity().getYRot() * Mth.DEG_TO_RAD), -Mth.cos(event.getEntity().getYRot() * Mth.DEG_TO_RAD), null, 0.0F);
             }
-            if (event.getEntity().hasEffect(AMEffectRegistry.TIGERS_BLESSING.get())
+            if (event.getEntity().hasEffect(AMEffectRegistry.TIGERS_BLESSING)
                     && !event.getTarget().isAlliedTo(event.getEntity()) && !(event.getTarget() instanceof EntityTiger)) {
                 AABB bb = new AABB(event.getEntity().getX() - 32, event.getEntity().getY() - 32, event.getEntity().getZ() - 32, event.getEntity().getZ() + 32, event.getEntity().getY() + 32, event.getEntity().getZ() + 32);
                 final var tigers = event.getEntity().level().getEntitiesOfClass(EntityTiger.class, bb,
@@ -531,8 +530,8 @@ public class ServerEvents {
     @SubscribeEvent
     public void onLivingDamageEvent(LivingDamageEvent event) {
         if (event.getSource().getEntity() instanceof final LivingEntity attacker) {
-            if (event.getAmount() > 0 && attacker.hasEffect(AMEffectRegistry.SOULSTEAL.get()) && attacker.getEffect(AMEffectRegistry.SOULSTEAL.get()) != null) {
-                final int level = attacker.getEffect(AMEffectRegistry.SOULSTEAL.get()).getAmplifier() + 1;
+            if (event.getAmount() > 0 && attacker.hasEffect(AMEffectRegistry.SOULSTEAL) && attacker.getEffect(AMEffectRegistry.SOULSTEAL) != null) {
+                final int level = attacker.getEffect(AMEffectRegistry.SOULSTEAL).getAmplifier() + 1;
                 if (attacker.getHealth() < attacker.getMaxHealth()
                     && ThreadLocalRandom.current().nextFloat() < (0.25F + (level * 0.25F))) {
                     attacker.heal(Math.min(event.getAmount() / 2F * level, 2 + 2 * level));
@@ -547,8 +546,7 @@ public class ServerEvents {
                 if (player.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.SPIKED_TURTLE_SHELL.get()) {
                     if (attacker.distanceTo(player) < attacker.getBbWidth() + player.getBbWidth() + 0.5F) {
                         attacker.hurt(attacker.damageSources().thorns(player), 1F);
-                        attacker.knockback(0.5F, Mth.sin((attacker.getYRot() + 180) * Mth.DEG_TO_RAD),
-                            -Mth.cos((attacker.getYRot() + 180) * Mth.DEG_TO_RAD));
+                        attacker.knockback(0.5F, Mth.sin((attacker.getYRot() + 180) * Mth.DEG_TO_RAD), -Mth.cos((attacker.getYRot() + 180) * Mth.DEG_TO_RAD), null, 0.0F);
                     }
                 }
             }
@@ -564,7 +562,7 @@ public class ServerEvents {
     public void onLivingSetTargetEvent(LivingChangeTargetEvent event) {
         if (event.getNewTarget() != null && event.getEntity() instanceof Mob mob) {
             if (mob.getMobType() == MobType.ARTHROPOD) {
-                if (event.getNewTarget().hasEffect(AMEffectRegistry.BUG_PHEROMONES.get()) && event.getEntity().getLastHurtByMob() != event.getNewTarget()) {
+                if (event.getNewTarget().hasEffect(AMEffectRegistry.BUG_PHEROMONES) && event.getEntity().getLastHurtByMob() != event.getNewTarget()) {
                     event.setCanceled(true);
                     return;
                 }
@@ -620,7 +618,7 @@ public class ServerEvents {
             }
         }
         final ItemStack boots = entity.getItemBySlot(EquipmentSlot.FEET);
-        if (!boots.isEmpty() && boots.hasTag() && boots.getOrCreateTag().contains("BisonFur") && boots.getOrCreateTag().getBoolean("BisonFur")) {
+        if (!boots.isEmpty() && boots.hasTag() && boots.getOrCreateTag().contains("BisonFur") && boots.getOrCreateTag().getBooleanOr("BisonFur", false)) {
             BlockPos posBelow = new BlockPos((int) event.getEntity().getX(), (int) (entity.getBoundingBox().minY - 0.1F), (int) entity.getZ());
             if (entity.level().getBlockState(posBelow).is(Blocks.POWDER_SNOW)) {
                 entity.setOnGround(true);
@@ -651,7 +649,7 @@ public class ServerEvents {
                 final var nearbySeabears = entity.level().getEntitiesOfClass(EntitySeaBear.class,
                     entity.getBoundingBox().inflate(dist, dist, dist));
                 if (nearbySeabears.isEmpty()) {
-                    final EntitySeaBear bear = AMEntityRegistry.SEA_BEAR.get().create(entity.level());
+                    final EntitySeaBear bear = AMEntityRegistry.SEA_BEAR.get().create(entity.level(), EntitySpawnReason.MOB_SUMMONED);
                     final BlockPos at = entity.blockPosition();
                     BlockPos farOff = null;
                     for (int i = 0; i < 15; i++) {
@@ -698,7 +696,7 @@ public class ServerEvents {
 
     @SubscribeEvent
     public void onFOVUpdate(ComputeFovModifierEvent event) {
-        if (event.getPlayer().hasEffect(AMEffectRegistry.FEAR.get()) || event.getPlayer().hasEffect(AMEffectRegistry.POWER_DOWN.get())) {
+        if (event.getPlayer().hasEffect(AMEffectRegistry.FEAR) || event.getPlayer().hasEffect(AMEffectRegistry.POWER_DOWN)) {
             event.setNewFovModifier(1.0F);
         }
     }
@@ -730,7 +728,7 @@ public class ServerEvents {
     @SubscribeEvent
     public void onTooltip(ItemTooltipEvent event) {
         CompoundTag tag = event.getItemStack().getTag();
-        if (tag != null && tag.contains("BisonFur") && tag.getBoolean("BisonFur")) {
+        if (tag != null && tag.contains("BisonFur") && tag.getBooleanOr("BisonFur", false)) {
             event.getToolTip().add(Component.translatable("item.alexsmobs.insulated_with_fur").withStyle(ChatFormatting.AQUA));
         }
     }

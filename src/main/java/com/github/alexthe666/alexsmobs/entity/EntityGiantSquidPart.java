@@ -81,14 +81,14 @@ public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implement
         if(this.level().isClientSide() && this.getParent() != null && !this.getParent().isInvulnerableTo(source) && !collisionOnly){
             AlexsMobs.sendMSGToServer(new MessageHurtMultipart(this.getId(), this.getParent().getId(), amount, source.getMsgId()));
         }
-        return !collisionOnly && !this.isInvulnerableTo(source) && this.getParent().attackEntityPartFrom(this, source, amount);
+        return !collisionOnly && !this.isInvulnerableTo((ServerLevel) this.level(), source) && this.getParent().attackEntityPartFrom(this, source, amount);
     }
 
     public boolean is(Entity entityIn) {
         return this == entityIn || this.getParent() == entityIn;
     }
 
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
         throw new UnsupportedOperationException();
     }
 

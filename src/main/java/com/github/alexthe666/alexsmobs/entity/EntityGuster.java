@@ -145,7 +145,7 @@ public class EntityGuster extends Monster {
 
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             if (source.is(DamageTypeTags.IS_PROJECTILE)) {
@@ -187,7 +187,7 @@ public class EntityGuster extends Monster {
 
     @Nullable
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason
-            reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+            reason, @Nullable SpawnGroupData spawnDataIn) {
         if(this.isBiomeNether(worldIn, this.blockPosition())){
             this.setVariant(2);
         }else if(this.isBiomeRed(worldIn, this.blockPosition())){
@@ -197,11 +197,11 @@ public class EntityGuster extends Monster {
         }
         this.setAirSupply(this.getMaxAirSupply());
         this.setXRot(0.0F);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     private void setLiftedEntity(int p_175463_1_) {
-        this.entityData.set(LIFT_ENTITY, p_175463_1_);
+        this.entityData.set(LIFT_ENTITY);
     }
 
     public int getVariant() {

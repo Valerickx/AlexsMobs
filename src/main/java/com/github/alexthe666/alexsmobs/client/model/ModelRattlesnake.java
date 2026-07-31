@@ -92,14 +92,14 @@ public class ModelRattlesnake extends AdvancedEntityModel<EntityRattlesnake> {
             matrixStackIn.scale(0.35F, 0.35F, 0.35F);
             matrixStackIn.translate(0.0D, 2.75D, 0.125D);
             parts().forEach((p_228292_8_) -> {
-                p_228292_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                p_228292_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
             });
             matrixStackIn.popPose();
             head.setScale(1, 1, 1);
         } else {
             matrixStackIn.pushPose();
             parts().forEach((p_228290_8_) -> {
-                p_228290_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                p_228290_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
             });
             matrixStackIn.popPose();
         }

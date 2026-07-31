@@ -92,7 +92,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
     private int honeyedTime;
     @Nullable
     private UUID salmonThrowerID = null;
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(AMTagRegistry.GORILLA_FOODSTUFFS);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.GORILLA_FOODSTUFFS));
     public int timeUntilNextFur = this.random.nextInt(24000) + 24000;
     protected static final EntityDimensions STANDING_SIZE = EntityDimensions.scalable(1.7F,  2.75F);
     private boolean recalcSize = false;
@@ -116,7 +116,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -191,8 +191,8 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.getMsgId() != null && source.getMsgId().equals("sting") || source.is(DamageTypes.IN_WALL) ||super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.getMsgId() != null && source.getMsgId().equals("sting") || source.is(DamageTypes.IN_WALL) ||super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     protected void registerGoals() {
@@ -409,11 +409,11 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
                 double d2 = this.random.nextGaussian() * 0.02D;
                 double d0 = this.random.nextGaussian() * 0.02D;
                 double d1 = this.random.nextGaussian() * 0.02D;
-                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItemInHand(InteractionHand.MAIN_HAND)), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
+                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (this.getItemInHand(InteractionHand.MAIN_HAND).getItem())), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
             }
             if(eatingTime % 5 == 0){
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
             }
             if(eatingTime > 100){
                 ItemStack stack = this.getItemInHand(InteractionHand.MAIN_HAND);
@@ -439,7 +439,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
                        }
                     }
                     if(stack.hasCraftingRemainingItem()){
-                        this.spawnAtLocation(stack.getCraftingRemainingItem());
+                        this.spawnAtLocation((ServerLevel) this.level(), stack.getCraftingRemainingItem());
                     }
                     stack.shrink(1);
                 }
@@ -494,17 +494,17 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
             }
             if (distanceTo(attackTarget) < attackTarget.getBbWidth() + this.getBbWidth() + 2.5F) {
                 if (this.getAnimation() == ANIMATION_MAUL && this.getAnimationTick() % 5 == 0 && this.getAnimationTick() > 3) {
-                    doHurtTarget(attackTarget);
+                    doHurtTarget((ServerLevel) this.level(), attackTarget);
                 }
                 if ((this.getAnimation() == ANIMATION_SWIPE_L) && this.getAnimationTick() == 7) {
-                    doHurtTarget(attackTarget);
+                    doHurtTarget((ServerLevel) this.level(), attackTarget);
                     float rot = getYRot() + 90;
-                    attackTarget.knockback(0.5F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD));
+                    attackTarget.knockback(0.5F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD), null, 0.0F);
                 }
                 if ((this.getAnimation() == ANIMATION_SWIPE_R) && this.getAnimationTick() == 7) {
-                    doHurtTarget(attackTarget);
+                    doHurtTarget((ServerLevel) this.level(), attackTarget);
                     float rot = getYRot() - 90;
-                    attackTarget.knockback(0.5F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD));
+                    attackTarget.knockback(0.5F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD), null, 0.0F);
                 }
 
             }
@@ -524,7 +524,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
             this.setOrderedToSit(false);
         }
         if (!this.level().isClientSide() && this.isAlive() && isTame() && !this.isBaby() && --this.timeUntilNextFur <= 0) {
-            this.spawnAtLocation(AMItemRegistry.BEAR_FUR.get());
+            this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.BEAR_FUR.get());
             this.timeUntilNextFur = this.random.nextInt(24000) + 24000;
         }
         if(snowTimer > 0){
@@ -661,7 +661,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.GRIZZLY_BEAR.get().create(world);
+        return AMEntityRegistry.GRIZZLY_BEAR.get().create(world, EntitySpawnReason.MOB_SUMMONED);
     }
 
     @Override
@@ -701,12 +701,12 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
         return !isSitting();
     }
 
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         if (spawnDataIn == null) {
             spawnDataIn = new AgeableMob.AgeableMobGroupData(1.0F);
         }
 
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public boolean canTargetItem(ItemStack stack) {
@@ -717,7 +717,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
         ItemStack duplicate = targetEntity.getItem().copy();
         duplicate.setCount(1);
         if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
-            this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+            this.spawnAtLocation((ServerLevel) this.level(), this.getItemInHand(InteractionHand.MAIN_HAND));
         }
         this.setItemInHand(InteractionHand.MAIN_HAND, duplicate);
         Entity thrower = targetEntity.getOwner();

@@ -207,7 +207,7 @@ public class ModelTerrapin extends AdvancedEntityModel<EntityTerrapin> {
             matrixStackIn.scale(0.5F, 0.5F, 0.5F);
             matrixStackIn.translate(0.0D, 1.5D, 0D);
             parts().forEach((p_228292_8_) -> {
-                p_228292_8_.render(matrixStackIn, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+                p_228292_8_.render(matrixStackIn, buffer, packedLight, packedOverlay, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
             });
             matrixStackIn.popPose();
             this.head.setScale(0.9F, 0.9F, 0.9F);
@@ -215,7 +215,7 @@ public class ModelTerrapin extends AdvancedEntityModel<EntityTerrapin> {
             this.head.setScale(0.9F, 0.9F, 0.9F);
             matrixStackIn.pushPose();
             parts().forEach((p_228290_8_) -> {
-                p_228290_8_.render(matrixStackIn, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+                p_228290_8_.render(matrixStackIn, buffer, packedLight, packedOverlay, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
             });
             matrixStackIn.popPose();
         }

@@ -120,7 +120,7 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
         this.goalSelector.addGoal(2, new AnimalAIHerdPanic(this, 1.5D));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.EMU_BREEDABLES), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.EMU_BREEDABLES)), false));
         this.goalSelector.addGoal(5, new AnimalAIWanderRanged(this, 110, 1.0D, 10, 7));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 15.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
@@ -187,13 +187,13 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
             if (this.isAlive() && target != null && this.getAnimation() == ANIMATION_SCRATCH && this.distanceTo(target) < 4F && (this.getAnimationTick() == 8 || this.getAnimationTick() == 15)) {
                 float f1 = this.getYRot() * Mth.DEG_TO_RAD;
                 this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f1) * 0.02F, 0.0D, Mth.cos(f1) * 0.02F));
-                target.knockback(0.4F, target.getX() - this.getX(), target.getZ() - this.getZ());
+                target.knockback(0.4F, target.getX() - this.getX(), target.getZ() - this.getZ(), null, 0.0F);
                 target.hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
             }
         }
         if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilNextEgg <= 0) {
             this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-            this.spawnAtLocation(AMItemRegistry.EMU_EGG.get());
+            this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.EMU_EGG.get());
             this.timeUntilNextEgg = this.random.nextInt(6000) + 6000;
         }
         AnimationHandler.INSTANCE.updateAnimations(this);
@@ -228,12 +228,12 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        EntityEmu emu = AMEntityRegistry.EMU.get().create(serverWorld);
+        EntityEmu emu = AMEntityRegistry.EMU.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
         emu.setVariant(this.getVariant());
         return emu;
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(ANIMATION_SCRATCH);
         }
@@ -255,13 +255,13 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         if(this.random.nextInt(200) == 0){
             this.setVariant(2);
         }else if(random.nextInt(3) == 0){
             this.setVariant(1);
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     @Override
@@ -288,7 +288,7 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
             }
         }
 
-        protected void alertOther(Mob mobIn, LivingEntity targetIn) {
+        protected void alertOther(Mob mobIn) {
             if (mobIn instanceof EntityEmu && !mobIn.isBaby() && !emuAttackedDirectly && ((EntityEmu) mobIn).revengeCooldown <= 0) {
                 super.alertOther(mobIn, targetIn);
             }

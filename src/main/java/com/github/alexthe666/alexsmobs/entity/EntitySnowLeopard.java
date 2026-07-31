@@ -152,7 +152,7 @@ public class EntitySnowLeopard extends Animal implements IAnimatedEntity, ITarge
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        return AMEntityRegistry.SNOW_LEOPARD.get().create(serverWorld);
+        return AMEntityRegistry.SNOW_LEOPARD.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public void tick(){
@@ -246,14 +246,14 @@ public class EntitySnowLeopard extends Animal implements IAnimatedEntity, ITarge
         if (attackTarget != null) {
             if (distanceTo(attackTarget) < attackTarget.getBbWidth() + this.getBbWidth() + 0.6D && this.hasLineOfSight(attackTarget)) {
                 if (this.getAnimation() == ANIMATION_ATTACK_L && this.getAnimationTick() == 7) {
-                    doHurtTarget(attackTarget);
+                    doHurtTarget((ServerLevel) this.level(), attackTarget);
                     float rot = getYRot() + 90;
-                    attackTarget.knockback(0.5F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD));
+                    attackTarget.knockback(0.5F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD), null, 0.0F);
                 }
                 if (this.getAnimation() == ANIMATION_ATTACK_R && this.getAnimationTick() == 7) {
-                    doHurtTarget(attackTarget);
+                    doHurtTarget((ServerLevel) this.level(), attackTarget);
                     float rot = getYRot() - 90;
-                    attackTarget.knockback(0.5F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD));
+                    attackTarget.knockback(0.5F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD), null, 0.0F);
                 }
 
             }

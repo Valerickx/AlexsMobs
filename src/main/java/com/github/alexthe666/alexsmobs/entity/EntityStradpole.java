@@ -120,7 +120,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
                 itemstack.shrink(1);
             }
             if(random.nextFloat() < 0.45F){
-                EntityStraddler straddler = AMEntityRegistry.STRADDLER.get().create(level());
+                EntityStraddler straddler = AMEntityRegistry.STRADDLER.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
                 straddler.copyPosition(this);
                 if(!this.level().isClientSide() && level().addFreshEntity(straddler)){
                     this.remove(RemovalReason.DISCARDED);
@@ -174,7 +174,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH;
+        return SoundEvents.BUCKET_FILL_FISH.value();
     }
 
     @Nullable
@@ -328,7 +328,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
         if (entity instanceof LivingEntity && !this.level().isClientSide() && raytraceresult.getEntity() instanceof LivingEntity target) {
             if(!target.isBlocking()){
                 target.hurt(damageSources().mobProjectile(this, (LivingEntity)entity), 3.0F);
-                target.knockback(0.7F, entity.getX() - this.getX(), entity.getZ() - this.getZ());
+                target.knockback(0.7F, entity.getX() - this.getX(), entity.getZ() - this.getZ(), null, 0.0F);
             }else{
                 if (this.getTarget() instanceof Player) {
                     this.damageShieldFor(((Player) this.getTarget()), 3.0F);
@@ -357,7 +357,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
                     } else {
                         holder.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                     }
-                    holder.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
+                    holder.playSound(SoundEvents.SHIELD_BREAK.value(), 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
                 }
             }
 

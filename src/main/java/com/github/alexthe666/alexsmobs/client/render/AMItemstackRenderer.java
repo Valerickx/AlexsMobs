@@ -165,7 +165,7 @@ public class AMItemstackRenderer {
             matrixStackIn.translate(0.4F, -0.75F, 0.5F);
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(-180));
             VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.armorCutoutNoCull(SHIELD_OF_THE_DEEP_TEXTURE), false, itemStackIn.hasFoil());
-            SHIELD_OF_THE_DEEP_MODEL.renderToBuffer(matrixStackIn, vertexconsumer, combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+            SHIELD_OF_THE_DEEP_MODEL.renderToBuffer(matrixStackIn, vertexconsumer, combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
             matrixStackIn.popPose();
         }
         if (itemStackIn.getItem() == AMItemRegistry.MYSTERIOUS_WORM.get()) {
@@ -173,7 +173,7 @@ public class AMItemstackRenderer {
             matrixStackIn.translate(0, -2F, 0);
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(-180));
             MYTERIOUS_WORM_MODEL.animateStack(itemStackIn);
-            MYTERIOUS_WORM_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(MYTERIOUS_WORM_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+            MYTERIOUS_WORM_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(MYTERIOUS_WORM_TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
             matrixStackIn.popPose();
         }
         if (itemStackIn.getItem() == AMItemRegistry.FALCONRY_GLOVE.get()) {
@@ -215,11 +215,11 @@ public class AMItemstackRenderer {
             matrixStackIn.translate(0.5F, 1.6F, 0.5F);
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(-180));
             TRANSMUTATION_TABLE_MODEL.resetToDefaultPose();
-            TRANSMUTATION_TABLE_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(TRANSMUTATION_TABLE_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
-            TRANSMUTATION_TABLE_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucentEmissive(TRANSMUTATION_TABLE_GLOW_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+            TRANSMUTATION_TABLE_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(TRANSMUTATION_TABLE_TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
+            TRANSMUTATION_TABLE_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucentEmissive(TRANSMUTATION_TABLE_GLOW_TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
             TRANSMUTATION_TABLE_OVERLAY_MODEL.resetToDefaultPose();
             VertexConsumer staticyOverlay = bufferIn.getBuffer(RenderType.eyes(TRANSMUTATION_TABLE_OVERLAY));
-            TRANSMUTATION_TABLE_OVERLAY_MODEL.renderToBuffer(matrixStackIn, staticyOverlay, combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+            TRANSMUTATION_TABLE_OVERLAY_MODEL.renderToBuffer(matrixStackIn, staticyOverlay, combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
             matrixStackIn.popPose();
         }
         if (itemStackIn.getItem() == AMItemRegistry.SHATTERED_DIMENSIONAL_CARVER.get()) {
@@ -260,7 +260,7 @@ public class AMItemstackRenderer {
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(-180));
             matrixStackIn.scale(0.75F, 0.75F, 0.75F);
             ANCHOR_MODEL.animateStack(itemStackIn);
-            ANCHOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(ANCHOR_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+            ANCHOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(ANCHOR_TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
             matrixStackIn.popPose();
         }
         if(itemStackIn.getItem() == AMBlockRegistry.END_PIRATE_ANCHOR_WINCH.get().asItem()){
@@ -268,7 +268,7 @@ public class AMItemstackRenderer {
             matrixStackIn.translate(1, -1F, 0);
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(-180));
             WINCH_MODEL.animateStack(itemStackIn);
-            WINCH_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(WINCH_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+            WINCH_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(WINCH_TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
             matrixStackIn.popPose();
         }
         if(itemStackIn.getItem() == AMBlockRegistry.END_PIRATE_SHIP_WHEEL.get().asItem()){
@@ -276,7 +276,7 @@ public class AMItemstackRenderer {
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(-90));
             matrixStackIn.scale(0.8F, 0.8F, 0.8F);
             SHIP_WHEEL_MODEL.resetToDefaultPose();
-            SHIP_WHEEL_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(SHIP_WHEEL_TEXTURE)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+            SHIP_WHEEL_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(SHIP_WHEEL_TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
             matrixStackIn.popPose();
         }
         */
@@ -288,12 +288,12 @@ public class AMItemstackRenderer {
             int flags = 0;
             if (level != null) {
                 if (ItemTabIcon.hasCustomEntityDisplay(itemStackIn)) {
-                    flags = itemStackIn.getTag().getInt("DisplayMobFlags");
+                    flags = itemStackIn.getTag().getIntOr("DisplayMobFlags", 0);
                     String index = ItemTabIcon.getCustomDisplayEntityString(itemStackIn);
                     EntityType local = ItemTabIcon.getEntityType(itemStackIn.getTag());
                     scale = getScaleFor(local, mobIcons);
-                    if (itemStackIn.getTag().getFloat("DisplayMobScale") > 0) {
-                        scale = itemStackIn.getTag().getFloat("DisplayMobScale");
+                    if (itemStackIn.getTag().getFloatOr("DisplayMobScale", 0.0F) > 0) {
+                        scale = itemStackIn.getTag().getFloatOr("DisplayMobScale", 0.0F);
                     }
                     if (this.renderedEntites.get(index) == null && !blockedRenderEntities.contains(local)) {
                         try {
@@ -316,7 +316,7 @@ public class AMItemstackRenderer {
                     if (type != null) {
                         if (this.renderedEntites.get(type.getDescriptionId()) == null && !blockedRenderEntities.contains(type)) {
                             try {
-                                Entity entity = type.create(level);
+                                Entity entity = type.create(level, EntitySpawnReason.MOB_SUMMONED);
                                 if (entity instanceof EntityBlobfish) {
                                     ((EntityBlobfish) entity).setDepressurized(true);
                                 }

@@ -47,9 +47,9 @@ public class LayerAnteaterTongueItem extends RenderLayer<EntityAnteater, ModelAn
             if(anteater.hasAntOnTongue()){
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(0F, -1.35F, -0.01F);
-                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
+                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(TEXTURE));
                 ANT_MODEL.animateAnteater(anteater, partialTicks);
-                ANT_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                ANT_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
                 matrixStackIn.popPose();
 
             }else{

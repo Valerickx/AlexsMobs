@@ -55,7 +55,7 @@ public class MessageKangarooEat {
                                 double d2 = kangaroo.getRandom().nextGaussian() * 0.02D;
                                 double d0 = kangaroo.getRandom().nextGaussian() * 0.02D;
                                 double d1 = kangaroo.getRandom().nextGaussian() * 0.02D;
-                                entity.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, message.stack), entity.getX() + (double) (kangaroo.getRandom().nextFloat() * entity.getBbWidth()) - (double) entity.getBbWidth() * 0.5F, entity.getY() + entity.getBbHeight() * 0.5F + (double) (kangaroo.getRandom().nextFloat() * entity.getBbHeight() * 0.5F), entity.getZ() + (double) (kangaroo.getRandom().nextFloat() * entity.getBbWidth()) - (double) entity.getBbWidth() * 0.5F, d0, d1, d2);
+                                entity.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (message.stack).getItem()), entity.getX() + (double) (kangaroo.getRandom().nextFloat() * entity.getBbWidth()) - (double) entity.getBbWidth() * 0.5F, entity.getY() + entity.getBbHeight() * 0.5F + (double) (kangaroo.getRandom().nextFloat() * entity.getBbHeight() * 0.5F), entity.getZ() + (double) (kangaroo.getRandom().nextFloat() * entity.getBbWidth()) - (double) entity.getBbWidth() * 0.5F, d0, d1, d2);
                             }
                         }
                     }

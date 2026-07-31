@@ -77,10 +77,10 @@ public class EntityCrimsonMosquito extends Monster {
     private static final EntityDataAccessor<Integer> LURING_LAVIATHAN = SynchedEntityData.defineId(EntityCrimsonMosquito.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> FLEEING_ENTITY = SynchedEntityData.defineId(EntityCrimsonMosquito.class, EntityDataSerializers.INT);
     private static final Predicate<LivingEntity> REPELLENT = (mob) -> {
-        return mob.hasEffect(AMEffectRegistry.MOSQUITO_REPELLENT.get()) || mob instanceof EntityTriops;
+        return mob.hasEffect(AMEffectRegistry.MOSQUITO_REPELLENT) || mob instanceof EntityTriops;
     };
     private static final Predicate<LivingEntity> NO_REPELLENT = (mob) -> {
-        return !mob.hasEffect(AMEffectRegistry.MOSQUITO_REPELLENT.get());
+        return !mob.hasEffect(AMEffectRegistry.MOSQUITO_REPELLENT);
     };
     public float prevFlyProgress;
     public float flyProgress;
@@ -211,8 +211,8 @@ public class EntityCrimsonMosquito extends Monster {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public boolean hurt(DamageSource source, float amount) {
@@ -266,7 +266,7 @@ public class EntityCrimsonMosquito extends Monster {
                                     flightTicks = -150 - random.nextInt(200);
                                 }
                                 this.gameEvent(GameEvent.EAT);
-                                this.playSound(SoundEvents.HONEY_DRINK, this.getSoundVolume(), this.getVoicePitch());
+                                this.playSound(SoundEvents.HONEY_DRINK.value(), this.getSoundVolume(), this.getVoicePitch());
                                 this.setBloodLevel(this.getBloodLevel() + 1);
                                 if (this.getBloodLevel() > 3) {
                                     this.removeVehicle();
@@ -538,10 +538,10 @@ public class EntityCrimsonMosquito extends Monster {
                 this.setShrink(false);
                 this.setMosquitoScale(this.getMosquitoScale() + 0.015F);
                 if (sickTicks > 160) {
-                    EntityWarpedMosco mosco = AMEntityRegistry.WARPED_MOSCO.get().create(level());
+                    EntityWarpedMosco mosco = AMEntityRegistry.WARPED_MOSCO.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
                     mosco.copyPosition(this);
                     if (!this.level().isClientSide()) {
-                        mosco.finalizeSpawn((ServerLevelAccessor) level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.CONVERSION, null, null);
+                        mosco.finalizeSpawn((ServerLevelAccessor) level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.CONVERSION, null);
                     }
 
                     if (!this.level().isClientSide()) {
@@ -596,7 +596,7 @@ public class EntityCrimsonMosquito extends Monster {
         Item item = itemstack.getItem();
         InteractionResult type = super.mobInteract(player, hand);
         if (item == AMItemRegistry.WARPED_MIXTURE.get() && !this.isSick()) {
-            this.spawnAtLocation(item.getCraftingRemainingItem(itemstack));
+            this.spawnAtLocation((ServerLevel) this.level(), item.getCraftingRemainingItem(itemstack));
             if (!player.isCreative()) {
                 itemstack.shrink(1);
             }

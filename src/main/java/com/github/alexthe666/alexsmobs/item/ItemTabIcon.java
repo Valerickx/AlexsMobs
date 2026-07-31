@@ -21,7 +21,7 @@ public class ItemTabIcon extends ItemInventoryOnly {
     }
 
     public static String getCustomDisplayEntityString(ItemStack stack){
-        return stack.getTag().getString("DisplayEntityType");
+        return stack.getTag().getStringOr("DisplayEntityType", "");
     }
 
     @Override

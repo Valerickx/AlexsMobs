@@ -29,7 +29,7 @@ public class ItemVineLasso extends Item {
     }
 
     public static boolean isItemInUse(ItemStack stack){
-        return stack.getTag() != null && stack.getTag().contains("Swinging") && stack.getTag().getBoolean("Swinging");
+        return stack.getTag() != null && stack.getTag().contains("Swinging") && stack.getTag().getBooleanOr("Swinging", false);
     }
 
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int i, boolean b) {

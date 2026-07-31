@@ -237,10 +237,10 @@ public class EntityJerboa extends Animal {
                 double d2 = this.random.nextGaussian() * 0.02D;
                 double d0 = this.random.nextGaussian() * 0.02D;
                 double d1 = this.random.nextGaussian() * 0.02D;
-                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, itemstack), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
+                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (itemstack).getItem()), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
             }
             if (random.nextFloat() <= 0.3F) {
-                player.addEffect(new MobEffectInstance(AMEffectRegistry.FLEET_FOOTED.get(), 12000));
+                player.addEffect(new MobEffectInstance(AMEffectRegistry.FLEET_FOOTED, 12000));
             }
             return InteractionResult.SUCCESS;
         }
@@ -254,8 +254,8 @@ public class EntityJerboa extends Animal {
             if (source.getEntity() != null) {
                 if (source.getEntity() instanceof LivingEntity) {
                     LivingEntity hurter = (LivingEntity) source.getEntity();
-                    if (hurter.hasEffect(AMEffectRegistry.FLEET_FOOTED.get())) {
-                        hurter.removeEffect(AMEffectRegistry.FLEET_FOOTED.get());
+                    if (hurter.hasEffect(AMEffectRegistry.FLEET_FOOTED)) {
+                        hurter.removeEffect(AMEffectRegistry.FLEET_FOOTED);
                     }
                 }
             }
@@ -435,7 +435,7 @@ public class EntityJerboa extends Animal {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
-        EntityJerboa boa = AMEntityRegistry.JERBOA.get().create(p_146743_);
+        EntityJerboa boa = AMEntityRegistry.JERBOA.get().create(p_146743_, EntitySpawnReason.MOB_SUMMONED);
         boa.setBefriended(true);
         return boa;
     }

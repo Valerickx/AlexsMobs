@@ -114,14 +114,14 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         if(this.isBiomeNether(worldIn, this.blockPosition())){
             this.setNether(true);
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
-    private static boolean isBiomeNether(LevelAccessor worldIn, BlockPos position) {
+    private static boolean isBiomeNether(LevelAccessor worldIn) {
         return worldIn.getBiome(position).is(AMTagRegistry.SPAWNS_NETHER_TARANTULA_HAWKS);
     }
 
@@ -188,7 +188,7 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (source.getEntity() instanceof LivingEntity && ((LivingEntity) source.getEntity()).getMobType() == MobType.ARTHROPOD && ((LivingEntity) source.getEntity()).hasEffect(AMEffectRegistry.DEBILITATING_STING.get())) {
+        if (source.getEntity() instanceof LivingEntity && ((LivingEntity) source.getEntity()).getMobType() == MobType.ARTHROPOD && ((LivingEntity) source.getEntity()).hasEffect(AMEffectRegistry.DEBILITATING_STING)) {
             return false;
         }
         return super.hurt(source, amount);
@@ -463,7 +463,7 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
                     itemstack.shrink(1);
                     return InteractionResult.SUCCESS;
                 } else {
-                    this.spawnAtLocation(this.getMainHandItem().copy());
+                    this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().copy());
                     this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                     return InteractionResult.SUCCESS;
                 }
@@ -506,8 +506,8 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.CACTUS) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.CACTUS) || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     @Override
@@ -529,7 +529,7 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
         animalEntity.resetLove();
         world.broadcastEntityEvent(this, (byte) 7);
         world.broadcastEntityEvent(this, (byte) 18);
-        if (world.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+        if (world.getGameRules().getBooleanOr(GameRules.RULE_DOMOBLOOT, false)) {
             world.addFreshEntity(new ExperienceOrb(world, this.getX(), this.getY(), this.getZ(), this.getRandom().nextInt(7) + 1));
         }
 
@@ -734,8 +734,8 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
         @Override
         public void tick() {
             LivingEntity target = hawk.getTarget();
-            boolean paralized = target != null && target.getMobType() == MobType.ARTHROPOD && !target.noPhysics && target.hasEffect(AMEffectRegistry.DEBILITATING_STING.get());
-            boolean paralizedWithChild = paralized && target.getEffect(AMEffectRegistry.DEBILITATING_STING.get()).getAmplifier() > 0;
+            boolean paralized = target != null && target.getMobType() == MobType.ARTHROPOD && !target.noPhysics && target.hasEffect(AMEffectRegistry.DEBILITATING_STING);
+            boolean paralizedWithChild = paralized && target.getEffect(AMEffectRegistry.DEBILITATING_STING).getAmplifier() > 0;
             if (sandPos == null || !level().getBlockState(sandPos).is(BlockTags.SAND)) {
                 sandPos = hawk.genSandPos(target.blockPosition());
             }
@@ -782,13 +782,13 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
                             hawk.entityData.set(ATTACK_TICK, 7);
                         }
                         if (hawk.attackProgress == 5F) {
-                            hawk.doHurtTarget(target);
+                            hawk.doHurtTarget((ServerLevel) this.level(), target);
                             if(hawk.bredBuryFlag){
                                 if(target.getHealth() <= 1.0F){
                                     target.heal(5);
                                 }
                             }
-                            target.addEffect(new MobEffectInstance(AMEffectRegistry.DEBILITATING_STING.get(), target.getMobType() == MobType.ARTHROPOD ? EntityTarantulaHawk.STING_DURATION : 600, hawk.bredBuryFlag ? 1 : 0));
+                            target.addEffect(new MobEffectInstance(AMEffectRegistry.DEBILITATING_STING, target.getMobType() == MobType.ARTHROPOD ? EntityTarantulaHawk.STING_DURATION : 600, hawk.bredBuryFlag ? 1 : 0));
                             if (!hawk.level().isClientSide() && target.getMobType() == MobType.ARTHROPOD) {
                                 AlexsMobs.sendMSGToAll(new MessageTarantulaHawkSting(hawk.getId(), target.getId()));
                             }

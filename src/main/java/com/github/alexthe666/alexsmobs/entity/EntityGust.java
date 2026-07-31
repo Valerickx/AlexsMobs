@@ -56,8 +56,8 @@ public class EntityGust extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return super.getAddEntityPacket();
+    public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
+        return super.getAddEntityPacket(serverEntity);
     }
 
     public void tick() {
@@ -167,9 +167,9 @@ public class EntityGust extends Entity {
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
-        this.entityData.set(X_DIR, compound.getFloat("GustDirX"));
-        this.entityData.set(Y_DIR, compound.getFloat("GustDirX"));
-        this.entityData.set(Z_DIR, compound.getFloat("GustDirX"));
+        this.entityData.set(X_DIR, compound.getFloatOr("GustDirX", 0.0F));
+        this.entityData.set(Y_DIR, compound.getFloatOr("GustDirX", 0.0F));
+        this.entityData.set(Z_DIR, compound.getFloatOr("GustDirX", 0.0F));
         this.setVertical((compound.getBooleanOr("VerticalTornado", false)));
     }
 

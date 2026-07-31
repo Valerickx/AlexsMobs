@@ -98,7 +98,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         this.goalSelector.addGoal(1, new TryFindWaterGoal(this));
         this.goalSelector.addGoal(2, new PanicGoal(this, 1D));
         this.goalSelector.addGoal(3, new TargetFoodGoal(this));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.CATFISH_ITEM_FASCINATIONS), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.CATFISH_ITEM_FASCINATIONS)), false));
         this.goalSelector.addGoal(5, new FascinateLanternGoal(this));
         this.goalSelector.addGoal(6, new AnimalAISwimBottom(this, 1F, 7));
     }
@@ -132,7 +132,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         super.dropEquipment();
         if (this.catfishInventory != null) {
             for (int i = 0; i < catfishInventory.getContainerSize(); i++) {
-                this.spawnAtLocation(catfishInventory.getItem(i));
+                this.spawnAtLocation((ServerLevel) this.level(), catfishInventory.getItem(i));
             }
             catfishInventory.clearContent();
         }
@@ -201,7 +201,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         if(inSeaPickle && this.canSpit()){
             if(this.getSpitTime() == 0){
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.PLAYER_BURP, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.PLAYER_BURP.value(), this.getSoundVolume(), this.getVoicePitch());
             }
             if(vomitTo != null){
                 final Vec3 face = Vec3.atCenterOf(vomitTo).subtract(this.getMouthVec());
@@ -269,7 +269,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
 
     @Override
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH;
+        return SoundEvents.BUCKET_FILL_FISH.value();
     }
 
     public int getCatfishSize() {
@@ -377,7 +377,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
             }
         }
         this.setSwallowedEntityType(compound.getStringOr("ContainedEntityType", ""));
-        if (!compound.getCompound("ContainedData").isEmpty()) {
+        if (!compound.getCompoundOrEmpty("ContainedData").isEmpty()) {
             this.setSwallowedData(compound.getCompoundOrEmpty("ContainedData"));
         }
         this.setHasSwallowedEntity(compound.getBooleanOr("HasSwallowedEntity", false));
@@ -392,7 +392,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setCatfishSize(random.nextFloat() < 0.35F ? 1 : 0);
         if (random.nextFloat() < 0.1F) {
             final Holder<Biome> holder = worldIn.getBiome(this.blockPosition());
@@ -400,12 +400,12 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
                 this.setCatfishSize(2);
             }
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public void travel(Vec3 travelVector) {
         if (this.isEffectiveAi() && this.isInWater()) {
-            this.moveRelative(this.getSpeed(), travelVector);
+            this.moveRelative(this.getSpeed());
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
             if (this.getTarget() == null) {
@@ -432,7 +432,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
             this.take(itemEntity, itemstack.getCount());
             itemEntity.discard();
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
         }
     }
 
@@ -465,7 +465,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
             mob.addAdditionalSaveData(tag);
             this.setSwallowedData(tag);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
             return true;
         }
         if (this.getCatfishSize() < 2 && entity instanceof final ItemEntity item) {
@@ -485,7 +485,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
             if (this.hasSwallowedEntity()) {
                 EntityType type = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse(this.getSwallowedEntityType()));
                 if (type != null) {
-                    Entity entity = type.create(level());
+                    Entity entity = type.create(level(), EntitySpawnReason.MOB_SUMMONED);
                     if (entity instanceof final LivingEntity alive) {
                         alive.readAdditionalSaveData(this.getSwallowedData());
                         alive.setHealth(Math.max(2, alive.getMaxHealth() * 0.25F));
@@ -609,7 +609,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
                         food.hurt(catfish.damageSources().mobAttack(catfish), 12000);
                     } else if (catfish.swallowEntity(food)) {
                         catfish.gameEvent(GameEvent.EAT);
-                        catfish.playSound(SoundEvents.GENERIC_EAT, catfish.getSoundVolume(), catfish.getVoicePitch());
+                        catfish.playSound(SoundEvents.GENERIC_EAT.value(), catfish.getSoundVolume(), catfish.getVoicePitch());
                         food.discard();
                     }
                 }

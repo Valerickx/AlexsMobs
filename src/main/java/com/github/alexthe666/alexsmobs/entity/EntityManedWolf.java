@@ -225,7 +225,7 @@ public class EntityManedWolf extends Animal implements ITargetsDroppedItems, IDa
             float angle = (Maths.STARTING_ANGLE * this.yBodyRot);
             double extraX = radius * Mth.sin(Mth.PI + angle);
             double extraZ = radius * Mth.cos(angle);
-            ParticleOptions data = new ItemParticleOption(ParticleTypes.ITEM, heldItemMainhand);
+            ParticleOptions data = new ItemParticleOption(ParticleTypes.ITEM, (heldItemMainhand).getItem());
             if (heldItemMainhand.getItem() instanceof BlockItem) {
                 data = new BlockParticleOption(ParticleTypes.BLOCK, ((BlockItem) heldItemMainhand.getItem()).getBlock().defaultBlockState());
             }
@@ -339,7 +339,7 @@ public class EntityManedWolf extends Animal implements ITargetsDroppedItems, IDa
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        return AMEntityRegistry.MANED_WOLF.get().create(serverWorld);
+        return AMEntityRegistry.MANED_WOLF.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     @OnlyIn(Dist.CLIENT)

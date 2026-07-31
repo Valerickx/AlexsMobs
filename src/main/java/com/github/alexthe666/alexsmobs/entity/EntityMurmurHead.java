@@ -281,8 +281,8 @@ public class EntityMurmurHead extends Monster {
         return super.hurt(source, damage);
     }
 
-    public boolean isInvulnerableTo(DamageSource damageSource) {
-        return super.isInvulnerableTo(damageSource) || damageSource.is(DamageTypes.IN_WALL);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource damageSource) {
+        return super.isInvulnerableTo((ServerLevel) this.level(), damageSource) || damageSource.is(DamageTypes.IN_WALL);
     }
 
     private void moveHair() {

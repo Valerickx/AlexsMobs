@@ -109,7 +109,7 @@ public class EndergradeAITargetItems<T extends ItemEntity> extends TargetGoal {
             endergrade.bite();
             duplicate.setCount(1);
             if (!mob.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !mob.level().isClientSide()) {
-                mob.spawnAtLocation(mob.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+                mob.spawnAtLocation((ServerLevel) mob.level(), mob.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
             }
             mob.setItemInHand(InteractionHand.MAIN_HAND, duplicate);
             endergrade.onGetItem(targetEntity);

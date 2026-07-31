@@ -41,8 +41,8 @@ public class LayerElephantOverlays extends RenderLayer<EntityElephant, ModelElep
 
             ((ModelElephant) this.getParentModel()).copyPropertiesTo(this.model);
             this.model.setupAnim(elephant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-            VertexConsumer lvt_13_1_ = bufferIn.getBuffer(RenderType.entityCutoutNoCull(lvt_12_3_));
-            this.model.renderToBuffer(matrixStackIn, lvt_13_1_, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            VertexConsumer lvt_13_1_ = bufferIn.getBuffer(RenderType.entityCutout(lvt_12_3_));
+            this.model.renderToBuffer(matrixStackIn, lvt_13_1_, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
         }
     }
 }

@@ -106,7 +106,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
         this.goalSelector.addGoal(1, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(2, new BlueJayAIMelee(this));
         this.goalSelector.addGoal(3, new FollowParentGoal(this, 1D));
-        this.goalSelector.addGoal(4, new FlyingAITempt(this, 1.0D, Ingredient.of(AMTagRegistry.BLUE_JAY_FOODSTUFFS), false));
+        this.goalSelector.addGoal(4, new FlyingAITempt(this, 1.0D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.BLUE_JAY_FOODSTUFFS)), false));
         this.goalSelector.addGoal(5, new AIFollowFeederOrRaccoon());
         this.goalSelector.addGoal(6, new AIFlyIdle());
         this.goalSelector.addGoal(7, new AIScatter());
@@ -326,8 +326,8 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public void travel(Vec3 vec3d) {
@@ -552,7 +552,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
-        return AMEntityRegistry.BLUE_JAY.get().create(level());
+        return AMEntityRegistry.BLUE_JAY.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
     }
 
 
@@ -568,7 +568,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
     @Override
     public void onGetItem(ItemEntity e) {
         if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
-            this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+            this.spawnAtLocation((ServerLevel) this.level(), this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         this.heal(3);
         Entity itemThrower = e.getOwner();

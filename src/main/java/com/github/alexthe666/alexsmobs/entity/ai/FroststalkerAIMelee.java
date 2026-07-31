@@ -107,7 +107,7 @@ public class FroststalkerAIMelee extends Goal {
                 if (froststalker.distanceTo(target) <= froststalker.getBbWidth() + target.getBbWidth() + 1.1F && froststalker.hasLineOfSight(target)) {
                     if (pursuitTime == maxPursuitTime) {
                         if (!froststalker.isTackling()) {
-                            froststalker.doHurtTarget(target);
+                            froststalker.doHurtTarget((ServerLevel) this.level(), target);
                         }
                         start();
                     }

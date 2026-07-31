@@ -99,7 +99,7 @@ public class ItemEcholocator extends Item {
                 }
             }else{
                 CompoundTag nbt = stack.getOrCreateTag();
-                if(nbt.contains("CavePos") && nbt.getBoolean("ValidCavePos")){
+                if(nbt.contains("CavePos") && nbt.getBooleanOr("ValidCavePos", false)){
                     pos = BlockPos.of(nbt.getLong("CavePos"));
                     if(isCaveAir(worldIn, pos) || 1000000 < pos.distSqr(playerPos)){
                         nbt.putBoolean("ValidCavePos", false);

@@ -352,7 +352,7 @@ public class EntityWarpedMosco extends Monster implements IAnimatedEntity {
     }
 
     public void knockbackRidiculous(LivingEntity target, float power) {
-        target.knockback(power, this.getX() - target.getX(), this.getZ() - target.getZ());
+        target.knockback(power, this.getX() - target.getX(), this.getZ() - target.getZ(), null, 0.0F);
         float knockbackResist = (float) Mth.clamp((1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)), 0, 1);
         target.setDeltaMovement(target.getDeltaMovement().add(0, knockbackResist * power * 0.45F, 0));
     }

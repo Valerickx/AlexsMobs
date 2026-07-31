@@ -119,7 +119,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else if (!this.level().isClientSide() && !this.isRemoved()) {
             this.entityData.set(REMOVE_SOON, true);
@@ -414,8 +414,8 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return super.getAddEntityPacket();
+    public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
+        return super.getAddEntityPacket(serverEntity);
     }
 
 
@@ -428,7 +428,7 @@ public class EntityStraddleboard extends Entity implements PlayerRideableJumping
     protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         this.setDefaultColor(compound.getBooleanOr("IsDefColor", false));
         if (compound.contains("BoardStack")) {
-            this.setItemStack(ItemStack.of(compound.getCompound("BoardStack")));
+            this.setItemStack(ItemStack.of(compound.getCompoundOrEmpty("BoardStack")));
         }
         this.setColor(compound.getIntOr("Color", 0));
     }

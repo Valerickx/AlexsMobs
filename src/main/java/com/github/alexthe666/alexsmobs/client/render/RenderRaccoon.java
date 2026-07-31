@@ -65,7 +65,7 @@ public class RenderRaccoon extends MobRenderer<EntityRaccoon, LivingEntityRender
                     lvt_12_2_ = lvt_14_2_[1];
                     lvt_13_2_ = lvt_14_2_[2];
                 }
-                this.getParentModel().renderToBuffer(p_225628_1_, p_225628_2_.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_BANDANA)), p_225628_3_, OverlayTexture.NO_OVERLAY, lvt_11_2_, lvt_12_2_, lvt_13_2_, 1.0F);
+                this.getParentModel().renderToBuffer(p_225628_1_, p_225628_2_.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_BANDANA)), p_225628_3_, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((lvt_11_2_) * 255F), (int)((lvt_12_2_) * 255F), (int)((lvt_13_2_) * 255F)));
             }
         }
     }

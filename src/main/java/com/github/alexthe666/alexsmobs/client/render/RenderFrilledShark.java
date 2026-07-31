@@ -44,7 +44,7 @@ public class RenderFrilledShark extends MobRenderer<EntityFrilledShark, LivingEn
 
         public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector buffer, int packedLightIn, EntityFrilledShark entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer glintBuilder = buffer.getBuffer(AMRenderTypes.getEyesFlickering(TEXTURE_TEETH, 240));
-            this.getParentModel().renderToBuffer(matrixStackIn, glintBuilder, 240, NO_OVERLAY, 1, 1, 1, 1);
+            this.getParentModel().renderToBuffer(matrixStackIn, glintBuilder, 240, NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1) * 255F), (int)((1) * 255F)));
 
         }
     }

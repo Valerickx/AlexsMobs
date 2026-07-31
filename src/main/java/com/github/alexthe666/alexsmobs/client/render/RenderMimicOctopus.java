@@ -33,7 +33,7 @@ public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, LivingEn
     private static final Identifier TEXTURE_MIMICUBE = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_mimicube.png");
     private static final Identifier TEXTURE_EYES = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_eyes.png");
     private static final Identifier GUARDIAN_BEAM_TEXTURE = Identifier.parse("textures/entity/guardian_beam.png");
-    private static final RenderType BEAM_RENDER_TYPE = RenderType.entityCutoutNoCull(GUARDIAN_BEAM_TEXTURE);
+    private static final RenderType BEAM_RENDER_TYPE = RenderType.entityCutout(GUARDIAN_BEAM_TEXTURE);
 
     public RenderMimicOctopus(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ModelMimicOctopus(), 0.4F);

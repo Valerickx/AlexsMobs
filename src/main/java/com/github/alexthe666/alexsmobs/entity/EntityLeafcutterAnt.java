@@ -92,7 +92,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
     private int animationTick;
     private Animation currentAnimation;
     private boolean isUpsideDownNavigator;
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(AMTagRegistry.LEAFCUTTER_ANT_FOODSTUFFS);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.LEAFCUTTER_ANT_FOODSTUFFS));
     private int haveBabyCooldown = 0;
     public EntityLeafcutterAnt(EntityType type, Level world) {
         super(type, world);
@@ -208,7 +208,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
                 int babies = 1 + random.nextInt(1);
                 pacifyAllNearby();
                 for(int i = 0; i < babies; i++){
-                    EntityLeafcutterAnt leafcutterAnt = AMEntityRegistry.LEAFCUTTER_ANT.get().create(level());
+                    EntityLeafcutterAnt leafcutterAnt = AMEntityRegistry.LEAFCUTTER_ANT.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
                     leafcutterAnt.copyPosition(this);
                     leafcutterAnt.setAge(-24000);
                     if(!this.level().isClientSide()){
@@ -415,9 +415,9 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setAntScale(0.75F + random.nextFloat() * 0.3F);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public float getAntScale() {
@@ -425,7 +425,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
     }
 
     public void setAntScale(float scale) {
-        this.entityData.set(ANT_SCALE, scale);
+        this.entityData.set(ANT_SCALE);
     }
 
 
@@ -487,7 +487,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
         this.haveBabyCooldown = compound.getIntOr("BabyCooldown", 0);
         this.hivePos = null;
         if (compound.contains("HivePos")) {
-            this.hivePos = NbtUtils.readBlockPos(compound.getCompound("HivePos"));
+            this.hivePos = NbtUtils.readBlockPos(compound.getCompoundOrEmpty("HivePos"));
         }
         this.setLeafHarvestedState(blockstate);
         if (compound.contains("HLPX")) {
@@ -596,7 +596,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
     public void calculateEntityAnimation(boolean flying) {
         float f1 = (float)Mth.length(this.getX() - this.xo, 2 * (this.getY() - this.yo), this.getZ() - this.zo);
         float f2 = Math.min(f1 * 4.0F, 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     @Override
@@ -624,7 +624,7 @@ public class EntityLeafcutterAnt extends Animal implements NeutralMob, IAnimated
         animationTick = tick;
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         this.setAnimation(ANIMATION_BITE);
         return true;
     }

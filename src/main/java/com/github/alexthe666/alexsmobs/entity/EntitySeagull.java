@@ -241,14 +241,14 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             final boolean prev = super.hurt(source, amount);
             if (prev) {
                 this.setSitting(false);
                 if (!this.getMainHandItem().isEmpty()) {
-                    this.spawnAtLocation(this.getMainHandItem());
+                    this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem());
                     this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                     stealCooldown = 1500 + random.nextInt(1500);
                 }
@@ -350,9 +350,9 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
                 heldItemTime = 0;
                 this.heal(4);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
                 if (this.getMainHandItem().hasCraftingRemainingItem()) {
-                    this.spawnAtLocation(this.getMainHandItem().getCraftingRemainingItem());
+                    this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().getCraftingRemainingItem());
                 }
                 eatItemEffect(this.getMainHandItem());
                 this.getMainHandItem().shrink(1);
@@ -388,7 +388,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
             final float angle = (Maths.STARTING_ANGLE * this.yBodyRot);
             final double extraX = radius * Mth.sin(Mth.PI + angle);
             final double extraZ = radius * Mth.cos(angle);
-            ParticleOptions data = new ItemParticleOption(ParticleTypes.ITEM, heldItemMainhand);
+            ParticleOptions data = new ItemParticleOption(ParticleTypes.ITEM, (heldItemMainhand).getItem());
             if (heldItemMainhand.getItem() instanceof BlockItem) {
                 data = new BlockParticleOption(ParticleTypes.BLOCK, ((BlockItem) heldItemMainhand.getItem()).getBlock().defaultBlockState());
             }
@@ -401,7 +401,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
         for(ItemStack map : player.getHandSlots()){
             if(map.getItem() == Items.FILLED_MAP || map.getItem() == Items.MAP){
                 if (map.hasTag() && map.getTag().contains("Decorations", 9)) {
-                    ListTag listnbt = map.getTag().getList("Decorations", 10);
+                    ListTag listnbt = map.getTag().getListOrEmpty("Decorations");
                     for(int i = 0; i < listnbt.size(); i++){
                         CompoundTag nbt = listnbt.getCompoundOrEmpty(i);
                         byte type = nbt.getByte("type");
@@ -444,7 +444,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
         ItemStack duplicate = e.getItem().copy();
         duplicate.setCount(1);
         if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
-            this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+            this.spawnAtLocation((ServerLevel) this.level(), this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         stealCooldown += 600 + random.nextInt(1200);
         Entity thrower = e.getOwner();
@@ -543,7 +543,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
         Item item = itemstack.getItem();
         InteractionResult type = super.mobInteract(player, hand);
         if (!this.getMainHandItem().isEmpty() && type != InteractionResult.SUCCESS) {
-            this.spawnAtLocation(this.getMainHandItem().copy());
+            this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().copy());
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             stealCooldown = 1500 + random.nextInt(1500);
             return InteractionResult.SUCCESS;
@@ -556,7 +556,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        return AMEntityRegistry.SEAGULL.get().create(serverWorld);
+        return AMEntityRegistry.SEAGULL.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public void peck() {

@@ -34,7 +34,7 @@ public class LayerLeafcutterAntLeaf extends RenderLayer<EntityLeafcutterAnt, Adv
                 case 1 -> TEXTURE_1;
                 default -> TEXTURE_0;
             };
-            VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(res));
+            VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(res));
             int leafColor = Minecraft.getInstance().getItemColors().getColor(new ItemStack(Items.JUNGLE_LEAVES), 0);
             if(entitylivingbaseIn.getHarvestedPos() != null && entitylivingbaseIn.getHarvestedState() != null){
                 leafColor = OctopusColorRegistry.getBlockColor(entitylivingbaseIn.getHarvestedState());

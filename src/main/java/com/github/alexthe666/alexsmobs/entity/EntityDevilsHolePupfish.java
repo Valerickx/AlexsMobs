@@ -253,7 +253,7 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
 
     @Override
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH;
+        return SoundEvents.BUCKET_FILL_FISH.value();
     }
 
     public float getPupfishScale() {
@@ -301,9 +301,9 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setPupfishScale(0.65F + random.nextFloat() * 0.35F);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     protected void handleAirSupply(int i) {
@@ -311,7 +311,7 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
             this.setAirSupply(i - 1);
             if (this.getAirSupply() == -20) {
                 this.setAirSupply(0);
-                this.hurt(damageSources().dryOut(), 2.0F);
+                this.hurt(damageSources().dryOut());
             }
         } else {
             this.setAirSupply(getMaxAirSupply());
@@ -459,7 +459,7 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
     }
 
     private void spawnBabiesWith(EntityDevilsHolePupfish chasePartner) {
-        EntityDevilsHolePupfish baby = AMEntityRegistry.DEVILS_HOLE_PUPFISH.get().create(level());
+        EntityDevilsHolePupfish baby = AMEntityRegistry.DEVILS_HOLE_PUPFISH.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
         baby.copyPosition(this);
         baby.setPupfishScale(0.65F + random.nextFloat() * 0.35F);
         baby.setBabyAge(-24000);
@@ -522,7 +522,7 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
                             List<ItemStack> lootList = getFoodLoot(pupfish);
                             if (!lootList.isEmpty()) {
                                 for (ItemStack stack : lootList) {
-                                    ItemEntity e = pupfish.spawnAtLocation(stack.copy());
+                                    ItemEntity e = pupfish.spawnAtLocation((ServerLevel) pupfish.level(), stack.copy());
                                     e.hasImpulse = true;
                                     e.setDeltaMovement(e.getDeltaMovement().multiply(0.2, 0.2, 0.2));
                                 }

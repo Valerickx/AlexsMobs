@@ -171,7 +171,7 @@ public class EntityTusklin extends Animal implements IAnimatedEntity {
         return prev;
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             final int anim = this.random.nextInt(3);
             switch (anim) {
@@ -321,12 +321,12 @@ public class EntityTusklin extends Animal implements IAnimatedEntity {
         super.dropEquipment();
         if (this.isSaddled()) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(Items.SADDLE);
+                this.spawnAtLocation((ServerLevel) this.level(), Items.SADDLE);
             }
         }
         if (!this.getShoeStack().isEmpty()) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(this.getShoeStack().copy());
+                this.spawnAtLocation((ServerLevel) this.level(), this.getShoeStack().copy());
             }
         }
         this.setSaddled(false);
@@ -455,7 +455,7 @@ public class EntityTusklin extends Animal implements IAnimatedEntity {
     private void knockbackTarget(LivingEntity entity, float strength, float angle) {
         float rot = getYRot() + angle;
         if(entity != null){
-            entity.knockback(strength, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD));
+            entity.knockback(strength, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD), null, 0.0F);
         }
     }
 
@@ -479,23 +479,17 @@ public class EntityTusklin extends Animal implements IAnimatedEntity {
         currentAnimation = animation;
     }
 
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         if (spawnDataIn == null) {
             spawnDataIn = new AgeableMob.AgeableMobGroupData(0.34F);
         }
 
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{ANIMATION_RUT, ANIMATION_GORE_L, ANIMATION_GORE_R, ANIMATION_FLING, ANIMATION_BUCK};
-    }
-
-    @Nullable
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
-        return AMEntityRegistry.TUSKLIN.get().create(level());
+        return new Animation[]{ANIMATION_RUT};
     }
 }

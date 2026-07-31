@@ -104,7 +104,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
         this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.1D, true));
         this.goalSelector.addGoal(5, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(7, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.MOOSE_BREEDABLES), false));
+        this.goalSelector.addGoal(7, new TemptGoal(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.MOOSE_BREEDABLES)), false));
         this.goalSelector.addGoal(7, new AnimalAIWanderRanged(this, 120, 1.0D, 14, 7));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 15.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -144,7 +144,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
         }
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(ANIMATION_ATTACK);
         }
@@ -209,7 +209,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
         if (timeUntilAntlerDrop == 0) {
             if (this.isAntlered()) {
                 this.setAntlered(false);
-                this.spawnAtLocation(new ItemStack(AMItemRegistry.MOOSE_ANTLER.get()));
+                this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(AMItemRegistry.MOOSE_ANTLER.get()));
                 timeUntilAntlerDrop = 2 * DAY + this.random.nextInt(3) * DAY;
             } else {
                 this.setAntlered(true);
@@ -228,7 +228,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
                 if (this.getTarget() instanceof Wolf || this.getTarget() instanceof EntityOrca) {
                     dmg = 2;
                 }
-                getTarget().knockback(1F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ());
+                getTarget().knockback(1F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ(), null, 0.0F);
                 this.getTarget().hurt(this.damageSources().mobAttack(this), dmg);
             }
         }
@@ -253,7 +253,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -407,7 +407,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        return AMEntityRegistry.MOOSE.get().create(serverWorld);
+        return AMEntityRegistry.MOOSE.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public boolean canJostleWith(EntityMoose moose) {

@@ -93,7 +93,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         if (spawnDataIn == null) {
             spawnDataIn = new AgeableMob.AgeableMobGroupData(0.25F);
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -108,7 +108,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         return AMSoundRegistry.BISON_HURT.get();
     }
 
-    protected void playStepSound(BlockPos p_28301_, BlockState p_28302_) {
+    protected void playStepSound(BlockPos p_28301_) {
         this.playSound(SoundEvents.COW_STEP, 0.1F, 1.0F);
     }
 
@@ -126,7 +126,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1D, true));
         this.goalSelector.addGoal(3, new AnimalAIPanicBaby(this, 1.25D));
         this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.BISON_BREEDABLES), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.BISON_BREEDABLES)), false));
         this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(6, new AIChargeFurthest());
         this.goalSelector.addGoal(7, new AnimalAIWanderRanged(this, 70, 1.0D, 18, 7));
@@ -153,7 +153,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
-        return AMEntityRegistry.BISON.get().create(level());
+        return AMEntityRegistry.BISON.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
     }
 
     public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
@@ -274,7 +274,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         AnimationHandler.INSTANCE.updateAnimations(this);
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(ANIMATION_ATTACK);
         }
@@ -307,7 +307,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
     private void knockbackTarget(LivingEntity entity, float strength, float angle) {
         float rot = getYRot() + angle;
         if(entity != null){
-            entity.knockback(strength, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD));
+            entity.knockback(strength, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD), null, 0.0F);
         }
     }
 
@@ -408,7 +408,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable, n
         this.setSheared(true);
         this.feedingsSinceLastShear = 0;
         for (int i = 0; i < 2 + random.nextInt(2); i++) {
-            this.spawnAtLocation(AMItemRegistry.BISON_FUR.get());
+            this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.BISON_FUR.get());
         }
     }
 

@@ -168,7 +168,7 @@ public class LayerKangarooArmor extends RenderLayer<EntityKangaroo, ModelKangaro
 
 
     private void renderChestplate(EntityKangaroo entity, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
-        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(armorResource), false, glintIn);
+        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutout(armorResource), false, glintIn);
         renderer.getModel().copyPropertiesTo(modelIn);
         float sitProgress = entity.prevSitProgress + (entity.sitProgress - entity.prevSitProgress) * Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         modelIn.body.xRot = 90 * 0.017453292F;
@@ -194,13 +194,13 @@ public class LayerKangarooArmor extends RenderLayer<EntityKangaroo, ModelKangaro
         modelIn.leftArm.z = renderer.getModel().arm_left.rotationPointZ - 0.5F;
         modelIn.rightArm.z = renderer.getModel().arm_right.rotationPointZ - 0.5F;
         modelIn.body.visible = false;
-        modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+        modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
         modelIn.body.visible = true;
         modelIn.rightArm.visible = false;
         modelIn.leftArm.visible = false;
         matrixStackIn.pushPose();
         matrixStackIn.scale(1.1F, 1.65F, 1.1F);
-        modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+        modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
         matrixStackIn.popPose();
         modelIn.rightArm.visible = true;
         modelIn.leftArm.visible = true;
@@ -208,7 +208,7 @@ public class LayerKangarooArmor extends RenderLayer<EntityKangaroo, ModelKangaro
     }
 
     private void renderHelmet(EntityKangaroo entity, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
-        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(armorResource), false, glintIn);
+        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutout(armorResource), false, glintIn);
         renderer.getModel().copyPropertiesTo(modelIn);
         modelIn.head.xRot = 0F;
         modelIn.head.yRot = 0F;
@@ -222,7 +222,7 @@ public class LayerKangarooArmor extends RenderLayer<EntityKangaroo, ModelKangaro
         modelIn.hat.x = 0F;
         modelIn.hat.y = 0F;
         modelIn.hat.z = 0F;
-        modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+        modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
 
     }
 

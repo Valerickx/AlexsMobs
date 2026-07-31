@@ -683,10 +683,10 @@ public class EntityCachalotWhale extends Animal {
                                     this.setCharging(false);
                                     if (target.getVehicle() instanceof final Boat boat) {
                                         for (int i = 0; i < 3; ++i) {
-                                            this.spawnAtLocation(boat.getVariant().getPlanks());
+                                            this.spawnAtLocation((ServerLevel) this.level(), boat.getVariant().getPlanks());
                                         }
                                         for (int j = 0; j < 2; ++j) {
-                                            this.spawnAtLocation(Items.STICK);
+                                            this.spawnAtLocation((ServerLevel) this.level(), Items.STICK);
                                         }
                                         target.removeVehicle();
                                         boat.hurt(this.damageSources().mobAttack(this), 1000);
@@ -824,7 +824,7 @@ public class EntityCachalotWhale extends Animal {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        EntityCachalotWhale whale = AMEntityRegistry.CACHALOT_WHALE.get().create(serverWorld);
+        EntityCachalotWhale whale = AMEntityRegistry.CACHALOT_WHALE.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
         whale.setAlbino(this.isAlbino());
         return whale;
     }
@@ -834,14 +834,14 @@ public class EntityCachalotWhale extends Animal {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setAirSupply(this.getMaxAirSupply());
         this.setXRot(0.0F);
         if (spawnDataIn == null) {
             spawnDataIn = new AgeableMob.AgeableMobGroupData(0.75F);
         }
         this.setAlbino(random.nextInt(100) == 0);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public boolean canBreatheUnderwater() {
@@ -897,7 +897,7 @@ public class EntityCachalotWhale extends Animal {
         this.receivedEcho = true;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason spawnReasonIn) {
+    public boolean checkSpawnRules(LevelAccessor worldIn) {
         return AMEntityRegistry.rollSpawn(AMConfig.cachalotWhaleSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 

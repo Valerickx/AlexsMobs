@@ -60,7 +60,7 @@ public class RenderMurmurHead extends MobRenderer<EntityMurmurHead, LivingEntity
             Vec3 top = head.getNeckTop(partialTicks).subtract(renderingAt);
             Vec3 moveDownFrom = bottom.subtract(top);
             Vec3 moveUpTowards = top.subtract(bottom);
-            RenderType renderType = RenderType.entityCutoutNoCull(getTextureLocation(head));
+            RenderType renderType = RenderType.entityCutout(getTextureLocation(head));
             int overlayCoords = getOverlayCoords(head, this.getWhiteOverlayProgress(head, partialTicks));
             matrixStackIn.translate(moveDownFrom.x, moveDownFrom.y - 0.5F, moveDownFrom.z);
             Vec3 currentNeckButt = Vec3.ZERO;
@@ -95,7 +95,7 @@ public class RenderMurmurHead extends MobRenderer<EntityMurmurHead, LivingEntity
         poseStack.pushPose();
         poseStack.translate(from.x, from.y, from.z);
         NECK_MODEL.setAttributes((float) sub.length(), rotX, rotY, additionalYaw);
-        NECK_MODEL.renderToBuffer(poseStack, buffer, packedLightIn, overlayCoords, 1, 1F, 1, 1);
+        NECK_MODEL.renderToBuffer(poseStack, buffer, packedLightIn, overlayCoords, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
         poseStack.popPose();
     }
 

@@ -52,10 +52,10 @@ public class RenderStraddleboard extends EntityRenderer<EntityStraddleboard, Ent
         matrixStackIn.mulPose(Axis.XP.rotationDegrees(180));
         matrixStackIn.translate(0, -1.5F - Math.abs(boardRot * 0.007F) - (lava ? 0 : 0.25F), 0);
         BOARD_MODEL.animateBoard(entityIn, entityIn.tickCount + partialTicks);
-        VertexConsumer ivertexbuilder2 = bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE_OVERLAY));
-        BOARD_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder2, packedLightIn, NO_OVERLAY, r, g, b, 1.0F);
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
-        BOARD_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        VertexConsumer ivertexbuilder2 = bufferIn.getBuffer(RenderType.entityCutout(TEXTURE_OVERLAY));
+        BOARD_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder2, packedLightIn, NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((r) * 255F), (int)((g) * 255F), (int)((b) * 255F)));
+        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(TEXTURE));
+        BOARD_MODEL.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
         matrixStackIn.popPose();
         matrixStackIn.popPose();
 

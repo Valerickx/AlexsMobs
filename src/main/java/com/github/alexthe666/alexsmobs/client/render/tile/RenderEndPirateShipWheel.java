@@ -37,8 +37,8 @@ public class RenderEndPirateShipWheel<T extends TileEntityEndPirateShipWheel> im
         matrixStackIn.mulPose(dir.getOpposite().getRotation());
         matrixStackIn.pushPose();
         WHEEL_MODEL.renderWheel(tileEntityIn, partialTicks);
-        WHEEL_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), combinedLightIn, combinedOverlayIn, 1, 1F, 1, 1);
-        WHEEL_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_GLOW)), 240, combinedOverlayIn, 1, 1F, 1, 1);
+        WHEEL_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
+        WHEEL_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_GLOW)), 240, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
         matrixStackIn.popPose();
         matrixStackIn.popPose();
     }

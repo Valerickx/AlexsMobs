@@ -88,7 +88,7 @@ public class EntityPotoo extends Animal implements IFalconry {
 
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.POTOO_BREEDABLES), false));
+        this.goalSelector.addGoal(1, new TemptGoal(this, 1.0D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.POTOO_BREEDABLES)), false));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new PanicGoal(this, 1D));
         this.goalSelector.addGoal(4, new AIPerch());
@@ -270,8 +270,8 @@ public class EntityPotoo extends Animal implements IFalconry {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public void rideTick() {
@@ -386,7 +386,7 @@ public class EntityPotoo extends Animal implements IFalconry {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        return AMEntityRegistry.POTOO.get().create(serverLevel);
+        return AMEntityRegistry.POTOO.get().create(serverLevel, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public float getEyeScale(int bufferOffset, float partialTicks) {

@@ -22,7 +22,7 @@ public class OctopusColorRegistry {
     public static int getBlockColor(BlockState stack) {
         String blockName = stack.toString();
         if (TEXTURES_TO_COLOR.containsKey(blockName)) {
-            return TEXTURES_TO_COLOR.getInt(blockName);
+            return TEXTURES_TO_COLOR.getIntOr(blockName, 0);
         } else {
             int colorizer = -1;
             try{

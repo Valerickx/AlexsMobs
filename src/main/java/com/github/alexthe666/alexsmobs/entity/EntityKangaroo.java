@@ -215,7 +215,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
     protected void dropEquipment() {
         super.dropEquipment();
         for (int i = 0; i < kangarooInventory.getContainerSize(); i++) {
-            this.spawnAtLocation(kangarooInventory.getItem(i));
+            this.spawnAtLocation((ServerLevel) this.level(), kangarooInventory.getItem(i));
         }
         kangarooInventory.clearContent();
     }
@@ -303,12 +303,12 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
     public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         this.setOrderedToSit(compound.getBooleanOr("KangarooSitting", false));
-        this.entityData.set(FORCED_SIT, compound.getBoolean("KangarooSittingForced"));
+        this.entityData.set(FORCED_SIT, compound.getBooleanOr("KangarooSittingForced", false));
         this.setStanding(compound.getBooleanOr("Standing", false));
         this.setCommand(compound.getIntOr("Command", 0));
-        this.entityData.set(HELMET_INDEX, compound.getInt("HelmetInvIndex"));
-        this.entityData.set(SWORD_INDEX, compound.getInt("SwordInvIndex"));
-        this.entityData.set(CHEST_INDEX, compound.getInt("ChestInvIndex"));
+        this.entityData.set(HELMET_INDEX, compound.getIntOr("HelmetInvIndex", 0));
+        this.entityData.set(SWORD_INDEX, compound.getIntOr("SwordInvIndex", 0));
+        this.entityData.set(CHEST_INDEX, compound.getIntOr("ChestInvIndex", 0));
         if (kangarooInventory != null) {
             ListTag nbttaglist = compound.getListOrEmpty("Items");
             this.initKangarooInventory();
@@ -404,7 +404,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
         this.goalSelector.addGoal(2, new TameableAIFollowOwner(this, 1.2D, 5.0F, 2.0F, false));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1D));
         this.goalSelector.addGoal(4, new AnimalAIRideParent(this, 1.25D));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(AMTagRegistry.KANGAROO_TAMEABLES), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.KANGAROO_TAMEABLES)), false));
         this.goalSelector.addGoal(5, new AnimalAIWanderRanged(this, 110, 1.2D, 10, 7));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 10.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
@@ -530,7 +530,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
                         this.heal(foodStack.getItem().getFoodProperties().getNutrition() * 2);
                         foodStack.shrink(1);
                         this.gameEvent(GameEvent.EAT);
-                        this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                        this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
                     }
                 }
             }
@@ -546,18 +546,18 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
         if (attackTarget != null && this.hasLineOfSight(attackTarget)) {
             if (distanceTo(attackTarget) < attackTarget.getBbWidth() + this.getBbWidth() + 1) {
                 if (this.getAnimation() == ANIMATION_KICK && this.getAnimationTick() == 8) {
-                    attackTarget.knockback(1.3F, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD));
-                    this.doHurtTarget(this.getTarget());
+                    attackTarget.knockback(1.3F, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD), null, 0.0F);
+                    this.doHurtTarget((ServerLevel) this.level(), this.getTarget());
                 }
                 if ((this.getAnimation() == ANIMATION_PUNCH_L) && this.getAnimationTick() == 6) {
                     float rot = getYRot() + 90;
-                    attackTarget.knockback(0.85F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD));
-                    this.doHurtTarget(this.getTarget());
+                    attackTarget.knockback(0.85F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD), null, 0.0F);
+                    this.doHurtTarget((ServerLevel) this.level(), this.getTarget());
                 }
                 if ((this.getAnimation() == ANIMATION_PUNCH_R) && this.getAnimationTick() == 6) {
                     float rot = getYRot() - 90;
-                    attackTarget.knockback(0.85F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD));
-                    this.doHurtTarget(this.getTarget());
+                    attackTarget.knockback(0.85F, Mth.sin(rot * Mth.DEG_TO_RAD), -Mth.cos(rot * Mth.DEG_TO_RAD), null, 0.0F);
+                    this.doHurtTarget((ServerLevel) this.level(), this.getTarget());
                 }
             }
             this.lookAt(attackTarget, 360, 360);
@@ -592,8 +592,8 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
         AnimationHandler.INSTANCE.updateAnimations(this);
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
-        boolean prev = super.doHurtTarget(entityIn);
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
+        boolean prev = super.doHurtTarget((ServerLevel) this.level(), entityIn);
         if (prev) {
             if (!this.getMainHandItem().isEmpty()) {
                 damageItem(this.getMainHandItem());
@@ -624,8 +624,8 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
         }
     }
 
-    public boolean isInvulnerableTo(DamageSource source) {
-        return super.isInvulnerableTo(source) || source.is(DamageTypes.IN_WALL);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return super.isInvulnerableTo((ServerLevel) this.level(), source) || source.is(DamageTypes.IN_WALL);
     }
 
     public boolean isAlliedTo(Entity entityIn) {
@@ -787,7 +787,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        return AMEntityRegistry.KANGAROO.get().create(serverWorld);
+        return AMEntityRegistry.KANGAROO.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public void setMovementSpeed(double newSpeed) {

@@ -70,14 +70,14 @@ public class EntityLaviathanPart extends PartEntity<EntityLaviathan> {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        return !this.isInvulnerableTo(source) && this.getParent().attackEntityPartFrom(this, source, amount);
+        return !this.isInvulnerableTo((ServerLevel) this.level(), source) && this.getParent().attackEntityPartFrom(this, source, amount);
     }
 
     public boolean is(Entity entityIn) {
         return this == entityIn || this.getParent() == entityIn;
     }
 
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
         throw new UnsupportedOperationException();
     }
 

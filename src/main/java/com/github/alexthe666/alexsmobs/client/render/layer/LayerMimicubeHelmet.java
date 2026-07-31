@@ -96,7 +96,7 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
     }
 
     private void renderArmor(EntityMimicube entity, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
-        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(armorResource), false, glintIn);
+        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutout(armorResource), false, glintIn);
         if(notAVanillaModel){
             renderer.getModel().copyPropertiesTo(modelIn);
             modelIn.body.y = 0;
@@ -111,7 +111,7 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
             modelIn.hat.copyFrom(modelIn.head);
             modelIn.body.copyFrom(modelIn.head);
         }
-        modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+        modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
     }
 
     protected void setModelSlotVisible(HumanoidModel p_188359_1_, EquipmentSlot slotIn) {

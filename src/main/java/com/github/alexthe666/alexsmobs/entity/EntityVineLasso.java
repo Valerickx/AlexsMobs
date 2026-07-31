@@ -63,8 +63,8 @@ public class EntityVineLasso extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return super.getAddEntityPacket();
+    public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
+        return super.getAddEntityPacket(serverEntity);
     }
 
     public void tick() {
@@ -110,7 +110,7 @@ public class EntityVineLasso extends Entity {
         ItemStack item = new ItemStack(AMItemRegistry.VINE_LASSO.get());
         if(!this.isRemoved()){
             if (!(entity instanceof Player) || !((Player) entity).addItem(item)) {
-                this.spawnAtLocation(item);
+                this.spawnAtLocation((ServerLevel) this.level(), item);
             }
         }
         this.remove(RemovalReason.DISCARDED);

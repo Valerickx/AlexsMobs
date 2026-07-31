@@ -69,8 +69,8 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
     }
 
     public static Optional<Entity> loadEntityUnchecked(CompoundTag compound, Level worldIn) {
-        EntityLeafcutterAnt leafcutterAnt = AMEntityRegistry.LEAFCUTTER_ANT.get().create(worldIn);
-        leafcutterAnt.load(compound);
+        EntityLeafcutterAnt leafcutterAnt = AMEntityRegistry.LEAFCUTTER_ANT.get().create(worldIn, EntitySpawnReason.MOB_SUMMONED);
+        leafcutterAnt.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, worldIn.registryAccess(), compound));
         return Optional.of(leafcutterAnt);
     }
 
@@ -186,8 +186,9 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
         if (this.ants.size() < AMConfig.leafcutterAntColonySize) {
             p_226962_1_.stopRiding();
             p_226962_1_.ejectPassengers();
-            CompoundTag compoundnbt = new CompoundTag();
-            p_226962_1_.save(compoundnbt);
+            net.minecraft.world.level.storage.TagValueOutput tagOutput = net.minecraft.world.level.storage.TagValueOutput.createWithoutContext(net.minecraft.util.ProblemReporter.DISCARDING);
+            p_226962_1_.saveWithoutId(tagOutput);
+            CompoundTag compoundnbt = tagOutput.output();
             if (p_226962_2_) {
                 if (!level.isClientSide() && p_226962_1_.getRandom().nextFloat() < AMConfig.leafcutterAntFungusGrowChance) {
                     growFungus();
@@ -378,7 +379,7 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
 
         for (int i = 0; i < listnbt.size(); ++i) {
             CompoundTag compoundnbt = listnbt.getCompoundOrEmpty(i);
-            Ant beehiveTileEntity$ant = new Ant(compoundnbt.getCompoundOrEmpty("EntityData"), compoundnbt.getInt("TicksInHive"), compoundnbt.getInt("MinOccupationTicks"), compoundnbt.getBoolean("Queen"));
+            Ant beehiveTileEntity$ant = new Ant(compoundnbt.getCompoundOrEmpty("EntityData"), compoundnbt.getIntOr("TicksInHive", 0), compoundnbt.getIntOr("MinOccupationTicks", 0), compoundnbt.getBooleanOr("Queen", false));
             this.ants.add(beehiveTileEntity$ant);
         }
     }

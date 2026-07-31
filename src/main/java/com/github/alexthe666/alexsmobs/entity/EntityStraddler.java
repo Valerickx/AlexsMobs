@@ -238,7 +238,7 @@ public class EntityStraddler extends Monster implements IAnimatedEntity {
             }
         }
         if (this.getAnimation() == ANIMATION_LAUNCH && this.isAlive() && this.getAnimationTick() == 20 && this.getTarget() != null) {
-            EntityStradpole pole = AMEntityRegistry.STRADPOLE.get().create(level());
+            EntityStradpole pole = AMEntityRegistry.STRADPOLE.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
             pole.setParentId(this.getUUID());
             pole.setPos(this.getX(), this.getEyeY(), this.getZ());
             final double d0 = this.getTarget().getEyeY() - (double)1.1F;

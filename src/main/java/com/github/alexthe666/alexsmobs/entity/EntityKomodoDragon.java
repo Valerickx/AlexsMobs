@@ -52,7 +52,7 @@ import java.util.function.Predicate;
 
 public class EntityKomodoDragon extends TamableAnimal implements ITargetsDroppedItems, IFollower {
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(AMTagRegistry.KOMODO_DRAGON_TAMEABLES);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.KOMODO_DRAGON_TAMEABLES));
     public int slaughterCooldown = 0;
     public int timeUntilSpit = this.random.nextInt(12000) + 24000;
     public float nextJostleAngleFromServer;
@@ -153,7 +153,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -211,7 +211,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
             slaughterCooldown--;
         }
         if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilSpit <= 0) {
-            this.spawnAtLocation(AMItemRegistry.KOMODO_SPIT.get());
+            this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.KOMODO_SPIT.get());
             this.timeUntilSpit = this.random.nextInt(12000) + 24000;
         }
         if(riderAttackCooldown > 0){
@@ -222,7 +222,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
             if(rider.getLastHurtMob() != null && this.distanceTo(rider.getLastHurtMob()) < this.getBbWidth() + 3F && !this.isAlliedTo(rider.getLastHurtMob())){
                 UUID preyUUID = rider.getLastHurtMob().getUUID();
                 if (!this.getUUID().equals(preyUUID) && riderAttackCooldown == 0) {
-                    doHurtTarget(rider.getLastHurtMob());
+                    doHurtTarget((ServerLevel) this.level(), rider.getLastHurtMob());
                     riderAttackCooldown = 20;
                 }
             }
@@ -294,8 +294,8 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
         return super.isAlliedTo(entityIn);
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
-        if (super.doHurtTarget(entityIn)) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
+        if (super.doHurtTarget((ServerLevel) this.level(), entityIn)) {
             if (entityIn instanceof LivingEntity) {
                 int i = 5;
                 if (this.level().getDifficulty() == Difficulty.NORMAL) {
@@ -379,7 +379,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
                 return InteractionResult.SUCCESS;
             }else if(itemstack.is(Tags.Items.SHEARS) && this.isSaddled()){
                 this.setSaddled(false);
-                this.spawnAtLocation(Items.SADDLE);
+                this.spawnAtLocation((ServerLevel) this.level(), Items.SADDLE);
                 return InteractionResult.SUCCESS;
             }else{
                 if(!player.isShiftKeyDown() && !this.isBaby() && this.isSaddled()){
@@ -426,7 +426,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.KOMODO_DRAGON.get().create(p_241840_1_);
+        return AMEntityRegistry.KOMODO_DRAGON.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 
     @Override
@@ -513,7 +513,7 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
         super.dropEquipment();
         if (this.isSaddled()) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(Items.SADDLE);
+                this.spawnAtLocation((ServerLevel) this.level(), Items.SADDLE);
             }
         }
         this.setSaddled(false);

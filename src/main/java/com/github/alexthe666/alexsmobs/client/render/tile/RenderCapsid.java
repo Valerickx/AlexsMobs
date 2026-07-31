@@ -81,7 +81,7 @@ public class RenderCapsid<T extends TileEntityCapsid> implements BlockEntityRend
                     }
                 }
 
-                Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.GROUND, false, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, ibakedmodel);
+                Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.GROUND, false, matrixStackIn, net.minecraft.util.ARGB.color((int)((ibakedmodel) * 255F), (int)((bufferIn) * 255F), (int)((combinedLightIn) * 255F), (int)((OverlayTexture.NO_OVERLAY) * 255F)));
                 matrixStackIn.popPose();
                 if (!flag) {
                     matrixStackIn.translate(0.0, 0.0, 0.09375F);

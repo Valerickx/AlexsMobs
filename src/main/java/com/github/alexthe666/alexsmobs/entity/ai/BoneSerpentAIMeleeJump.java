@@ -79,7 +79,7 @@ public class BoneSerpentAIMeleeJump extends JumpGoal {
         LivingEntity target = this.dolphin.getTarget();
         if(target != null){
             if(this.dolphin.distanceTo(target) < 3F && attackCooldown <= 0){
-                this.dolphin.doHurtTarget(target);
+                this.dolphin.doHurtTarget((ServerLevel) this.level(), target);
                 attackCooldown = 20;
             }
         }

@@ -66,7 +66,7 @@ public class CapsidRecipe {
         @Override
         public CapsidRecipe deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonobject = json.getAsJsonObject();
-            int time = JsonUtils.getInt(jsonobject, "time");
+            int time = JsonUtils.getIntOr(jsonobject, "time", 0);
             ItemStack result = ItemStack.EMPTY;
             if (jsonobject.has("result")) {
                 result = ItemStack.CODEC.parse(com.mojang.serialization.JsonOps.INSTANCE, JsonUtils.getJsonObject(jsonobject, "result")).getOrThrow();

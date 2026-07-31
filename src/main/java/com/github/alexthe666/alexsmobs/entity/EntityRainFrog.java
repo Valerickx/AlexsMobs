@@ -77,7 +77,7 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
 
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.RAIN_FROG_BREEDABLES), false));
+        this.goalSelector.addGoal(1, new TemptGoal(this, 1.0D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.RAIN_FROG_BREEDABLES)), false));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new AvoidEntityGoal(this, EntityRattlesnake.class, 9, 1.3D, 1.0D));
         this.goalSelector.addGoal(5, new AIBurrow());
@@ -152,7 +152,7 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
     @javax.annotation.Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        EntityRainFrog frog = AMEntityRegistry.RAIN_FROG.get().create(p_241840_1_);
+        EntityRainFrog frog = AMEntityRegistry.RAIN_FROG.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
         frog.setVariant(this.getVariant());
         frog.setDisturbed(true);
         return frog;
@@ -224,7 +224,7 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
         if (this.getDanceTime() > 0) {
             this.setBurrowed(false);
             this.setDanceTime(this.getDanceTime() - 1);
-            if(this.getDanceTime() == 1 && weatherCooldown <= 0 && level().getGameRules().getBoolean(GameRules.RULE_WEATHER_CYCLE)){
+            if(this.getDanceTime() == 1 && weatherCooldown <= 0 && level().getGameRules().getBooleanOr(GameRules.RULE_WEATHER_CYCLE, false)){
                 changeWeather();
             }
         }
@@ -258,8 +258,8 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public boolean isSleeping() {
@@ -269,18 +269,18 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
     public void calculateEntityAnimation(LivingEntity mob, boolean flying) {
         float f1 = (float)Mth.length(this.getX() - this.xo, 0, this.getZ() - this.zo);
         float f2 = Math.min(f1 * 128.0F, 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     @javax.annotation.Nullable
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
         this.setVariant(random.nextInt(3));
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setDisturbed(compound.getBooleanOr("Disturbed", false));
+        this.setDisturbed(compound.getBooleanOr("Disturbed"));
         this.setVariant(compound.getIntOr("Variant", 0));
         this.weatherCooldown = compound.getIntOr("WeatherCooldown", 0);
     }

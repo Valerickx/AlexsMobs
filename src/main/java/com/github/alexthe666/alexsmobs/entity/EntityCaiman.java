@@ -96,7 +96,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
         this.goalSelector.addGoal(3, new BreathAirGoal(this));
         this.goalSelector.addGoal(4, new TameableAIFollowOwnerWater(this, 1.1D, 4.0F, 2.0F, false));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.2F, false));
-        this.goalSelector.addGoal(6, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.CAIMAN_BREEDABLES), false));
+        this.goalSelector.addGoal(6, new TemptGoal(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.CAIMAN_BREEDABLES)), false));
         this.goalSelector.addGoal(7, new AnimalAIFindWater(this));
         this.goalSelector.addGoal(7, new AnimalAILeaveWater(this));
         this.goalSelector.addGoal(8, new CaimanAIBellow(this));
@@ -262,7 +262,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
         if (isTame() && itemstack.is(AMTagRegistry.CAIMAN_FOODSTUFFS) && this.getHealth() < this.getMaxHealth()) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
             this.heal(5);
             return InteractionResult.SUCCESS;
         }
@@ -360,7 +360,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
     public void calculateEntityAnimation(LivingEntity living, boolean flying) {
         float f1 = (float) Mth.length(this.getX() - this.xo, 0, this.getZ() - this.zo);
         float f2 = Math.min(f1 * 8.0F, 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     public boolean canBreatheUnderwater() {
@@ -394,7 +394,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        return AMEntityRegistry.CAIMAN.get().create(serverLevel);
+        return AMEntityRegistry.CAIMAN.get().create(serverLevel, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public Vec3 getShakePreyPos() {
@@ -460,7 +460,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
             this.animal.setAge(6000);
             this.partner.setAge(6000);
             RandomSource random = this.animal.getRandom();
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            if (this.level.getGameRules().getBooleanOr(GameRules.RULE_DOMOBLOOT, false)) {
                 this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }
 

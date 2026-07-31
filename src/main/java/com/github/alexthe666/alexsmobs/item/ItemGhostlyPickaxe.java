@@ -83,7 +83,7 @@ public class ItemGhostlyPickaxe extends Item {
             }
         }
         if(!item.isEmpty()){
-            user.spawnAtLocation(item);
+            user.spawnAtLocation((ServerLevel) user.level(), item);
         }
     }
 

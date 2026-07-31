@@ -125,7 +125,7 @@ public class EntityGiantSquid extends WaterAnimal {
         if (reason == EntitySpawnReason.NATURAL) {
             doInitialPosing(worldIn);
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     private void doInitialPosing(LevelAccessor world) {
@@ -487,7 +487,7 @@ public class EntityGiantSquid extends WaterAnimal {
     public void calculateEntityAnimation(boolean flying) {
         float f1 = (float)Mth.length(this.getX() - this.xo, this.getY() - this.yo, this.getZ() - this.zo);
         float f2 = Math.min(f1 * 8.0F, 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     public boolean canBeCollidedWith() {
@@ -542,8 +542,8 @@ public class EntityGiantSquid extends WaterAnimal {
         return this.hurt(source, amount);
     }
 
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public void directPitch(double d0, double d1, double d2, double d3) {
@@ -608,7 +608,7 @@ public class EntityGiantSquid extends WaterAnimal {
             if (random.nextFloat() <= 0.3F) {
                 this.setCaptured(false);
                 if(random.nextFloat() < 0.2F){
-                    this.spawnAtLocation(AMItemRegistry.LOST_TENTACLE.get());
+                    this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.LOST_TENTACLE.get());
                 }
                 return true;
             }

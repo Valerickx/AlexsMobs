@@ -141,7 +141,7 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
             if(this.getAnimation() == ANIMATION_STAB && this.getAnimationTick() == 7 && this.hasLineOfSight(this.getTarget())){
                 float f1 = this.getYRot() * Mth.DEG_TO_RAD;
                 this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f1) * 0.02F, 0.0D, Mth.cos(f1) * 0.02F));
-                getTarget().knockback(1F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ());
+                getTarget().knockback(1F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ(), null, 0.0F);
                 this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
             }
             if(this.getAnimation() == ANIMATION_SLASH && this.getAnimationTick() % 5 == 0 && this.getAnimationTick() > 0 && this.getAnimationTick() < 25 && this.hasLineOfSight(this.getTarget())){
@@ -218,11 +218,11 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setVariant(this.getRandom().nextFloat() < 0.3F ? 1 : 0);
         if (this.random.nextFloat() < 0.2F) {
-            Drowned drowned = EntityType.DROWNED.create(level());
-            drowned.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+            Drowned drowned = EntityType.DROWNED.create(level(), EntitySpawnReason.MOB_SUMMONED);
+            drowned.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
             drowned.copyPosition(this);
             drowned.startRiding(this);
             worldIn.addFreshEntityWithPassengers(drowned);
@@ -230,7 +230,7 @@ public class EntitySkelewag extends Monster implements IAnimatedEntity {
         if (AMConfig.restrictSkelewagSpawns) {
             this.restrictTo(this.blockPosition(), 15);
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public boolean canBreatheUnderwater() {

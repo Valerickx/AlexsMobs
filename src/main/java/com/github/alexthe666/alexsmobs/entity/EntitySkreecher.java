@@ -239,10 +239,10 @@ public class EntitySkreecher extends Monster {
                     }
                     Holder<Biome> holder = level().getBiome(spawnAt);
                     if(!this.level().isClientSide() && getNearbyWardens().isEmpty() && holder.is(AMTagRegistry.SKREECHERS_CAN_SPAWN_WARDENS)){
-                        Warden warden = EntityType.WARDEN.create(this.level());
+                        Warden warden = EntityType.WARDEN.create(this.level(), EntitySpawnReason.MOB_SUMMONED);
 
                         warden.moveTo(this.getX(), spawnAt.getY() + 1, this.getZ(), this.getYRot(), 0.0F);
-                        warden.finalizeSpawn((ServerLevel)level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.TRIGGERED, (SpawnGroupData)null, (CompoundTag)null);
+                        warden.finalizeSpawn((ServerLevel)level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.TRIGGERED, (SpawnGroupData)null);
                         warden.setAttackTarget(this);
                         warden.increaseAngerAt(this, 79, false);
                         this.level().addFreshEntity(warden);
@@ -300,7 +300,7 @@ public class EntitySkreecher extends Monster {
     public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         this.setClinging(compound.getBooleanOr("Clinging", false));
-        this.setDistanceToCeiling((float)compound.getDouble("CeilDist"));
+        this.setDistanceToCeiling((float)compound.getDoubleOr("CeilDist", 0.0D));
         this.hasAttemptedWardenSpawning = compound.getBooleanOr("SummonedWarden", false);
         this.clingCooldown = compound.getIntOr("ClingCooldown", 0);
     }

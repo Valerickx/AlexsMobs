@@ -215,7 +215,7 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
                 this.setSitting(false);
             }
             if (this.getTarget() != null && (this.getAnimation() == ANIMATION_SWIPE_L || this.getAnimation() == ANIMATION_SWIPE_R) && this.getAnimationTick() == 7 && this.hasLineOfSight(this.getTarget()) && this.distanceTo(this.getTarget()) < this.getBbHeight() + this.getTarget().getBbHeight() + 1) {
-                getTarget().knockback(0.4F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ());
+                getTarget().knockback(0.4F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ(), null, 0.0F);
                 float dmg = (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue();
                 if (this.isLeader() && getTarget() instanceof EntityGeladaMonkey monkey) {
                     if (monkey.isLeader()) {
@@ -284,7 +284,7 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
         }
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             attackAnimation();
         }
@@ -347,7 +347,7 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel lvl, AgeableMob mob) {
-        EntityGeladaMonkey baby = AMEntityRegistry.GELADA_MONKEY.get().create(lvl);
+        EntityGeladaMonkey baby = AMEntityRegistry.GELADA_MONKEY.get().create(lvl, EntitySpawnReason.MOB_SUMMONED);
         baby.setLeader(random.nextInt(2) == 0);
         return baby;
     }
@@ -396,7 +396,7 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
             this.setLeader(this.getRandom().nextInt(4) == 0);
         }
 
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public boolean canBeGroomed() {
@@ -412,7 +412,7 @@ public class EntityGeladaMonkey extends Animal implements IAnimatedEntity, IHerd
         private BlockPos target;
 
         public AIClearGrass() {
-            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE));
         }
 
         @Override

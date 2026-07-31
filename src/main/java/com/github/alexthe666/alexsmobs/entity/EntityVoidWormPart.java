@@ -108,8 +108,8 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
@@ -304,7 +304,7 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
             worm.setSegmentCount(segments);
             if (this.getChild() instanceof EntityVoidWormPart) {
                 EntityVoidWormPart segment = (EntityVoidWormPart) this.getChild();
-                EntityVoidWorm worm2 = AMEntityRegistry.VOID_WORM.get().create(level());
+                EntityVoidWorm worm2 = AMEntityRegistry.VOID_WORM.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
                 worm2.setNoAi(worm.isNoAi());
                 worm2.setInvulnerable(worm.isInvulnerable());
                 worm2.copyPosition(this);
@@ -388,8 +388,8 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return super.getAddEntityPacket();
+    public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
+        return super.getAddEntityPacket(serverEntity);
     }
 
     public void pushEntities() {

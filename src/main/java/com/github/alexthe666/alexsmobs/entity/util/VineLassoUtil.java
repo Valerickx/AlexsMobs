@@ -27,7 +27,7 @@ public class VineLassoUtil {
             lassoedTag.putInt(LASSOED_TO_ENTITY_ID_TAG, -1);
             lassoedTag.putBoolean(LASSO_REMOVED, true);
         } else {
-            if (!lassoedTag.contains(LASSOED_TO_ENTITY_ID_TAG) || lassoedTag.getInt(LASSOED_TO_ENTITY_ID_TAG) == -1) {
+            if (!lassoedTag.contains(LASSOED_TO_ENTITY_ID_TAG) || lassoedTag.getIntOr(LASSOED_TO_ENTITY_ID_TAG, 0) == -1) {
                 lassoedTag.store(LASSOED_TO_TAG, net.minecraft.core.UUIDUtil.CODEC, lassoer.getUUID());
                 lassoedTag.putInt(LASSOED_TO_ENTITY_ID_TAG, lassoer.getId());
                 lassoedTag.putBoolean(LASSO_REMOVED, false);
@@ -42,7 +42,7 @@ public class VineLassoUtil {
 
     public static boolean hasLassoData(LivingEntity lasso) {
         CompoundTag lassoedTag = CitadelEntityData.getOrCreateCitadelTag(lasso);
-        return lassoedTag.contains(LASSOED_TO_ENTITY_ID_TAG) && !lassoedTag.getBoolean(LASSO_REMOVED) && lassoedTag.getInt(LASSOED_TO_ENTITY_ID_TAG) != -1;
+        return lassoedTag.contains(LASSOED_TO_ENTITY_ID_TAG) && !lassoedTag.getBooleanOr(LASSO_REMOVED, false) && lassoedTag.getIntOr(LASSOED_TO_ENTITY_ID_TAG, 0) != -1;
     }
 
     public static Entity getLassoedTo(LivingEntity lassoed) {
@@ -81,7 +81,7 @@ public class VineLassoUtil {
     public static void tickLasso(LivingEntity lassoed) {
         CompoundTag tag = CitadelEntityData.getOrCreateCitadelTag(lassoed);
         if (!lassoed.level().isClientSide()) {
-            if (tag.contains(LASSO_PACKET) || tag.getBoolean(LASSO_REMOVED)) {
+            if (tag.contains(LASSO_PACKET) || tag.getBooleanOr(LASSO_REMOVED, false)) {
                 tag.putBoolean(LASSO_PACKET, false);
                 CitadelEntityData.setCitadelTag(lassoed, tag);
                 Citadel.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", tag, lassoed.getId()));

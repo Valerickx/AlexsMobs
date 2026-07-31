@@ -509,8 +509,8 @@ public class EntityFarseer extends Monster implements IAnimatedEntity {
         this.calculateEntityAnimation(false);
     }
 
-    public boolean isInvulnerableTo(DamageSource dmg) {
-        return super.isInvulnerableTo(dmg) || this.getAnimation() == ANIMATION_EMERGE;
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource dmg) {
+        return super.isInvulnerableTo((ServerLevel) this.level(), dmg) || this.getAnimation() == ANIMATION_EMERGE;
     }
 
     private static class RandomFlyGoal extends Goal {

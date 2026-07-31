@@ -356,12 +356,12 @@ public class EntityLaviathan extends Animal implements ISemiAquatic, IHerdPanic 
         super.dropEquipment();
         if (this.hasBodyGear()) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(AMItemRegistry.STRADDLE_SADDLE.get());
+                this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.STRADDLE_SADDLE.get());
             }
         }
         if (this.hasHeadGear()) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(AMItemRegistry.STRADDLE_HELMET.get());
+                this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.STRADDLE_HELMET.get());
             }
         }
         this.setBodyGear(false);
@@ -515,7 +515,7 @@ public class EntityLaviathan extends Animal implements ISemiAquatic, IHerdPanic 
         float f1 = (float) Mth.length(this.getX() - this.lastX, 0, this.getZ() - this.lastZ);
         float walkSpeed = 4.0F;
         float f2 = Math.min(f1 * walkSpeed, 1.0F);
-        walkAnimation.update(f2, 0.4F);
+        walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     public int getMaxHeadXRot() {
@@ -1041,7 +1041,7 @@ public class EntityLaviathan extends Animal implements ISemiAquatic, IHerdPanic 
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        return AMEntityRegistry.LAVIATHAN.get().create(serverWorld);
+        return AMEntityRegistry.LAVIATHAN.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     static class MoveController extends MoveControl {

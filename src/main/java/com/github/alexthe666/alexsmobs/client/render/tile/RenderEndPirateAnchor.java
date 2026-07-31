@@ -33,8 +33,8 @@ public class RenderEndPirateAnchor<T extends TileEntityEndPirateAnchor> implemen
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(90.0F));
         }
         ANCHOR_MODEL.renderAnchor(tileEntityIn, partialTicks, east);
-        ANCHOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(TEXTURE_ANCHOR)), combinedLightIn, combinedOverlayIn, 1, 1F, 1, 1);
-        ANCHOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.eyes(TEXTURE_ANCHOR_GLOW)), combinedLightIn, combinedOverlayIn, 1, 1F, 1, 1);
+        ANCHOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(TEXTURE_ANCHOR)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
+        ANCHOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.eyes(TEXTURE_ANCHOR_GLOW)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
 
         matrixStackIn.popPose();
         matrixStackIn.popPose();

@@ -68,8 +68,8 @@ public class EntityVoidPortal extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return super.getAddEntityPacket();
+    public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
+        return super.getAddEntityPacket(serverEntity);
     }
 
     public void tick() {
@@ -244,7 +244,7 @@ public class EntityVoidPortal extends Entity {
     }
 
     public void createAndSetSister(Level world, Direction dir){
-        EntityVoidPortal portal = AMEntityRegistry.VOID_PORTAL.get().create(world);
+        EntityVoidPortal portal = AMEntityRegistry.VOID_PORTAL.get().create(world, EntitySpawnReason.MOB_SUMMONED);
         portal.setAttachmentFacing(dir != null ? dir : this.getAttachmentFacing().getOpposite());
         BlockPos safeDestination = this.getDestination();
         portal.teleportToWithTicket(safeDestination.getX() + 0.5f, safeDestination.getY() + 0.5f, safeDestination.getZ() + 0.5f);

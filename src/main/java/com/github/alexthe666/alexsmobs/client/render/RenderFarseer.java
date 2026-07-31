@@ -237,7 +237,7 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, LivingEntityRender
     private void renderFarseerModel(PoseStack matrixStackIn, OrderedSubmitNodeCollector source, RenderType defRenderType, float partialTicks, int packedLightIn, int overlayColors, float alphaIn, EntityFarseer entityIn) {
         if(entityIn.hasLaser()){
             VertexConsumer staticyInsides = AMRenderTypes.createMergedVertexConsumer(source.getBuffer(AMRenderTypes.STATIC_ENTITY), source.getBuffer(RenderType.entityTranslucent(TEXTURE_EYE)));
-            EYE_MODEL.renderToBuffer(matrixStackIn, staticyInsides, packedLightIn, NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1F);
+            EYE_MODEL.renderToBuffer(matrixStackIn, staticyInsides, packedLightIn, NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
         }
         VertexConsumer consumer;
         float hurt = Math.max(entityIn.hurtTime, entityIn.deathTime);
@@ -246,9 +246,9 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, LivingEntityRender
         if(hurt > 0){
             afterimageSpeed = Math.min(hurt / 20F, 1F) + 0.3F;
             VertexConsumer staticyScars = AMRenderTypes.createMergedVertexConsumer(source.getBuffer(AMRenderTypes.STATIC_ENTITY), source.getBuffer(RenderType.entityTranslucent(TEXTURE_SCARS)));
-            SCARS_MODEL.renderToBuffer(matrixStackIn, staticyScars, packedLightIn, overlayColors, 1.0F, 1.0F, 1.0F, 0.3F);
+            SCARS_MODEL.renderToBuffer(matrixStackIn, staticyScars, packedLightIn, overlayColors, net.minecraft.util.ARGB.color((int)((0.3F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
         }
-        this.model.renderToBuffer(matrixStackIn, source.getBuffer(defRenderType), packedLightIn, overlayColors, 1.0F, 1.0F, 1.0F, alphaIn);
+        this.model.renderToBuffer(matrixStackIn, source.getBuffer(defRenderType), packedLightIn, overlayColors, net.minecraft.util.ARGB.color((int)((alphaIn) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
 
         matrixStackIn.pushPose();
         matrixStackIn.popPose();
@@ -267,11 +267,11 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, LivingEntityRender
         matrixStackIn.scale(scale + 1F, scale + 1F, scale + 1F);
         matrixStackIn.pushPose();
         matrixStackIn.translate(redOffset.x, redOffset.y, redOffset.z);
-        AFTERIMAGE_MODEL.renderToBuffer(matrixStackIn, source.getBuffer(afterimage), 240, overlayColors, 1.0F, 0F, 0F, afterimageAlpha1);
+        AFTERIMAGE_MODEL.renderToBuffer(matrixStackIn, source.getBuffer(afterimage), 240, overlayColors, net.minecraft.util.ARGB.color((int)((afterimageAlpha1) * 255F), (int)((1.0F) * 255F), (int)((0F) * 255F), (int)((0F) * 255F)));
         matrixStackIn.popPose();
         matrixStackIn.pushPose();
         matrixStackIn.translate(blueOffset.x, blueOffset.y, blueOffset.z);
-        AFTERIMAGE_MODEL.renderToBuffer(matrixStackIn, source.getBuffer(afterimage), 240, overlayColors, 0F, 0F, 1.0F, afterimageAlpha2);
+        AFTERIMAGE_MODEL.renderToBuffer(matrixStackIn, source.getBuffer(afterimage), 240, overlayColors, net.minecraft.util.ARGB.color((int)((afterimageAlpha2) * 255F), (int)((0F) * 255F), (int)((0F) * 255F), (int)((1.0F) * 255F)));
         matrixStackIn.popPose();
         matrixStackIn.popPose();
         AFTERIMAGE_MODEL.eye.showModel = true;
@@ -344,7 +344,7 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, LivingEntityRender
 
         public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityFarseer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (entitylivingbaseIn.getAnimation() == EntityFarseer.ANIMATION_EMERGE) {
-                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE_CLAWS));
+                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(TEXTURE_CLAWS));
                 this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
             }
 

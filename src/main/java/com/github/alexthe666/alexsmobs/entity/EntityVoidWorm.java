@@ -137,7 +137,7 @@ public class EntityVoidWorm extends Monster {
 
     @Override
     public ItemEntity spawnAtLocation(ItemStack stack) {
-        ItemEntity itementity = this.spawnAtLocation(stack, 0.0F);
+        ItemEntity itementity = this.spawnAtLocation((ServerLevel) this.level(), stack, 0.0F);
         if (itementity != null) {
             itementity.setNoGravity(true);
             itementity.setGlowingTag(true);
@@ -184,8 +184,8 @@ public class EntityVoidWorm extends Monster {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.LAVA) || source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.LAVA) || source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     @Override
@@ -400,7 +400,7 @@ public class EntityVoidWorm extends Monster {
             this.captureDrops(new java.util.ArrayList<>());
 
             final boolean flag = this.lastHurtByPlayerTime > 0;
-            if (this.shouldDropLoot() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            if (this.shouldDropLoot() && this.level().getGameRules().getBooleanOr(GameRules.RULE_DOMOBLOOT, false)) {
                 this.dropFromLootTable(source, flag);
                 this.dropCustomDeathLoot(source, i, flag);
             }
@@ -473,11 +473,11 @@ public class EntityVoidWorm extends Monster {
 
     @Nullable
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason
-            reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+            reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setSegmentCount(25 + random.nextInt(15));
         this.setXRot(0.0F);
         this.setBaseMaxHealth(AMConfig.voidWormMaxHealth, true);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     @Override
@@ -615,7 +615,7 @@ public class EntityVoidWorm extends Monster {
                 BlockHitResult result1 = (BlockHitResult) result;
                 vec = vec.add(net.minecraft.world.phys.Vec3.atLowerCornerOf(result1.getDirection().getNormal()));
             }
-            EntityVoidPortal portal = AMEntityRegistry.VOID_PORTAL.get().create(level());
+            EntityVoidPortal portal = AMEntityRegistry.VOID_PORTAL.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
             portal.setPos(vec.x, vec.y, vec.z);
             Vec3 dirVec = vec.subtract(this.position());
             Direction dir = Direction.getNearest(dirVec.x, dirVec.y, dirVec.z);

@@ -106,7 +106,7 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
 
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -121,11 +121,11 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
     public void awardKillScore(Entity entity, int score, DamageSource src) {
         if(entity instanceof LivingEntity living){
             if(living.getType() == EntityType.SHULKER){
-                CompoundTag fishNbt = new CompoundTag();
+                net.minecraft.world.level.storage.TagValueOutput fishNbt = net.minecraft.world.level.storage.TagValueOutput.createWithoutContext(net.minecraft.util.ProblemReporter.DISCARDING);
                 living.addAdditionalSaveData(fishNbt);
                 fishNbt.putString("DeathLootTable", BuiltInLootTables.EMPTY.toString());
-                living.readAdditionalSaveData(fishNbt);
-                living.spawnAtLocation(Items.SHULKER_SHELL);
+                living.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, living.level().registryAccess(), fishNbt.output()));
+                living.spawnAtLocation((ServerLevel) living.level(), Items.SHULKER_SHELL);
             }
         }
         super.awardKillScore(entity, score, src);
@@ -210,8 +210,8 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public boolean canBreatheUnderwater() {
@@ -236,7 +236,7 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
         return isTame() && stack.is(AMTagRegistry.MANTIS_SHRIMP_BREEDABLES);
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         this.punch();
         return true;
     }
@@ -352,7 +352,7 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
                     itemstack.shrink(1);
                     return InteractionResult.SUCCESS;
                 } else {
-                    this.spawnAtLocation(this.getMainHandItem().copy());
+                    this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().copy());
                     this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                     return InteractionResult.SUCCESS;
                 }
@@ -429,12 +429,12 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
             if (this.entityData.get(PUNCH_TICK) == 2 && this.getTarget() != null && this.distanceTo(this.getTarget()) < 2.8D) {
                 if (this.getTarget() instanceof AbstractFish && !this.isTame()) {
                     AbstractFish fish = (AbstractFish) this.getTarget();
-                    CompoundTag fishNbt = new CompoundTag();
+                    net.minecraft.world.level.storage.TagValueOutput fishNbt = net.minecraft.world.level.storage.TagValueOutput.createWithoutContext(net.minecraft.util.ProblemReporter.DISCARDING);
                     fish.addAdditionalSaveData(fishNbt);
                     fishNbt.putString("DeathLootTable", BuiltInLootTables.EMPTY.toString());
-                    fish.readAdditionalSaveData(fishNbt);
+                    fish.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, fish.level().registryAccess(), fishNbt.output()));
                 }
-                this.getTarget().knockback(1.7F, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ());
+                this.getTarget().knockback(1.7F, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ(), null, 0.0F);
                 float knockbackResist = (float) Mth.clamp((1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)), 0, 1);
                 this.getTarget().setDeltaMovement(this.getTarget().getDeltaMovement().add(0, knockbackResist * 0.8F, 0));
                 if (!this.getTarget().isInWater()) {
@@ -552,7 +552,7 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         int i;
         if(reason == EntitySpawnReason.SPAWN_EGG){
             i = this.getRandom().nextInt(4);
@@ -562,13 +562,13 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
             i = this.getRandom().nextInt(3);
         }
         this.setVariant(i);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     @Nullable
     @Override
-    public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        EntityMantisShrimp shrimp = AMEntityRegistry.MANTIS_SHRIMP.get().create(serverWorld);
+    public AgeableMob getBreedOffspring(ServerLevel serverWorld) {
+        EntityMantisShrimp shrimp = AMEntityRegistry.MANTIS_SHRIMP.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
         shrimp.setVariant(getRandom().nextInt(3));
         return shrimp;
     }

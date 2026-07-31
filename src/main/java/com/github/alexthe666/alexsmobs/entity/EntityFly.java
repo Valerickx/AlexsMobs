@@ -192,10 +192,10 @@ public class EntityFly extends Animal {
             this.setNoDespawn(true);
             conversionTime++;
             if(conversionTime > 300){
-                EntityCrimsonMosquito mosquito = AMEntityRegistry.CRIMSON_MOSQUITO.get().create(level());
+                EntityCrimsonMosquito mosquito = AMEntityRegistry.CRIMSON_MOSQUITO.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
                 mosquito.copyPosition(this);
                 if(!this.level().isClientSide()){
-                    mosquito.finalizeSpawn((ServerLevelAccessor)level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.CONVERSION, null, null);
+                    mosquito.finalizeSpawn((ServerLevelAccessor)level(), level().getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.CONVERSION, null);
                 }
                 level().addFreshEntity(mosquito);
                 mosquito.onSpawnFromFly();
@@ -238,7 +238,7 @@ public class EntityFly extends Animal {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob parent) {
-        EntityFly fly = AMEntityRegistry.FLY.get().create(level());
+        EntityFly fly = AMEntityRegistry.FLY.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
         fly.setNoDespawn(true);
         return fly;
     }

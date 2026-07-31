@@ -136,7 +136,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
         this.goalSelector.addGoal(1, new ShoebillAIFish(this));
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2D, true));
         this.goalSelector.addGoal(4, new ShoebillAIFlightFlee(this));
-        this.goalSelector.addGoal(5, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.SHOEBILL_FOODSTUFFS), false));
+        this.goalSelector.addGoal(5, new TemptGoal(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.SHOEBILL_FOODSTUFFS)), false));
         this.goalSelector.addGoal(6, new RandomStrollGoal(this, 1D, 1400));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
@@ -216,7 +216,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
             }
         }
         if (!this.level().isClientSide() && this.getTarget() != null && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 9 && this.hasLineOfSight(this.getTarget())) {
-            getTarget().knockback(0.3F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ());
+            getTarget().knockback(0.3F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ(), null, 0.0F);
             this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
         }
         AnimationHandler.INSTANCE.updateAnimations(this);
@@ -247,7 +247,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
         return 0.98F;
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(ANIMATION_ATTACK);
         }
@@ -297,10 +297,10 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
                      double d2 = this.random.nextGaussian() * 0.02D;
                      double d0 = this.random.nextGaussian() * 0.02D;
                      double d1 = this.random.nextGaussian() * 0.02D;
-                     this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, lvt_3_1_), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
+                     this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (lvt_3_1_).getItem()), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
                  }
                  this.gameEvent(GameEvent.EAT);
-                 this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+                 this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
                  lvt_3_1_.shrink(1);
                  return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide());
              }else{
@@ -317,11 +317,11 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
                      double d2 = this.random.nextGaussian() * 0.02D;
                      double d0 = this.random.nextGaussian() * 0.02D;
                      double d1 = this.random.nextGaussian() * 0.02D;
-                     this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, lvt_3_1_), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
+                     this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (lvt_3_1_).getItem()), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
                  }
                  lvt_3_1_.shrink(1);
                  this.gameEvent(GameEvent.EAT);
-                 this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+                 this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
                  return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide());
              }else{
                  if(this.getAnimation() == NO_ANIMATION){
@@ -339,7 +339,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        return AMEntityRegistry.SHOEBILL.get().create(serverWorld);
+        return AMEntityRegistry.SHOEBILL.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     @Override
@@ -353,7 +353,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
     @Override
     public void onGetItem(ItemEntity e) {
         this.gameEvent(GameEvent.EAT);
-        this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+        this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
         if (e.getItem().is(AMTagRegistry.SHOEBILL_LUCK_FOODS)) {
             luckLevel = Mth.clamp(luckLevel + 1, 0, 10);
         }

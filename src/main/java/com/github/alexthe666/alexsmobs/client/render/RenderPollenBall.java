@@ -36,7 +36,7 @@ public class RenderPollenBall extends EntityRenderer<EntityPollenBall, EntityRen
         matrixStackIn.translate(0, 0.5F, 0);
         matrixStackIn.scale(1F, 1F, 1F);
         VertexConsumer ivertexbuilder = bufferIn.getBuffer(AMRenderTypes.getFullBright(getTextureLocation(entityIn)));
-        MODEL_POLLEN_BALL.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        MODEL_POLLEN_BALL.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
         matrixStackIn.popPose();
         matrixStackIn.popPose();
         matrixStackIn.popPose();

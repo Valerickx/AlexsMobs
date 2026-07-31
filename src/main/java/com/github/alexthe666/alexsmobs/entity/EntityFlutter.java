@@ -119,7 +119,7 @@ public class EntityFlutter extends TamableAnimal implements IFollower {
         super.registerGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new FlyAwayFromTarget(this));
-        this.goalSelector.addGoal(2, new TameableAITempt(this, 1.1D, Ingredient.of(AMTagRegistry.FLUTTER_BREEDABLES), false) {
+        this.goalSelector.addGoal(2, new TameableAITempt(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.FLUTTER_BREEDABLES)), false) {
             @Override
             public boolean shouldFollowAM(LivingEntity le) {
                 return EntityFlutter.this.canEatFlower(le.getMainHandItem()) || EntityFlutter.this.canEatFlower(le.getOffhandItem()) || super.shouldFollowAM(le);
@@ -411,7 +411,7 @@ public class EntityFlutter extends TamableAnimal implements IFollower {
         if (isTame() && itemstack.is(ItemTags.FLOWERS) && this.getHealth() < this.getMaxHealth()) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
             this.heal(5);
             return InteractionResult.SUCCESS;
         }
@@ -422,7 +422,7 @@ public class EntityFlutter extends TamableAnimal implements IFollower {
                 return InteractionResult.SUCCESS;
             } else if (itemstack.is(Tags.Items.SHEARS) && this.isPotted()) {
                 this.setPotted(false);
-                this.spawnAtLocation(Items.FLOWER_POT);
+                this.spawnAtLocation((ServerLevel) this.level(), Items.FLOWER_POT);
                 return InteractionResult.SUCCESS;
             } else if(this.isPotted() && player.isShiftKeyDown()){
                 ItemStack fish = getFishBucket();
@@ -478,7 +478,7 @@ public class EntityFlutter extends TamableAnimal implements IFollower {
         super.dropEquipment();
         if (this.isPotted()) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(Items.FLOWER_POT);
+                this.spawnAtLocation((ServerLevel) this.level(), Items.FLOWER_POT);
             }
         }
     }
@@ -610,7 +610,7 @@ public class EntityFlutter extends TamableAnimal implements IFollower {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mobo) {
-        EntityFlutter baby = AMEntityRegistry.FLUTTER.get().create(level());
+        EntityFlutter baby = AMEntityRegistry.FLUTTER.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
         baby.setPersistenceRequired();
         return baby;
     }

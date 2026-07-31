@@ -53,8 +53,8 @@ public class EntityCentipedeBody extends Mob implements IHurtableMultipart {
 
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return  source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return  source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public boolean isNoGravity() {

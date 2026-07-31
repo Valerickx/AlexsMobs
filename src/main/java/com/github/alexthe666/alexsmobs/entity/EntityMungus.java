@@ -161,7 +161,7 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
     public void tick(){
         super.tick();
         if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilNextEgg <= 0) {
-            ItemEntity dropped = this.spawnAtLocation(AMItemRegistry.MUNGAL_SPORES.get());
+            ItemEntity dropped = this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.MUNGAL_SPORES.get());
             dropped.setDefaultPickUpDelay();
             this.timeUntilNextEgg = this.random.nextInt(24000) + 24000;
 
@@ -441,13 +441,13 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
             }
         }
         if (compound.contains("BeamTarget")) {
-            this.setBeamTarget(NbtUtils.readBlockPos(compound.getCompound("BeamTarget")));
+            this.setBeamTarget(NbtUtils.readBlockPos(compound.getCompoundOrEmpty("BeamTarget")));
         }
         this.setMushroomState(blockstate);
         this.setMushroomCount(compound.getIntOr("MushroomCount", 0));
         this.setSackSwell(compound.getIntOr("Sack", 0));
         this.beamCounter = compound.getIntOr("BeamCounter", 0);
-        this.entityData.set(ALT_ORDER_MUSHROOMS, compound.getBoolean("AltMush"));
+        this.entityData.set(ALT_ORDER_MUSHROOMS, compound.getBooleanOr("AltMush", false));
         if (compound.contains("EggTime")) {
             this.timeUntilNextEgg = compound.getIntOr("EggTime", 0);
         }
@@ -541,11 +541,11 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.entityData.set(ALT_ORDER_MUSHROOMS, random.nextBoolean());
         this.setMushroomCount(random.nextInt(2));
         setMushroomState(random.nextBoolean() ? Blocks.BROWN_MUSHROOM.defaultBlockState() : Blocks.RED_MUSHROOM.defaultBlockState());
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public int getMushroomCount() {
@@ -553,7 +553,7 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
     }
 
     public void setMushroomCount(int command) {
-        this.entityData.set(MUSHROOM_COUNT, Integer.valueOf(command));
+        this.entityData.set(MUSHROOM_COUNT, command);
     }
 
     public int getSackSwell() {
@@ -589,7 +589,7 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.MUNGUS.get().create(p_241840_1_);
+        return AMEntityRegistry.MUNGUS.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public boolean isMushroomTarget(BlockPos pos) {

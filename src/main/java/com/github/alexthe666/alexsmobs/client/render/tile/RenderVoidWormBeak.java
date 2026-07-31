@@ -36,7 +36,7 @@ public class RenderVoidWormBeak<T extends TileEntityVoidWormBeak> implements Blo
         matrixStackIn.pushPose();
         matrixStackIn.translate(0, -0.01F, 0.0F);
         HEAD_MODEL.renderBeak(tileEntityIn, partialTicks);
-        HEAD_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), combinedLightIn, combinedOverlayIn, 1, 1F, 1, 1);
+        HEAD_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
         matrixStackIn.popPose();
         matrixStackIn.popPose();
     }

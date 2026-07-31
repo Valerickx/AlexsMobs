@@ -130,7 +130,7 @@ public class CrowAICircleCrops extends MoveToBlockGoal {
             return;
         }
         if(crow.level().getBlockState(blockPos).getBlock() instanceof CropBlock){
-            if(crow.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)){
+            if(crow.level().getGameRules().getBooleanOr(GameRules.RULE_MOBGRIEFING, false)){
                 CropBlock block = (CropBlock)crow.level().getBlockState(blockPos).getBlock();
                 int cropAge = block.getAge(crow.level().getBlockState(blockPos));
                 if(cropAge > 0){
@@ -140,7 +140,7 @@ public class CrowAICircleCrops extends MoveToBlockGoal {
                 }
             }
         }else{
-            if(crow.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+            if(crow.level().getGameRules().getBooleanOr(GameRules.RULE_MOBGRIEFING, false)) {
                 crow.level().destroyBlock(blockPos, true);
             }
         }

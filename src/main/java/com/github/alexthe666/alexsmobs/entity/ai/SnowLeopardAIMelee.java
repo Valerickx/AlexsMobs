@@ -153,7 +153,7 @@ public class SnowLeopardAIMelee extends Goal {
                 if(leopard.getAnimation() == IAnimatedEntity.NO_ANIMATION){
                     leopard.setAnimation(leopard.getRandom().nextBoolean() ? EntitySnowLeopard.ANIMATION_ATTACK_R : EntitySnowLeopard.ANIMATION_ATTACK_L);
                 }else if(this.leopard.getAnimationTick() == 5){
-                    leopard.doHurtTarget(target);
+                    leopard.doHurtTarget((ServerLevel) this.level(), target);
                 }
             }
         }

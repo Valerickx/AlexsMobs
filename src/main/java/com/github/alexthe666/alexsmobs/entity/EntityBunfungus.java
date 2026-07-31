@@ -235,7 +235,7 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
                         for (final LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(2.0D))) {
                             if ((entity == target || entity instanceof Monster) && !entity.getType().is(AMTagRegistry.BUNFUNGUS_IGNORE_AOE_ATTACKS)) {
                                 flag = true;
-                                entity.knockback(0.2F, entity.getX() - this.getX(), entity.getZ() - this.getZ());
+                                entity.knockback(0.2F, entity.getX() - this.getX(), entity.getZ() - this.getZ(), null, 0.0F);
                                 entity.hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
                             }
                         }
@@ -255,7 +255,7 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
         if (this.getAnimation() == ANIMATION_EAT) {
             if (this.getAnimationTick() % 4 == 0) {
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
             }
             if (this.getAnimationTick() >= 18) {
                 ItemStack stack = this.getItemInHand(InteractionHand.MAIN_HAND);
@@ -271,7 +271,7 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
                     final double d2 = this.random.nextGaussian() * 0.02D;
                     final double d0 = this.random.nextGaussian() * 0.02D;
                     final double d1 = this.random.nextGaussian() * 0.02D;
-                    this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItemInHand(InteractionHand.MAIN_HAND)), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
+                    this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (this.getItemInHand(InteractionHand.MAIN_HAND).getItem())), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
                 }
             }
         }

@@ -45,11 +45,11 @@ public class RenderMurmurBody extends MobRenderer<EntityMurmur, LivingEntityRend
             scale(body, matrixStackIn, partialTicks);
             HEAD_MODEL.resetToDefaultPose();
             HEAD_MODEL.animateHair(f7);
-            HEAD_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(loc)), packedLightIn, overlayCoords, 1, 1F, 1, 1);
+            HEAD_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(loc)), packedLightIn, overlayCoords, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
             matrixStackIn.translate(0, 0.5F, 0);
             NECK_MODEL.resetToDefaultPose();
             NECK_MODEL.setAttributes(0.5F, 0, 0, 0);
-            NECK_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutoutNoCull(loc)), packedLightIn, overlayCoords, 1, 1F, 1, 1);
+            NECK_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(loc)), packedLightIn, overlayCoords, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
             matrixStackIn.popPose();
             matrixStackIn.popPose();
         }

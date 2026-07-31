@@ -116,7 +116,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH;
+        return SoundEvents.BUCKET_FILL_FISH.value();
     }
 
     public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
@@ -148,11 +148,11 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         if (reason == EntitySpawnReason.NATURAL) {
             doInitialPosing(worldIn);
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public boolean checkSpawnObstruction(LevelReader worldIn) {
@@ -164,7 +164,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
     }
 
     public void setDepressurized(boolean depressurized) {
-        this.entityData.set(DEPRESSURIZED, depressurized);
+        this.entityData.set(DEPRESSURIZED);
     }
 
     protected PathNavigation createNavigation(Level worldIn) {
@@ -203,7 +203,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
     @Override
     public void loadFromBucketTag(@Nonnull CompoundTag compound) {
         if (compound.contains("FrilledSharkData")) {
-            this.readAdditionalSaveData(compound.getCompound("FrilledSharkData"));
+            this.readAdditionalSaveData(compound.getCompoundOrEmpty("FrilledSharkData"));
         }
     }
 
@@ -231,7 +231,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
     public void calculateEntityAnimation(boolean flying) {
         float f1 = (float)Mth.length(this.getX() - this.xo, this.getY() - this.yo, this.getZ() - this.zo);
         float f2 = Math.min(f1 * 8.0F, 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     public void tick() {
@@ -257,9 +257,9 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
             float f1 = this.getYRot() * Mth.DEG_TO_RAD;
             this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f1) * 0.06F, 0.0D, Mth.cos(f1) * 0.06F));
             if (this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue())){
-                this.getTarget().addEffect(new MobEffectInstance(AMEffectRegistry.EXSANGUINATION.get(), 60, 2));
+                this.getTarget().addEffect(new MobEffectInstance(AMEffectRegistry.EXSANGUINATION, 60, 2));
                 if(random.nextInt(15) == 0 && this.getTarget() instanceof Squid){
-                    this.spawnAtLocation(AMItemRegistry.SERRATED_SHARK_TOOTH.get());
+                    this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.SERRATED_SHARK_TOOTH.get());
                 }
             }
 
@@ -316,7 +316,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
         animationTick = tick;
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(ANIMATION_ATTACK);
         }
@@ -358,7 +358,7 @@ public class EntityFrilledShark extends WaterAnimal implements IAnimatedEntity, 
             double speed = 1.0F;
             if (EntityFrilledShark.this.distanceTo(target) < 10) {
                 if (EntityFrilledShark.this.distanceTo(target) < 1.9D) {
-                    EntityFrilledShark.this.doHurtTarget(target);
+                    EntityFrilledShark.this.doHurtTarget((ServerLevel) this.level(), target);
                     speed = 0.8F;
                 } else {
                     speed = 0.6F;

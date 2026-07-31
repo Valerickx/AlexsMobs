@@ -125,7 +125,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
         this.goalSelector.addGoal(2, new MudskipperAIAttack(this));
         this.goalSelector.addGoal(3, new AnimalAIFindWater(this));
         this.goalSelector.addGoal(3, new AnimalAILeaveWater(this));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.MUDSKIPPER_TAMEABLES), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.MUDSKIPPER_TAMEABLES)), false));
         this.goalSelector.addGoal(5, new BreedGoal(this, 0.8D));
         this.goalSelector.addGoal(6, new PanicGoal(this, 1D));
         this.goalSelector.addGoal(7, new MudskipperAIDisplay(this));
@@ -317,7 +317,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        return AMEntityRegistry.MUDSKIPPER.get().create(serverLevel);
+        return AMEntityRegistry.MUDSKIPPER.get().create(serverLevel, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public boolean isMouthOpen() {
@@ -332,7 +332,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
     public void calculateEntityAnimation(boolean flying) {
         float f1 = (float) Mth.length(this.getX() - this.xo, 0, this.getZ() - this.zo);
         float f2 = Math.min(f1 * 8.0F, 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
@@ -405,27 +405,27 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
     }
 
     @Override
-    public void saveToBucketTag(@Nonnull ItemStack bucket) {
-        if (this.hasCustomName()) {
-            bucket.setCustomName(this.getCustomName());
-        }
-        CompoundTag platTag = new CompoundTag();
-        this.addAdditionalSaveData(platTag);
-        CompoundTag compound = bucket.getOrCreateTag();
-        compound.put("MudskipperData", platTag);
+    public void saveToBucketTag(ItemStack bucket) {
+        net.minecraft.world.entity.Bucketable.saveDefaultDataToBucketTag(this, bucket);
+        net.minecraft.world.item.component.CustomData.update(net.minecraft.core.component.DataComponents.BUCKET_ENTITY_DATA, bucket, compound -> {
+            net.minecraft.world.level.storage.TagValueOutput platTag = net.minecraft.world.level.storage.TagValueOutput.createWithoutContext(net.minecraft.util.ProblemReporter.DISCARDING);
+            this.addAdditionalSaveData(platTag);
+            compound.put("MudskipperData", platTag.output());
+        });
     }
 
     @Override
-    public void loadFromBucketTag(@Nonnull CompoundTag compound) {
+    public void loadFromBucketTag(CompoundTag compound) {
+        net.minecraft.world.entity.Bucketable.loadDefaultDataFromBucketTag(this, compound);
         if (compound.contains("MudskipperData")) {
-            this.readAdditionalSaveData(compound.getCompound("MudskipperData"));
+            this.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, this.level().registryAccess(), compound.getCompoundOrEmpty("MudskipperData")));
         }
     }
 
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH;
+        return SoundEvents.BUCKET_FILL_FISH.value();
     }
 
     @Override

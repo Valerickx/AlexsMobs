@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 public class ItemModFishBucket extends MobBucketItem {
 
     public ItemModFishBucket(Supplier<? extends EntityType<?>> fishTypeIn, Fluid fluid, Item.Properties builder) {
-        super(fishTypeIn, () -> fluid, () -> SoundEvents.BUCKET_EMPTY_FISH, builder.stacksTo(1));
+        super(fishTypeIn, () -> fluid, () -> SoundEvents.BUCKET_EMPTY_FISH.value(), builder.stacksTo(1));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -50,7 +50,7 @@ public class ItemModFishBucket extends MobBucketItem {
         if (fishType == AMEntityRegistry.TERRAPIN.get()) {
             CompoundTag compoundnbt = stack.getTag();
             if (compoundnbt != null && compoundnbt.contains("TerrapinData")) {
-                int i = compoundnbt.getCompound("TerrapinData").getInt("TurtleType");
+                int i = compoundnbt.getCompoundOrEmpty("TerrapinData").getIntOr("TurtleType", 0);
                 tooltip.add((Component.translatable(TerrapinTypes.values()[Mth.clamp(i, 0, TerrapinTypes.values().length - 1)].getTranslationName())).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
             }
         }

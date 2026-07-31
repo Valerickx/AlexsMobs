@@ -55,7 +55,7 @@ public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho, Entit
         }else{
             res = getEntityTexture(age);
         }
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(res));
+        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(res));
         PoseStack.Pose lvt_19_1_ = matrixStackIn.last();
         Matrix4f lvt_20_1_ = lvt_19_1_.pose();
         Matrix3f lvt_21_1_ = lvt_19_1_.normal();

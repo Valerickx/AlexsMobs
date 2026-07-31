@@ -28,7 +28,7 @@ public class CrocodileAIMelee extends MeleeAttackGoal {
         if (distToEnemySqr <= d0) {
             this.resetAttackCooldown();
             this.mob.swing(InteractionHand.MAIN_HAND);
-            this.mob.doHurtTarget(enemy);
+            this.mob.doHurtTarget((ServerLevel) this.level(), enemy);
         }
 
     }

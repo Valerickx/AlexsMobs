@@ -43,7 +43,7 @@ public class RenderRhinoceros extends MobRenderer<EntityRhinoceros, LivingEntity
                 float r = (float) (color >> 16 & 255) / 255.0F;
                 float g = (float) (color >> 8 & 255) / 255.0F;
                 float b = (float) (color & 255) / 255.0F;
-                this.getParentModel().renderToBuffer(p_225628_1_, p_225628_2_.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_POTION)), p_225628_3_, OverlayTexture.NO_OVERLAY, r, g, b, 1.0F);
+                this.getParentModel().renderToBuffer(p_225628_1_, p_225628_2_.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_POTION)), p_225628_3_, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((r) * 255F), (int)((g) * 255F), (int)((b) * 255F)));
             }
         }
     }

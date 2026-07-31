@@ -62,7 +62,7 @@ public class EntityEnderiophage extends Animal implements Enemy {
     private static final EntityDataAccessor<Float> PHAGE_SCALE = SynchedEntityData.defineId(EntityEnderiophage.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(EntityEnderiophage.class, EntityDataSerializers.INT);
     private static final Predicate<LivingEntity> ENDERGRADE_OR_INFECTED = (entity) -> {
-        return entity instanceof EntityEndergrade || entity.hasEffect(AMEffectRegistry.ENDER_FLU.get());
+        return entity instanceof EntityEndergrade || entity.hasEffect(AMEffectRegistry.ENDER_FLU);
     };
     public float prevPhagePitch;
     public float tentacleAngle;
@@ -108,12 +108,12 @@ public class EntityEnderiophage extends Animal implements Enemy {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         if (reason == EntitySpawnReason.NATURAL) {
             doInitialPosing(worldIn);
         }
         setSkinForDimension();
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public int getMaxSpawnClusterSize() {
@@ -125,7 +125,7 @@ public class EntityEnderiophage extends Animal implements Enemy {
     }
 
     public void setPhageScale(float scale) {
-        this.entityData.set(PHAGE_SCALE, scale);
+        this.entityData.set(PHAGE_SCALE);
     }
 
     public int getVariant() {
@@ -249,18 +249,18 @@ public class EntityEnderiophage extends Animal implements Enemy {
                             } else {
                                 if (random.nextInt(3) == 0) {
                                     if (!this.isMissingEye()) {
-                                        if (target.getEffect(AMEffectRegistry.ENDER_FLU.get()) == null) {
-                                            target.addEffect(new MobEffectInstance(AMEffectRegistry.ENDER_FLU.get(), 12000));
+                                        if (target.getEffect(AMEffectRegistry.ENDER_FLU) == null) {
+                                            target.addEffect(new MobEffectInstance(AMEffectRegistry.ENDER_FLU, 12000));
                                         } else {
-                                            MobEffectInstance inst = target.getEffect(AMEffectRegistry.ENDER_FLU.get());
+                                            MobEffectInstance inst = target.getEffect(AMEffectRegistry.ENDER_FLU);
                                             int duration = 12000;
                                             int level = 0;
                                             if (inst != null) {
                                                 duration = inst.getDuration();
                                                 level = inst.getAmplifier();
                                             }
-                                            target.removeEffect(AMEffectRegistry.ENDER_FLU.get());
-                                            target.addEffect(new MobEffectInstance(AMEffectRegistry.ENDER_FLU.get(), duration, Math.min(level + 1, 4)));
+                                            target.removeEffect(AMEffectRegistry.ENDER_FLU);
+                                            target.addEffect(new MobEffectInstance(AMEffectRegistry.ENDER_FLU, duration, Math.min(level + 1, 4)));
                                         }
                                         this.heal(5);
                                         this.gameEvent(GameEvent.ENTITY_ROAR);
@@ -610,7 +610,7 @@ public class EntityEnderiophage extends Animal implements Enemy {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             Entity entity = source.getEntity();

@@ -30,7 +30,7 @@ public class RenderMudBall extends EntityRenderer<EntityMudBall, EntityRenderSta
         PoseStack.Pose $$6 = p_114083_.last();
         Matrix4f $$7 = $$6.pose();
         Matrix3f $$8 = $$6.normal();
-        VertexConsumer $$9 = p_114084_.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
+        VertexConsumer $$9 = p_114084_.getBuffer(RenderType.entityCutout(TEXTURE));
         vertex($$9, $$7, $$8, p_114085_, 0.0F, 0, 0, 1);
         vertex($$9, $$7, $$8, p_114085_, 1.0F, 0, 1, 1);
         vertex($$9, $$7, $$8, p_114085_, 1.0F, 1, 1, 0);

@@ -42,7 +42,7 @@ public class RenderVoidWormShot extends EntityRenderer<EntityVoidWormShot, Entit
         float colorize = home;
         matrixStackIn.translate(0, -1.5F, 0);
         VertexConsumer ivertexbuilder = bufferIn.getBuffer(AMRenderTypes.getFullBright(getTextureLocation(entityIn)));
-        MODEL.renderToBuffer(matrixStackIn, ivertexbuilder, 210, NO_OVERLAY, Math.max(colorize, 0.2F), Math.max(colorize, 0.2F), 1.0F, 1.0F);
+        MODEL.renderToBuffer(matrixStackIn, ivertexbuilder, 210, NO_OVERLAY, net.minecraft.util.ARGB.color(255, (int)(Math.max(colorize, 0.2F) * 255F), (int)(Math.max(colorize, 0.2F) * 255F), 255));
         matrixStackIn.popPose();
         matrixStackIn.popPose();
 

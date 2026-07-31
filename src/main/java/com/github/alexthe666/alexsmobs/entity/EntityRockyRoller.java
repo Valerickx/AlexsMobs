@@ -169,11 +169,11 @@ public class EntityRockyRoller extends Monster implements ICustomCollisions {
         List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(6, 8, 6));
         for (LivingEntity e : list) {
             if (!(e instanceof EntityRockyRoller) && e.isAlive()) {
-                e.addEffect(new MobEffectInstance(AMEffectRegistry.EARTHQUAKE.get(), 20, 0, false, false, true));
+                e.addEffect(new MobEffectInstance(AMEffectRegistry.EARTHQUAKE, 20, 0, false, false, true));
                 flag = true;
             }
         }
-        if (!this.level().canSeeSky(this.blockPosition()) && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if (!this.level().canSeeSky(this.blockPosition()) && this.level().getGameRules().getBooleanOr(GameRules.RULE_MOBGRIEFING, false)) {
             BlockPos ceil = this.blockPosition().offset(0, 2, 0);
             while ((!level().getBlockState(ceil).isSolid() || level().getBlockState(ceil).getBlock() == Blocks.POINTED_DRIPSTONE) && ceil.getY() < (level().getMaxY() + 1)) {
                 ceil = ceil.above();
@@ -282,8 +282,8 @@ public class EntityRockyRoller extends Monster implements ICustomCollisions {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.equals("fallingStalactite") || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.equals("fallingStalactite") || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public int getMaxFallDistance() {

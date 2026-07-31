@@ -83,7 +83,7 @@ public class RaccoonAIWash extends Goal {
                     }
                     this.raccoon.postWashItem(raccoon.getMainHandItem());
                     if(this.raccoon.getMainHandItem().hasCraftingRemainingItem()){
-                        this.raccoon.spawnAtLocation(this.raccoon.getMainHandItem().getCraftingRemainingItem());
+                        this.raccoon.spawnAtLocation((ServerLevel) raccoon.level(), this.raccoon.getMainHandItem().getCraftingRemainingItem());
                     }
                     this.raccoon.getMainHandItem().shrink(1);
                 }

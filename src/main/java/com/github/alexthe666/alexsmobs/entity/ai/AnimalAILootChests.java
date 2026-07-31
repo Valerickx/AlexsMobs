@@ -128,7 +128,7 @@ public class AnimalAILootChests extends MoveToBlockGoal {
                             ItemStack duplicate = stack.copy();
                             duplicate.setCount(1);
                             if (!this.entity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.entity.level().isClientSide()) {
-                                this.entity.spawnAtLocation(this.entity.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+                                this.entity.spawnAtLocation((ServerLevel) entity.level(), this.entity.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
                             }
                             this.entity.setItemInHand(InteractionHand.MAIN_HAND, duplicate);
                             if (entity instanceof EntityRaccoon) {

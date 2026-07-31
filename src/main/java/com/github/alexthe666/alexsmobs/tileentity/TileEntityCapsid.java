@@ -100,7 +100,7 @@ public class TileEntityCapsid extends BaseContainerBlockEntity implements Worldl
                     this.setItem(0, ItemStack.EMPTY);
                     this.level.destroyBlock(this.getBlockPos(), false);
                     this.level.destroyBlock(this.getBlockPos().below(), false);
-                    EntityEnderiophage phage = AMEntityRegistry.ENDERIOPHAGE.get().create(level);
+                    EntityEnderiophage phage = AMEntityRegistry.ENDERIOPHAGE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
                     phage.setPos(this.getBlockPos().getX() + 0.5F, this.getBlockPos().getY() - 1.0F, this.getBlockPos().getZ() + 0.5F);
                     phage.setVariant(0);
                     if(!level.isClientSide()){
@@ -193,15 +193,15 @@ public class TileEntityCapsid extends BaseContainerBlockEntity implements Worldl
             stack.setCount(this.getMaxStackSize());
         }
         lastRecipe = AlexsMobs.PROXY.getCapsidRecipeManager().getRecipeFor(stack);
-        this.saveAdditional(this.getUpdateTag());
+        this.setChanged();
         if (!level.isClientSide()) {
             AlexsMobs.sendMSGToAll(new MessageUpdateCapsid(this.getBlockPos().asLong(), stacks.get(0)));
         }
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(net.minecraft.world.level.storage.ValueInput compound) {
+        super.loadAdditional(compound);
         this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(compound, this.stacks);
     }
@@ -269,7 +269,7 @@ public class TileEntityCapsid extends BaseContainerBlockEntity implements Worldl
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
         if (packet != null && packet.getTag() != null) {
             this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-            ContainerHelper.loadAllItems(packet.getTag(), this.stacks);
+            ContainerHelper.loadAllItems(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, this.level().registryAccess(), packet.getTag()), this.stacks);
         }
     }
 

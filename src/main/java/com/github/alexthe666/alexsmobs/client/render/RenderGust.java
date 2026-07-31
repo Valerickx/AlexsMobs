@@ -36,7 +36,7 @@ public class RenderGust extends EntityRenderer<EntityGust, EntityRenderState> {
         matrixStackIn.scale(0.5F, 0.5F, 0.5F);
         VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(TEXTURE));
         this.model.hideEyes();
-        this.model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
         this.model.animateGust(entityIn, 0, 0, entityIn.tickCount + partialTicks);
         this.model.showEyes();
         matrixStackIn.popPose();

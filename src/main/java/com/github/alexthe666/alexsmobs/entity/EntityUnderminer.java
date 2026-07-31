@@ -149,7 +149,7 @@ public class EntityUnderminer extends PathfinderMob {
         this.resetStackTime = compound.getIntOr("ResetItemTime", 0);
         this.mineCooldown = compound.getIntOr("MineCooldown", 0);
         if(compound.contains("MineStack")){
-            this.lastGivenStack = ItemStack.of(compound.getCompound("MineStack"));
+            this.lastGivenStack = ItemStack.of(compound.getCompoundOrEmpty("MineStack"));
         }
     }
 
@@ -213,8 +213,8 @@ public class EntityUnderminer extends PathfinderMob {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return !source.is(DamageTypes.MAGIC) && source.is(DamageTypes.FELL_OUT_OF_WORLD) && !source.isCreativePlayer() || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return !source.is(DamageTypes.MAGIC) && source.is(DamageTypes.FELL_OUT_OF_WORLD) && !source.isCreativePlayer() || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     private float calculateDistanceToFloor() {
@@ -250,10 +250,10 @@ public class EntityUnderminer extends PathfinderMob {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficultyInstance, EntitySpawnReason EntitySpawnReason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag tag) {
-        spawnData = super.finalizeSpawn(level, difficultyInstance, EntitySpawnReason, spawnData, tag);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficultyInstance, EntitySpawnReason EntitySpawnReason, @Nullable SpawnGroupData spawnData) {
+        spawnData = super.finalizeSpawn(level, difficultyInstance, EntitySpawnReason, spawnData);
         RandomSource randomsource = level.getRandom();
-        this.populateDefaultEquipmentSlots(randomsource, difficultyInstance);
+        this.populateDefaultEquipmentSlots(randomsource);
         if(random.nextFloat() < 0.3F){
             this.setVariant(random.nextInt(2));
             this.setDwarf(false);

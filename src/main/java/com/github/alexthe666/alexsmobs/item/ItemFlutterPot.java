@@ -43,7 +43,7 @@ public class ItemFlutterPot extends Item implements DispensibleContainerItem {
     }
 
     protected void playEmptySound(@Nullable Player player, LevelAccessor worldIn, BlockPos pos) {
-        worldIn.playSound(player, pos, SoundEvents.BUCKET_EMPTY_FISH, SoundSource.NEUTRAL, 1.0F, 1.0F);
+        worldIn.playSound(player, pos, SoundEvents.BUCKET_EMPTY_FISH.value(), SoundSource.NEUTRAL, 1.0F, 1.0F);
     }
 
     private boolean placeFish(ServerLevel worldIn, ItemStack stack, BlockPos pos) {
@@ -51,7 +51,7 @@ public class ItemFlutterPot extends Item implements DispensibleContainerItem {
         if (entity != null && entity instanceof EntityFlutter) {
             CompoundTag compoundnbt = stack.getOrCreateTag();
             if(compoundnbt.contains("FlutterData")){
-                ((EntityFlutter)entity).readAdditionalSaveData(compoundnbt.getCompound("FlutterData"));
+                ((EntityFlutter)entity).readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, worldIn.registryAccess(), compoundnbt.getCompoundOrEmpty("FlutterData")));
             }
             return true;
         }

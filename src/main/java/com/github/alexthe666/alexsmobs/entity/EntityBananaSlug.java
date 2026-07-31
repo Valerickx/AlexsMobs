@@ -117,13 +117,13 @@ public class EntityBananaSlug extends Animal {
     @javax.annotation.Nullable
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @javax.annotation.Nullable SpawnGroupData spawnDataIn, @javax.annotation.Nullable CompoundTag dataTag) {
         this.setVariant(random.nextInt(4));
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class EntityBananaSlug extends Animal {
             b0 = (byte) (b0 & -2);
         }
 
-        this.entityData.set(CLIMBING, b0);
+        this.entityData.set(CLIMBING);
     }
 
     public Direction getAttachmentFacing() {
@@ -156,7 +156,7 @@ public class EntityBananaSlug extends Animal {
 
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.BANANA_SLUG_BREEDABLES), false));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1.0D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.BANANA_SLUG_BREEDABLES)), false));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new AnimalAIWanderRanged(this, 40, 1.0D, 10, 7));
         this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 5.0F));
@@ -245,7 +245,7 @@ public class EntityBananaSlug extends Animal {
             }
         }
         if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilSlime <= 0) {
-            this.spawnAtLocation(AMItemRegistry.BANANA_SLUG_SLIME.get());
+            this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.BANANA_SLUG_SLIME.get());
             this.timeUntilSlime = this.random.nextInt(12000) + 24000;
         }
     }
@@ -303,13 +303,13 @@ public class EntityBananaSlug extends Animal {
     public void calculateEntityAnimation( boolean flying) {
         float f1 = (float)Mth.length(this.getX() - this.xo, 0.5F * (this.getY() - this.yo), this.getZ() - this.zo);
         float f2 = Math.min(f1 * 16.0F, 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
-        EntityBananaSlug slug = AMEntityRegistry.BANANA_SLUG.get().create(level());
+        EntityBananaSlug slug = AMEntityRegistry.BANANA_SLUG.get().create(level(), EntitySpawnReason.MOB_SUMMONED);
         slug.setVariant(this.getVariant());
         return slug;
     }

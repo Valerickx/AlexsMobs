@@ -118,7 +118,7 @@ public class EntityHummingbird extends Animal {
 
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new BreedGoal(this, 1));
-        this.goalSelector.addGoal(2, new TemptGoal(this, 1, Ingredient.of(AMTagRegistry.HUMMINGBIRD_BREEDABLES), false));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.HUMMINGBIRD_BREEDABLES)), false));
         this.goalSelector.addGoal(3, new FollowParentGoal(this, 1));
         this.goalSelector.addGoal(4, new AIUseFeeder(this));
         this.goalSelector.addGoal(4, new HummingbirdAIPollinate(this));
@@ -207,12 +207,12 @@ public class EntityHummingbird extends Animal {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setVariant(this.getRandom().nextInt(3));
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
-    private List<BlockPos> getNearbyFeeders(BlockPos blockpos, ServerLevel world, int range) {
+    private List<BlockPos> getNearbyFeeders(BlockPos blockpos) {
         PoiManager pointofinterestmanager = world.getPoiManager();
         Stream<BlockPos> stream = pointofinterestmanager.findAll(poiTypeHolder -> poiTypeHolder.is(AMPointOfInterestRegistry.HUMMINGBIRD_FEEDER.getKey()), Predicates.alwaysTrue(), blockpos, range, PoiManager.Occupancy.ANY);
         return stream.collect(Collectors.toList());
@@ -316,7 +316,7 @@ public class EntityHummingbird extends Animal {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        return AMEntityRegistry.HUMMINGBIRD.get().create(serverWorld);
+        return AMEntityRegistry.HUMMINGBIRD.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public static <T extends Mob> boolean canHummingbirdSpawn(EntityType<EntityHummingbird> hummingbird, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos p_223317_3_, RandomSource random) {

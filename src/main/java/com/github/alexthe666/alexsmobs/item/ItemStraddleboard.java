@@ -31,7 +31,7 @@ public class ItemStraddleboard extends Item {
 
     public int getColor(ItemStack p_200886_1_) {
         CompoundTag lvt_2_1_ = p_200886_1_.getTagElement("display");
-        return lvt_2_1_ != null && lvt_2_1_.contains("color") ? lvt_2_1_.getInt("color") : 0XADC3D7;
+        return lvt_2_1_ != null && lvt_2_1_.contains("color") ? lvt_2_1_.getIntOr("color", 0) : 0XADC3D7;
     }
 
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {

@@ -31,15 +31,15 @@ public class EntityEmuEgg extends ThrowableItemProjectile {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return super.getAddEntityPacket();
+    public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
+        return super.getAddEntityPacket(serverEntity);
     }
 
     @OnlyIn(Dist.CLIENT)
     public void handleEntityEvent(byte id) {
         if (id == 3) {
             for (int i = 0; i < 8; ++i) {
-                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItem()), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.08D, ((double) this.random.nextFloat() - 0.5D) * 0.08D, ((double) this.random.nextFloat() - 0.5D) * 0.08D);
+                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (this.getItem().getItem())), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.08D, ((double) this.random.nextFloat() - 0.5D) * 0.08D, ((double) this.random.nextFloat() - 0.5D) * 0.08D);
             }
         }
 
@@ -54,7 +54,7 @@ public class EntityEmuEgg extends ThrowableItemProjectile {
                     lvt_2_1_ = 4;
                 }
                 for (int lvt_3_1_ = 0; lvt_3_1_ < lvt_2_1_; ++lvt_3_1_) {
-                    EntityEmu lvt_4_1_ = AMEntityRegistry.EMU.get().create(this.level());
+                    EntityEmu lvt_4_1_ = AMEntityRegistry.EMU.get().create(this.level(), EntitySpawnReason.MOB_SUMMONED);
                     if(this.random.nextInt(50) == 0){
                         lvt_4_1_.setVariant(2);
                     }else if(random.nextInt(3) == 0){

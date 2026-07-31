@@ -53,8 +53,8 @@ public class EntityTendonSegment  extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return super.getAddEntityPacket();
+    public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
+        return super.getAddEntityPacket(serverEntity);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class EntityTendonSegment  extends Entity {
 
     private void createChain(Entity closestValid) {
         this.entityData.set(HAS_CLAW, false);
-        EntityTendonSegment child = AMEntityRegistry.TENDON_SEGMENT.get().create(this.level());
+        EntityTendonSegment child = AMEntityRegistry.TENDON_SEGMENT.get().create(this.level(), EntitySpawnReason.MOB_SUMMONED);
         child.previouslyTouched = new ArrayList<>(previouslyTouched);
         child.previouslyTouched.add(closestValid);
         child.setCreatorEntityUUID(this.getCreatorEntityUUID());

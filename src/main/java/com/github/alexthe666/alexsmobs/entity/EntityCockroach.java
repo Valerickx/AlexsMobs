@@ -115,7 +115,7 @@ public class EntityCockroach extends Animal implements Shearable, net.neoforged.
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.1D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.COCKROACH_FOODSTUFFS), false));
+        this.goalSelector.addGoal(3, new TemptGoal(this, 1.0D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.COCKROACH_FOODSTUFFS)), false));
         this.goalSelector.addGoal(4, new AvoidEntityGoal(this, EntityCentipedeHead.class, 16, 1.3D, 1.0D));
         this.goalSelector.addGoal(4, new AvoidEntityGoal(this, Player.class, 8, 1.3D, 1.0D) {
             public boolean canUse() {
@@ -186,8 +186,8 @@ public class EntityCockroach extends Animal implements Shearable, net.neoforged.
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypeTags.IS_EXPLOSION) || source.getMsgId().equals("anvil") || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || source.is(DamageTypeTags.IS_EXPLOSION) || source.getMsgId().equals("anvil") || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public InteractionResult mobInteract(Player p_230254_1_, InteractionHand p_230254_2_) {
@@ -199,7 +199,7 @@ public class EntityCockroach extends Animal implements Shearable, net.neoforged.
         } else if (lvt_3_1_.getItem() != AMItemRegistry.MARACA.get() && this.isAlive() && this.hasMaracas()) {
             this.setMaracas(false);
             this.setDancing(false);
-            this.spawnAtLocation(new ItemStack(AMItemRegistry.MARACA.get()));
+            this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(AMItemRegistry.MARACA.get()));
             return InteractionResult.SUCCESS;
         } else {
             return super.mobInteract(p_230254_1_, p_230254_2_);
@@ -309,7 +309,7 @@ public class EntityCockroach extends Animal implements Shearable, net.neoforged.
             laCucarachaTimer = 0;
         }
         if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilNextEgg <= 0) {
-           ItemEntity dropped = this.spawnAtLocation(AMItemRegistry.COCKROACH_OOTHECA.get());
+           ItemEntity dropped = this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.COCKROACH_OOTHECA.get());
            if(dropped != null){
                dropped.setDefaultPickUpDelay();
            }
@@ -362,7 +362,7 @@ public class EntityCockroach extends Animal implements Shearable, net.neoforged.
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        final EntityCockroach roach = AMEntityRegistry.COCKROACH.get().create(serverWorld);
+        final EntityCockroach roach = AMEntityRegistry.COCKROACH.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
         roach.setBreaded(true);
         return roach;
     }
@@ -421,7 +421,7 @@ public class EntityCockroach extends Animal implements Shearable, net.neoforged.
             this.setMaracas(true);
         } else {
             if (e.getItem().hasCraftingRemainingItem()) {
-                this.spawnAtLocation(e.getItem().getCraftingRemainingItem().copy());
+                this.spawnAtLocation((ServerLevel) this.level(), e.getItem().getCraftingRemainingItem().copy());
             }
             this.heal(5);
             if (e.getItem().is(AMTagRegistry.COCKROACH_FOODSTUFFS)) {

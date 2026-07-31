@@ -37,7 +37,7 @@ public class AnimalAIMeleeNearby extends Goal {
 
     public void tick(){
         if(entity.distanceTo(entity.getTarget()) < 3F + entity.getBbWidth() + entity.getTarget().getBbWidth()){
-            entity.doHurtTarget(entity.getTarget());
+            entity.doHurtTarget((ServerLevel) this.level(), entity.getTarget());
             entity.lookAt(entity.getTarget(), 180F, 180F);
         }else{
             if(fightStartPos != null){

@@ -131,7 +131,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -150,7 +150,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.2D, true));
         this.goalSelector.addGoal(2, new GorillaAIFollowCaravan(this, 0.8D));
         this.goalSelector.addGoal(3, new GorillaAIChargeLooker(this, 1.6D));
-        this.goalSelector.addGoal(4, new TameableAITempt(this, 1.1D, Ingredient.of(AMTagRegistry.GORILLA_TAMEABLES), false));
+        this.goalSelector.addGoal(4, new TameableAITempt(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.GORILLA_TAMEABLES)), false));
         this.goalSelector.addGoal(4, new AnimalAIRideParent(this, 1.25D));
         this.goalSelector.addGoal(6, new AIWalkIdle(this, 0.8D));
         this.goalSelector.addGoal(5, new GorillaAIForageLeaves(this));
@@ -175,7 +175,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         return AMSoundRegistry.GORILLA_HURT.get();
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(ANIMATION_ATTACK);
         }
@@ -193,7 +193,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         if (spawnDataIn instanceof AgeableMob.AgeableMobGroupData) {
             AgeableMob.AgeableMobGroupData lvt_6_1_ = (AgeableMob.AgeableMobGroupData) spawnDataIn;
             if (lvt_6_1_.getGroupSize() == 0) {
@@ -203,11 +203,11 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
             this.setSilverback(this.getRandom().nextBoolean());
         }
 
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     @Nullable
-    public EntityGorilla getNearestSilverback(LevelAccessor world, double dist) {
+    public EntityGorilla getNearestSilverback(LevelAccessor world) {
         List<? extends EntityGorilla> list = world.getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(dist, dist / 2, dist));
         if (list.isEmpty()) {
             return null;
@@ -320,7 +320,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
             this.heal(5);
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         InteractionResult type = super.mobInteract(player, hand);
@@ -378,7 +378,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
                     double d2 = this.random.nextGaussian() * 0.02D;
                     double d0 = this.random.nextGaussian() * 0.02D;
                     double d1 = this.random.nextGaussian() * 0.02D;
-                    this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItemInHand(InteractionHand.MAIN_HAND)), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
+                    this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (this.getItemInHand(InteractionHand.MAIN_HAND).getItem())), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
                 }
             }
             if (eatingTime % 5 == 0) {
@@ -403,7 +403,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
                         }
                     }
                     if (stack.hasCraftingRemainingItem()) {
-                        this.spawnAtLocation(stack.getCraftingRemainingItem());
+                        this.spawnAtLocation((ServerLevel) this.level(), stack.getCraftingRemainingItem());
                     }
                     stack.shrink(1);
                 }
@@ -465,7 +465,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         if (!this.level().isClientSide() && this.getTarget() != null && this.getAnimation() == ANIMATION_ATTACK && this.getAnimationTick() == 10) {
             float f1 = this.getYRot() * Mth.DEG_TO_RAD;
             this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f1) * 0.02F, 0.0D, Mth.cos(f1) * 0.02F));
-            getTarget().knockback(1F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ());
+            getTarget().knockback(1F, getTarget().getX() - this.getX(), getTarget().getZ() - this.getZ(), null, 0.0F);
             this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
         }
         if (!hasSilverbackAttributes && isSilverback() && !isBaby()) {
@@ -521,7 +521,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
         ItemStack duplicate = targetEntity.getItem().copy();
         duplicate.setCount(1);
         if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
-            this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+            this.spawnAtLocation((ServerLevel) this.level(), this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         this.setItemInHand(InteractionHand.MAIN_HAND, duplicate);
         Entity thrower = targetEntity.getOwner();
@@ -538,7 +538,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.GORILLA.get().create(p_241840_1_);
+        return AMEntityRegistry.GORILLA.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public void leaveCaravan() {

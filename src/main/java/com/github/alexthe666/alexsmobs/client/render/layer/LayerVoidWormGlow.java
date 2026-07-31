@@ -47,8 +47,8 @@ public abstract class LayerVoidWormGlow<T extends LivingEntity> extends RenderLa
                     this.layerModel = body.isTail() ? tailModel : bodyModel;
                 }
                 this.layerModel.setupAnim(worm, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                VertexConsumer consumer = AMRenderTypes.createMergedVertexConsumer(bufferIn.getBuffer(AMRenderTypes.VOID_WORM_PORTAL_OVERLAY), bufferIn.getBuffer(RenderType.entityCutoutNoCull(texture)));
-                this.layerModel.renderToBuffer(matrixStackIn, consumer, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                VertexConsumer consumer = AMRenderTypes.createMergedVertexConsumer(bufferIn.getBuffer(AMRenderTypes.VOID_WORM_PORTAL_OVERLAY), bufferIn.getBuffer(RenderType.entityCutout(texture)));
+                this.layerModel.renderToBuffer(matrixStackIn, consumer, 240, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
             }else{
                 float f = getAlpha(worm);
                 this.getParentModel().renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.eyes(texture)), 240, LivingEntityRenderer.getOverlayCoords(worm, 1.0F), 1.0F, 1.0F, 1.0F, f);
@@ -62,7 +62,7 @@ public abstract class LayerVoidWormGlow<T extends LivingEntity> extends RenderLa
 
     private boolean isSpecialRenderer(Identifier Identifier){
         if(mcmetaData.containsKey(Identifier)){
-            return mcmetaData.getBoolean(Identifier);
+            return mcmetaData.getBooleanOr(Identifier, false);
         }
         if(this.resourceManager.getResource(Identifier).isPresent()){
             Resource resource = this.resourceManager.getResource(Identifier).get();

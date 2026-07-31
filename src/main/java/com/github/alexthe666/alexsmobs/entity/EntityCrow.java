@@ -174,7 +174,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             final Entity entity = source.getEntity();
@@ -189,7 +189,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
             final boolean prev = super.hurt(source, amount);
             if (prev) {
                 if (!this.getMainHandItem().isEmpty()) {
-                    this.spawnAtLocation(this.getMainHandItem().copy());
+                    this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().copy());
                     this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                 }
             }
@@ -246,7 +246,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
         final ItemStack itemstack = player.getItemInHand(hand);
         final InteractionResult type = super.mobInteract(player, hand);
         if (!this.getMainHandItem().isEmpty() && type != InteractionResult.SUCCESS) {
-            this.spawnAtLocation(this.getMainHandItem().copy());
+            this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().copy());
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             return InteractionResult.SUCCESS;
         } else {
@@ -344,7 +344,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                     }
                 }
                 if (this.getMainHandItem().hasCraftingRemainingItem()) {
-                    this.spawnAtLocation(this.getMainHandItem().getCraftingRemainingItem());
+                    this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().getCraftingRemainingItem());
                 }
                 this.getMainHandItem().shrink(1);
             }
@@ -486,14 +486,14 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.FALL) || source.is(DamageTypes.CACTUS) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.IN_WALL)  || source.is(DamageTypes.FALL) || source.is(DamageTypes.CACTUS) || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        return AMEntityRegistry.CROW.get().create(serverWorld);
+        return AMEntityRegistry.CROW.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public boolean isTargetBlocked(Vec3 target) {
@@ -606,7 +606,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
         final ItemStack duplicate = e.getItem().copy();
         duplicate.setCount(1);
         if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
-            this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+            this.spawnAtLocation((ServerLevel) this.level(), this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         this.setItemInHand(InteractionHand.MAIN_HAND, duplicate);
         Entity itemThrower = e.getOwner();

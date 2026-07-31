@@ -64,7 +64,7 @@ public class EntityRoadrunner extends Animal {
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.ROADRUNNER_BREEDABLES), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.ROADRUNNER_BREEDABLES)), false));
         this.goalSelector.addGoal(5, new AnimalAIWanderRanged(this, 50, 1.0D, 25, 7));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
@@ -108,14 +108,14 @@ public class EntityRoadrunner extends Animal {
 
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         this.entityData.set(ATTACK_TICK, 5);
         return true;
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.CACTUS) || source.getMsgId().equals("anvil") || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.CACTUS) || source.getMsgId().equals("anvil") || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -133,7 +133,7 @@ public class EntityRoadrunner extends Animal {
             this.wingRotDelta = 1.0F;
         }
         if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilNextFeather <= 0) {
-            this.spawnAtLocation(AMItemRegistry.ROADRUNNER_FEATHER.get());
+            this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.ROADRUNNER_FEATHER.get());
             this.timeUntilNextFeather = this.random.nextInt(24000) + 24000;
         }
         this.wingRotDelta = (float) ((double) this.wingRotDelta * 0.9D);
@@ -206,7 +206,7 @@ public class EntityRoadrunner extends Animal {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.ROADRUNNER.get().create(p_241840_1_);
+        return AMEntityRegistry.ROADRUNNER.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public static boolean canRoadrunnerSpawn(EntityType<? extends Animal> animal, LevelAccessor worldIn, EntitySpawnReason reason, BlockPos pos, RandomSource random) {

@@ -38,7 +38,7 @@ public class RenderEndPirateDoor<T extends TileEntityEndPirateDoor> implements B
         matrixStackIn.mulPose(Axis.XP.rotationDegrees(90.0F));
         matrixStackIn.scale(0.999F, 0.999F, 0.999F);
         DOOR_MODEL.renderDoor(tileEntityIn, partialTicks, tileEntityIn.getBlockState().getValue(BlockEndPirateDoor.HINGE) == DoorHingeSide.LEFT);
-        DOOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(TEXTURE)), combinedLightIn, combinedOverlayIn, 1, 1F, 1, 1);
+        DOOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
         matrixStackIn.popPose();
         matrixStackIn.popPose();
     }

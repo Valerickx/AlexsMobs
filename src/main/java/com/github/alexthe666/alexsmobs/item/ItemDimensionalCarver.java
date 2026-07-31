@@ -64,10 +64,10 @@ public class ItemDimensionalCarver extends Item {
             double x = raytraceresult.getLocation().x - dir.getNormal().getX() * 0.1F;
             double y = raytraceresult.getLocation().y - dir.getNormal().getY() * 0.1F;
             double z = raytraceresult.getLocation().z - dir.getNormal().getZ() * 0.1F;
-            if (itemstack.getOrCreateTag().getBoolean("HASBLOCK")) {
-                x = itemstack.getOrCreateTag().getDouble("BLOCKX");
-                y = itemstack.getOrCreateTag().getDouble("BLOCKY");
-                z = itemstack.getOrCreateTag().getDouble("BLOCKZ");
+            if (itemstack.getOrCreateTag().getBooleanOr("HASBLOCK", false)) {
+                x = itemstack.getOrCreateTag().getDoubleOr("BLOCKX", 0.0D);
+                y = itemstack.getOrCreateTag().getDoubleOr("BLOCKY", 0.0D);
+                z = itemstack.getOrCreateTag().getDoubleOr("BLOCKZ", 0.0D);
             } else {
                 itemstack.getOrCreateTag().putBoolean("HASBLOCK", true);
                 itemstack.getOrCreateTag().putDouble("BLOCKX", x);
@@ -97,10 +97,10 @@ public class ItemDimensionalCarver extends Item {
             player.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1, 0.5F + random.nextFloat());
         }
         boolean flag = false;
-        if (itemstack.getOrCreateTag().getBoolean("HASBLOCK")) {
-            double x = itemstack.getOrCreateTag().getDouble("BLOCKX");
-            double y = itemstack.getOrCreateTag().getDouble("BLOCKY");
-            double z = itemstack.getOrCreateTag().getDouble("BLOCKZ");
+        if (itemstack.getOrCreateTag().getBooleanOr("HASBLOCK", false)) {
+            double x = itemstack.getOrCreateTag().getDoubleOr("BLOCKX", 0.0D);
+            double y = itemstack.getOrCreateTag().getDoubleOr("BLOCKY", 0.0D);
+            double z = itemstack.getOrCreateTag().getDoubleOr("BLOCKZ", 0.0D);
             if (random.nextFloat() < 0.2) {
                 player.level().addParticle(AMParticleRegistry.WORM_PORTAL.get(), x + random.nextGaussian() * 0.1F, y + random.nextGaussian() * 0.1F, z + random.nextGaussian() * 0.1F, random.nextGaussian() * 0.1F, -0.1F, random.nextGaussian() * 0.1F);
             }

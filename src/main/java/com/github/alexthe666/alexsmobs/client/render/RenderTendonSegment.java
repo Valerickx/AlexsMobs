@@ -59,9 +59,9 @@ public class RenderTendonSegment extends EntityRenderer<EntityTendonSegment, Ent
             Vec3 currentNeckButt = from;
             VertexConsumer neckConsumer;
             if(entity.hasGlint()){
-                neckConsumer = AMRenderTypes.createMergedVertexConsumer(buffer.getBuffer(AMRenderTypes.entityGlintDirect()), buffer.getBuffer(RenderType.entityCutoutNoCull(RenderMurmurBody.TEXTURE)));
+                neckConsumer = AMRenderTypes.createMergedVertexConsumer(buffer.getBuffer(AMRenderTypes.entityGlintDirect()), buffer.getBuffer(RenderType.entityCutout(RenderMurmurBody.TEXTURE)));
             }else{
-                neckConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(RenderMurmurBody.TEXTURE));
+                neckConsumer = buffer.getBuffer(RenderType.entityCutout(RenderMurmurBody.TEXTURE));
             }
             ModelMurmurNeck.THIN = true;
             double remainingDistance = to.distanceTo(from);
@@ -79,9 +79,9 @@ public class RenderTendonSegment extends EntityRenderer<EntityTendonSegment, Ent
             ModelMurmurNeck.THIN = false;
             VertexConsumer clawConsumer;
             if(entity.hasGlint()){
-                clawConsumer = AMRenderTypes.createMergedVertexConsumer(buffer.getBuffer(AMRenderTypes.entityGlintDirect()), buffer.getBuffer(RenderType.entityCutoutNoCull(CLAW_TEXTURE)));
+                clawConsumer = AMRenderTypes.createMergedVertexConsumer(buffer.getBuffer(AMRenderTypes.entityGlintDirect()), buffer.getBuffer(RenderType.entityCutout(CLAW_TEXTURE)));
             }else{
-                clawConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(CLAW_TEXTURE));
+                clawConsumer = buffer.getBuffer(RenderType.entityCutout(CLAW_TEXTURE));
             }
             if(entity.hasClaw() || entity.isRetracting()){
                 poseStack.pushPose();

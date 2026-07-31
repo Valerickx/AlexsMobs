@@ -98,7 +98,7 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
         return AMSoundRegistry.DROPBEAR_HURT.get();
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(random.nextBoolean() ? ANIMATION_BITE : random.nextBoolean() ? ANIMATION_SWIPE_L : ANIMATION_SWIPE_R);
         }
@@ -127,8 +127,8 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
         });
     }
 
-    public boolean isInvulnerableTo(DamageSource source) {
-        return super.isInvulnerableTo(source) || source.is(DamageTypeTags.IS_FALL) || source.is(DamageTypes.IN_WALL);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return super.isInvulnerableTo((ServerLevel) this.level(), source) || source.is(DamageTypeTags.IS_FALL) || source.is(DamageTypes.IN_WALL);
     }
 
     protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
@@ -174,19 +174,19 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
                 if (this.getAnimationTick() == 6) {
                     if (this.getAnimation() == ANIMATION_BITE) {
                         final float yRotRad = this.getYRot() * Mth.DEG_TO_RAD;
-                        attackTarget.knockback(0.5F, Mth.sin(yRotRad), -Mth.cos(yRotRad));
+                        attackTarget.knockback(0.5F, Mth.sin(yRotRad), -Mth.cos(yRotRad), null, 0.0F);
                         this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
                     }
                 } else if (this.getAnimationTick() == 9) {
                     if (this.getAnimation() == ANIMATION_SWIPE_L) {
                         final float rot = getYRot() + 90;
                         final float rotRad = rot * Mth.DEG_TO_RAD;
-                        attackTarget.knockback(0.5F, Mth.sin(rotRad), -Mth.cos(rotRad));
+                        attackTarget.knockback(0.5F, Mth.sin(rotRad), -Mth.cos(rotRad), null, 0.0F);
                         this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
                     } else if (this.getAnimation() == ANIMATION_SWIPE_R) {
                         final float rot = getYRot() - 90;
                         final float rotRad = rot * Mth.DEG_TO_RAD;
-                        attackTarget.knockback(0.5F, Mth.sin(rotRad), -Mth.cos(rotRad));
+                        attackTarget.knockback(0.5F, Mth.sin(rotRad), -Mth.cos(rotRad), null, 0.0F);
                         this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
                     }
                 }
@@ -301,11 +301,11 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         if (reason == EntitySpawnReason.NATURAL) {
             doInitialPosing(worldIn);
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     private void onLand() {
@@ -456,7 +456,7 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
                     }
                 }
                 if (dist < 3D) {
-                    EntityDropBear.this.doHurtTarget(target);
+                    EntityDropBear.this.doHurtTarget((ServerLevel) this.level(), target);
                 }
             }
         }

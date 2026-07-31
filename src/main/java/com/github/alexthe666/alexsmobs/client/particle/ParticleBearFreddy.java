@@ -55,7 +55,7 @@ public class ParticleBearFreddy extends Particle {
         boolean baby = this.model.young;
         this.model.young = false;
         this.model.positionForParticle(partialTick, age + partialTick);
-        this.model.renderToBuffer(posestack, vertexconsumer, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(posestack, vertexconsumer, 240, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
         this.model.young = baby;
         OrderedSubmitNodeCollector$buffersource.endBatch();
         RenderSystem.setShaderFogEnd(fogBefore);

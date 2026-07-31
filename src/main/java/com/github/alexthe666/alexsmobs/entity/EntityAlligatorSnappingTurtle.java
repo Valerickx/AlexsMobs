@@ -133,7 +133,7 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
         return this.isBesideClimbableBlock();
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         return true;
     }
 
@@ -266,12 +266,12 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
     }
 
     public void setTurtleScale(float scale) {
-        this.entityData.set(TURTLE_SCALE, scale);
+        this.entityData.set(TURTLE_SCALE);
     }
 
 
     protected PathNavigation createNavigation(Level worldIn) {
-        return new SemiAquaticPathNavigator(EntityAlligatorSnappingTurtle.this, worldIn) {
+        return new SemiAquaticPathNavigator(EntityAlligatorSnappingTurtle.this) {
             public boolean isStableDestination(BlockPos pos) {
                 return this.level.getBlockState(pos).getFluidState().isEmpty();
             }
@@ -399,9 +399,9 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
         this.gameEvent(GameEvent.ENTITY_INTERACT);
         if (!this.level().isClientSide()) {
             if (random.nextFloat() < this.getMoss() * 0.05F) {
-                this.spawnAtLocation(AMItemRegistry.SPIKED_SCUTE.get());
+                this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.SPIKED_SCUTE.get());
             } else {
-                this.spawnAtLocation(Items.SEAGRASS);
+                this.spawnAtLocation((ServerLevel) this.level(), Items.SEAGRASS);
             }
             this.setMoss(0);
         }
@@ -427,6 +427,6 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.ALLIGATOR_SNAPPING_TURTLE.get().create(p_241840_1_);
+        return AMEntityRegistry.ALLIGATOR_SNAPPING_TURTLE.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 }

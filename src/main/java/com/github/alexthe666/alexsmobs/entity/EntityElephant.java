@@ -203,7 +203,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         this.goalSelector.addGoal(2, new EntityElephant.PanicGoal());
         this.goalSelector.addGoal(2, new ElephantAIVillagerRide(this, 1D));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.of(AMTagRegistry.ELEPHANT_TAMEABLES), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.ELEPHANT_TAMEABLES)), false));
         this.goalSelector.addGoal(5, new ElephantAIForageLeaves(this));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1D));
         this.goalSelector.addGoal(7, new ElephantAIFollowCaravan(this, 0.5D));
@@ -292,7 +292,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             for (int i = 3; i < 18; i++) {
                 if (!elephantInventory.getItem(i).isEmpty()) {
                     if (!this.level().isClientSide()) {
-                        this.spawnAtLocation(elephantInventory.getItem(i), 1);
+                        this.spawnAtLocation((ServerLevel) this.level(), elephantInventory.getItem(i), 1);
                     }
                     elephantInventory.removeItemNoUpdate(i);
                 }
@@ -379,7 +379,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
                 this.setAnimation(ANIMATION_FLING);
             }
             if (this.distanceTo(target) < 2.1D && charging) {
-                target.knockback(1F, target.getX() - this.getX(), target.getZ() - this.getZ());
+                target.knockback(1F, target.getX() - this.getX(), target.getZ() - this.getZ(), null, 0.0F);
                 target.hasImpulse = true;
                 target.setDeltaMovement(target.getDeltaMovement().add(0, 0.7F, 0));
                 target.hurt(this.damageSources().mobAttack(this), 2.4F * (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
@@ -389,13 +389,13 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             }
             double dist = this.distanceTo(target);
             if (dist < 4.5D + maxAttackMod && this.getAnimation() == ANIMATION_FLING && this.getAnimationTick() == 15) {
-                target.knockback(1F, target.getX() - this.getX(), target.getZ() - this.getZ());
+                target.knockback(1F, target.getX() - this.getX(), target.getZ() - this.getZ(), null, 0.0F);
                 target.setDeltaMovement(target.getDeltaMovement().add(0, 0.3F, 0));
                 launch(target, false);
                 target.hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
             }
             if (dist < 4.5D + maxAttackMod && this.getAnimation() == ANIMATION_STOMP && this.getAnimationTick() == 17) {
-                target.knockback(0.3F, target.getX() - this.getX(), target.getZ() - this.getZ());
+                target.knockback(0.3F, target.getX() - this.getX(), target.getZ() - this.getZ(), null, 0.0F);
                 target.hurt(this.damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
             }
         }
@@ -491,7 +491,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             float angle = (Maths.STARTING_ANGLE * this.yBodyRot);
             double extraX = radius * Mth.sin(Mth.PI + angle);
             double extraZ = radius * Mth.cos(angle);
-            ParticleOptions data = new ItemParticleOption(ParticleTypes.ITEM, heldItemMainhand);
+            ParticleOptions data = new ItemParticleOption(ParticleTypes.ITEM, (heldItemMainhand).getItem());
             if (heldItemMainhand.getItem() instanceof BlockItem) {
                 data = new BlockParticleOption(ParticleTypes.BLOCK, ((BlockItem) heldItemMainhand.getItem()).getBlock().defaultBlockState());
             }
@@ -503,7 +503,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         return true;
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION && !this.charging) {
             this.setAnimation(random.nextBoolean() ? ANIMATION_FLING : ANIMATION_STOMP);
         }
@@ -531,7 +531,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             DyeColor color = getCarpetColor(stack);
             if (color != this.getColor()) {
                 if (this.getColor() != null) {
-                    this.spawnAtLocation(this.getCarpetItemBeingWorn());
+                    this.spawnAtLocation((ServerLevel) this.level(), this.getCarpetItemBeingWorn());
                 }
                 this.gameEvent(GameEvent.ENTITY_INTERACT);
                 this.playSound(SoundEvents.LLAMA_SWAG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
@@ -547,7 +547,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             this.gameEvent(GameEvent.ENTITY_INTERACT);
             this.playSound(SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             if (this.getColor() != null) {
-                this.spawnAtLocation(this.getCarpetItemBeingWorn());
+                this.spawnAtLocation((ServerLevel) this.level(), this.getCarpetItemBeingWorn());
             }
             this.setColor(null);
             return InteractionResult.SUCCESS;
@@ -562,9 +562,9 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         } else if (owner && isChested() && stack.is(Tags.Items.SHEARS)) {
             this.gameEvent(GameEvent.ENTITY_INTERACT);
             this.playSound(SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-            this.spawnAtLocation(Blocks.CHEST);
+            this.spawnAtLocation((ServerLevel) this.level(), Blocks.CHEST);
             for (int i = 0; i < elephantInventory.getContainerSize(); i++) {
-                this.spawnAtLocation(elephantInventory.getItem(i));
+                this.spawnAtLocation((ServerLevel) this.level(), elephantInventory.getItem(i));
             }
             elephantInventory.clearContent();
             this.setChested(false);
@@ -619,17 +619,17 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         super.dropEquipment();
         if (this.isChested()) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(Blocks.CHEST);
+                this.spawnAtLocation((ServerLevel) this.level(), Blocks.CHEST);
             }
             for (int i = 0; i < elephantInventory.getContainerSize(); i++) {
-                this.spawnAtLocation(elephantInventory.getItem(i));
+                this.spawnAtLocation((ServerLevel) this.level(), elephantInventory.getItem(i));
             }
             elephantInventory.clearContent();
             this.setChested(false);
         }
         if (!this.isTrader() && this.getColor() != null) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(this.getCarpetItemBeingWorn());
+                this.spawnAtLocation((ServerLevel) this.level(), this.getCarpetItemBeingWorn());
             }
             this.setColor(null);
         }
@@ -639,7 +639,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        EntityElephant baby = AMEntityRegistry.ELEPHANT.get().create(serverWorld);
+        EntityElephant baby = AMEntityRegistry.ELEPHANT.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
         baby.setTusked(this.getNearestTusked(level(), 15) == null || random.nextInt(2) == 0);
         return baby;
     }
@@ -688,7 +688,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         this.setTrader(compound.getBooleanOr("Trader", false));
         this.forcedSit = compound.getBooleanOr("ForcedToSit", false);
         this.chargeCooldown = compound.getIntOr("ChargeCooldown", 0);
-        this.entityData.set(CARPET_COLOR, compound.getInt("Carpet"));
+        this.entityData.set(CARPET_COLOR, compound.getIntOr("Carpet", 0));
         if (elephantInventory != null) {
             ListTag nbttaglist = compound.getListOrEmpty("Items");
             this.initElephantInventory();
@@ -738,7 +738,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             for (int i = 0; i < elephantInventory.getContainerSize(); ++i) {
                 ItemStack itemstack = elephantInventory.getItem(i);
                 if (!itemstack.isEmpty()) {
-                    this.spawnAtLocation(itemstack, 0.0F);
+                    this.spawnAtLocation((ServerLevel) this.level(), itemstack, 0.0F);
                 }
             }
         }
@@ -772,7 +772,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         if (spawnDataIn instanceof AgeableMob.AgeableMobGroupData) {
             AgeableMob.AgeableMobGroupData lvt_6_1_ = (AgeableMob.AgeableMobGroupData) spawnDataIn;
             if (lvt_6_1_.getGroupSize() == 0) {
@@ -782,11 +782,11 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             this.setTusked(this.getRandom().nextBoolean());
         }
 
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     @Nullable
-    public EntityElephant getNearestTusked(LevelAccessor world, double dist) {
+    public EntityElephant getNearestTusked(LevelAccessor world) {
         List<? extends EntityElephant> list = world.getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(dist, dist / 2, dist));
         if (list.isEmpty()) {
             return null;
@@ -832,7 +832,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         ItemStack duplicate = e.getItem().copy();
         duplicate.setCount(1);
         if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.level().isClientSide()) {
-            this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+            this.spawnAtLocation((ServerLevel) this.level(), this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
         }
         Entity itemThrower = e.getOwner();
         if (duplicate.is(AMTagRegistry.ELEPHANT_TAMEABLES) && itemThrower != null) {

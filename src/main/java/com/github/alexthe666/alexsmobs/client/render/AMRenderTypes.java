@@ -23,15 +23,15 @@ public class AMRenderTypes {
     }
 
     public static RenderType getFullBright(Identifier location) {
-        return RenderType.entityCutoutNoCull(location);
+        return RenderType.entityCutout(location);
     }
 
     public static RenderType getFreddy(Identifier location) {
-        return RenderType.entityCutoutNoCull(location);
+        return RenderType.entityCutout(location);
     }
 
     public static RenderType getFrilledSharkTeeth(Identifier location) {
-        return RenderType.entityCutoutNoCull(location);
+        return RenderType.entityCutout(location);
     }
 
     public static RenderType getEyesNoCull(Identifier location) {

@@ -301,7 +301,7 @@ public class EntitySugarGlider extends TamableAnimal implements IFollower {
                     List<ItemStack> lootList = getForageLoot(state);
                     if (lootList.size() > 0) {
                         for (ItemStack stack : lootList) {
-                            ItemEntity e = this.spawnAtLocation(stack.copy());
+                            ItemEntity e = this.spawnAtLocation((ServerLevel) this.level(), stack.copy());
                             if(e != null){
                                 e.hasImpulse = true;
                                 e.setDeltaMovement(e.getDeltaMovement().multiply(0.2, 0.2, 0.2));
@@ -414,8 +414,8 @@ public class EntitySugarGlider extends TamableAnimal implements IFollower {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     @Override
@@ -532,7 +532,7 @@ public class EntitySugarGlider extends TamableAnimal implements IFollower {
     public void calculateEntityAnimation(boolean b) {
         float f1 = (float) Mth.length(this.getX() - this.xo, (this.getY() - this.yo) * 2, this.getZ() - this.zo);
         float f2 = Math.min(f1 * 6.0F, 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     protected PathNavigation createNavigation(Level worldIn) {
@@ -546,7 +546,7 @@ public class EntitySugarGlider extends TamableAnimal implements IFollower {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        return AMEntityRegistry.SUGAR_GLIDER.get().create(serverLevel);
+        return AMEntityRegistry.SUGAR_GLIDER.get().create(serverLevel, EntitySpawnReason.MOB_SUMMONED);
     }
 
     private boolean shouldStopGliding() {

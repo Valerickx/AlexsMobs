@@ -87,12 +87,12 @@ public class TileEntityTerrapinEgg extends BlockEntity {
         }
 
         public ParentData(CompoundTag tag){
-            this(TerrapinTypes.values()[Mth.clamp(tag.getInt("TerrapinType"), 0, TerrapinTypes.values().length - 1)],
+            this(TerrapinTypes.values()[Mth.clamp(tag.getIntOr("TerrapinType", 0), 0, TerrapinTypes.values().length - 1)],
                     tag.getIntOr("ShellType", 0),
-                    tag.getInt("SkinType"),
-                    tag.getInt("TurtleColor"),
-                    tag.getInt("ShellColor"),
-                    tag.getInt("SkinColor")
+                    tag.getIntOr("SkinType", 0),
+                    tag.getIntOr("TurtleColor", 0),
+                    tag.getIntOr("ShellColor", 0),
+                    tag.getIntOr("SkinColor", 0)
                     );
         }
 

@@ -169,7 +169,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
     public void calculateEntityAnimation(boolean flying) {
         float f1 = (float) Mth.length(this.getX() - this.xo, 0, this.getZ() - this.zo);
         float f2 = Math.min(f1 * (isInWater() ? 4.0F : 48.0F), 1.0F);
-        this.walkAnimation.update(f2, 0.4F);
+        this.walkAnimation.update(f2, 0.4F, 1.0F);
     }
 
     public float getSwimAngle() {
@@ -337,7 +337,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
 
     @Nullable
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason
-            reason, @Nullable SpawnGroupData data, @Nullable CompoundTag dataTag) {
+            reason, @Nullable SpawnGroupData data) {
         this.setArctic(this.isBiomeArctic(worldIn, this.blockPosition()));
         int i;
         if (data instanceof SealGroupData) {
@@ -349,7 +349,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
         this.setVariant(i);
         this.setAirSupply(this.getMaxAirSupply());
         this.setXRot(0.0F);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, data, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, data);
     }
 
     public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
@@ -407,7 +407,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageableEntity) {
-        EntitySeal seal = AMEntityRegistry.SEAL.get().create(serverWorld);
+        EntitySeal seal = AMEntityRegistry.SEAL.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
         seal.setArctic(this.isBiomeArctic(serverWorld, this.blockPosition()));
         return seal;
     }
@@ -448,7 +448,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
         if (e.getItem().is(AMTagRegistry.SEAL_OFFERINGS)) {
             fishFeedings++;
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
             Entity itemThrower = e.getOwner();
             if (fishFeedings >= 3) {
                 if(itemThrower != null){

@@ -51,7 +51,7 @@ public class BeachedCachalotWhaleSpawner {
             worldinfo.setBeachedCachalotSpawnDelay(this.delay);
             if (this.delay <= 0) {
                 this.delay = AMConfig.beachedCachalotWhaleSpawnDelay;
-                if (this.world.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                if (this.world.getGameRules().getBooleanOr(GameRules.RULE_DOMOBSPAWNING, false)) {
                     int i = this.chance;
                     this.chance = Mth.clamp(this.chance + AMConfig.beachedCachalotWhaleSpawnChance, 5, 100);
                     worldinfo.setBeachedCachalotSpawnChance(this.chance);
@@ -75,9 +75,9 @@ public class BeachedCachalotWhaleSpawner {
             BlockPos blockpos2 = this.func_221244_a(blockpos, 84);
             if (blockpos2 != null && this.func_226559_a_(blockpos2) && blockpos2.distSqr(blockpos) > 225) {
                 BlockPos upPos = new BlockPos(blockpos2.getX(), blockpos2.getY() + 2, blockpos2.getZ());
-                EntityCachalotWhale whale = AMEntityRegistry.CACHALOT_WHALE.get().create(world);
+                EntityCachalotWhale whale = AMEntityRegistry.CACHALOT_WHALE.get().create(world, EntitySpawnReason.MOB_SUMMONED);
                 whale.moveTo(upPos.getX() + 0.5D, upPos.getY() + 0.5D, upPos.getZ() + 0.5D, random.nextFloat() * 360 - 180F, 0);
-                whale.finalizeSpawn(world, world.getCurrentDifficultyAt(upPos), EntitySpawnReason.SPAWNER, null, null);
+                whale.finalizeSpawn(world, world.getCurrentDifficultyAt(upPos), EntitySpawnReason.SPAWNER, null);
                 whale.setBeached(true);
                 AMWorldData worldinfo = AMWorldData.get(world);
                 worldinfo.setBeachedCachalotID(whale.getUUID());

@@ -94,7 +94,7 @@ public class ItemTendonWhip extends Item implements ILeftClick {
             TendonWhipUtil.retractFarTendons(worldIn, playerIn);
             if (!worldIn.isClientSide()) {
                 if (closestValid != null) {
-                    EntityTendonSegment segment = AMEntityRegistry.TENDON_SEGMENT.get().create(worldIn);
+                    EntityTendonSegment segment = AMEntityRegistry.TENDON_SEGMENT.get().create(worldIn, EntitySpawnReason.MOB_SUMMONED);
                     segment.copyPosition(playerIn);
                     worldIn.addFreshEntity(segment);
                     segment.setCreatorEntityUUID(playerIn.getUUID());

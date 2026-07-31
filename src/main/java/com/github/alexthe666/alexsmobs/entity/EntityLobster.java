@@ -178,9 +178,9 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
         return worldIn.getFluidState(pos.below()).isEmpty() && worldIn.getFluidState(pos).is(FluidTags.WATER) ? 10.0F : super.getWalkTargetValue(pos, worldIn);
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         this.entityData.set(ATTACK_TICK, 5);
-        return super.doHurtTarget(entityIn);
+        return super.doHurtTarget((ServerLevel) this.level(), entityIn);
     }
 
     public void tick() {
@@ -207,7 +207,7 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
         }
         if(this.getTarget() != null && this.distanceTo(this.getTarget()) <= 1F && attackCooldown == 0){
             this.lookAt(this.getTarget(), 180F, 20F);
-            doHurtTarget(this.getTarget());
+            doHurtTarget((ServerLevel) this.level(), this.getTarget());
             attackCooldown = 20;
         }
     }
@@ -249,11 +249,11 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH;
+        return SoundEvents.BUCKET_FILL_FISH.value();
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         float variantChange = this.getRandom().nextFloat();
         if(variantChange <= 0.00001){
             this.setVariant(5);
@@ -268,11 +268,11 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
         }else{
             this.setVariant(0);
         }
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     protected PathNavigation createNavigation(Level worldIn) {
-        SemiAquaticPathNavigator flyingpathnavigator = new SemiAquaticPathNavigator(this, worldIn) {
+        SemiAquaticPathNavigator flyingpathnavigator = new SemiAquaticPathNavigator(this) {
             public boolean isStableDestination(BlockPos pos) {
                 return this.level.getBlockState(pos).getFluidState().isEmpty();
             }

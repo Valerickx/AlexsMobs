@@ -242,7 +242,7 @@ public class EntityRhinoceros extends Animal implements IAnimatedEntity {
                 }
                 return -1;
             } else {
-                return potionToColor.getInt(s);
+                return potionToColor.getIntOr(s, 0);
             }
         }
     }
@@ -343,7 +343,7 @@ public class EntityRhinoceros extends Animal implements IAnimatedEntity {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        return AMEntityRegistry.RHINOCEROS.get().create(serverLevel);
+        return AMEntityRegistry.RHINOCEROS.get().create(serverLevel, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public boolean isAngry() {
@@ -369,7 +369,7 @@ public class EntityRhinoceros extends Animal implements IAnimatedEntity {
         }
     }
 
-    public boolean doHurtTarget(Entity entity) {
+    public boolean doHurtTarget(ServerLevel level, Entity entity) {
         if(this.getAnimation() == NO_ANIMATION){
             this.setAnimation(random.nextBoolean() ? ANIMATION_SLASH : ANIMATION_FLING);
             return true;

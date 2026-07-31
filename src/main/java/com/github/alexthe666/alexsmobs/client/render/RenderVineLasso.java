@@ -67,7 +67,7 @@ public class RenderVineLasso extends EntityRenderer<EntityVineLasso, EntityRende
 
     private void renderCircle(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
+        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(TEXTURE));
         PoseStack.Pose lvt_19_1_ = matrixStackIn.last();
         Matrix4f lvt_20_1_ = lvt_19_1_.pose();
         Matrix3f lvt_21_1_ = lvt_19_1_.normal();

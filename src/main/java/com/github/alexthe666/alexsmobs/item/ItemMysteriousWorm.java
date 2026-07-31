@@ -30,7 +30,7 @@ public class ItemMysteriousWorm extends Item {
             String dim = entity.level().dimension().location().toString();
             if(AMConfig.voidWormSpawnDimensions.contains(dim) && entity.getY() < -60 && !entity.isRemoved()){
                 entity.kill();
-                EntityVoidWorm worm = AMEntityRegistry.VOID_WORM.get().create(entity.level());
+                EntityVoidWorm worm = AMEntityRegistry.VOID_WORM.get().create(entity.level(), EntitySpawnReason.MOB_SUMMONED);
                 worm.setPos(entity.getX(), 0, entity.getZ());
                 worm.setSegmentCount(25 + new Random().nextInt(15));
                 worm.setXRot(-90.0F);

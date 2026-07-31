@@ -292,14 +292,14 @@ public class EntityOrca extends TamableAnimal implements IAnimatedEntity {
                     this.playSound(SoundEvents.DOLPHIN_ATTACK, 1.0F, 1.0F);
                 }
                 final float yRotRad = this.getYRot() * Mth.DEG_TO_RAD;
-                attackTarget.knockback(1F, Mth.sin(yRotRad), -Mth.cos(yRotRad));
+                attackTarget.knockback(1F, Mth.sin(yRotRad), -Mth.cos(yRotRad), null, 0.0F);
                 float knockbackResist = (float) Mth.clamp((1.0D - this.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)), 0, 1);
                 this.getTarget().setDeltaMovement(this.getTarget().getDeltaMovement().add(0, knockbackResist * 0.4F, 0));
 
             }
         }
-        if (attackTarget != null && attackTarget instanceof Player && attackTarget.hasEffect(AMEffectRegistry.ORCAS_MIGHT.get())) {
-            attackTarget.removeEffect(AMEffectRegistry.ORCAS_MIGHT.get());
+        if (attackTarget != null && attackTarget instanceof Player && attackTarget.hasEffect(AMEffectRegistry.ORCAS_MIGHT)) {
+            attackTarget.removeEffect(AMEffectRegistry.ORCAS_MIGHT);
         }
         AnimationHandler.INSTANCE.updateAnimations(this);
     }
@@ -314,7 +314,7 @@ public class EntityOrca extends TamableAnimal implements IAnimatedEntity {
         animationTick = tick;
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if(this.isInWater() && random.nextBoolean()){
             this.setAnimation(ANIMATION_TAILSWING);
         }else{
@@ -350,7 +350,7 @@ public class EntityOrca extends TamableAnimal implements IAnimatedEntity {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.ORCA.get().create(serverWorld);
+        return AMEntityRegistry.ORCA.get().create(serverWorld, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public boolean shouldUseJumpAttack(LivingEntity attackTarget) {
@@ -364,12 +364,12 @@ public class EntityOrca extends TamableAnimal implements IAnimatedEntity {
 
     @Nullable
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason
-            reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+            reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setAirSupply(this.getMaxAirSupply());
         this.setVariant(determineVariant(this.blockPosition()));
         this.setXRot(0.0F);
         this.setMoistness(2400);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     public boolean canBreatheUnderwater() {
@@ -462,7 +462,7 @@ public class EntityOrca extends TamableAnimal implements IAnimatedEntity {
             }
 
             if (this.targetPlayer.isSwimming() && this.targetPlayer.level().getRandom().nextInt(6) == 0) {
-                this.targetPlayer.addEffect(new MobEffectInstance(AMEffectRegistry.ORCAS_MIGHT.get(), 1000));
+                this.targetPlayer.addEffect(new MobEffectInstance(AMEffectRegistry.ORCAS_MIGHT, 1000));
             }
         }
     }

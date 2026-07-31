@@ -80,7 +80,7 @@ public class LayerCockroachMaracas extends RenderLayer<EntityCockroach, ModelCoc
                 matrixStackIn.translate(0F, entitylivingbaseIn.danceProgress * 0.045F, entitylivingbaseIn.danceProgress * -0.09F);
                 matrixStackIn.scale(0.8F, 0.8F, 0.8F);
                 matrixStackIn.mulPose(Axis.XP.rotationDegrees(60F * entitylivingbaseIn.danceProgress * 0.2F));
-                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(SOMBRERO_TEX));
+                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(SOMBRERO_TEX));
                 sombrero.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
                 matrixStackIn.popPose();
             }

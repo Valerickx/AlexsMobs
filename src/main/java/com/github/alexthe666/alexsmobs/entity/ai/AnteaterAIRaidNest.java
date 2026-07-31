@@ -53,7 +53,7 @@ public class AnteaterAIRaidNest extends MoveToBlockGoal {
         List<ItemStack> lootList = getItemStacks(anteater);
         if (lootList.size() > 0) {
             for (ItemStack stack : lootList) {
-                ItemEntity e = this.anteater.spawnAtLocation(stack.copy());
+                ItemEntity e = this.anteater.spawnAtLocation((ServerLevel) anteater.level(), stack.copy());
                 e.hasImpulse = true;
                 e.setDeltaMovement(e.getDeltaMovement().multiply(0.2, 0.2, 0.2));
             }

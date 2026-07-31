@@ -120,18 +120,18 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
 
     protected void ageBoundaryReached() {
         super.ageBoundaryReached();
-        if (!this.isBaby() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
-            this.spawnAtLocation(new ItemStack(AMItemRegistry.CROCODILE_SCUTE.get(), random.nextInt(1) + 1), 1);
+        if (!this.isBaby() && this.level().getGameRules().getBooleanOr(GameRules.RULE_DOMOBLOOT, false)) {
+            this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(AMItemRegistry.CROCODILE_SCUTE.get(), random.nextInt(1) + 1), 1);
         }
     }
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
         this.setDesert(this.isBiomeDesert(worldIn, this.blockPosition()));
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
-    private boolean isBiomeDesert(LevelAccessor worldIn, BlockPos position) {
+    private boolean isBiomeDesert(LevelAccessor worldIn) {
         return worldIn.getBiome(position).is(AMTagRegistry.SPAWNS_DESERT_CROCODILES);
     }
 
@@ -381,7 +381,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
                     } else {
                         holder.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                     }
-                    holder.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
+                    holder.playSound(SoundEvents.SHIELD_BREAK.value(), 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
                 }
             }
 
@@ -452,7 +452,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
         return worldIn.isUnobstructed(this);
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION && this.getPassengers().isEmpty() && this.getStunTicks() == 0) {
             this.setAnimation(ANIMATION_LUNGE);
         }
@@ -476,8 +476,8 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL)  || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public boolean canBreatheUnderwater() {
@@ -581,7 +581,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -596,7 +596,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.CROCODILE.get().create(p_241840_1_);
+        return AMEntityRegistry.CROCODILE.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -609,7 +609,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
             this.usePlayerItem(player, hand, itemstack);
             this.heal(10);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         final InteractionResult type = super.mobInteract(player, hand);
@@ -704,7 +704,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
             this.animal.setAge(6000);
             this.partner.setAge(6000);
 
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            if (this.level.getGameRules().getBooleanOr(GameRules.RULE_DOMOBLOOT, false)) {
                 final RandomSource random = this.animal.getRandom();
                 this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }

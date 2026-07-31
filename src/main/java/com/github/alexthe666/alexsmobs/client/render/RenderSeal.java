@@ -54,7 +54,7 @@ public class RenderSeal extends MobRenderer<EntitySeal, LivingEntityRenderState,
             if (net.neoforged.neoforge.client.ClientHooks.isNameplateInRenderDistance(seal, d0)) {
                 boolean flag = !seal.isDiscrete();
                 float f = seal.getBbHeight() + 0.5F;
-                String[] split = text.getString(512).split(" ");
+                String[] split = text.getStringOr(512, "").split(" ");
                 StringBuilder recombined = new StringBuilder();
                 List<String> strings = new ArrayList<>();
                 for(int wordIndex = 0; wordIndex < split.length; wordIndex++){

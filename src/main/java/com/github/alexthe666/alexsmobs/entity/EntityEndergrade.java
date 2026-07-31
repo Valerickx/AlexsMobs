@@ -108,7 +108,7 @@ public class EntityEndergrade extends Animal {
                 EntityEndergrade.this.stopWandering = false;
             }
         });
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.ENDERGRADE_BREEDABLES), false) {
+        this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.ENDERGRADE_BREEDABLES)), false) {
             public void start() {
                 super.start();
                 EntityEndergrade.this.stopWandering = true;
@@ -155,12 +155,12 @@ public class EntityEndergrade extends Animal {
             this.setSaddled(true);
             return InteractionResult.SUCCESS;
         }
-        if (itemstack.is(AMTagRegistry.ENDERGRADE_BREEDABLES) && this.hasEffect(AMEffectRegistry.ENDER_FLU.get())) {
+        if (itemstack.is(AMTagRegistry.ENDERGRADE_BREEDABLES) && this.hasEffect(AMEffectRegistry.ENDER_FLU)) {
             if (!player.isCreative()) {
                 itemstack.shrink(1);
             }
             this.heal(8);
-            this.removeEffect(AMEffectRegistry.ENDER_FLU.get());
+            this.removeEffect(AMEffectRegistry.ENDER_FLU);
             return InteractionResult.SUCCESS;
         }
         InteractionResult type = super.mobInteract(player, hand);
@@ -254,7 +254,7 @@ public class EntityEndergrade extends Animal {
 
     public void onGetItem(ItemEntity targetEntity) {
         this.gameEvent(GameEvent.EAT);
-        this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+        this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
         this.heal(5);
     }
 
@@ -269,14 +269,14 @@ public class EntityEndergrade extends Animal {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.ENDERGRADE.get().create(p_241840_1_);
+        return AMEntityRegistry.ENDERGRADE.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 
     protected void dropEquipment() {
         super.dropEquipment();
         if (this.isSaddled()) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(Items.SADDLE);
+                this.spawnAtLocation((ServerLevel) this.level(), Items.SADDLE);
             }
         }
     }

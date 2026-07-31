@@ -242,7 +242,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
         super.travel(vec3d);
     }
 
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, Entity entityIn) {
         if (this.attackProgress == 0 && this.entityData.get(ATTACK_TICK) == 0 && entityIn.isAlive()) {
             final double dist = this.isSitting() ? entityIn.getBbWidth() + 1 : entityIn.getBbWidth() + 5;
             if (this.distanceTo(entityIn) < dist) {
@@ -335,8 +335,8 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypes.IN_WALL) || super.isInvulnerableTo((ServerLevel) this.level(), source);
     }
 
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -352,7 +352,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
             return InteractionResult.CONSUME;
         } else if (itemstack.is(AMTagRegistry.BALD_EAGLE_TAMEABLES)) {
             if (itemstack.hasCraftingRemainingItem() && !player.getAbilities().instabuild) {
-                this.spawnAtLocation(itemstack.getCraftingRemainingItem());
+                this.spawnAtLocation((ServerLevel) this.level(), itemstack.getCraftingRemainingItem());
             }
             if (!player.isCreative()) {
                 itemstack.shrink(1);
@@ -373,7 +373,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                         itemstack.shrink(1);
                     }
                     this.gameEvent(GameEvent.ENTITY_INTERACT);
-                    this.playSound(SoundEvents.ARMOR_EQUIP_LEATHER, this.getSoundVolume(), this.getVoicePitch());
+                    this.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), this.getSoundVolume(), this.getVoicePitch());
                     return InteractionResult.SUCCESS;
                 }
             } else if (itemstack.is(Tags.Items.SHEARS) && this.hasCap()) {
@@ -384,7 +384,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                         itemstack.hurt(1, random, (ServerPlayer) player);
                     }
                 }
-                this.spawnAtLocation(AMItemRegistry.FALCONRY_HOOD.get());
+                this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.FALCONRY_HOOD.get());
                 this.setCap(false);
                 return InteractionResult.SUCCESS;
             } else if (!this.isBaby() && getRidingFalcons(player) <= 0 && (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == AMItemRegistry.FALCONRY_GLOVE.get() || player.getItemInHand(InteractionHand.OFF_HAND).getItem() == AMItemRegistry.FALCONRY_GLOVE.get())) {
@@ -618,7 +618,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel p_241840_1_, AgeableMob p_241840_2_) {
-        return AMEntityRegistry.BALD_EAGLE.get().create(p_241840_1_);
+        return AMEntityRegistry.BALD_EAGLE.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 
     public boolean causeFallDamage(float distance, float damageMultiplier) {
@@ -843,7 +843,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
 
 
     public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo((ServerLevel) this.level(), source)) {
             return false;
         } else {
             final Entity entity = source.getEntity();
@@ -1167,7 +1167,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                             maxCircleTime = 60 + random.nextInt(60);
                         }
                     } else {
-                        eagle.doHurtTarget(target);
+                        eagle.doHurtTarget((ServerLevel) this.level(), target);
                     }
                 } else if (eagle.distanceTo(target) > 12 || target.isInWater()) {
                     eagle.setFlying(true);
