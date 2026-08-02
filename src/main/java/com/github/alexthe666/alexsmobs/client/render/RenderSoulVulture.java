@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderSoulVulture extends MobRenderer<EntitySoulVulture, ModelSoulVulture> {
+public class RenderSoulVulture extends MobRenderer<EntitySoulVulture, LivingEntityRenderState, ModelSoulVulture> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/soul_vulture/soul_vulture.png");
 
     public RenderSoulVulture(EntityRendererProvider.Context renderManagerIn) {
@@ -28,4 +28,5 @@ public class RenderSoulVulture extends MobRenderer<EntitySoulVulture, ModelSoulV
         return TEXTURE;
     }
 }
+
 

@@ -30,7 +30,7 @@ import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 
-public class RenderTiger extends MobRenderer<EntityTiger, ModelTiger> {
+public class RenderTiger extends MobRenderer<EntityTiger, LivingEntityRenderState, ModelTiger> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/tiger/tiger.png");
     private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/tiger/tiger_angry.png");
     private static final Identifier TEXTURE_SLEEPING = Identifier.parse("alexsmobs:textures/entity/tiger/tiger_sleeping.png");
@@ -224,4 +224,5 @@ public class RenderTiger extends MobRenderer<EntityTiger, ModelTiger> {
         }
     }
 }
+
 

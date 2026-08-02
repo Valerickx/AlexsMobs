@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderHummingbird extends MobRenderer<EntityHummingbird, ModelHummingbird> {
+public class RenderHummingbird extends MobRenderer<EntityHummingbird, LivingEntityRenderState, ModelHummingbird> {
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/hummingbird_0.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/hummingbird_1.png");
     private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/hummingbird_2.png");
@@ -28,4 +28,5 @@ public class RenderHummingbird extends MobRenderer<EntityHummingbird, ModelHummi
         return entity.getVariant() == 0 ? TEXTURE_0 : entity.getVariant() == 1 ? TEXTURE_1 : TEXTURE_2;
     }
 }
+
 

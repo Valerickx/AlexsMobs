@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 
-public class RenderGrizzlyBear extends MobRenderer<EntityGrizzlyBear, ModelGrizzlyBear> {
+public class RenderGrizzlyBear extends MobRenderer<EntityGrizzlyBear, LivingEntityRenderState, ModelGrizzlyBear> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/grizzly_bear.png");
     private static final Identifier TEXTURE_SNOWY = Identifier.parse("alexsmobs:textures/entity/grizzly_bear_snowy.png");
     public static final Identifier TEXTURE_FREDDY = Identifier.parse("alexsmobs:textures/entity/grizzly_bear_freddy.png");
@@ -71,4 +71,5 @@ public class RenderGrizzlyBear extends MobRenderer<EntityGrizzlyBear, ModelGrizz
         }
     }
 }
+
 

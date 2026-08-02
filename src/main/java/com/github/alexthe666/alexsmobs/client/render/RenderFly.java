@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderFly extends MobRenderer<EntityFly, ModelFly> {
+public class RenderFly extends MobRenderer<EntityFly, LivingEntityRenderState, ModelFly> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/fly.png");
 
     public RenderFly(EntityRendererProvider.Context renderManagerIn) {
@@ -37,4 +37,5 @@ public class RenderFly extends MobRenderer<EntityFly, ModelFly> {
         return TEXTURE;
     }
 }
+
 

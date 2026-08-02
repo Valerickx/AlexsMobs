@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderCapuchinMonkey extends MobRenderer<EntityCapuchinMonkey, ModelCapuchinMonkey> {
+public class RenderCapuchinMonkey extends MobRenderer<EntityCapuchinMonkey, LivingEntityRenderState, ModelCapuchinMonkey> {
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/capuchin_monkey_0.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/capuchin_monkey_1.png");
     private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/capuchin_monkey_2.png");
@@ -35,4 +35,5 @@ public class RenderCapuchinMonkey extends MobRenderer<EntityCapuchinMonkey, Mode
         };
     }
 }
+
 

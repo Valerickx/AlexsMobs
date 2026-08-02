@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 
-public class RenderBison extends MobRenderer<EntityBison, AdvancedEntityModel<EntityBison>> {
+public class RenderBison extends MobRenderer<EntityBison, LivingEntityRenderState, AdvancedEntityModel<EntityBison>> {
     private static final Identifier TEXTURE_BABY = Identifier.parse("alexsmobs:textures/entity/bison_baby.png");
     private static final Identifier TEXTURE_BABY_SNOWY = Identifier.parse("alexsmobs:textures/entity/bison_baby_snowy.png");
     private static final Identifier TEXTURE_SNOWY = Identifier.parse("alexsmobs:textures/entity/bison_snowy.png");
@@ -57,4 +57,5 @@ public class RenderBison extends MobRenderer<EntityBison, AdvancedEntityModel<En
         }
     }
 }
+
 

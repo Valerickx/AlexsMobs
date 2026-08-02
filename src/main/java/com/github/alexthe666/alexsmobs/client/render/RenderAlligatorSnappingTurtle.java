@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class RenderAlligatorSnappingTurtle extends MobRenderer<EntityAlligatorSnappingTurtle, ModelAlligatorSnappingTurtle> {
+public class RenderAlligatorSnappingTurtle extends MobRenderer<EntityAlligatorSnappingTurtle, LivingEntityRenderState, ModelAlligatorSnappingTurtle> {
     private static final Identifier TEXTURE_MOSS = Identifier.parse("alexsmobs:textures/entity/alligator_snapping_turtle_moss.png");
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/alligator_snapping_turtle.png");
 
@@ -48,4 +48,5 @@ public class RenderAlligatorSnappingTurtle extends MobRenderer<EntityAlligatorSn
         }
     }
 }
+
 

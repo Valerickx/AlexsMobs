@@ -16,7 +16,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderTerrapin extends MobRenderer<EntityTerrapin, ModelTerrapin> {
+public class RenderTerrapin extends MobRenderer<EntityTerrapin, LivingEntityRenderState, ModelTerrapin> {
 
     private static final Identifier[] SHELL_TEXTURES = {
             Identifier.parse("alexsmobs:textures/entity/terrapin/overlay/terrapin_shell_pattern_0.png"),
@@ -100,4 +100,5 @@ public class RenderTerrapin extends MobRenderer<EntityTerrapin, ModelTerrapin> {
     }
 
 }
+
 

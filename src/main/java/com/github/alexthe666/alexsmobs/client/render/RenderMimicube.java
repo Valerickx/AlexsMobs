@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderMimicube extends MobRenderer<EntityMimicube, ModelMimicube> {
+public class RenderMimicube extends MobRenderer<EntityMimicube, LivingEntityRenderState, ModelMimicube> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/mimicube.png");
 
     public RenderMimicube(EntityRendererProvider.Context renderManagerIn) {
@@ -31,4 +31,5 @@ public class RenderMimicube extends MobRenderer<EntityMimicube, ModelMimicube> {
         return TEXTURE;
     }
 }
+
 

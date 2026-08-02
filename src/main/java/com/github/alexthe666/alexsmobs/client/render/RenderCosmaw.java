@@ -18,7 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class RenderCosmaw extends MobRenderer<EntityCosmaw, ModelCosmaw> {
+public class RenderCosmaw extends MobRenderer<EntityCosmaw, LivingEntityRenderState, ModelCosmaw> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/cosmaw.png");
     private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/cosmaw_glow.png");
 
@@ -65,4 +65,5 @@ public class RenderCosmaw extends MobRenderer<EntityCosmaw, ModelCosmaw> {
         }
     }
 }
+
 

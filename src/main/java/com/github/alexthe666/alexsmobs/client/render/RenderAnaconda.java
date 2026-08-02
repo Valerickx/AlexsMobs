@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderAnaconda extends MobRenderer<EntityAnaconda, ModelAnaconda<EntityAnaconda>> {
+public class RenderAnaconda extends MobRenderer<EntityAnaconda, LivingEntityRenderState, ModelAnaconda<EntityAnaconda>> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/anaconda.png");
     private static final Identifier TEXTURE_SHEDDING = Identifier.parse("alexsmobs:textures/entity/anaconda_shedding.png");
     private static final Identifier TEXTURE_YELLOW = Identifier.parse("alexsmobs:textures/entity/anaconda_yellow.png");
@@ -33,4 +33,5 @@ public class RenderAnaconda extends MobRenderer<EntityAnaconda, ModelAnaconda<En
         return getAnacondaTexture(entity.isYellow(), entity.isShedding());
     }
 }
+
 

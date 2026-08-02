@@ -21,7 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 
-public class RenderPotoo extends MobRenderer<EntityPotoo, ModelPotoo> {
+public class RenderPotoo extends MobRenderer<EntityPotoo, LivingEntityRenderState, ModelPotoo> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/potoo.png");
 
     public RenderPotoo(EntityRendererProvider.Context renderManagerIn) {
@@ -72,4 +72,5 @@ public class RenderPotoo extends MobRenderer<EntityPotoo, ModelPotoo> {
         return TEXTURE;
     }
 }
+
 

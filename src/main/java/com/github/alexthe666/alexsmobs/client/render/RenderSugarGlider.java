@@ -22,7 +22,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import org.joml.Quaternionf;
 
-public class RenderSugarGlider extends MobRenderer<EntitySugarGlider, ModelSugarGlider> {
+public class RenderSugarGlider extends MobRenderer<EntitySugarGlider, LivingEntityRenderState, ModelSugarGlider> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/sugar_glider.png");
 
     public RenderSugarGlider(EntityRendererProvider.Context renderManagerIn) {
@@ -114,5 +114,6 @@ public class RenderSugarGlider extends MobRenderer<EntitySugarGlider, ModelSugar
         return TEXTURE;
     }
 }
+
 
 

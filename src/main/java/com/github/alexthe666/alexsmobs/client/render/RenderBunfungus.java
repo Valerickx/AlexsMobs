@@ -18,7 +18,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class RenderBunfungus extends MobRenderer<EntityBunfungus, ModelBunfungus> {
+public class RenderBunfungus extends MobRenderer<EntityBunfungus, LivingEntityRenderState, ModelBunfungus> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/bunfungus.png");
     private static final Identifier TEXTURE_SLEEPING = Identifier.parse("alexsmobs:textures/entity/bunfungus_sleeping.png");
 
@@ -72,4 +72,5 @@ public class RenderBunfungus extends MobRenderer<EntityBunfungus, ModelBunfungus
         }
     }
 }
+
 

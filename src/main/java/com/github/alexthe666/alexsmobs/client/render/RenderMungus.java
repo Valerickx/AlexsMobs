@@ -30,7 +30,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class RenderMungus extends MobRenderer<EntityMungus, ModelMungus> {
+public class RenderMungus extends MobRenderer<EntityMungus, LivingEntityRenderState, ModelMungus> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/mungus.png");
     private static final Identifier BEAM_TEXTURE = Identifier.parse("alexsmobs:textures/entity/mungus_beam.png");
     private static final Identifier TEXTURE_BEAM_OVERLAY = Identifier.parse("alexsmobs:textures/entity/mungus_beam_overlay.png");
@@ -287,4 +287,5 @@ public class RenderMungus extends MobRenderer<EntityMungus, ModelMungus> {
     }
 
 }
+
 

@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 
-public class RenderSkelewag extends MobRenderer<EntitySkelewag, ModelSkelewag> {
+public class RenderSkelewag extends MobRenderer<EntitySkelewag, LivingEntityRenderState, ModelSkelewag> {
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/skelewag_0.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/skelewag_1.png");
 
@@ -31,4 +31,5 @@ public class RenderSkelewag extends MobRenderer<EntitySkelewag, ModelSkelewag> {
         return entity.getVariant() == 1 ? TEXTURE_1 : TEXTURE_0;
     }
 }
+
 

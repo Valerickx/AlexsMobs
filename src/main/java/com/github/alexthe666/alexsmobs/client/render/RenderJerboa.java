@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderJerboa extends MobRenderer<EntityJerboa, ModelJerboa> {
+public class RenderJerboa extends MobRenderer<EntityJerboa, LivingEntityRenderState, ModelJerboa> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/jerboa.png");
     private static final Identifier TEXTURE_SLEEPING = Identifier.parse("alexsmobs:textures/entity/jerboa_sleeping.png");
 
@@ -27,4 +27,5 @@ public class RenderJerboa extends MobRenderer<EntityJerboa, ModelJerboa> {
         return entity.isSleeping() ? TEXTURE_SLEEPING : TEXTURE;
     }
 }
+
 

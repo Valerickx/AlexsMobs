@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderFlyingFish extends MobRenderer<EntityFlyingFish, ModelFlyingFish> {
+public class RenderFlyingFish extends MobRenderer<EntityFlyingFish, LivingEntityRenderState, ModelFlyingFish> {
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/flying_fish_0.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/flying_fish_1.png");
     private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/flying_fish_2.png");
@@ -36,4 +36,5 @@ public class RenderFlyingFish extends MobRenderer<EntityFlyingFish, ModelFlyingF
         return TEXTURE_0;
     }
 }
+
 

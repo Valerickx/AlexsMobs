@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderFlutter extends MobRenderer<EntityFlutter, EntityModel<EntityFlutter>> {
+public class RenderFlutter extends MobRenderer<EntityFlutter, LivingEntityRenderState, EntityModel<EntityFlutter>> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/flutter.png");
     private static final Identifier TEXTURE_EYES = Identifier.parse("alexsmobs:textures/entity/flutter_eyes.png");
     private final ModelFlutter modelFlutter = new ModelFlutter();
@@ -37,4 +37,5 @@ public class RenderFlutter extends MobRenderer<EntityFlutter, EntityModel<Entity
         return TEXTURE;
     }
 }
+
 

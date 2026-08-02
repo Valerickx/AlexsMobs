@@ -23,7 +23,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class RenderToucan extends MobRenderer<EntityToucan, ModelToucan> {
+public class RenderToucan extends MobRenderer<EntityToucan, LivingEntityRenderState, ModelToucan> {
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/toucan/toucan_0.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/toucan/toucan_1.png");
     private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/toucan/toucan_2.png");
@@ -106,3 +106,4 @@ public class RenderToucan extends MobRenderer<EntityToucan, ModelToucan> {
         }
     }
 }
+

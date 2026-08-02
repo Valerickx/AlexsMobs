@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderManedWolf extends MobRenderer<EntityManedWolf, ModelManedWolf> {
+public class RenderManedWolf extends MobRenderer<EntityManedWolf, LivingEntityRenderState, ModelManedWolf> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/maned_wolf.png");
     private static final Identifier TEXTURE_ENDER = Identifier.parse("alexsmobs:textures/entity/maned_wolf_ender.png");
 
@@ -27,4 +27,5 @@ public class RenderManedWolf extends MobRenderer<EntityManedWolf, ModelManedWolf
         return entity.isEnder() ? TEXTURE_ENDER : TEXTURE;
     }
 }
+
 

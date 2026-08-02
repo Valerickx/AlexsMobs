@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderDevilsHolePupfish extends MobRenderer<EntityDevilsHolePupfish, ModelDevilsHolePupfish> {
+public class RenderDevilsHolePupfish extends MobRenderer<EntityDevilsHolePupfish, LivingEntityRenderState, ModelDevilsHolePupfish> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/devils_hole_pupfish.png");
 
     public RenderDevilsHolePupfish(EntityRendererProvider.Context renderManagerIn) {
@@ -30,4 +30,5 @@ public class RenderDevilsHolePupfish extends MobRenderer<EntityDevilsHolePupfish
         return TEXTURE;
     }
 }
+
 

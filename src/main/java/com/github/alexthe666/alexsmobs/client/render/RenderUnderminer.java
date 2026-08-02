@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class RenderUnderminer extends MobRenderer<EntityUnderminer, EntityModel<EntityUnderminer>> {
+public class RenderUnderminer extends MobRenderer<EntityUnderminer, LivingEntityRenderState, EntityModel<EntityUnderminer>> {
     private static final Identifier TEXTURE_DWARF = Identifier.parse("alexsmobs:textures/entity/underminer_dwarf.png");
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/underminer_0.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/underminer_1.png");
@@ -205,4 +205,5 @@ public class RenderUnderminer extends MobRenderer<EntityUnderminer, EntityModel<
     }
 
 }
+
 

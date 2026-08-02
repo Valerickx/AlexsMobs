@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderElephant extends MobRenderer<EntityElephant, ModelElephant> {
+public class RenderElephant extends MobRenderer<EntityElephant, LivingEntityRenderState, ModelElephant> {
     private static final Identifier TEXTURE_TUSK = Identifier.parse("alexsmobs:textures/entity/elephant/elephant_tusks.png");
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/elephant/elephant.png");
 
@@ -33,4 +33,5 @@ public class RenderElephant extends MobRenderer<EntityElephant, ModelElephant> {
         return entity.isTusked() && !entity.isBaby() ? TEXTURE_TUSK : TEXTURE;
     }
 }
+
 

@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderMudskipper extends MobRenderer<EntityMudskipper, ModelMudskipper> {
+public class RenderMudskipper extends MobRenderer<EntityMudskipper, LivingEntityRenderState, ModelMudskipper> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/mudskipper.png");
     private static final Identifier TEXTURE_SPIT = Identifier.parse("alexsmobs:textures/entity/mudskipper_spit.png");
 
@@ -27,4 +27,5 @@ public class RenderMudskipper extends MobRenderer<EntityMudskipper, ModelMudskip
         return entity.isMouthOpen() ? TEXTURE_SPIT : TEXTURE;
     }
 }
+
 

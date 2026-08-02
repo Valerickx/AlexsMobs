@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderRainFrog extends MobRenderer<EntityRainFrog, ModelRainFrog> {
+public class RenderRainFrog extends MobRenderer<EntityRainFrog, LivingEntityRenderState, ModelRainFrog> {
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/rain_frog_0.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/rain_frog_1.png");
     private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/rain_frog_2.png");
@@ -27,4 +27,5 @@ public class RenderRainFrog extends MobRenderer<EntityRainFrog, ModelRainFrog> {
         return entity.getVariant() == 2 ? TEXTURE_2 : entity.getVariant() == 1 ? TEXTURE_1 : TEXTURE_0;
     }
 }
+
 

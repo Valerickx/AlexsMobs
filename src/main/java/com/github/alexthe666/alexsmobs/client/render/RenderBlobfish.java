@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderBlobfish extends MobRenderer<EntityBlobfish, EntityModel<EntityBlobfish>> {
+public class RenderBlobfish extends MobRenderer<EntityBlobfish, LivingEntityRenderState, EntityModel<EntityBlobfish>> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/blobfish.png");
     private static final Identifier TEXTURE_DEPRESSURIZED = Identifier.parse("alexsmobs:textures/entity/blobfish_depressurized.png");
     private final ModelBlobfish modelFish = new ModelBlobfish();
@@ -36,4 +36,5 @@ public class RenderBlobfish extends MobRenderer<EntityBlobfish, EntityModel<Enti
         return entity.isDepressurized() ? TEXTURE_DEPRESSURIZED : TEXTURE;
     }
 }
+
 

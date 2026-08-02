@@ -14,7 +14,7 @@ import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
-public class RenderEndergrade extends MobRenderer<EntityEndergrade, ModelEndergrade> {
+public class RenderEndergrade extends MobRenderer<EntityEndergrade, LivingEntityRenderState, ModelEndergrade> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/endergrade.png");
 
     public RenderEndergrade(EntityRendererProvider.Context renderManagerIn) {
@@ -44,4 +44,5 @@ public class RenderEndergrade extends MobRenderer<EntityEndergrade, ModelEndergr
         return TEXTURE;
     }
 }
+
 

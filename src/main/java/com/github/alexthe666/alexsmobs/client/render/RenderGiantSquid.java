@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 
-public class RenderGiantSquid extends MobRenderer<EntityGiantSquid, ModelGiantSquid> {
+public class RenderGiantSquid extends MobRenderer<EntityGiantSquid, LivingEntityRenderState, ModelGiantSquid> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/giant_squid.png");
     private static final Identifier TEXTURE_BLUE = Identifier.parse("alexsmobs:textures/entity/giant_squid_blue.png");
     private static final Identifier TEXTURE_DEPRESSURIZED = Identifier.parse("alexsmobs:textures/entity/giant_squid_depressurized.png");
@@ -67,4 +67,5 @@ public class RenderGiantSquid extends MobRenderer<EntityGiantSquid, ModelGiantSq
         }
     }
 }
+
 

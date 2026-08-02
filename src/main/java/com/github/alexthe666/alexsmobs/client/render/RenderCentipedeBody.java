@@ -15,7 +15,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderCentipedeBody extends MobRenderer<EntityCentipedeBody, AdvancedEntityModel<EntityCentipedeBody>> {
+public class RenderCentipedeBody extends MobRenderer<EntityCentipedeBody, LivingEntityRenderState, AdvancedEntityModel<EntityCentipedeBody>> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/cave_centipede.png");
 
     public RenderCentipedeBody(EntityRendererProvider.Context renderManagerIn) {
@@ -60,4 +60,5 @@ public class RenderCentipedeBody extends MobRenderer<EntityCentipedeBody, Advanc
         return TEXTURE;
     }
 }
+
 

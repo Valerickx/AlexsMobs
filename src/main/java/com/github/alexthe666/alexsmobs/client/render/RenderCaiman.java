@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderCaiman extends MobRenderer<EntityCaiman, ModelCaiman> {
+public class RenderCaiman extends MobRenderer<EntityCaiman, LivingEntityRenderState, ModelCaiman> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/caiman.png");
 
     public RenderCaiman(EntityRendererProvider.Context renderManagerIn) {
@@ -20,4 +20,5 @@ public class RenderCaiman extends MobRenderer<EntityCaiman, ModelCaiman> {
         return TEXTURE;
     }
 }
+
 

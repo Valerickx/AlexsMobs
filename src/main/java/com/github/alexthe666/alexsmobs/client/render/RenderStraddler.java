@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 
-public class RenderStraddler extends MobRenderer<EntityStraddler, ModelStraddler> {
+public class RenderStraddler extends MobRenderer<EntityStraddler, LivingEntityRenderState, ModelStraddler> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/straddler.png");
     private static final ModelStradpole STRADPOLE_MODEL = new ModelStradpole();
     public RenderStraddler(EntityRendererProvider.Context renderManagerIn) {
@@ -59,4 +59,5 @@ public class RenderStraddler extends MobRenderer<EntityStraddler, ModelStraddler
         }
     }
 }
+
 

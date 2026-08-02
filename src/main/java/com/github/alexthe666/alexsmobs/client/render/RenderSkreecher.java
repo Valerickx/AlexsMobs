@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 
-public class RenderSkreecher extends MobRenderer<EntitySkreecher, ModelSkreecher> {
+public class RenderSkreecher extends MobRenderer<EntitySkreecher, LivingEntityRenderState, ModelSkreecher> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/skreecher.png");
     private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/skreecher_glow.png");
 
@@ -43,4 +43,5 @@ public class RenderSkreecher extends MobRenderer<EntitySkreecher, ModelSkreecher
         }
     }
 }
+
 

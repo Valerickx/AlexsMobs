@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderLobster extends MobRenderer<EntityLobster, ModelLobster> {
+public class RenderLobster extends MobRenderer<EntityLobster, LivingEntityRenderState, ModelLobster> {
     private static final Identifier TEXTURE_RED = Identifier.parse("alexsmobs:textures/entity/lobster_red.png");
     private static final Identifier TEXTURE_BLUE = Identifier.parse("alexsmobs:textures/entity/lobster_blue.png");
     private static final Identifier TEXTURE_YELLOW = Identifier.parse("alexsmobs:textures/entity/lobster_yellow.png");
@@ -37,4 +37,5 @@ public class RenderLobster extends MobRenderer<EntityLobster, ModelLobster> {
         };
     }
 }
+
 

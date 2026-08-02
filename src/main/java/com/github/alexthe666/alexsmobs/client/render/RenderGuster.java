@@ -17,7 +17,7 @@ import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
-public class RenderGuster extends MobRenderer<EntityGuster, ModelGuster> {
+public class RenderGuster extends MobRenderer<EntityGuster, LivingEntityRenderState, ModelGuster> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/guster.png");
     private static final Identifier TEXTURE_GOOGLY = Identifier.parse("alexsmobs:textures/entity/guster_silly.png");
     private static final Identifier TEXTURE_EYES = Identifier.parse("alexsmobs:textures/entity/guster_eye.png");
@@ -65,4 +65,5 @@ public class RenderGuster extends MobRenderer<EntityGuster, ModelGuster> {
         }
     }
 }
+
 

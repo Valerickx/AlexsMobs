@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 
-public class RenderSpectre extends MobRenderer<EntitySpectre, ModelSpectre> {
+public class RenderSpectre extends MobRenderer<EntitySpectre, LivingEntityRenderState, ModelSpectre> {
     private static final Identifier TEXTURE_BONE = Identifier.parse("alexsmobs:textures/entity/spectre_bone.png");
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/spectre.png");
     private static final Identifier TEXTURE_EYES = Identifier.parse("alexsmobs:textures/entity/spectre_glow.png");
@@ -76,4 +76,5 @@ public class RenderSpectre extends MobRenderer<EntitySpectre, ModelSpectre> {
         }
     }
 }
+
 

@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderFroststalker extends MobRenderer<EntityFroststalker, ModelFroststalker> {
+public class RenderFroststalker extends MobRenderer<EntityFroststalker, LivingEntityRenderState, ModelFroststalker> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/froststalker.png");
     private static final Identifier TEXTURE_NOSPIKES = Identifier.parse("alexsmobs:textures/entity/froststalker_nospikes.png");
 
@@ -30,4 +30,5 @@ public class RenderFroststalker extends MobRenderer<EntityFroststalker, ModelFro
     }
 
 }
+
 

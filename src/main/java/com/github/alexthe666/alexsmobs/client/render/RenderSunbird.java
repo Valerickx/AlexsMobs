@@ -19,7 +19,7 @@ import net.minecraft.resources.Identifier;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class RenderSunbird extends MobRenderer<EntitySunbird, ModelSunbird> {
+public class RenderSunbird extends MobRenderer<EntitySunbird, LivingEntityRenderState, ModelSunbird> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/sunbird.png");
     private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/sunbird_glow.png");
 
@@ -82,4 +82,5 @@ public class RenderSunbird extends MobRenderer<EntitySunbird, ModelSunbird> {
         }
     }
 }
+
 

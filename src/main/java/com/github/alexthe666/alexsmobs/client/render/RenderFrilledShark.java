@@ -15,7 +15,7 @@ import net.minecraft.resources.Identifier;
 
 import static net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY;
 
-public class RenderFrilledShark extends MobRenderer<EntityFrilledShark, ModelFrilledShark> {
+public class RenderFrilledShark extends MobRenderer<EntityFrilledShark, LivingEntityRenderState, ModelFrilledShark> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/frilled_shark.png");
     private static final Identifier TEXTURE_DEPRESSURIZED = Identifier.parse("alexsmobs:textures/entity/frilled_shark_depressurized.png");
     private static final Identifier TEXTURE_KAIJU = Identifier.parse("alexsmobs:textures/entity/frilled_shark_kaiju.png");
@@ -49,4 +49,5 @@ public class RenderFrilledShark extends MobRenderer<EntityFrilledShark, ModelFri
         }
     }
 }
+
 

@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderSnowLeopard extends MobRenderer<EntitySnowLeopard, ModelSnowLeopard> {
+public class RenderSnowLeopard extends MobRenderer<EntitySnowLeopard, LivingEntityRenderState, ModelSnowLeopard> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/snow_leopard.png");
     private static final Identifier TEXTURE_SLEEPING = Identifier.parse("alexsmobs:textures/entity/snow_leopard_sleeping.png");
 
@@ -27,4 +27,5 @@ public class RenderSnowLeopard extends MobRenderer<EntitySnowLeopard, ModelSnowL
         return entity.isSleeping() ? TEXTURE_SLEEPING : TEXTURE;
     }
 }
+
 

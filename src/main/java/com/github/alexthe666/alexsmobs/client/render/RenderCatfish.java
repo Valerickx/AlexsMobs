@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderCatfish extends MobRenderer<EntityCatfish, EntityModel<EntityCatfish>> {
+public class RenderCatfish extends MobRenderer<EntityCatfish, LivingEntityRenderState, EntityModel<EntityCatfish>> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/catfish_small.png");
     private static final Identifier TEXTURE_MEDIUM = Identifier.parse("alexsmobs:textures/entity/catfish_medium.png");
     private static final Identifier TEXTURE_LARGE = Identifier.parse("alexsmobs:textures/entity/catfish_large.png");
@@ -48,4 +48,5 @@ public class RenderCatfish extends MobRenderer<EntityCatfish, EntityModel<Entity
         return entity.isSpitting() ? TEXTURE_SPIT : TEXTURE;
     }
 }
+
 

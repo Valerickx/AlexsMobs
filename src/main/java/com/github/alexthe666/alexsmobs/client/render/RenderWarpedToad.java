@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderWarpedToad extends MobRenderer<EntityWarpedToad, ModelWarpedToad> {
+public class RenderWarpedToad extends MobRenderer<EntityWarpedToad, LivingEntityRenderState, ModelWarpedToad> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/warped_toad.png");
     private static final Identifier TEXTURE_BLINKING = Identifier.parse("alexsmobs:textures/entity/warped_toad_blink.png");
     private static final Identifier TEXTURE_PEPE = Identifier.parse("alexsmobs:textures/entity/warped_toad_pepe.png");
@@ -35,4 +35,5 @@ public class RenderWarpedToad extends MobRenderer<EntityWarpedToad, ModelWarpedT
         }
     }
 }
+
 

@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderHammerheadShark extends MobRenderer<EntityHammerheadShark, ModelHammerheadShark> {
+public class RenderHammerheadShark extends MobRenderer<EntityHammerheadShark, LivingEntityRenderState, ModelHammerheadShark> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/hammerhead_shark.png");
 
     public RenderHammerheadShark(EntityRendererProvider.Context renderManagerIn) {
@@ -25,4 +25,5 @@ public class RenderHammerheadShark extends MobRenderer<EntityHammerheadShark, Mo
         return TEXTURE;
     }
 }
+
 

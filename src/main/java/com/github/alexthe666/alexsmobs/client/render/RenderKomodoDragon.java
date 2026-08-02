@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 
-public class RenderKomodoDragon extends MobRenderer<EntityKomodoDragon, ModelKomodoDragon> {
+public class RenderKomodoDragon extends MobRenderer<EntityKomodoDragon, LivingEntityRenderState, ModelKomodoDragon> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/komodo_dragon.png");
     private static final Identifier TEXTURE_SADDLE = Identifier.parse("alexsmobs:textures/entity/komodo_dragon_saddle.png");
     private static final Identifier TEXTURE_MAID = Identifier.parse("alexsmobs:textures/entity/komodo_dragon_maid.png");
@@ -58,4 +58,5 @@ public class RenderKomodoDragon extends MobRenderer<EntityKomodoDragon, ModelKom
         }
     }
 }
+
 
