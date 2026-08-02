@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderEmu extends MobRenderer<EntityEmu, LivingEntityRenderState, ModelEmu> {
+public class RenderEmu extends MobRenderer<EntityEmu, ModelEmu> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/emu.png");
     private static final Identifier TEXTURE_BABY = Identifier.parse("alexsmobs:textures/entity/emu_baby.png");
     private static final Identifier TEXTURE_BLONDE = Identifier.parse("alexsmobs:textures/entity/emu_blonde.png");
@@ -36,3 +36,4 @@ public class RenderEmu extends MobRenderer<EntityEmu, LivingEntityRenderState, M
         return entity.isBaby() ? TEXTURE_BABY : TEXTURE;
     }
 }
+

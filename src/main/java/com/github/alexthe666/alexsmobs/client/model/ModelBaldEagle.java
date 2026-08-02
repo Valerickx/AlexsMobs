@@ -31,6 +31,7 @@ public class ModelBaldEagle extends AdvancedEntityModel<EntityBaldEagle> {
     private final AdvancedModelBox wingL;
     private final AdvancedModelBox feathersL;
     private final AdvancedModelBox tipL;
+    public boolean young;
 
     public ModelBaldEagle() {
         texWidth = 64;
@@ -151,6 +152,7 @@ public class ModelBaldEagle extends AdvancedEntityModel<EntityBaldEagle> {
     @Override
     public void setupAnim(EntityBaldEagle entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
         this.resetToDefaultPose();
+        this.young = entity.isBaby();
         float flapSpeed = 0.4F;
         float flapDegree = 0.2F;
         float walkSpeed = 0.5F;
@@ -230,9 +232,8 @@ public class ModelBaldEagle extends AdvancedEntityModel<EntityBaldEagle> {
 
     }
 
-    @Override
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.35F;
             head.setScale(f, f, f);
             head.setShouldScaleChildren(true);

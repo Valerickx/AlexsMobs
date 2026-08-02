@@ -18,6 +18,11 @@ public class BoneSerpentPathNavigator extends PathNavigation {
         super(entitylivingIn, worldIn);
     }
 
+    @Override
+    public boolean canNavigateGround() {
+        return false;
+    }
+
     protected PathFinder createPathFinder(int p_179679_1_) {
         this.nodeEvaluator = new BoneSerpentNodeProcessor();
         return new PathFinder(this.nodeEvaluator, p_179679_1_);
@@ -127,7 +132,7 @@ public class BoneSerpentPathNavigator extends PathNavigation {
     }
 
     public boolean isStableDestination(BlockPos pos) {
-        return !this.level.getBlockState(pos).isSolidRender(this.level, pos);
+        return !this.level.getBlockState(pos).isSolidRender();
     }
 
     public void setCanFloat(boolean canSwim) {

@@ -286,7 +286,7 @@ public class EntityFlyingFish extends WaterAnimal implements Bucketable {
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH.value();
+        return SoundEvents.BUCKET_FILL_FISH;
     }
 
     public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {

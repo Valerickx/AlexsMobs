@@ -1,7 +1,11 @@
 package com.github.alexthe666.alexsmobs.entity;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.storage.loot.LootTable;
+import java.util.Optional;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.network.codec.ByteBufCodecs;
 
 import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.entity.ai.AnimalAISwimBottom;
@@ -104,19 +108,19 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 
-public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerListener {
+public class EntityCatfish extends WaterAnimal implements Bucketable {
 
     private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(EntityCatfish.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> CATFISH_SIZE = SynchedEntityData.defineId(EntityCatfish.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> SPIT_TIME = SynchedEntityData.defineId(EntityCatfish.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> HAS_SWALLOWED_ENTITY = SynchedEntityData.defineId(EntityCatfish.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<String> SWALLOWED_ENTITY_TYPE = SynchedEntityData.defineId(EntityCatfish.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<CompoundTag> SWALLOWED_ENTITY_DATA = SynchedEntityData.defineId(EntityCatfish.class, EntityDataSerializers.COMPOUND_TAG);
+    private static final EntityDataAccessor<CompoundTag> SWALLOWED_ENTITY_DATA = SynchedEntityData.defineId(EntityCatfish.class, EntityDataSerializer.forValueType(ByteBufCodecs.COMPOUND_TAG));
     private static final EntityDimensions SMALL_SIZE = EntityDimensions.scalable(0.9F, 0.6F);
     private static final EntityDimensions MEDIUM_SIZE = EntityDimensions.scalable(1.25F, 0.9F);
     private static final EntityDimensions LARGE_SIZE = EntityDimensions.scalable(1.9F, 0.9F);
-    public static final Identifier MEDIUM_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "entities/catfish_medium");
-    public static final Identifier LARGE_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "entities/catfish_large");
+    public static final ResourceKey<LootTable> MEDIUM_LOOT = ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath("alexsmobs", "entities/catfish_medium"));
+    public static final ResourceKey<LootTable> LARGE_LOOT = ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath("alexsmobs", "entities/catfish_large"));
     public SimpleContainer catfishInventory;
     private int eatCooldown = 0;
 
@@ -158,10 +162,9 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         int size = this.getCatfishSize() > 2 ? 1 : this.getCatfishSize() == 1 ? 9 : 3;
         this.catfishInventory = new SimpleContainer(size) {
             public boolean stillValid(Player player) {
-                return EntityCatfish.this.isAlive() && !EntityCatfish.this.isInsidePortal;
+                return EntityCatfish.this.isAlive();
             }
         };
-        catfishInventory.addListener(this);
         if (animalchest != null) {
             int i = Math.min(animalchest.getContainerSize(), this.catfishInventory.getContainerSize());
             for (int j = 0; j < i; ++j) {
@@ -246,7 +249,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         if(inSeaPickle && this.canSpit()){
             if(this.getSpitTime() == 0){
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.PLAYER_BURP.value(), this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.PLAYER_BURP, this.getSoundVolume(), this.getVoicePitch());
             }
             if(vomitTo != null){
                 final Vec3 face = Vec3.atCenterOf(vomitTo).subtract(this.getMouthVec());
@@ -260,12 +263,11 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         }
     }
 
-    @Nullable
-    protected Identifier getDefaultLootTable() {
+    protected Optional<ResourceKey<LootTable>> getDefaultLootTable() {
         if (this.getCatfishSize() == 2) {
-            return LARGE_LOOT;
+            return Optional.of(LARGE_LOOT);
         }
-        return this.getCatfishSize() == 1 ? MEDIUM_LOOT : super.getDefaultLootTable();
+        return this.getCatfishSize() == 1 ? Optional.of(MEDIUM_LOOT) : this.getType().getDefaultLootTable();
     }
 
     public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
@@ -287,18 +289,16 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
 
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
-        if (this.hasCustomName()) {
-            bucket.setCustomName(this.getCustomName());
-        }
         Bucketable.saveDefaultDataToBucketTag(this, bucket);
-        CompoundTag compound = bucket.getOrCreateTag();
-        addAdditionalSaveData(compound);
+        net.minecraft.world.item.component.CustomData.update(net.minecraft.core.component.DataComponents.BUCKET_ENTITY_DATA, bucket, tag -> {
+            tag.putInt("CatfishSize", this.getCatfishSize());
+        });
     }
 
     @Override
     public void loadFromBucketTag(@Nonnull CompoundTag compound) {
         Bucketable.loadDefaultDataFromBucketTag(this, compound);
-        readAdditionalSaveData(compound);
+        compound.getInt("CatfishSize").ifPresent(this::setCatfishSize);
     }
 
     @Override
@@ -314,7 +314,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
 
     @Override
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH.value();
+        return SoundEvents.BUCKET_FILL_FISH;
     }
 
     public int getCatfishSize() {
@@ -362,17 +362,17 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose poseIn) {
+    public EntityDimensions getDefaultDimensions(Pose poseIn) {
         return getDimsForCatfish().scale(this.getScale());
     }
 
-    public boolean hurt(DamageSource source, float f) {
-        if(super.hurt(source, f)){
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float f) {
+        boolean hurt = super.hurtServer(level, source, f);
+        if (hurt) {
             this.spit();
-            return true;
-        }else{
-            return false;
         }
+        return hurt;
     }
 
     @Override
@@ -381,7 +381,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         ItemStack stack = player.getItemInHand(hand);
         if (stack.getItem() == Items.SEA_PICKLE) {
             this.spit();
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return Bucketable.bucketMobPickup(player, hand, this).orElse(super.mobInteract(player, hand));
     }
@@ -391,20 +391,10 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         compound.putBoolean("FromBucket", this.fromBucket());
         compound.putFloat("CatfishSize", this.getCatfishSize());
         if (catfishInventory != null) {
-            final ListTag nbttaglist = new ListTag();
-            for (int i = 0; i < this.catfishInventory.getContainerSize(); ++i) {
-                final ItemStack itemstack = this.catfishInventory.getItem(i);
-                if (!itemstack.isEmpty()) {
-                    CompoundTag CompoundNBT = new CompoundTag();
-                    CompoundNBT.putByte("Slot", (byte) i);
-                    itemstack.save(CompoundNBT);
-                    nbttaglist.add(CompoundNBT);
-                }
-            }
-            compound.put("Items", nbttaglist);
+            catfishInventory.storeAsItemList(compound.list("Items", ItemStack.CODEC));
         }
         compound.putString("ContainedEntityType", this.getSwallowedEntityType());
-        compound.put("ContainedData", this.getSwallowedData());
+        compound.store("ContainedData", CompoundTag.CODEC, this.getSwallowedData());
         compound.putBoolean("HasSwallowedEntity", this.hasSwallowedEntity());
     }
 
@@ -413,18 +403,11 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         this.setFromBucket(compound.getBooleanOr("FromBucket", false));
         this.setCatfishSize(compound.getIntOr("CatfishSize", 0));
         if (catfishInventory != null) {
-            final ListTag nbttaglist = compound.getListOrEmpty("Items");
             this.initCatfishInventory();
-            for (int i = 0; i < nbttaglist.size(); ++i) {
-                final CompoundTag CompoundNBT = nbttaglist.getCompoundOrEmpty(i);
-                final int j = CompoundNBT.getByte("Slot") & 255;
-                this.catfishInventory.setItem(j, ItemStack.of(CompoundNBT));
-            }
+            catfishInventory.fromItemList(compound.listOrEmpty("Items", ItemStack.CODEC));
         }
         this.setSwallowedEntityType(compound.getStringOr("ContainedEntityType", ""));
-        if (!compound.getCompoundOrEmpty("ContainedData").isEmpty()) {
-            this.setSwallowedData(compound.getCompoundOrEmpty("ContainedData"));
-        }
+        compound.read("ContainedData", CompoundTag.CODEC).ifPresent(this::setSwallowedData);
         this.setHasSwallowedEntity(compound.getBooleanOr("HasSwallowedEntity", false));
     }
 
@@ -441,7 +424,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         this.setCatfishSize(random.nextFloat() < 0.35F ? 1 : 0);
         if (random.nextFloat() < 0.1F) {
             final Holder<Biome> holder = worldIn.getBiome(this.blockPosition());
-            if (holder.is(AMTagRegistry.SPAWNS_HUGE_CATFISH) || reason == EntitySpawnReason.SPAWN_EGG) {
+            if (holder.is(AMTagRegistry.SPAWNS_HUGE_CATFISH) || reason == EntitySpawnReason.SPAWN_ITEM_USE) {
                 this.setCatfishSize(2);
             }
         }
@@ -450,7 +433,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
 
     public void travel(Vec3 travelVector) {
         if (this.isEffectiveAi() && this.isInWater()) {
-            this.moveRelative(this.getSpeed());
+            this.moveRelative(this.getSpeed(), travelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
             if (this.getTarget() == null) {
@@ -464,12 +447,6 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
     protected void playStepSound(BlockPos p_180429_1_, BlockState p_180429_2_) {
     }
 
-    @Override
-    public void containerChanged(Container p_18983_) {
-
-    }
-
-    @Override
     protected void pickUpItem(ItemEntity itemEntity) {
         final ItemStack itemstack = itemEntity.getItem();
         if (this.getCatfishSize() != 2 && !isFull() && this.catfishInventory != null && this.catfishInventory.addItem(itemstack).isEmpty()) {
@@ -477,7 +454,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
             this.take(itemEntity, itemstack.getCount());
             itemEntity.discard();
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
         }
     }
 
@@ -506,11 +483,13 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
             if (mobtype != null) {
                 this.setSwallowedEntityType(mobtype.toString());
             }
-            final CompoundTag tag = new CompoundTag();
-            mob.addAdditionalSaveData(tag);
-            this.setSwallowedData(tag);
+            try (net.minecraft.util.ProblemReporter.ScopedCollector reporter = new net.minecraft.util.ProblemReporter.ScopedCollector(mob.problemPath(), com.mojang.logging.LogUtils.getLogger())) {
+                net.minecraft.world.level.storage.TagValueOutput output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, mob.registryAccess());
+                mob.saveWithoutId(output);
+                this.setSwallowedData(output.buildResult());
+            }
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             return true;
         }
         if (this.getCatfishSize() < 2 && entity instanceof final ItemEntity item) {
@@ -532,7 +511,9 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
                 if (type != null) {
                     Entity entity = type.create(level(), EntitySpawnReason.MOB_SUMMONED);
                     if (entity instanceof final LivingEntity alive) {
-                        alive.readAdditionalSaveData(this.getSwallowedData());
+                        try (net.minecraft.util.ProblemReporter.ScopedCollector reporter = new net.minecraft.util.ProblemReporter.ScopedCollector(alive.problemPath(), com.mojang.logging.LogUtils.getLogger())) {
+                            alive.load(net.minecraft.world.level.storage.TagValueInput.create(reporter, alive.registryAccess(), this.getSwallowedData()));
+                        }
                         alive.setHealth(Math.max(2, alive.getMaxHealth() * 0.25F));
                         alive.setYRot(random.nextFloat() * 360 - 180);
                         alive.setPos(this.getMouthVec());
@@ -597,7 +578,6 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
         return SoundEvents.COD_HURT;
     }
 
-    @Override
     public boolean isFlying() {
         return false;
     }
@@ -654,7 +634,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable, ContainerL
                         food.hurt(catfish.damageSources().mobAttack(catfish), 12000);
                     } else if (catfish.swallowEntity(food)) {
                         catfish.gameEvent(GameEvent.EAT);
-                        catfish.playSound(SoundEvents.GENERIC_EAT.value(), catfish.getSoundVolume(), catfish.getVoicePitch());
+                        catfish.playSound(SoundEvents.GENERIC_EAT, catfish.getSoundVolume(), catfish.getVoicePitch());
                         food.discard();
                     }
                 }

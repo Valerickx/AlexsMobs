@@ -25,7 +25,7 @@ public class ItemMaraca extends Item {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
         playerIn.gameEvent(GameEvent.ITEM_INTERACT_START);
         worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), AMSoundRegistry.MARACA.get(), SoundSource.PLAYERS, 0.5F, (random.nextFloat() * 0.4F + 0.8F));
-        playerIn.getCooldowns().addCooldown(this, 3);
+        playerIn.getCooldowns().addCooldown(itemstack, 3);
         playerIn.awardStat(Stats.ITEM_USED.get(this));
         return InteractionResult.SUCCESS;
     }

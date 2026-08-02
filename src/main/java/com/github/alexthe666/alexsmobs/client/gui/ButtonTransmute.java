@@ -17,18 +17,17 @@ public class ButtonTransmute extends Button {
         this.parent = parent;
     }
 
-
     @Override
-    protected void extractContents(GuiGraphicsExtractor guiGraphics, int x, int y, float partialTick) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int color = 8453920;
         int cost = AMConfig.transmutingExperienceCost;
         if(!canBeTransmuted(cost)){
             color = 16736352;
-        }else if (this.active && this.isHovered) {
+        }else if (this.active && this.isHovered()) {
             guiGraphics.blit(GUITransmutationTable.TEXTURE, this.getX(), this.getY(), 0, 201, 117, 19, 256, 256);
-            color = 0XC7FFD0;
+            color = 0xC7FFD0;
         }
-        guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("alexsmobs.container.transmutation_table.cost").append(" " + cost).getString(), this.getX() + 21, this.getY() + (this.height - 8) / 2, color);
+        guiGraphics.text(Minecraft.getInstance().font, Component.translatable("alexsmobs.container.transmutation_table.cost").append(" " + cost).getString(), this.getX() + 21, this.getY() + (this.height - 8) / 2, color);
     }
 
     public boolean canBeTransmuted(int cost){

@@ -350,7 +350,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
                 heldItemTime = 0;
                 this.heal(4);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                 if (this.getMainHandItem().hasCraftingRemainingItem()) {
                     this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().getCraftingRemainingItem());
                 }
@@ -376,7 +376,7 @@ public class EntitySeagull extends Animal implements ITargetsDroppedItems {
     }
     @Override
     public boolean canTargetItem(ItemStack stack) {
-        return stack.getItem().isEdible() && !this.isSitting();
+        return stack.has(net.minecraft.core.component.DataComponents.FOOD) && !this.isSitting();
     }
 
     private void eatItemEffect(ItemStack heldItemMainhand) {

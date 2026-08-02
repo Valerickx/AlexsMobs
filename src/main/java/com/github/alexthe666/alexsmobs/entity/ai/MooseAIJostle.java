@@ -143,7 +143,7 @@ public class MooseAIJostle extends Goal {
 
     @Nullable
     private EntityMoose getNearbyMoose() {
-        List<EntityMoose> listOfMeese = this.world.getNearbyEntities(EntityMoose.class, JOSTLE_PREDICATE, this.moose, this.moose.getBoundingBox().inflate(16.0D));
+        List<EntityMoose> listOfMeese = this.world.getEntitiesOfClass(EntityMoose.class, this.moose.getBoundingBox().inflate(16.0D), entity -> JOSTLE_PREDICATE.test((net.minecraft.server.level.ServerLevel) this.world, this.moose, entity));
         double lvt_2_1_ = 1.7976931348623157E308D;
         EntityMoose lvt_4_1_ = null;
         Iterator var5 = listOfMeese.iterator();

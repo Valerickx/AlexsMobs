@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 
-public class RenderMoose extends MobRenderer<EntityMoose, LivingEntityRenderState, ModelMoose> {
+public class RenderMoose extends MobRenderer<EntityMoose, ModelMoose> {
     private static final Identifier TEXTURE_ANTLERED = Identifier.parse("alexsmobs:textures/entity/moose_antlered.png");
     private static final Identifier TEXTURE_SNOWY_ANTLERED = Identifier.parse("alexsmobs:textures/entity/moose_snowy_antlered.png");
     private static final Identifier TEXTURE_SNOWY = Identifier.parse("alexsmobs:textures/entity/moose_snowy.png");
@@ -49,3 +49,4 @@ public class RenderMoose extends MobRenderer<EntityMoose, LivingEntityRenderStat
         }
     }
 }
+

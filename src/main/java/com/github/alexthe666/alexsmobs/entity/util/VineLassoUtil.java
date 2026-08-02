@@ -36,7 +36,7 @@ public class VineLassoUtil {
         lassoedTag.putBoolean(LASSO_PACKET, true);
         CitadelEntityData.setCitadelTag(lassoed, lassoedTag);
         if(!lassoed.level().isClientSide()){
-            Citadel.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, lassoed.getId()));
+            com.github.alexthe666.alexsmobs.AlexsMobs.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, lassoed.getId()));
         }
     }
 
@@ -84,7 +84,7 @@ public class VineLassoUtil {
             if (tag.contains(LASSO_PACKET) || tag.getBooleanOr(LASSO_REMOVED, false)) {
                 tag.putBoolean(LASSO_PACKET, false);
                 CitadelEntityData.setCitadelTag(lassoed, tag);
-                Citadel.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", tag, lassoed.getId()));
+                com.github.alexthe666.alexsmobs.AlexsMobs.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", tag, lassoed.getId()));
             }
         }
         Entity lassoedOwner = VineLassoUtil.getLassoedTo(lassoed);

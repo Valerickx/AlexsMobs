@@ -35,7 +35,7 @@ public class MungusAITemptMushroom extends Goal {
             --this.calmDown;
             return false;
         } else {
-            this.player = this.mob.level().getNearestPlayer(this.targetingConditions, this.mob);
+            this.player = this.mob.level().getNearestPlayer(this.mob.getX(), this.mob.getY(), this.mob.getZ(), 10.0D, net.minecraft.world.entity.EntitySelector.NO_SPECTATORS);
             if(this.player != null){
                 return shouldFollow(this.player.getMainHandItem()) || shouldFollow(this.player.getOffhandItem());
             }

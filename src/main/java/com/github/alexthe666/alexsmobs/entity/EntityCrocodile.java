@@ -52,6 +52,9 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.neoforged.neoforge.common.ItemAbilities;
 
 import javax.annotation.Nullable;
@@ -120,7 +123,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
 
     protected void ageBoundaryReached() {
         super.ageBoundaryReached();
-        if (!this.isBaby() && this.level().getGameRules().getBooleanOr(GameRules.RULE_DOMOBLOOT, false)) {
+        if (!this.isBaby() && ((ServerLevel) this.level()).getGameRules().get(GameRules.MOB_DROPS)) {
             this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(AMItemRegistry.CROCODILE_SCUTE.get(), random.nextInt(1) + 1), 1);
         }
     }
@@ -131,8 +134,8 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
-    private boolean isBiomeDesert(LevelAccessor worldIn) {
-        return worldIn.getBiome(position).is(AMTagRegistry.SPAWNS_DESERT_CROCODILES);
+    private boolean isBiomeDesert(LevelAccessor worldIn, BlockPos pos) {
+        return worldIn.getBiome(pos).is(AMTagRegistry.SPAWNS_DESERT_CROCODILES);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -355,7 +358,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
                     final float innerAngle = (Maths.STARTING_ANGLE * (this.yBodyRot + tickCount * 5) * (i + 1));
                     final double extraX = 0.5F * Mth.sin((float) (Math.PI + innerAngle));
                     final double extraZ = 0.5F * Mth.cos(innerAngle);
-                    level().addParticle(ParticleTypes.CRIT, true, this.getX() + headX + extraX, this.getEyeY() + 0.5F, this.getZ() + headZ + extraZ, 0, 0, 0);
+                    level().addParticle(ParticleTypes.CRIT, this.getX() + headX + extraX, this.getEyeY() + 0.5F, this.getZ() + headZ + extraZ, 0, 0, 0);
                 }
             }
         }
@@ -363,7 +366,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
     }
 
     protected void damageShieldFor(Player holder, float damage) {
-        if (holder.getUseItem().canPerformAction(ItemAbilities.SHIELD_BLOCK)) {
+        if (holder.getUseItem().is(Items.SHIELD)) {
             if (!this.level().isClientSide()) {
                 holder.awardStat(Stats.ITEM_USED.get(holder.getUseItem().getItem()));
             }
@@ -371,17 +374,14 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
             if (damage >= 3.0F) {
                 int i = 1 + Mth.floor(damage);
                 InteractionHand hand = holder.getUsedItemHand();
-                holder.getUseItem().hurtAndBreak(i, holder, (p_213833_1_) -> {
-                    p_213833_1_.broadcastBreakEvent(hand);
-                    net.neoforged.neoforge.event.ForgeEventFactory.onPlayerDestroyItem(holder, holder.getUseItem(), hand);
-                });
+                holder.getUseItem().hurtAndBreak(i, holder, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                 if (holder.getUseItem().isEmpty()) {
                     if (hand == InteractionHand.MAIN_HAND) {
                         holder.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
                     } else {
                         holder.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                     }
-                    holder.playSound(SoundEvents.SHIELD_BREAK.value(), 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
+                    holder.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
                 }
             }
 
@@ -401,7 +401,8 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
         return false;
     }
 
-    public boolean isAlliedTo(Entity entityIn) {
+    @Override
+    protected boolean considersEntityAsAlly(Entity entityIn) {
         if (this.isTame()) {
             LivingEntity livingentity = this.getOwner();
             if (entityIn == livingentity) {
@@ -415,7 +416,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
             }
         }
 
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     public void positionRider(Entity passenger, Entity.MoveFunction moveFunc) {
@@ -605,11 +606,12 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
         if (item == Items.NAME_TAG) {
             return super.mobInteract(player, hand);
         }
-        if (isTame() && item.isEdible() && item.getFoodProperties() != null && item.getFoodProperties().isMeat() && this.getHealth() < this.getMaxHealth()) {
+        FoodProperties food = itemstack.get(DataComponents.FOOD);
+        if (isTame() && food != null && this.getHealth() < this.getMaxHealth()) {
             this.usePlayerItem(player, hand, itemstack);
             this.heal(10);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         final InteractionResult type = super.mobInteract(player, hand);
@@ -704,7 +706,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
             this.animal.setAge(6000);
             this.partner.setAge(6000);
 
-            if (this.level.getGameRules().getBooleanOr(GameRules.RULE_DOMOBLOOT, false)) {
+            if (((ServerLevel) this.level).getGameRules().get(GameRules.MOB_DROPS)) {
                 final RandomSource random = this.animal.getRandom();
                 this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }

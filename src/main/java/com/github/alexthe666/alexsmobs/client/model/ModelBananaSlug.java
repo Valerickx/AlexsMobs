@@ -60,9 +60,12 @@ public class ModelBananaSlug extends AdvancedEntityModel<EntityBananaSlug> {
         return ImmutableList.of(root);
     }
 
+    public boolean young;
+
     @Override
     public void setupAnim(EntityBananaSlug entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetToDefaultPose();
+        this.young = entity.isBaby();
         float idleSpeed = 0.25F;
         float idleDegree = 0.25F;
         float walkSpeed = 1F;
@@ -97,7 +100,7 @@ public class ModelBananaSlug extends AdvancedEntityModel<EntityBananaSlug> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             matrixStackIn.pushPose();
             matrixStackIn.scale(0.65F, 0.65F, 0.65F);
             matrixStackIn.translate(0.0D, 0.8D, 0.125D);

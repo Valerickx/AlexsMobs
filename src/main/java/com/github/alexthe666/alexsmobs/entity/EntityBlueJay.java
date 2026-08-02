@@ -74,9 +74,9 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
     private static final EntityDataAccessor<Integer> ATTACK_TICK = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> CREST_TARGET = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.FLOAT);
 
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> LAST_FEEDER_UUID = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> LAST_FEEDER_UUID = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
 
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> RACCOON_UUID = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> RACCOON_UUID = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
 
     private static final EntityDataAccessor<Integer> FEED_TIME = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> SING_TIME = SynchedEntityData.defineId(EntityBlueJay.class, EntityDataSerializers.INT);
@@ -105,7 +105,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
 
     protected EntityBlueJay(EntityType<? extends Animal> animal, Level level) {
         super(animal, level);
-        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.FIRE, -1.0F);
         this.setPathfindingMalus(PathType.WATER, -1.0F);
         this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
         this.setPathfindingMalus(PathType.COCOA, -1.0F);
@@ -361,20 +361,6 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
         return position;
     }
 
-    public boolean isAlliedTo(Entity entityIn) {
-        if(this.getRaccoonUUID() != null){
-            if(entityIn instanceof EntityRaccoon && this.getRaccoonUUID().equals(entityIn.getUUID())) {
-                return true;
-            }else{
-                Entity raccoon = getRaccoon();
-                if(raccoon != null && (raccoon.isAlliedTo(entityIn) || entityIn.isAlliedTo(raccoon))){
-                    return true;
-                }
-            }
-        }
-        return super.isAlliedTo(entityIn);
-    }
-
     public Vec3 getBlockGrounding(Vec3 fleePos) {
         float radius = 10 + this.getRandom().nextInt(15);
         float neg = this.getRandom().nextBoolean() ? 1 : -1;
@@ -503,11 +489,11 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
 
     @javax.annotation.Nullable
     public UUID getLastFeederUUID() {
-        return this.entityData.get(LAST_FEEDER_UUID).orElse(null);
+        return this.entityData.get(LAST_FEEDER_UUID).map(EntityReference::getUUID).orElse(null);
     }
 
     public void setLastFeederUUID(@javax.annotation.Nullable UUID uniqueId) {
-        this.entityData.set(LAST_FEEDER_UUID, Optional.ofNullable(uniqueId));
+        this.entityData.set(LAST_FEEDER_UUID, Optional.ofNullable(uniqueId == null ? null : EntityReference.of(uniqueId)));
     }
 
     @javax.annotation.Nullable
@@ -529,11 +515,11 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
 
     @javax.annotation.Nullable
     public UUID getRaccoonUUID() {
-        return this.entityData.get(RACCOON_UUID).orElse(null);
+        return this.entityData.get(RACCOON_UUID).map(EntityReference::getUUID).orElse(null);
     }
 
     public void setRaccoonUUID(@javax.annotation.Nullable UUID uniqueId) {
-        this.entityData.set(RACCOON_UUID, Optional.ofNullable(uniqueId));
+        this.entityData.set(RACCOON_UUID, Optional.ofNullable(uniqueId == null ? null : EntityReference.of(uniqueId)));
     }
 
     @javax.annotation.Nullable
@@ -571,7 +557,7 @@ public class EntityBlueJay extends Animal implements ITargetsDroppedItems{
 
     @Override
     public boolean canTargetItem(ItemStack stack) {
-        return stack.getItem().isEdible() || stack.is(AMTagRegistry.BLUE_JAY_FOODSTUFFS);
+        return stack.has(net.minecraft.core.component.DataComponents.FOOD) || stack.is(AMTagRegistry.BLUE_JAY_FOODSTUFFS);
     }
 
     public double getMaxDistToItem() {

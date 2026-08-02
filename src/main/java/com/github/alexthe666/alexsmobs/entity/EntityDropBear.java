@@ -386,7 +386,7 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
                 BlockPos ground = getGroundPosition(new BlockPos(Mth.floor(this.getX() + extraX), (int) this.getY(), Mth.floor(this.getZ() + extraZ)));
                 BlockState state = this.level().getBlockState(ground);
                 if (!state.isAir()) {
-                    level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), true, this.getX() + extraX, ground.getY() + extraY, this.getZ() + extraZ, motionX, motionY, motionZ);
+                    level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), this.getX() + extraX, ground.getY() + extraY, this.getZ() + extraZ, motionX, motionY, motionZ);
                 }
             }
         }
@@ -488,7 +488,7 @@ public class EntityDropBear extends Monster implements IAnimatedEntity {
                     }
                 }
                 if (dist < 3D) {
-                    EntityDropBear.this.doHurtTarget((ServerLevel) this.level(), target);
+                    EntityDropBear.this.doHurtTarget((ServerLevel) EntityDropBear.this.level(), target);
                 }
             }
         }

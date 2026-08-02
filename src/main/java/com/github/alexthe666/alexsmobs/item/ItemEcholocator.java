@@ -52,7 +52,7 @@ public class ItemEcholocator extends Item {
         }else  if(type == EchoType.PUPFISH){
             AMWorldData data = AMWorldData.get(world);
             if(data != null && data.getPupfishChunk() != null){
-                AlexsMobs.sendMSGToAll(new MessageSetPupfishChunkOnClient(data.getPupfishChunk().x, data.getPupfishChunk().z));
+                AlexsMobs.sendMSGToAll(new MessageSetPupfishChunkOnClient(data.getPupfishChunk().x(), data.getPupfishChunk().z()));
                 if(!data.isInPupfishChunk(blockpos)){
                     return Collections.singletonList(data.getPupfishChunk().getMiddleBlockPosition(blockpos.getY()));
                 }
@@ -98,9 +98,10 @@ public class ItemEcholocator extends Item {
                     }
                 }
             }else{
-                CompoundTag nbt = stack.getOrCreateTag();
+                net.minecraft.world.item.component.CustomData customData = stack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+                CompoundTag nbt = customData != null ? customData.copyTag() : new CompoundTag();
                 if(nbt.contains("CavePos") && nbt.getBooleanOr("ValidCavePos", false)){
-                    pos = BlockPos.of(nbt.getLong("CavePos"));
+                    pos = BlockPos.of(nbt.getLong("CavePos").orElse(0L));
                     if(isCaveAir(worldIn, pos) || 1000000 < pos.distSqr(playerPos)){
                         nbt.putBoolean("ValidCavePos", false);
                     }
@@ -113,7 +114,7 @@ public class ItemEcholocator extends Item {
                     if(pos != null){
                         nbt.putLong("CavePos", pos.asLong());
                         nbt.putBoolean("ValidCavePos", true);
-                        stack.setTag(nbt);
+                        stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
                     }
                 }
 
@@ -127,12 +128,10 @@ public class ItemEcholocator extends Item {
                 worldIn.addFreshEntity(whaleEcho);
                 livingEntityIn.gameEvent(GameEvent.ITEM_INTERACT_START);
                 worldIn.playSound((Player)null, whaleEcho.getX(), whaleEcho.getY(), whaleEcho.getZ(), AMSoundRegistry.CACHALOT_WHALE_CLICK.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-                stack.hurtAndBreak(1, livingEntityIn, (player) -> {
-                    player.broadcastBreakEvent(livingEntityIn.getUsedItemHand());
-                });
+                stack.hurtAndBreak(1, livingEntityIn, livingEntityIn.getUsedItemHand() == InteractionHand.MAIN_HAND ? net.minecraft.world.entity.EquipmentSlot.MAINHAND : net.minecraft.world.entity.EquipmentSlot.OFFHAND);
             }
         }
-        livingEntityIn.getCooldowns().addCooldown(this, 5);
+        livingEntityIn.getCooldowns().addCooldown(stack, 5);
 
         return InteractionResult.SUCCESS;
     }

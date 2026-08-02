@@ -148,7 +148,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH.value();
+        return SoundEvents.BUCKET_FILL_FISH;
     }
 
     @Override
@@ -280,7 +280,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
         ItemStack stack = e.getItem();
         if (stack.getItem().isEdible() && stack.getItem().getFoodProperties() != null) {
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.CAT_EAT.value(), this.getVoicePitch(), this.getSoundVolume());
+            this.playSound(SoundEvents.CAT_EAT, this.getVoicePitch(), this.getSoundVolume());
             this.heal(5);
             if (!this.level().isClientSide()) {
                 if (breedCooldown == 0 && !fedCarrot) {
@@ -299,7 +299,7 @@ public class EntityTriops extends WaterAnimal implements ITargetsDroppedItems, B
                 itemstack.shrink(1);
             }
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.CAT_EAT.value(), this.getVoicePitch(), this.getSoundVolume());
+            this.playSound(SoundEvents.CAT_EAT, this.getVoicePitch(), this.getSoundVolume());
             this.heal(5);
             if (itemstack.is(AMTagRegistry.TRIOPS_BREEDABLES)) {
                 if (!this.level().isClientSide()) {

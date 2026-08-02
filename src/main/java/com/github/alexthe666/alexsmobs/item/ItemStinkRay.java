@@ -6,6 +6,7 @@ import com.github.alexthe666.alexsmobs.misc.AMSoundRegistry;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -57,9 +58,10 @@ public class ItemStinkRay extends Item {
         return f;
     }
 
-    public void releaseUsing(ItemStack itemStack, Level level, LivingEntity entity, int time) {
+    @Override
+    public boolean releaseUsing(ItemStack itemStack, Level level, LivingEntity entity, int time) {
         if (entity instanceof Player player && isUsable(itemStack)) {
-            int i = this.getUseDuration(itemStack) - time;
+            int i = this.getUseDuration(itemStack, entity) - time;
             if (i >= 10) {
                 boolean left = false;
                 if (entity.getUsedItemHand() == InteractionHand.OFF_HAND && entity.getMainArm() == HumanoidArm.RIGHT || entity.getUsedItemHand() == InteractionHand.MAIN_HAND && entity.getMainArm() == HumanoidArm.LEFT) {
@@ -74,13 +76,10 @@ public class ItemStinkRay extends Item {
                 if (!level.isClientSide()) {
                     level.addFreshEntity(blood);
                 }
-                itemStack.hurtAndBreak(1, entity, (breaker) -> {
-                    breaker.broadcastBreakEvent(entity.getUsedItemHand());
-                });
-
+                itemStack.hurtAndBreak(1, entity, entity.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
             }
-
         }
+        return true;
     }
 
 
@@ -124,7 +123,6 @@ public class ItemStinkRay extends Item {
         return !ItemStack.isSameItem(oldStack, newStack);
     }
 
-    @Override
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }

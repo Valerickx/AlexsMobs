@@ -21,7 +21,7 @@ public class LayerRaccoonEyes extends RenderLayer<EntityRaccoon, ModelRaccoon> {
     }
 
     public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityRaccoon raccoon, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        long roundedTime = raccoon.level().getDayTime() % 24000;
+        long roundedTime = raccoon.level().getGameTime() % 24000;
         boolean night = roundedTime >= 13000 && roundedTime <= 22000;
         BlockPos ratPos = raccoon.getLightPosition();
         int i = raccoon.level().getBrightness(LightLayer.SKY, ratPos);

@@ -39,7 +39,7 @@ import java.util.UUID;
 
 public class EntityMurmur extends Monster implements ISemiAquatic {
 
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> HEAD_UUID = SynchedEntityData.defineId(EntityMurmur.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> HEAD_UUID = SynchedEntityData.defineId(EntityMurmur.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Integer> HEAD_ID = SynchedEntityData.defineId(EntityMurmur.class, EntityDataSerializers.INT);
     private boolean renderFakeHead = true;
 

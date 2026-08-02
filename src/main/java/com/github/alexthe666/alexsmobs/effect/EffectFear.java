@@ -10,7 +10,7 @@ public class EffectFear extends MobEffect {
 
     protected EffectFear() {
         super(MobEffectCategory.NEUTRAL, 0X7474F7);
-        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, "7107DE5E-7CE8-4030-940E-514C1F160890", (double)-1.0F, AttributeModifier.Operation.MULTIPLY_BASE);
+        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, net.minecraft.resources.Identifier.parse("alexsmobs:fear"), (double)-1.0F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
     public void applyEffectTick(LivingEntity entity, int amplifier) {

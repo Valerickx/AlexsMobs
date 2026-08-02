@@ -18,7 +18,7 @@ public class EntityAINearestTarget3D<T extends LivingEntity> extends NearestAtta
     }
 
     public EntityAINearestTarget3D(Mob goalOwnerIn, Class<T> targetClassIn, int targetChanceIn, boolean checkSight, boolean nearbyOnlyIn, @Nullable Predicate<LivingEntity> targetPredicate) {
-        super(goalOwnerIn, targetClassIn, targetChanceIn, checkSight, nearbyOnlyIn, targetPredicate);
+        super(goalOwnerIn, targetClassIn, targetChanceIn, checkSight, nearbyOnlyIn, targetPredicate == null ? null : (entity, level) -> targetPredicate.test(entity));
     }
 
     protected AABB getTargetSearchArea(double targetDistance) {

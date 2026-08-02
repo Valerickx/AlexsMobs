@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderStradpole extends MobRenderer<EntityStradpole, LivingEntityRenderState, ModelStradpole> {
+public class RenderStradpole extends MobRenderer<EntityStradpole, ModelStradpole> {
     public static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/stradpole.png");
 
     public RenderStradpole(EntityRendererProvider.Context renderManagerIn) {
@@ -26,3 +26,4 @@ public class RenderStradpole extends MobRenderer<EntityStradpole, LivingEntityRe
         return TEXTURE;
     }
 }
+

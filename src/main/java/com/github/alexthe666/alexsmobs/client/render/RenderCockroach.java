@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderCockroach extends MobRenderer<EntityCockroach, LivingEntityRenderState, ModelCockroach> {
+public class RenderCockroach extends MobRenderer<EntityCockroach, ModelCockroach> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/cockroach.png");
 
     public RenderCockroach(EntityRendererProvider.Context renderManagerIn) {
@@ -28,3 +28,4 @@ public class RenderCockroach extends MobRenderer<EntityCockroach, LivingEntityRe
         return TEXTURE;
     }
 }
+

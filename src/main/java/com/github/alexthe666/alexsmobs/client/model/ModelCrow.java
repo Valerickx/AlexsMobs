@@ -138,28 +138,13 @@ public class ModelCrow extends AdvancedEntityModel<EntityCrow> {
 
 	}
 
-	@Override
 	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-		if (entity != null && entity.isBaby()) {
-			float f = 1.45F;
-			head.setScale(f, f, f);
-			head.setShouldScaleChildren(true);
-			matrixStackIn.pushPose();
-			matrixStackIn.scale(0.5F, 0.5F, 0.5F);
-			matrixStackIn.translate(0.0D, 1.5D, 0D);
-			parts().forEach((p_228292_8_) -> {
-				p_228292_8_.render(matrixStackIn, buffer, packedLight, packedOverlay, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
-			});
-			matrixStackIn.popPose();
-			this.head.setScale(0.9F, 0.9F, 0.9F);
-		} else {
-			this.head.setScale(0.9F, 0.9F, 0.9F);
-			matrixStackIn.pushPose();
-			parts().forEach((p_228290_8_) -> {
-				p_228290_8_.render(matrixStackIn, buffer, packedLight, packedOverlay, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
-			});
-			matrixStackIn.popPose();
-		}
+		this.head.setScale(0.9F, 0.9F, 0.9F);
+		matrixStackIn.pushPose();
+		parts().forEach((p_228290_8_) -> {
+			p_228290_8_.render(matrixStackIn, buffer, packedLight, packedOverlay, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
+		});
+		matrixStackIn.popPose();
 	}
 
 	@Override

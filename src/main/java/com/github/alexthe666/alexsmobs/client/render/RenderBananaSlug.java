@@ -20,7 +20,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderBananaSlug extends MobRenderer<EntityBananaSlug, LivingEntityRenderState, ModelBananaSlug> {
+public class RenderBananaSlug extends MobRenderer<EntityBananaSlug, ModelBananaSlug> {
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/banana_slug/banana_slug_0.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/banana_slug/banana_slug_1.png");
     private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/banana_slug/banana_slug_2.png");
@@ -143,3 +143,4 @@ public class RenderBananaSlug extends MobRenderer<EntityBananaSlug, LivingEntity
         }
     }
 }
+

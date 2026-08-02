@@ -2,6 +2,7 @@ package com.github.alexthe666.alexsmobs.entity.ai;
 
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -16,6 +17,11 @@ public class SwimmerJumpPathNavigator  extends PathNavigation {
 
     public SwimmerJumpPathNavigator(Mob entitylivingIn, Level worldIn) {
         super(entitylivingIn, worldIn);
+    }
+
+    @Override
+    public boolean canNavigateGround() {
+        return false;
     }
 
     protected PathFinder createPathFinder(int p_179679_1_) {
@@ -126,7 +132,7 @@ public class SwimmerJumpPathNavigator  extends PathNavigation {
     }
 
     public boolean isStableDestination(BlockPos pos) {
-        return !this.level.getBlockState(pos).isSolidRender(this.level, pos);
+        return !this.level.getBlockState(pos).isSolidRender();
     }
 
     public void setCanFloat(boolean canSwim) {

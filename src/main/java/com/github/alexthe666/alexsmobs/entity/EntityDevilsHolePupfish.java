@@ -14,7 +14,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -62,7 +64,7 @@ import java.util.function.Predicate;
 
 public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
 
-    public static final Identifier PUPFISH_REWARD = Identifier.fromNamespaceAndPath("alexsmobs", "gameplay/pupfish_reward");
+    public static final ResourceKey<LootTable> PUPFISH_REWARD = ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath("alexsmobs", "gameplay/pupfish_reward"));
     private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(EntityDevilsHolePupfish.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> PUPFISH_SCALE = SynchedEntityData.defineId(EntityDevilsHolePupfish.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> FEEDING_TIME = SynchedEntityData.defineId(EntityDevilsHolePupfish.class, EntityDataSerializers.INT);
@@ -207,8 +209,9 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
     }
 
 
-    public EntityDimensions getDimensions(Pose poseIn) {
-        return super.getDimensions(poseIn).scale(this.getPupfishScale());
+    @Override
+    public EntityDimensions getDefaultDimensions(Pose poseIn) {
+        return super.getDefaultDimensions(poseIn).scale(this.getPupfishScale());
     }
 
     public boolean fromBucket() {
@@ -221,13 +224,11 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
 
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
-        if (this.hasCustomName()) {
-            bucket.setCustomName(this.getCustomName());
-        }
         Bucketable.saveDefaultDataToBucketTag(this, bucket);
-        CompoundTag compound = bucket.getOrCreateTag();
-        compound.putFloat("BucketScale", this.getPupfishScale());
-        compound.putFloat("BabyAge", this.getBabyAge());
+        net.minecraft.world.item.component.CustomData.update(net.minecraft.core.component.DataComponents.CUSTOM_DATA, bucket, compound -> {
+            compound.putFloat("BucketScale", this.getPupfishScale());
+            compound.putFloat("BabyAge", (float) this.getBabyAge());
+        });
     }
 
     @Override
@@ -246,14 +247,14 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.DEVILS_HOLE_PUPFISH_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setCustomName(this.getCustomName());
+            stack.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, this.getCustomName());
         }
         return stack;
     }
 
     @Override
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH.value();
+        return SoundEvents.BUCKET_FILL_FISH;
     }
 
     public float getPupfishScale() {
@@ -311,7 +312,7 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
             this.setAirSupply(i - 1);
             if (this.getAirSupply() == -20) {
                 this.setAirSupply(0);
-                this.hurt(damageSources().dryOut());
+                this.hurt(damageSources().dryOut(), 1.0F);
             }
         } else {
             this.setAirSupply(getMaxAirSupply());
@@ -350,7 +351,6 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
     protected void playStepSound(BlockPos pos, BlockState state) {
     }
 
-    @Override
     public boolean isFlying() {
         return false;
     }
@@ -363,7 +363,7 @@ public class EntityDevilsHolePupfish extends WaterAnimal implements Bucketable {
     }
 
     private static List<ItemStack> getFoodLoot(EntityDevilsHolePupfish pupfish) {
-        LootTable loottable = pupfish.level().getServer().getLootData().getLootTable(PUPFISH_REWARD);
+        LootTable loottable = pupfish.level().getServer().reloadableRegistries().getLootTable(PUPFISH_REWARD);
         return loottable.getRandomItems((new LootParams.Builder((ServerLevel) pupfish.level())).withParameter(LootContextParams.THIS_ENTITY, pupfish).create(LootContextParamSets.PIGLIN_BARTER));
     }
 

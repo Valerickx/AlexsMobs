@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderGorilla extends MobRenderer<EntityGorilla, LivingEntityRenderState, ModelGorilla> {
+public class RenderGorilla extends MobRenderer<EntityGorilla, ModelGorilla> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/gorilla.png");
     private static final Identifier TEXTURE_SILVERBACK = Identifier.parse("alexsmobs:textures/entity/gorilla_silverback.png");
     private static final Identifier TEXTURE_DK = Identifier.parse("alexsmobs:textures/entity/gorilla_dk.png");
@@ -30,3 +30,4 @@ public class RenderGorilla extends MobRenderer<EntityGorilla, LivingEntityRender
         return entity.isFunkyKong() ? TEXTURE_FUNKY : entity.isDonkeyKong() ? TEXTURE_DK : entity.isSilverback() ? TEXTURE_SILVERBACK : TEXTURE;
     }
 }
+

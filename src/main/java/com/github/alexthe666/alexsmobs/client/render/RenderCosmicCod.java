@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderCosmicCod extends MobRenderer<EntityCosmicCod, LivingEntityRenderState, EntityModel<EntityCosmicCod>> {
+public class RenderCosmicCod extends MobRenderer<EntityCosmicCod, EntityModel<EntityCosmicCod>> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/cosmic_cod.png");
     private static final Identifier TEXTURE_EYES = Identifier.parse("alexsmobs:textures/entity/cosmic_cod_eyes.png");
 
@@ -24,4 +24,5 @@ public class RenderCosmicCod extends MobRenderer<EntityCosmicCod, LivingEntityRe
         return TEXTURE;
     }
 }
+
 

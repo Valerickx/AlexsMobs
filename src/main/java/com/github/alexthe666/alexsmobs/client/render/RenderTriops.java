@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderTriops extends MobRenderer<EntityTriops, LivingEntityRenderState, ModelTriops> {
+public class RenderTriops extends MobRenderer<EntityTriops, ModelTriops> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/triops.png");
 
     public RenderTriops(EntityRendererProvider.Context renderManagerIn) {
@@ -29,3 +29,4 @@ public class RenderTriops extends MobRenderer<EntityTriops, LivingEntityRenderSt
         return TEXTURE;
     }
 }
+

@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.FireBlock;
@@ -165,7 +166,7 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
                     double d0 = (double) blockpos.getX() + 0.5D;
                     double d1 = (double) blockpos.getY() + 1.0D;
                     double d2 = (double) blockpos.getZ() + 0.5D;
-                    entity.moveTo(d0, d1, d2, entity.getYRot(), entity.getXRot());
+                    entity.setPos(d0, d1, d2);
                     if (((EntityLeafcutterAnt) entity).isQueen()) {
                         entityLeafcutterAnt.setStayOutOfHiveCountdown(400);
                     }
@@ -188,7 +189,7 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
             p_226962_1_.ejectPassengers();
             net.minecraft.world.level.storage.TagValueOutput tagOutput = net.minecraft.world.level.storage.TagValueOutput.createWithoutContext(net.minecraft.util.ProblemReporter.DISCARDING);
             p_226962_1_.saveWithoutId(tagOutput);
-            CompoundTag compoundnbt = tagOutput.output();
+            CompoundTag compoundnbt = tagOutput.buildResult();
             if (p_226962_2_) {
                 if (!level.isClientSide() && p_226962_1_.getRandom().nextFloat() < AMConfig.leafcutterAntFungusGrowChance) {
                     growFungus();
@@ -371,17 +372,19 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
 
     }
 
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    @Override
+    protected void loadAdditional(net.minecraft.world.level.storage.ValueInput compound) {
+        super.loadAdditional(compound);
         this.ants.clear();
-        this.leafFeedings = nbt.getIntOr("LeafFeedings", 0);
-        ListTag listnbt = nbt.getListOrEmpty("Ants");
-
-        for (int i = 0; i < listnbt.size(); ++i) {
-            CompoundTag compoundnbt = listnbt.getCompoundOrEmpty(i);
-            Ant beehiveTileEntity$ant = new Ant(compoundnbt.getCompoundOrEmpty("EntityData"), compoundnbt.getIntOr("TicksInHive", 0), compoundnbt.getIntOr("MinOccupationTicks", 0), compoundnbt.getBooleanOr("Queen", false));
-            this.ants.add(beehiveTileEntity$ant);
-        }
+        this.leafFeedings = compound.read("LeafFeedings", com.mojang.serialization.Codec.INT).orElse(0);
+        compound.read("Ants", CompoundTag.CODEC).ifPresent(nbt -> {
+            ListTag listnbt = nbt.getListOrEmpty("Ants");
+            for (int i = 0; i < listnbt.size(); ++i) {
+                CompoundTag compoundnbt = listnbt.getCompoundOrEmpty(i);
+                Ant beehiveTileEntity$ant = new Ant(compoundnbt.getCompoundOrEmpty("EntityData"), compoundnbt.getIntOr("TicksInHive", 0), compoundnbt.getIntOr("MinOccupationTicks", 0), compoundnbt.getBooleanOr("Queen", false));
+                this.ants.add(beehiveTileEntity$ant);
+            }
+        });
     }
 
     public ListTag getAnts() {
@@ -400,9 +403,11 @@ public class TileEntityLeafcutterAnthill extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(net.minecraft.world.level.storage.ValueOutput compound) {
+    protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput compound) {
         super.saveAdditional(compound);
-        compound.put("Ants", this.getAnts());
+        CompoundTag tag = new CompoundTag();
+        tag.put("Ants", this.getAnts());
+        compound.store("Ants", CompoundTag.CODEC, tag);
         compound.putInt("LeafFeedings", leafFeedings);
     }
 

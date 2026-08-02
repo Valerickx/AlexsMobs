@@ -158,6 +158,18 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
         this.lastHurtBy = target;
     }
 
+    private long persistentAngerEndTime;
+
+    @Override
+    public long getPersistentAngerEndTime() {
+        return this.persistentAngerEndTime;
+    }
+
+    @Override
+    public void setPersistentAngerEndTime(long time) {
+        this.persistentAngerEndTime = time;
+    }
+
     public void startPersistentAngerTimer() {
         this.setRemainingPersistentAngerTime(ANGRY_TIMER.sample(this.random));
     }
@@ -282,7 +294,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
         if (ticksAntOnTongue > 10 && this.hasAntOnTongue()) {
             this.heal(6);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             this.setAntOnTongue(false);
         }
         if (this.hasAntOnTongue()) {
@@ -309,10 +321,11 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
             if (heldItemTime > 10 && getTongueStickOut() < 0.3F && canTargetItem(this.getMainHandItem())) {
                 heldItemTime = 0;
                 this.heal(4);
-                this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.gameEvent(GameEvent.EAT);
-                if (this.getMainHandItem().hasCraftingRemainingItem()) {
-                    this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().getCraftingRemainingItem());
+                ItemStack mainStack = this.getMainHandItem();
+                if (mainStack.getItem().getCraftingRemainder() != null) {
+                    this.spawnAtLocation((ServerLevel) this.level(), mainStack.getItem().getCraftingRemainder().create());
                 }
                 this.stopBeingAngry();
                 this.getMainHandItem().shrink(1);
@@ -432,10 +445,10 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
     }
 
     private class AITargetAnts extends NearestAttackableTargetGoal {
-        private static final Predicate<EntityLeafcutterAnt> QUEEN_ANT = (entity) -> !entity.isQueen();
+        private static final Predicate<LivingEntity> QUEEN_ANT = (entity) -> entity instanceof EntityLeafcutterAnt ant && !ant.isQueen();
 
         public AITargetAnts() {
-            super(EntityAnteater.this);
+            super(EntityAnteater.this, EntityLeafcutterAnt.class, 50, true, true, (target, level) -> QUEEN_ANT.test(target));
         }
 
         @Override

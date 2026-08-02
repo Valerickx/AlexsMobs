@@ -124,14 +124,14 @@ public class TameableAIFollowOwnerWater extends Goal {
         } else if (!this.isTeleportFriendlyBlock(new BlockPos(p_226328_1_, p_226328_2_, p_226328_3_))) {
             return false;
         } else {
-            this.tameable.moveTo((double) p_226328_1_ + 0.5D, p_226328_2_, (double) p_226328_3_ + 0.5D, this.tameable.getYRot(), this.tameable.getXRot());
+            this.tameable.setPos((double) p_226328_1_ + 0.5D, (double) p_226328_2_, (double) p_226328_3_ + 0.5D);
             this.tameable.getNavigation().stop();
             return true;
         }
     }
 
     private boolean isTeleportFriendlyBlock(BlockPos pos) {
-        PathType blockPathType = WalkNodeEvaluator.getPathTypetatic(this.world, pos.mutable());
+        PathType blockPathType = WalkNodeEvaluator.getPathTypeStatic(this.tameable, pos.mutable());
         if (world.getFluidState(pos).is(FluidTags.WATER) || !world.getFluidState(pos).is(FluidTags.WATER) && world.getFluidState(pos.below()).is(FluidTags.WATER)) {
             return true;
         }

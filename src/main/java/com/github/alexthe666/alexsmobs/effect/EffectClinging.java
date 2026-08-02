@@ -40,9 +40,9 @@ public class EffectClinging extends MobEffect {
         BlockState ground = entity.level().getBlockState(pos);
         return (entity.verticalCollision || ground.isFaceSturdy(entity.level(), pos, Direction.DOWN)) && !entity.onGround();
     }
-    public void removeAttributeModifiers(LivingEntity entityLivingBaseIn, AttributeMap attributeMapIn, int amplifier) {
-        super.removeAttributeModifiers(entityLivingBaseIn, attributeMapIn, amplifier);
-        entityLivingBaseIn.refreshDimensions();
+    @Override
+    public void removeAttributeModifiers(AttributeMap attributeMapIn) {
+        super.removeAttributeModifiers(attributeMapIn);
     }
 
     public boolean isDurationEffectTick(int duration, int amplifier) {

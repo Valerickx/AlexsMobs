@@ -28,6 +28,7 @@ public class ModelAnteater extends AdvancedEntityModel<EntityAnteater> {
     public final AdvancedModelBox right_claws;
     public final AdvancedModelBox tail;
     public ModelAnimator animator;
+    public boolean young;
 
     public ModelAnteater() {
         texWidth = 64;
@@ -160,6 +161,7 @@ public class ModelAnteater extends AdvancedEntityModel<EntityAnteater> {
     @Override
     public void setupAnim(EntityAnteater entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
         this.resetToDefaultPose();
+        this.young = entity.isBaby();
         animate(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         float tongueSpeed = 0.7F;
         float tongueDegree = 0.35F;
@@ -220,9 +222,8 @@ public class ModelAnteater extends AdvancedEntityModel<EntityAnteater> {
         return ImmutableList.of(root, body, tail, head, left_ear, right_ear, left_arm, right_arm, left_leg, right_leg, left_claws, right_claws, snout, tongue1, tongue2);
     }
 
-    @Override
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.35F;
             head.setScale(f, f, f);
             head.setShouldScaleChildren(true);

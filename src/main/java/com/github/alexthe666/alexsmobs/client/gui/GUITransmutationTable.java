@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
-public class GUITransmutationTable extends AbstractContainerScreen<MenuTransmutationTable> {
+public class GUITransmutationTable extends AbstractContainerScreen<MenuTransmutationTable> implements net.minecraft.client.gui.screens.inventory.MenuAccess<MenuTransmutationTable> {
     public static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/gui/transmutation_table.png");
     private int tickCount = 0;
     private ButtonTransmute transmuteBtn1;
@@ -39,17 +39,12 @@ public class GUITransmutationTable extends AbstractContainerScreen<MenuTransmuta
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphics, int x, int y, float partialTick) {
-        this.renderBg(guiGraphics, partialTick, x, y);
-        super.render(guiGraphics, x, y, partialTick);
-        this.renderItemsTransmute(guiGraphics, x, y);
-    }
-
-    @Override
-    protected void renderBg(GuiGraphicsExtractor guiGraphics, float f, int x, int y) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int i = this.leftPos;
         int j = this.topPos;
         guiGraphics.blit(TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        this.renderItemsTransmute(guiGraphics, mouseX, mouseY);
+        super.extractContents(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     protected void containerTick() {
@@ -61,17 +56,18 @@ public class GUITransmutationTable extends AbstractContainerScreen<MenuTransmuta
     }
 
     @Override
-    protected void renderLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 2;
+        super.extractLabels(guiGraphics, mouseX, mouseY);
     }
 
     protected void renderItemsTransmute(GuiGraphicsExtractor guiGraphics, int x, int y) {
         int i = this.leftPos;
         int j = this.topPos;
         if (!this.menu.getSlot(0).getItem().isEmpty()) {
-            guiGraphics.renderItem(AlexsMobs.PROXY.getDisplayTransmuteResult(0), i + 31, j + 17);
-            guiGraphics.renderItem(AlexsMobs.PROXY.getDisplayTransmuteResult(1), i + 31, j + 36);
-            guiGraphics.renderItem(AlexsMobs.PROXY.getDisplayTransmuteResult(2), i + 31, j + 55);
+            guiGraphics.item(AlexsMobs.PROXY.getDisplayTransmuteResult(0), i + 31, j + 17);
+            guiGraphics.item(AlexsMobs.PROXY.getDisplayTransmuteResult(1), i + 31, j + 36);
+            guiGraphics.item(AlexsMobs.PROXY.getDisplayTransmuteResult(2), i + 31, j + 55);
         }
     }
 

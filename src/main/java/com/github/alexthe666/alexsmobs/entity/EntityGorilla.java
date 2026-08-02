@@ -320,7 +320,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
             this.heal(5);
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         InteractionResult type = super.mobInteract(player, hand);

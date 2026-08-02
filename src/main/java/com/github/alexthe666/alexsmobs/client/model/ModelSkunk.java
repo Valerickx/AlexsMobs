@@ -150,7 +150,7 @@ public class ModelSkunk extends AdvancedEntityModel<EntitySkunk> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             this.head.setScale(1.5F, 1.5F, 1.5F);
             matrixStackIn.pushPose();
             matrixStackIn.scale(0.65F, 0.65F, 0.65F);

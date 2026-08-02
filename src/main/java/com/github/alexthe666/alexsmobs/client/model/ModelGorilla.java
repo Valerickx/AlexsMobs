@@ -170,7 +170,7 @@ public class ModelGorilla extends AdvancedEntityModel<EntityGorilla> {
 	}
 
 	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if (entity != null && entity.isBaby()) {
+		if (this.young) {
 			float f = 1.35F;
 			head.setScale(f, f, f);
 			head.setShouldScaleChildren(true);

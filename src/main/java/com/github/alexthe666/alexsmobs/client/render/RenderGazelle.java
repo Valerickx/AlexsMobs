@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderGazelle extends MobRenderer<EntityGazelle, LivingEntityRenderState, ModelGazelle> {
+public class RenderGazelle extends MobRenderer<EntityGazelle, ModelGazelle> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/gazelle.png");
 
     public RenderGazelle(EntityRendererProvider.Context renderManagerIn) {
@@ -26,3 +26,4 @@ public class RenderGazelle extends MobRenderer<EntityGazelle, LivingEntityRender
         return TEXTURE;
     }
 }
+

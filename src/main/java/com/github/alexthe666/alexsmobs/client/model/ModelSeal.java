@@ -222,7 +222,7 @@ public class ModelSeal extends AdvancedEntityModel<EntitySeal> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.65F;
             head.setScale(f, f, f);
             head.setShouldScaleChildren(true);

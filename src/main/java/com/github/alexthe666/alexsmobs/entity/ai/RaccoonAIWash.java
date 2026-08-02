@@ -7,7 +7,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 
@@ -82,8 +84,9 @@ public class RaccoonAIWash extends Goal {
                         raccoon.onEatItem();
                     }
                     this.raccoon.postWashItem(raccoon.getMainHandItem());
-                    if(this.raccoon.getMainHandItem().hasCraftingRemainingItem()){
-                        this.raccoon.spawnAtLocation((ServerLevel) raccoon.level(), this.raccoon.getMainHandItem().getCraftingRemainingItem());
+                    var remainder = this.raccoon.getMainHandItem().getCraftingRemainder();
+                    if(remainder != null){
+                        this.raccoon.spawnAtLocation((ServerLevel) raccoon.level(), remainder.create());
                     }
                     this.raccoon.getMainHandItem().shrink(1);
                 }

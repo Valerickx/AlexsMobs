@@ -692,7 +692,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH.value();
+        return SoundEvents.BUCKET_FILL_FISH;
     }
 
     public boolean isUpgraded() {

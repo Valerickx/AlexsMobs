@@ -164,7 +164,7 @@ public class ModelPotoo extends AdvancedEntityModel<EntityPotoo> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.25F;
             right_eye.setScale(f, f, f);
             left_eye.setScale(f, f, f);

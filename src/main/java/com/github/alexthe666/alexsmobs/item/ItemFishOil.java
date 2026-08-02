@@ -55,11 +55,11 @@ public class ItemFishOil extends Item {
     }
 
     public SoundEvent getDrinkingSound() {
-        return SoundEvents.HONEY_DRINK.value();
+        return SoundEvents.HONEY_DRINK;
     }
 
     public SoundEvent getEatingSound() {
-        return SoundEvents.HONEY_DRINK.value();
+        return SoundEvents.HONEY_DRINK;
     }
 
     public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {

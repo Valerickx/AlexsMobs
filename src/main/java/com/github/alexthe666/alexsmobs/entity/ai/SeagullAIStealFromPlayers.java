@@ -118,8 +118,8 @@ public class SeagullAIStealFromPlayers extends Goal {
 
     private boolean hasFoods(Player player){
         for(int i = 0; i < 9; i++){
-            ItemStack stackIn = player.getInventory().items.get(i);
-            if(stackIn.isEdible() && !isBlacklisted(stackIn)){
+            ItemStack stackIn = player.getInventory().getItem(i);
+            if(stackIn.has(net.minecraft.core.component.DataComponents.FOOD) && !isBlacklisted(stackIn)){
                 return true;
             }
         }
@@ -141,8 +141,8 @@ public class SeagullAIStealFromPlayers extends Goal {
     private ItemStack getFoodItemFrom(Player player){
         List<ItemStack> foods = new ArrayList<>();
         for(int i = 0; i < 9; i++){
-            ItemStack stackIn = player.getInventory().items.get(i);
-            if(stackIn.isEdible() && !isBlacklisted(stackIn)){
+            ItemStack stackIn = player.getInventory().getItem(i);
+            if(stackIn.has(net.minecraft.core.component.DataComponents.FOOD) && !isBlacklisted(stackIn)){
                 foods.add(stackIn);
             }
         }

@@ -164,14 +164,14 @@ public class CrowAIFollowOwner extends Goal {
         } else if (!this.isTeleportFriendlyBlock(new BlockPos(p_226328_1_, p_226328_2_, p_226328_3_))) {
             return false;
         } else {
-            this.crow.moveTo((double) p_226328_1_ + 0.5D, p_226328_2_, (double) p_226328_3_ + 0.5D, this.crow.getYRot(), this.crow.getXRot());
+            this.crow.setPos((double) p_226328_1_ + 0.5D, p_226328_2_, (double) p_226328_3_ + 0.5D);
             this.navigator.stop();
             return true;
         }
     }
 
     private boolean isTeleportFriendlyBlock(BlockPos p_226329_1_) {
-        PathType lvt_2_1_ = WalkNodeEvaluator.getPathTypetatic(this.world, p_226329_1_.mutable());
+        PathType lvt_2_1_ = WalkNodeEvaluator.getPathTypeStatic(this.crow, p_226329_1_.mutable());
         if (lvt_2_1_ != PathType.WALKABLE) {
             return false;
         } else {

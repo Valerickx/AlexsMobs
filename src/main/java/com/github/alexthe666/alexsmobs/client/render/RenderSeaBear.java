@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderSeaBear extends MobRenderer<EntitySeaBear, LivingEntityRenderState, ModelSeaBear> {
+public class RenderSeaBear extends MobRenderer<EntitySeaBear, ModelSeaBear> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/sea_bear.png");
 
     public RenderSeaBear(EntityRendererProvider.Context renderManagerIn) {
@@ -24,3 +24,4 @@ public class RenderSeaBear extends MobRenderer<EntitySeaBear, LivingEntityRender
         return TEXTURE;
     }
 }
+

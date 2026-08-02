@@ -46,7 +46,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.function.Predicate;
 
-public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquatic, Shearable, net.neoforged.neoforge.common.IShearable {
+public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquatic, Shearable {
 
     public static final Predicate<LivingEntity> TARGET_PRED = (animal) -> {
         return !(animal instanceof EntityAlligatorSnappingTurtle) && !(animal instanceof ArmorStand) && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(animal) && animal.isAlive();
@@ -100,9 +100,12 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 18.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.7D).add(Attributes.ARMOR, 8D).add(Attributes.FOLLOW_RANGE, 16.0D).add(Attributes.ATTACK_DAMAGE, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.2F);
     }
 
-    @Override
-    public float getScale() {
-        return this.isBaby() ? 0.3F : 1.0F;
+    public float getTurtleScale() {
+        return this.entityData.get(TURTLE_SCALE);
+    }
+
+    public void setTurtleScale(float scale) {
+        this.entityData.set(TURTLE_SCALE, scale);
     }
 
     protected void registerGoals() {
@@ -261,17 +264,11 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
-    public float getTurtleScale() {
-        return this.entityData.get(TURTLE_SCALE);
-    }
 
-    public void setTurtleScale(float scale) {
-        this.entityData.set(TURTLE_SCALE);
-    }
 
 
     protected PathNavigation createNavigation(Level worldIn) {
-        return new SemiAquaticPathNavigator(EntityAlligatorSnappingTurtle.this) {
+        return new SemiAquaticPathNavigator(EntityAlligatorSnappingTurtle.this, worldIn) {
             public boolean isStableDestination(BlockPos pos) {
                 return this.level.getBlockState(pos).getFluidState().isEmpty();
             }
@@ -384,13 +381,9 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
 
     }
 
+    @Override
     public boolean readyForShearing() {
         return this.isAlive() && this.getMoss() > 0;
-    }
-
-    @Override
-    public boolean isShearable(@javax.annotation.Nonnull ItemStack item, Level world, BlockPos pos) {
-        return readyForShearing();
     }
 
     @Override
@@ -407,21 +400,8 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
         }
     }
 
-    @javax.annotation.Nonnull
-    @Override
-    public java.util.List<ItemStack> onSheared(@javax.annotation.Nullable Player player, @javax.annotation.Nonnull ItemStack item, Level world, BlockPos pos, int fortune) {
-        world.playSound(null, this, SoundEvents.SHEEP_SHEAR, player == null ? SoundSource.BLOCKS : SoundSource.PLAYERS, 1.0F, 1.0F);
-        this.gameEvent(GameEvent.ENTITY_INTERACT);
-        if (!world.isClientSide()) {
-            if (random.nextFloat() < this.getMoss() * 0.05F) {
-                this.setMoss(0);
-                return Collections.singletonList(new ItemStack(AMItemRegistry.SPIKED_SCUTE.get()));
-            } else {
-                this.setMoss(0);
-                return Collections.singletonList(new ItemStack(Items.SEAGRASS));
-            }
-        }
-        return java.util.Collections.emptyList();
+    public void shear(SoundSource category) {
+        shear((ServerLevel) this.level(), category, ItemStack.EMPTY);
     }
 
     @Nullable

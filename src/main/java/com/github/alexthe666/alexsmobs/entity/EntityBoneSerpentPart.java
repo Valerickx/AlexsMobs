@@ -41,7 +41,7 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
 
     private static final EntityDataAccessor<Boolean> TAIL = SynchedEntityData.defineId(EntityBoneSerpentPart.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> BODYINDEX = SynchedEntityData.defineId(EntityBoneSerpentPart.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> PARENT_UUID = SynchedEntityData.defineId(EntityBoneSerpentPart.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> PARENT_UUID = SynchedEntityData.defineId(EntityBoneSerpentPart.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
     public EntityDimensions multipartSize;
     protected float radius;
     protected float angleYaw;
@@ -59,13 +59,6 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
         this.radius = radius;
         this.angleYaw = (angleYaw + 90.0F) * Mth.DEG_TO_RAD;
         this.offsetY = offsetY;
-    }
-
-    public boolean startRiding(Entity entityIn) {
-        if(!(entityIn instanceof AbstractMinecart || entityIn instanceof Boat)){
-            return super.startRiding(entityIn);
-        }
-        return false;
     }
 
     @Nullable
@@ -110,11 +103,11 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
 
     @Nullable
     public UUID getParentId() {
-        return this.entityData.get(PARENT_UUID).orElse(null);
+        return this.entityData.get(PARENT_UUID).map(EntityReference::getUUID).orElse(null);
     }
 
     public void setParentId(@Nullable UUID uniqueId) {
-        this.entityData.set(PARENT_UUID, Optional.ofNullable(uniqueId));
+        this.entityData.set(PARENT_UUID, Optional.ofNullable(uniqueId == null ? null : EntityReference.of(uniqueId)));
     }
 
     public void setInitialPartPos(Entity parent) {
@@ -123,7 +116,6 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
 
     @Override
     public void tick() {
-        isInsidePortal = false;
         if (this.tickCount > 10) {
             Entity parent = getParent();
             refreshDimensions();
@@ -200,20 +192,19 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
     public InteractionResult interact(Player player, InteractionHand hand) {
         Entity parent = getParent();
 
-        return parent != null ? parent.interact(player, hand) : InteractionResult.PASS;
+        return parent != null ? parent.interact(player, hand, player.position()) : InteractionResult.PASS;
     }
 
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         final Entity parent = getParent();
-        final boolean prev = parent != null && parent.hurt(source, damage * this.damageMultiplier);
+        final boolean prev = parent != null && parent.hurtServer(level, source, damage * this.damageMultiplier);
         if (prev && !this.level().isClientSide()) {
             AlexsMobs.sendMSGToAll(new MessageHurtMultipart(this.getId(), parent.getId(), damage * this.damageMultiplier));
         }
         return prev;
     }
 
-    @Override
     public Iterable<ItemStack> getArmorSlots() {
         return ImmutableList.of();
     }
@@ -260,6 +251,6 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
     }
 
     public boolean shouldContinuePersisting() {
-        return isAddedToWorld() || this.isRemoved();
+        return !this.isRemoved();
     }
 }

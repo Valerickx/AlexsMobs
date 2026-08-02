@@ -15,7 +15,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderCentipedeTail extends MobRenderer<EntityCentipedeTail, LivingEntityRenderState, AdvancedEntityModel<EntityCentipedeTail>> {
+public class RenderCentipedeTail extends MobRenderer<EntityCentipedeTail, AdvancedEntityModel<EntityCentipedeTail>> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/cave_centipede.png");
 
     public RenderCentipedeTail(EntityRendererProvider.Context renderManagerIn) {
@@ -61,3 +61,4 @@ public class RenderCentipedeTail extends MobRenderer<EntityCentipedeTail, Living
         return TEXTURE;
     }
 }
+

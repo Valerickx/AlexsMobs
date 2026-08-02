@@ -57,7 +57,7 @@ import java.util.function.Predicate;
 
 public class EntityBoneSerpent extends Monster {
 
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> CHILD_UUID = SynchedEntityData.defineId(EntityBoneSerpent.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> CHILD_UUID = SynchedEntityData.defineId(EntityBoneSerpent.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
     private static final Predicate<LivingEntity> NOT_RIDING_STRADDLEBOARD_FRIENDLY = (entity) -> {
         return entity.isAlive() && (entity.getVehicle() == null || !(entity.getVehicle() instanceof EntityStraddleboard) || !((EntityStraddleboard)entity.getVehicle()).shouldSerpentFriend());
     };;
@@ -224,11 +224,11 @@ public class EntityBoneSerpent extends Monster {
 
     @Nullable
     public UUID getChildId() {
-        return this.entityData.get(CHILD_UUID).orElse(null);
+        return this.entityData.get(CHILD_UUID).map(EntityReference::getUUID).orElse(null);
     }
 
     public void setChildId(@Nullable UUID uniqueId) {
-        this.entityData.set(CHILD_UUID, Optional.ofNullable(uniqueId));
+        this.entityData.set(CHILD_UUID, Optional.ofNullable(uniqueId == null ? null : EntityReference.of(uniqueId)));
     }
 
     public Entity getChild() {
@@ -241,7 +241,6 @@ public class EntityBoneSerpent extends Monster {
 
     public void tick() {
         super.tick();
-        isInsidePortal = false;
         final boolean ground = !this.isInLava() && !this.isInWater() && this.onGround();
         if (jumpCooldown > 0) {
             jumpCooldown--;

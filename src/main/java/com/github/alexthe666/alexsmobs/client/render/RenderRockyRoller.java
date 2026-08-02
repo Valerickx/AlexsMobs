@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderRockyRoller extends MobRenderer<EntityRockyRoller, LivingEntityRenderState, ModelRockyRoller> {
+public class RenderRockyRoller extends MobRenderer<EntityRockyRoller, ModelRockyRoller> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/rocky_roller.png");
     private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/rocky_roller_angry.png");
     private static final Identifier TEXTURE_ROLLING = Identifier.parse("alexsmobs:textures/entity/rocky_roller_rolling.png");
@@ -27,3 +27,4 @@ public class RenderRockyRoller extends MobRenderer<EntityRockyRoller, LivingEnti
         return entity.isRolling() ? TEXTURE_ROLLING : entity.isAngry() ? TEXTURE_ANGRY : TEXTURE;
     }
 }
+

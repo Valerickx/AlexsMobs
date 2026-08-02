@@ -52,8 +52,8 @@ public class EntityVoidWormPart extends LivingEntity implements IHurtableMultipa
     private static final EntityDataAccessor<Float> WORM_SCALE = SynchedEntityData.defineId(EntityVoidWormPart.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> WORM_YAW = SynchedEntityData.defineId(EntityVoidWormPart.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> WORM_ANGLE = SynchedEntityData.defineId(EntityVoidWormPart.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> PARENT_UUID = SynchedEntityData.defineId(EntityVoidWormPart.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> CHILD_UUID = SynchedEntityData.defineId(EntityVoidWormPart.class, EntityDataSerializers.OPTIONAL_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> PARENT_UUID = SynchedEntityData.defineId(EntityVoidWormPart.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> CHILD_UUID = SynchedEntityData.defineId(EntityVoidWormPart.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Integer> PORTAL_TICKS = SynchedEntityData.defineId(EntityVoidWormPart.class, EntityDataSerializers.INT);
     public EntityDimensions multipartSize;
     public float prevWormAngle;

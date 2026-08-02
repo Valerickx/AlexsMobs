@@ -155,7 +155,7 @@ public class MudskipperAIDisplay extends Goal {
 
     @Nullable
     private EntityMudskipper getNearbyMudskipper() {
-        List<EntityMudskipper> skippers = this.world.getNearbyEntities(EntityMudskipper.class, JOSTLE_PREDICATE, this.mudskipper, this.mudskipper.getBoundingBox().inflate(16.0D));
+        List<EntityMudskipper> skippers = this.world.getEntitiesOfClass(EntityMudskipper.class, this.mudskipper.getBoundingBox().inflate(16.0D), entity -> JOSTLE_PREDICATE.test((net.minecraft.server.level.ServerLevel) this.world, this.mudskipper, entity));
         double lvt_2_1_ = 1.7976931348623157E308D;
         EntityMudskipper lvt_4_1_ = null;
         Iterator var5 = skippers.iterator();

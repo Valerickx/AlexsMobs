@@ -25,18 +25,7 @@ public class ProperBrewingRecipe extends BrewingRecipe {
         if (stack == null) {
             return false;
         } else {
-            ItemStack[] matchingStacks = input.getItems();
-            if (matchingStacks.length == 0) {
-                return stack.isEmpty();
-            } else {
-                for (ItemStack itemstack : matchingStacks) {
-                    if (ItemStack.isSameItem(stack, itemstack) && ItemStack.isSameItemSameTags(itemstack, stack)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
+            return this.input.test(stack);
         }
     }
 

@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderAnteater extends MobRenderer<EntityAnteater, LivingEntityRenderState, ModelAnteater> {
+public class RenderAnteater extends MobRenderer<EntityAnteater, ModelAnteater> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/anteater.png");
     private static final Identifier TEXTURE_PETER = Identifier.parse("alexsmobs:textures/entity/anteater_peter.png");
 
@@ -38,3 +38,4 @@ public class RenderAnteater extends MobRenderer<EntityAnteater, LivingEntityRend
         return entity.isPeter() ? TEXTURE_PETER : TEXTURE;
     }
 }
+

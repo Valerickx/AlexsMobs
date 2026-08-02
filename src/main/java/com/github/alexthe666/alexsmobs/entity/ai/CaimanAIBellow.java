@@ -36,7 +36,7 @@ public class CaimanAIBellow extends Goal {
 
     public void tick(){
         if(caiman.isInWater()){
-            final double d1 = caiman.getFluidTypeHeight(NeoForgeMod.WATER_TYPE.get());
+            final double d1 = caiman.getFluidHeight(net.minecraft.tags.FluidTags.WATER);
             caiman.getNavigation().stop();
             if(d1 > 0.3F){
                 final double d2 = Math.pow(d1 - 0.3F, 2);

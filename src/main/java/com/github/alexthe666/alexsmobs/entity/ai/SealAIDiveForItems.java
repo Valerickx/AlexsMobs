@@ -38,7 +38,8 @@ public class SealAIDiveForItems extends Goal {
     }
 
     private static List<ItemStack> getItemStacks(EntitySeal seal) {
-        LootTable loottable = seal.level().getServer().getLootData().getLootTable(SEAL_REWARD);
+        net.minecraft.resources.ResourceKey<LootTable> key = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, SEAL_REWARD);
+        LootTable loottable = seal.level().getServer().reloadableRegistries().getLootTable(key);
         return loottable.getRandomItems((new LootParams.Builder((ServerLevel) seal.level())).withParameter(LootContextParams.THIS_ENTITY, seal).create(LootContextParamSets.PIGLIN_BARTER));
     }
 

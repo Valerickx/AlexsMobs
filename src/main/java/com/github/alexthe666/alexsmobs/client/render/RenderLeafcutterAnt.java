@@ -18,7 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
-public class RenderLeafcutterAnt extends MobRenderer<EntityLeafcutterAnt, LivingEntityRenderState, AdvancedEntityModel<EntityLeafcutterAnt>> {
+public class RenderLeafcutterAnt extends MobRenderer<EntityLeafcutterAnt, AdvancedEntityModel<EntityLeafcutterAnt>> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/leafcutter_ant.png");
     private static final Identifier TEXTURE_QUEEN = Identifier.parse("alexsmobs:textures/entity/leafcutter_ant_queen.png");
     private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/leafcutter_ant_angry.png");
@@ -122,3 +122,4 @@ public class RenderLeafcutterAnt extends MobRenderer<EntityLeafcutterAnt, Living
         }
     }
 }
+

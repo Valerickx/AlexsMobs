@@ -129,9 +129,12 @@ public class ModelCaiman extends AdvancedEntityModel<EntityCaiman> {
         return ImmutableList.of(root, body, bottomJaw, head, topJaw, tail1, tail2, tail3, leftLeg, leftFoot, rightLeg, rightFoot, rightArm, rightHand, leftArm, leftHand);
     }
 
+    public boolean young;
+
     @Override
     public void setupAnim(EntityCaiman entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetToDefaultPose();
+        this.young = entity.isBaby();
         float idleSpeed = 0.05F;
         float idleDegree = 0.1F;
         float walkSpeed = 1F;
@@ -221,7 +224,7 @@ public class ModelCaiman extends AdvancedEntityModel<EntityCaiman> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.25F;
             head.setScale(f, f, f);
             head.setShouldScaleChildren(true);

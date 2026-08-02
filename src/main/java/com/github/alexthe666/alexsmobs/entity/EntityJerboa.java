@@ -183,7 +183,7 @@ public class EntityJerboa extends Animal {
         }
 
         if (!this.level().isClientSide()) {
-            if ((this.level().getDayTime() % 24000L < 13000L) && this.getLastHurtByMob() == null && !this.isBegging()) {
+            if ((this.level().getGameTime() % 24000L < 13000L) && this.getLastHurtByMob() == null && !this.isBegging()) {
                 if (tickCount % 10 == 0 && this.getRandom().nextInt(750) == 0) {
                     this.setSleeping(true);
                 }

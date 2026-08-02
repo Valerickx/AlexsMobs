@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 
 import static net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY;
 
-public class RenderFarseer extends MobRenderer<EntityFarseer, LivingEntityRenderState, ModelFarseer> {
+public class RenderFarseer extends MobRenderer<EntityFarseer, ModelFarseer> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/farseer/farseer.png");
     private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/farseer/farseer_angry.png");
     private static final Identifier TEXTURE_CLAWS = Identifier.parse("alexsmobs:textures/entity/farseer/farseer_claws.png");
@@ -351,3 +351,4 @@ public class RenderFarseer extends MobRenderer<EntityFarseer, LivingEntityRender
         }
     }
 }
+

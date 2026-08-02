@@ -176,7 +176,7 @@ public class ModelTasmanianDevil extends AdvancedEntityModel<EntityTasmanianDevi
 
 	@Override
 	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if (entity != null && entity.isBaby()) {
+		if (this.young) {
 			float f = 1.65F;
 			head.setScale(f, f, f);
 			head.setShouldScaleChildren(true);

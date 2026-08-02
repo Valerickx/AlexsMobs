@@ -95,9 +95,7 @@ public class ItemBloodSprayer extends Item {
                 if (!worldIn.isClientSide()) {
                     worldIn.addFreshEntity(blood);
                 }
-                stack.hurtAndBreak(1, livingEntityIn, (player) -> {
-                    player.broadcastBreakEvent(livingEntityIn.getUsedItemHand());
-                });
+                stack.hurtAndBreak(1, livingEntityIn, livingEntityIn.getUsedItemHand() == InteractionHand.MAIN_HAND ? net.minecraft.world.entity.EquipmentSlot.MAINHAND : net.minecraft.world.entity.EquipmentSlot.OFFHAND);
             }
         }else{
             if(livingEntityIn instanceof Player){
@@ -108,7 +106,7 @@ public class ItemBloodSprayer extends Item {
                     flag = true;
                 }
                 if(flag){
-                    ((Player) livingEntityIn).getCooldowns().addCooldown(this, 20);
+                    ((Player) livingEntityIn).getCooldowns().addCooldown(stack, 20);
                     stack.setDamageValue(0);
                 }
                 livingEntityIn.stopUsingItem();

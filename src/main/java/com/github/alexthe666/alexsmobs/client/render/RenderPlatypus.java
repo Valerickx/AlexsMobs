@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 
-public class RenderPlatypus extends MobRenderer<EntityPlatypus, LivingEntityRenderState, ModelPlatypus> {
+public class RenderPlatypus extends MobRenderer<EntityPlatypus, ModelPlatypus> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/platypus.png");
     private static final Identifier TEXTURE_PERRY = Identifier.parse("alexsmobs:textures/entity/platypus_perry.png");
 
@@ -47,3 +47,4 @@ public class RenderPlatypus extends MobRenderer<EntityPlatypus, LivingEntityRend
         }
     }
 }
+

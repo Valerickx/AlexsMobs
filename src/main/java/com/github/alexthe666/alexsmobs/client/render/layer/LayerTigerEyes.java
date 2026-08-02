@@ -24,7 +24,7 @@ public class LayerTigerEyes  extends RenderLayer<EntityTiger, ModelTiger> {
 
     public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityTiger tiger, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if(!tiger.isSleeping()){
-            long roundedTime = tiger.level().getDayTime() % 24000;
+            long roundedTime = tiger.level().getGameTime() % 24000;
             boolean night = roundedTime >= 13000 && roundedTime <= 22000;
             BlockPos ratPos = tiger.getLightPosition();
             int i = tiger.level().getBrightness(LightLayer.SKY, ratPos);

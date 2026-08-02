@@ -8,7 +8,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -77,7 +77,7 @@ public class ItemTendonWhip extends Item implements ILeftClick {
             TendonWhipUtil.retractFarTendons(worldIn, playerIn);
             if (!worldIn.isClientSide()) {
                 if (closestValid != null) {
-                    EntityTendonSegment segment = AMEntityRegistry.TENDON_SEGMENT.get().create(worldIn, MobSpawnType.MOB_SUMMONED);
+                    EntityTendonSegment segment = AMEntityRegistry.TENDON_SEGMENT.get().create(worldIn, EntitySpawnReason.MOB_SUMMONED);
                     segment.copyPosition(playerIn);
                     worldIn.addFreshEntity(segment);
                     segment.setCreatorEntityUUID(playerIn.getUUID());

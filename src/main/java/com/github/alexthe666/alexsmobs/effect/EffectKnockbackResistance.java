@@ -10,7 +10,7 @@ public class EffectKnockbackResistance extends MobEffect {
 
     public EffectKnockbackResistance() {
         super(MobEffectCategory.BENEFICIAL, 0X865337);
-        this.addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, "03C3C89D-7037-4B42-869F-B146BCB64D2F", 0.5D, AttributeModifier.Operation.ADDITION);
+        this.addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, net.minecraft.resources.Identifier.parse("alexsmobs:knockback_resistance"), 0.5D, AttributeModifier.Operation.ADD_VALUE);
     }
 
     public void applyEffectTick(LivingEntity LivingEntityIn, int amplifier) {

@@ -22,6 +22,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import net.minecraft.server.level.ServerLevel;
+import java.util.EnumSet;
 import java.util.List;
 
 public class AnimalAILootChests extends MoveToBlockGoal {
@@ -68,7 +70,7 @@ public class AnimalAILootChests extends MoveToBlockGoal {
             return false;
         }
         if (this.nextStartTick <= 0) {
-            if (!net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(this.entity.level(), this.entity)) {
+            if (!net.neoforged.neoforge.event.EventHooks.canEntityGrief((ServerLevel) this.entity.level(), this.entity)) {
                 return false;
             }
         }
@@ -128,7 +130,7 @@ public class AnimalAILootChests extends MoveToBlockGoal {
                             ItemStack duplicate = stack.copy();
                             duplicate.setCount(1);
                             if (!this.entity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !this.entity.level().isClientSide()) {
-                                this.entity.spawnAtLocation((ServerLevel) entity.level(), this.entity.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+                                this.entity.spawnAtLocation((ServerLevel) this.entity.level(), this.entity.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
                             }
                             this.entity.setItemInHand(InteractionHand.MAIN_HAND, duplicate);
                             if (entity instanceof EntityRaccoon) {

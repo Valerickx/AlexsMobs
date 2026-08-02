@@ -39,6 +39,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -109,7 +110,7 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
 
     public Ingredient getAllFoods(){
         if(temptItems == null){
-            temptItems = Ingredient.of(AMTagRegistry.CAPUCHIN_MONKEY_BREEDABLES, AMTagRegistry.CAPUCHIN_MONKEY_FOODSTUFFS);
+            temptItems = net.neoforged.neoforge.common.crafting.CompoundIngredient.of(Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.CAPUCHIN_MONKEY_BREEDABLES)), Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.CAPUCHIN_MONKEY_FOODSTUFFS)));
         }
         return temptItems;
     }
@@ -163,7 +164,8 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
         return AMSoundRegistry.CAPUCHIN_MONKEY_HURT.get();
     }
 
-    public boolean isAlliedTo(Entity entityIn) {
+    @Override
+    protected boolean considersEntityAsAlly(Entity entityIn) {
         if (this.isTame()) {
             LivingEntity livingentity = this.getOwner();
             if (entityIn == livingentity) {
@@ -176,8 +178,7 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
                 return livingentity.isAlliedTo(entityIn);
             }
         }
-
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {
@@ -450,7 +451,7 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
             if (isTame() && (getAllFoods().test(itemstack) && !isFood(itemstack)) && this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, hand, itemstack);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.heal(5);
                 return InteractionResult.SUCCESS;
             }
@@ -464,10 +465,9 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
                 this.usePlayerItem(player, hand, itemstack);
                 return InteractionResult.CONSUME;
             }
-            if (this.hasDart() && itemstack.is(Tags.Items.SHEARS)) {
+            if (this.hasDart() && itemstack.is(Items.SHEARS)) {
                 this.setDart(false);
-                itemstack.hurtAndBreak(1, this, (p_233654_0_) -> {
-                });
+                itemstack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
                 return InteractionResult.SUCCESS;
             }
             if (player.isShiftKeyDown() && player.getPassengers().isEmpty()) {
@@ -479,7 +479,7 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
                 if (this.getCommand() == 3) {
                     this.setCommand(0);
                 }
-                player.displayClientMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()), true);
+                player.sendSystemMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()));
                 final boolean sit = this.getCommand() == 2;
                 if (sit) {
                     this.forcedSit = true;
@@ -518,7 +518,7 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
     public void onGetItem(ItemEntity e) {
         this.heal(5);
         this.gameEvent(GameEvent.EAT);
-        this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+        this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
         if (e.getItem().is(AMTagRegistry.BANANAS)) {
             if (getRandom().nextInt(4) == 0) {
                 this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(AMBlockRegistry.BANANA_PEEL.get()));
@@ -528,8 +528,10 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
         Entity itemThrower = e.getOwner();
         if (e.getItem().is(AMTagRegistry.CAPUCHIN_MONKEY_TAMEABLES) && itemThrower != null && !this.isTame()) {
             if (getRandom().nextInt(5) == 0) {
-                this.setTame(true);
-                this.setOwnerUUID(itemThrower.getUUID());
+                this.setTame(true, true);
+                if (itemThrower instanceof LivingEntity living) {
+                    this.setOwner(living);
+                }
                 this.level().broadcastEntityEvent(this, (byte) 7);
             } else {
                 this.level().broadcastEntityEvent(this, (byte) 6);

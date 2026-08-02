@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderRattlesnake extends MobRenderer<EntityRattlesnake, LivingEntityRenderState, ModelRattlesnake> {
+public class RenderRattlesnake extends MobRenderer<EntityRattlesnake, ModelRattlesnake> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/rattlesnake.png");
 
     public RenderRattlesnake(EntityRendererProvider.Context renderManagerIn) {
@@ -25,3 +25,4 @@ public class RenderRattlesnake extends MobRenderer<EntityRattlesnake, LivingEnti
         return TEXTURE;
     }
 }
+

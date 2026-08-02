@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderTasmanianDevil extends MobRenderer<EntityTasmanianDevil, LivingEntityRenderState, ModelTasmanianDevil> {
+public class RenderTasmanianDevil extends MobRenderer<EntityTasmanianDevil, ModelTasmanianDevil> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/tasmanian_devil.png");
     private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/tasmanian_devil_angry.png");
 
@@ -27,3 +27,4 @@ public class RenderTasmanianDevil extends MobRenderer<EntityTasmanianDevil, Livi
     }
 
 }
+

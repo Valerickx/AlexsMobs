@@ -31,7 +31,7 @@ public class ItemEnderiophageRocket extends Item {
                 itemstack.shrink(1);
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
     }
 
     public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {

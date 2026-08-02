@@ -26,7 +26,7 @@ public class ItemBearDust extends Item  implements CustomTabBehavior{
         ItemStack itemstack = playerIn.getItemInHand(handIn);
         playerIn.gameEvent(GameEvent.ITEM_INTERACT_START);
         worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), AMSoundRegistry.BEAR_DUST.get(), SoundSource.PLAYERS, 0.75F, (random.nextFloat() * 0.2F + 0.9F));
-        playerIn.getCooldowns().addCooldown(this, 3);
+        playerIn.getCooldowns().addCooldown(itemstack, 3);
         playerIn.awardStat(Stats.ITEM_USED.get(this));
         return InteractionResult.SUCCESS;
     }

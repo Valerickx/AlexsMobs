@@ -54,26 +54,30 @@ public class ItemDimensionalCarver extends Item {
 
     public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
-        if (itemstack.getDamageValue() >= itemstack.getMaxDamage()) {
-            return InteractionResult.FAIL;
+        BlockHitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.NONE);
+        if (raytraceresult.getType() == HitResult.Type.MISS) {
+            return InteractionResult.PASS;
         } else {
             playerIn.startUsingItem(handIn);
-            HitResult raytraceresult = rayTracePortal(worldIn, playerIn, ClipContext.Fluid.ANY);
-            Direction dir = Direction.orderedByNearest(playerIn)[0];
-
+            Direction dir = raytraceresult.getDirection();
             double x = raytraceresult.getLocation().x - dir.getNormal().getX() * 0.1F;
             double y = raytraceresult.getLocation().y - dir.getNormal().getY() * 0.1F;
             double z = raytraceresult.getLocation().z - dir.getNormal().getZ() * 0.1F;
-            if (itemstack.getOrCreateTag().getBooleanOr("HASBLOCK", false)) {
-                x = itemstack.getOrCreateTag().getDoubleOr("BLOCKX", 0.0D);
-                y = itemstack.getOrCreateTag().getDoubleOr("BLOCKY", 0.0D);
-                z = itemstack.getOrCreateTag().getDoubleOr("BLOCKZ", 0.0D);
+            CompoundTag tag = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+            if (tag.getBoolean("HASBLOCK")) {
+                x = tag.getDouble("BLOCKX");
+                y = tag.getDouble("BLOCKY");
+                z = tag.getDouble("BLOCKZ");
             } else {
-                itemstack.getOrCreateTag().putBoolean("HASBLOCK", true);
-                itemstack.getOrCreateTag().putDouble("BLOCKX", x);
-                itemstack.getOrCreateTag().putDouble("BLOCKY", y);
-                itemstack.getOrCreateTag().putDouble("BLOCKZ", z);
-                itemstack.setTag(itemstack.getOrCreateTag());
+                double finalX = x;
+                double finalY = y;
+                double finalZ = z;
+                CustomData.update(DataComponents.CUSTOM_DATA, itemstack, t -> {
+                    t.putBoolean("HASBLOCK", true);
+                    t.putDouble("BLOCKX", finalX);
+                    t.putDouble("BLOCKY", finalY);
+                    t.putDouble("BLOCKZ", finalZ);
+                });
             }
             worldIn.addParticle(AMParticleRegistry.INVERT_DIG.get(), x, y, z, playerIn.getId(), 0, 0);
             return InteractionResult.CONSUME;
@@ -97,10 +101,11 @@ public class ItemDimensionalCarver extends Item {
             player.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1, 0.5F + random.nextFloat());
         }
         boolean flag = false;
-        if (itemstack.getOrCreateTag().getBooleanOr("HASBLOCK", false)) {
-            double x = itemstack.getOrCreateTag().getDoubleOr("BLOCKX", 0.0D);
-            double y = itemstack.getOrCreateTag().getDoubleOr("BLOCKY", 0.0D);
-            double z = itemstack.getOrCreateTag().getDoubleOr("BLOCKZ", 0.0D);
+        CompoundTag tag = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        if (tag.getBoolean("HASBLOCK")) {
+            double x = tag.getDouble("BLOCKX");
+            double y = tag.getDouble("BLOCKY");
+            double z = tag.getDouble("BLOCKZ");
             if (random.nextFloat() < 0.2) {
                 player.level().addParticle(AMParticleRegistry.WORM_PORTAL.get(), x + random.nextGaussian() * 0.1F, y + random.nextGaussian() * 0.1F, z + random.nextGaussian() * 0.1F, random.nextGaussian() * 0.1F, -0.1F, random.nextGaussian() * 0.1F);
             }
@@ -133,22 +138,23 @@ public class ItemDimensionalCarver extends Item {
         }
         if (flag) {
             player.stopUsingItem();
-            itemstack.getOrCreateTag().putBoolean("HASBLOCK", false);
-            itemstack.getOrCreateTag().putDouble("BLOCKX", 0);
-            itemstack.getOrCreateTag().putDouble("BLOCKY", 0);
-            itemstack.getOrCreateTag().putDouble("BLOCKZ", 0);
-            itemstack.setTag(itemstack.getOrCreateTag());
+            CustomData.update(DataComponents.CUSTOM_DATA, itemstack, t -> {
+                t.putBoolean("HASBLOCK", false);
+                t.putDouble("BLOCKX", 0);
+                t.putDouble("BLOCKY", 0);
+                t.putDouble("BLOCKZ", 0);
+            });
         }
     }
 
 
     public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
-        stack.getOrCreateTag().putBoolean("HASBLOCK", false);
-        stack.getOrCreateTag().putDouble("BLOCKX", 0);
-        stack.getOrCreateTag().putDouble("BLOCKY", 0);
-        stack.getOrCreateTag().putDouble("BLOCKZ", 0);
-        stack.setTag(stack.getOrCreateTag());
-
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, t -> {
+            t.putBoolean("HASBLOCK", false);
+            t.putDouble("BLOCKX", 0);
+            t.putDouble("BLOCKY", 0);
+            t.putDouble("BLOCKZ", 0);
+        });
     }
 
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {

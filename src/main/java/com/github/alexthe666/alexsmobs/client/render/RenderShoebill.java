@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderShoebill extends MobRenderer<EntityShoebill, LivingEntityRenderState, ModelShoebill> {
+public class RenderShoebill extends MobRenderer<EntityShoebill, ModelShoebill> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/shoebill.png");
 
     public RenderShoebill(EntityRendererProvider.Context renderManagerIn) {
@@ -24,3 +24,4 @@ public class RenderShoebill extends MobRenderer<EntityShoebill, LivingEntityRend
         return TEXTURE;
     }
 }
+

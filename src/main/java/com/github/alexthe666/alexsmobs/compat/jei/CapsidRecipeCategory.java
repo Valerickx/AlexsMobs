@@ -32,7 +32,6 @@ public class CapsidRecipeCategory implements IRecipeCategory<CapsidRecipe> {
         return AMBlockRegistry.CAPSID.get().getName().append(Component.literal(" ")).append(Component.translatable("alexsmobs.gui.capsid_transformation"));
     }
 
-    @Override
     public IDrawable getBackground() {
         return background;
     }
@@ -43,16 +42,21 @@ public class CapsidRecipeCategory implements IRecipeCategory<CapsidRecipe> {
     }
 
     @Override
+    public int getWidth() {
+        return 130;
+    }
+
+    @Override
+    public int getHeight() {
+        return 50;
+    }
+
+    @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CapsidRecipe recipe, IFocusGroup focuses) {
         for (int i = 0; i < recipe.getIngredients().size(); i++) {
             Ingredient ingredient = recipe.getIngredients().get(i);
             builder.addSlot(RecipeIngredientRole.INPUT, 21 + i * 15, 23).addIngredients(ingredient);
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 94, 23).addItemStack(recipe.getResult());
-    }
-
-    @Override
-    public boolean isHandled(CapsidRecipe recipe) {
-        return true;
     }
 }

@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class RenderMurmurBody extends MobRenderer<EntityMurmur, LivingEntityRenderState, ModelMurmurBody> {
+public class RenderMurmurBody extends MobRenderer<EntityMurmur, ModelMurmurBody> {
     public static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/murmur.png");
     public static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/murmur_angry.png");
     public static boolean renderWithHead = false;
@@ -59,3 +59,4 @@ public class RenderMurmurBody extends MobRenderer<EntityMurmur, LivingEntityRend
         return entity.isAngry() ? TEXTURE_ANGRY : TEXTURE;
     }
 }
+

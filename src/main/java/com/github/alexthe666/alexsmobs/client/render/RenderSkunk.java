@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderSkunk extends MobRenderer<EntitySkunk, LivingEntityRenderState, ModelSkunk> {
+public class RenderSkunk extends MobRenderer<EntitySkunk, ModelSkunk> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/skunk.png");
 
     public RenderSkunk(EntityRendererProvider.Context renderManagerIn) {
@@ -20,3 +20,4 @@ public class RenderSkunk extends MobRenderer<EntitySkunk, LivingEntityRenderStat
         return TEXTURE;
     }
 }
+

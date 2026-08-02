@@ -50,6 +50,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -58,6 +59,11 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 
 public class EntityCachalotWhale extends Animal {
+
+    @Override
+    public boolean isFood(ItemStack stack) {
+        return false;
+    }
 
     private static final TargetingConditions REWARD_PLAYER_PREDICATE = TargetingConditions.forNonCombat().range(50.0D).ignoreLineOfSight();
     private static final EntityDataAccessor<Boolean> CHARGING = SynchedEntityData.defineId(EntityCachalotWhale.class, EntityDataSerializers.BOOLEAN);
@@ -192,11 +198,8 @@ public class EntityCachalotWhale extends Animal {
         this.setAlbino(compound.getBooleanOr("Albino", false));
         this.setBeached(compound.getBooleanOr("Beached", false));
         this.setDespawnBeach(compound.getBooleanOr("BeachedDespawnFlag", false));
-        if (compound.contains("DespawnDelay")) {
-            this.despawnDelay = compound.getIntOr("DespawnDelay", 0);
-        }
+        this.despawnDelay = compound.getIntOr("DespawnDelay", 0);
         this.hasRewardedPlayer = compound.getBooleanOr("GivenReward", false);
-
     }
 
     @Override
@@ -241,7 +244,7 @@ public class EntityCachalotWhale extends Animal {
         });
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 20.0F));
-        this.goalSelector.addGoal(7, new FollowBoatGoal(this));
+        // this.goalSelector.addGoal(7, new FollowBoatGoal(this));
         this.targetSelector.addGoal(1, (new AnimalAIHurtByTargetNotBaby(this).setAlertOthers()));
         this.targetSelector.addGoal(2, new EntityAINearestTarget3D(this, LivingEntity.class, 30, false, true, AMEntityRegistry.buildPredicateFromTag(AMTagRegistry.CACHALOT_WHALE_TARGETS)) {
             public boolean canUse() {
@@ -265,7 +268,7 @@ public class EntityCachalotWhale extends Animal {
             return;
         }
         boolean flag = false;
-        if (!this.level().isClientSide() && this.blockBreakCounter == 0 && net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(level(), this)) {
+        if (this.level() instanceof ServerLevel serverLevel && this.blockBreakCounter == 0 && serverLevel.getGameRules().get(GameRules.MOB_GRIEFING)) {
             final TagKey<Block> breakables = this.isCharging() && this.getTarget() != null && AMConfig.cachalotDestruction ? AMTagRegistry.CACHALOT_WHALE_BREAKABLES : AMTagRegistry.ORCA_BREAKABLES;
             for (int a = (int) Math.round(this.getBoundingBox().minX); a <= (int) Math.round(this.getBoundingBox().maxX); a++) {
                 for (int b = (int) Math.round(this.getBoundingBox().minY) - 1; (b <= (int) Math.round(this.getBoundingBox().maxY) + 1) && (b <= 127); b++) {
@@ -432,7 +435,7 @@ public class EntityCachalotWhale extends Animal {
             this.whaleSpeedMod = 0;
             this.setDeltaMovement(this.getDeltaMovement().multiply(0.5, 1F, 0.5));
             if (this.isEyeInFluid(FluidTags.WATER)) {
-                Player entity = this.level().getNearestPlayer(REWARD_PLAYER_PREDICATE, this);
+                Player entity = this.level().getNearestPlayer(this, 50.0D);
                 if (this.getLastHurtByMob() != entity) {
                     rewardPlayer = entity;
                 }
@@ -622,7 +625,7 @@ public class EntityCachalotWhale extends Animal {
                         if (echoTimer % 10 == 0) {
                             if (echoTimer % 40 == 0) {
                                 this.playSound(AMSoundRegistry.CACHALOT_WHALE_CLICK.get(), this.getSoundVolume(), this.getVoicePitch());
-                                this.gameEvent(GameEvent.ENTITY_ROAR);
+                                this.gameEvent(GameEvent.SHRIEK);
                             }
                             final EntityCachalotEcho echo = new EntityCachalotEcho(this.level(), this);
                             final float radius = this.headPart.getBbWidth() * 0.5F;
@@ -683,7 +686,7 @@ public class EntityCachalotWhale extends Animal {
                                     this.setCharging(false);
                                     if (target.getVehicle() instanceof final Boat boat) {
                                         for (int i = 0; i < 3; ++i) {
-                                            this.spawnAtLocation((ServerLevel) this.level(), boat.getVariant().getPlanks());
+                                            this.spawnAtLocation((ServerLevel) this.level(), Items.OAK_PLANKS);
                                         }
                                         for (int j = 0; j < 2; ++j) {
                                             this.spawnAtLocation((ServerLevel) this.level(), Items.STICK);
@@ -752,7 +755,7 @@ public class EntityCachalotWhale extends Animal {
     }
 
     private boolean isSleepTime() {
-        final long time = level().getDayTime();
+        final long time = level().getOverworldClockTime();
         return time > 18000 && time < 22812 && this.isInWater();
     }
 
@@ -830,7 +833,7 @@ public class EntityCachalotWhale extends Animal {
     }
 
     public boolean attackEntityPartFrom(EntityCachalotPart entityCachalotPart, DamageSource source, float amount) {
-        return this.hurt(source, amount);
+        return this.hurtServer((ServerLevel) this.level(), source, amount);
     }
 
     @Nullable
@@ -897,8 +900,8 @@ public class EntityCachalotWhale extends Animal {
         this.receivedEcho = true;
     }
 
-    public boolean checkSpawnRules(LevelAccessor worldIn) {
-        return AMEntityRegistry.rollSpawn(AMConfig.cachalotWhaleSpawnRolls, this.getRandom(), spawnReasonIn);
+    public boolean checkSpawnRules(LevelAccessor worldIn, EntitySpawnReason reasonIn) {
+        return AMEntityRegistry.rollSpawn(AMConfig.cachalotWhaleSpawnRolls, this.getRandom(), reasonIn);
     }
 
     public Vec3 getDismountLocationForPassenger(LivingEntity dismount) {

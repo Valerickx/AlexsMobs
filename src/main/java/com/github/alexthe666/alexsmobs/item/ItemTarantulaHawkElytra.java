@@ -19,10 +19,9 @@ import javax.annotation.Nullable;
 public class ItemTarantulaHawkElytra extends Item {
 
     public ItemTarantulaHawkElytra(Item.Properties props, AMArmorMaterial mat) {
-        super(mat, Type.CHESTPLATE, props);
+        super(props.durability(mat.getDurabilityForType(ArmorType.CHESTPLATE)));
     }
 
-    @Override
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getArmorRenderProperties());
     }
@@ -35,15 +34,13 @@ public class ItemTarantulaHawkElytra extends Item {
         return super.use(worldIn, playerIn, handIn);
     }
 
-    @Override
     public boolean canElytraFly(ItemStack stack, net.minecraft.world.entity.LivingEntity entity) {
-        return ElytraItem.isFlyEnabled(stack);
+        return isUsable(stack);
     }
 
-    @Override
     public boolean elytraFlightTick(ItemStack stack, net.minecraft.world.entity.LivingEntity entity, int flightTicks) {
         if (!entity.level().isClientSide() && (flightTicks + 1) % 20 == 0) {
-            stack.hurtAndBreak(1, entity, e -> e.broadcastBreakEvent(net.minecraft.world.entity.EquipmentSlot.CHEST));
+            stack.hurtAndBreak(1, entity, EquipmentSlot.CHEST);
         }
         return true;
     }

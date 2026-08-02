@@ -68,7 +68,7 @@ public class TileEntityTransmutationTable  extends BlockEntity {
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         totalTransmuteCount = input.getIntOr("TotalCount", 0);
-        CompoundTag playerDataTag = input.getCompoundOrEmpty("PlayerTransmutationData");
+        CompoundTag playerDataTag = input.read("PlayerTransmutationData", CompoundTag.CODEC).orElseGet(CompoundTag::new);
         int size = playerDataTag.getIntOr("Size", 0);
         for (int i = 0; i < size; i++) {
             CompoundTag entry = playerDataTag.getCompoundOrEmpty("Entry" + i);
@@ -82,7 +82,7 @@ public class TileEntityTransmutationTable  extends BlockEntity {
             }
         }
         for(int i = 0; i < 3; i++){
-            CompoundTag possItem = input.getCompoundOrEmpty("Possiblity" + i);
+            CompoundTag possItem = input.read("Possiblity" + i, CompoundTag.CODEC).orElseGet(CompoundTag::new);
             if(!possItem.isEmpty()){
                 possiblities[i] = ItemStack.CODEC.decode(NbtOps.INSTANCE, possItem)
                         .result().map(p -> p.getFirst()).orElse(ItemStack.EMPTY);
@@ -93,7 +93,7 @@ public class TileEntityTransmutationTable  extends BlockEntity {
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.writeInt("TotalCount", totalTransmuteCount);
+        output.putInt("TotalCount", totalTransmuteCount);
         CompoundTag playerDataTag = new CompoundTag();
         int size = 0;
         for(Map.Entry<UUID, TransmutationData> entry : playerToData.entrySet()){
@@ -106,9 +106,10 @@ public class TileEntityTransmutationTable  extends BlockEntity {
         playerDataTag.putInt("Size", size);
         output.store("PlayerTransmutationData", CompoundTag.CODEC, playerDataTag);
         for(int i = 0; i < 3; i++){
+            int index = i;
             if(possiblities[i] != null && !possiblities[i].isEmpty()){
                 ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, possiblities[i])
-                        .result().ifPresent(nbt -> output.store("Possiblity" + i, CompoundTag.CODEC, (CompoundTag)nbt));
+                        .result().ifPresent(nbt -> output.store("Possiblity" + index, CompoundTag.CODEC, (CompoundTag)nbt));
             }
         }
     }

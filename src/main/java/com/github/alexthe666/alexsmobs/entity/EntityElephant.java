@@ -22,6 +22,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,7 +31,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.*;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -89,24 +92,11 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
     private static final EntityDataAccessor<Integer> CARPET_COLOR = SynchedEntityData.defineId(EntityElephant.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> TRADER = SynchedEntityData.defineId(EntityElephant.class, EntityDataSerializers.BOOLEAN);
     public static final Map<DyeColor, Item> DYE_COLOR_ITEM_MAP = Util.make(Maps.newHashMap(), (map) -> {
-        map.put(DyeColor.WHITE, Items.WHITE_CARPET);
-        map.put(DyeColor.ORANGE, Items.ORANGE_CARPET);
-        map.put(DyeColor.MAGENTA, Items.MAGENTA_CARPET);
-        map.put(DyeColor.LIGHT_BLUE, Items.LIGHT_BLUE_CARPET);
-        map.put(DyeColor.YELLOW, Items.YELLOW_CARPET);
-        map.put(DyeColor.LIME, Items.LIME_CARPET);
-        map.put(DyeColor.PINK, Items.PINK_CARPET);
-        map.put(DyeColor.GRAY, Items.GRAY_CARPET);
-        map.put(DyeColor.LIGHT_GRAY, Items.LIGHT_GRAY_CARPET);
-        map.put(DyeColor.CYAN, Items.CYAN_CARPET);
-        map.put(DyeColor.PURPLE, Items.PURPLE_CARPET);
-        map.put(DyeColor.BLUE, Items.BLUE_CARPET);
-        map.put(DyeColor.BROWN, Items.BROWN_CARPET);
-        map.put(DyeColor.GREEN, Items.GREEN_CARPET);
-        map.put(DyeColor.RED, Items.RED_CARPET);
-        map.put(DyeColor.BLACK, Items.BLACK_CARPET);
+        for (DyeColor color : DyeColor.values()) {
+            map.put(color, WoolCarpetBlock.byColor(color).asItem());
+        }
     });
-    private static final Identifier TRADER_LOOT = Identifier.fromNamespaceAndPath("alexsmobs", "gameplay/trader_elephant_chest");
+    private static final ResourceKey<LootTable> TRADER_LOOT = ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath("alexsmobs", "gameplay/trader_elephant_chest"));
     public boolean forcedSit = false;
     public float prevSitProgress;
     public float sitProgress;
@@ -169,7 +159,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         this.elephantInventory = new SimpleContainer(54){
 
             public boolean stillValid(Player player) {
-                return EntityElephant.this.isAlive() && !EntityElephant.this.isInsidePortal;
+                return EntityElephant.this.isAlive() && !EntityElephant.this.isOnPortalCooldown();
             }
         };
         if (animalchest != null) {
@@ -316,8 +306,10 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
                 this.eatItemEffect(this.getMainHandItem());
                 if (this.getMainHandItem().is(AMTagRegistry.ELEPHANT_TAMEABLES) && !this.isTame() && (!isTusked() || isBaby()) && blossomThrowerUUID != null) {
                     if (random.nextInt(3) == 0) {
-                        this.setTame(true);
-                        this.setOwnerUUID(blossomThrowerUUID);
+                        this.setTame(true, true);
+                        if (blossomThrowerUUID != null) {
+                            this.setOwnerReference(EntityReference.of(blossomThrowerUUID));
+                        }
                         Player player = this.level().getPlayerByUUID(blossomThrowerUUID);
                         if (player != null) {
                             this.tame(player);
@@ -414,7 +406,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             this.setAnimation(this.getRandom().nextBoolean() ? ANIMATION_TRUMPET_0 : ANIMATION_TRUMPET_1);
         }
         if (this.getAnimation() == ANIMATION_TRUMPET_0 && this.getAnimationTick() == 8 || this.getAnimation() == ANIMATION_TRUMPET_1 && this.getAnimationTick() == 4) {
-            this.gameEvent(GameEvent.ENTITY_ROAR);
+            this.gameEvent(GameEvent.ENTITY_INTERACT);
             this.playSound(AMSoundRegistry.ELEPHANT_TRUMPET.get(), this.getSoundVolume(), this.getVoicePitch());
         }
         if (this.isAlive() && charging) {
@@ -543,7 +535,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;
-        } else if (owner && this.getColor() != null && stack.is(Tags.Items.SHEARS)) {
+        } else if (owner && this.getColor() != null && stack.is(Items.SHEARS)) {
             this.gameEvent(GameEvent.ENTITY_INTERACT);
             this.playSound(SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             if (this.getColor() != null) {
@@ -558,8 +550,8 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
-        } else if (owner && isChested() && stack.is(Tags.Items.SHEARS)) {
+            return InteractionResult.SUCCESS;
+        } else if (owner && isChested() && stack.is(Items.SHEARS)) {
             this.gameEvent(GameEvent.ENTITY_INTERACT);
             this.playSound(SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             this.spawnAtLocation((ServerLevel) this.level(), Blocks.CHEST);
@@ -578,7 +570,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         return type;
     }
 
-    public EntityDimensions getDimensions(Pose poseIn) {
+    public EntityDimensions getDefaultDimensions(Pose poseIn) {
         return isTusked() && !isBaby() ? TUSKED_SIZE : super.getDimensions(poseIn);
     }
 
@@ -657,17 +649,10 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         compound.putInt("Carpet", this.entityData.get(CARPET_COLOR));
         compound.putInt("DespawnDelay", this.despawnDelay);
         if (elephantInventory != null) {
-            ListTag nbttaglist = new ListTag();
+            var list = compound.list("Items", ItemStack.OPTIONAL_CODEC);
             for (int i = 0; i < this.elephantInventory.getContainerSize(); ++i) {
-                ItemStack itemstack = this.elephantInventory.getItem(i);
-                if (!itemstack.isEmpty()) {
-                    CompoundTag CompoundNBT = new CompoundTag();
-                    CompoundNBT.putByte("Slot", (byte) i);
-                    itemstack.save(CompoundNBT);
-                    nbttaglist.add(CompoundNBT);
-                }
+                list.add(this.elephantInventory.getItem(i));
             }
-            compound.put("Items", nbttaglist);
         }
     }
 
@@ -680,7 +665,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
 
     public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        this.setTame(compound.getBooleanOr("Tamed", false));
+        this.setTame(compound.getBooleanOr("Tamed", false), true);
         this.setTusked(compound.getBooleanOr("Tusked", false));
         this.setStanding(compound.getBooleanOr("Standing", false));
         this.setOrderedToSit(compound.getBooleanOr("ElephantSitting", false));
@@ -690,27 +675,16 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         this.chargeCooldown = compound.getIntOr("ChargeCooldown", 0);
         this.entityData.set(CARPET_COLOR, compound.getIntOr("Carpet", 0));
         if (elephantInventory != null) {
-            ListTag nbttaglist = compound.getListOrEmpty("Items");
+            var list = compound.listOrEmpty("Items", ItemStack.OPTIONAL_CODEC);
             this.initElephantInventory();
-            for (int i = 0; i < nbttaglist.size(); ++i) {
-                CompoundTag CompoundNBT = nbttaglist.getCompoundOrEmpty(i);
-                int j = CompoundNBT.getByte("Slot") & 255;
-                this.elephantInventory.setItem(j, ItemStack.of(CompoundNBT));
-            }
-        } else {
-            ListTag nbttaglist = compound.getListOrEmpty("Items");
-            this.initElephantInventory();
-            for (int i = 0; i < nbttaglist.size(); ++i) {
-                CompoundTag CompoundNBT = nbttaglist.getCompoundOrEmpty(i);
-                int j = CompoundNBT.getByte("Slot") & 255;
-                this.initElephantInventory();
-                this.elephantInventory.setItem(j, ItemStack.of(CompoundNBT));
+            int i = 0;
+            for (ItemStack stack : list) {
+                if (i < this.elephantInventory.getContainerSize()) {
+                    this.elephantInventory.setItem(i++, stack);
+                }
             }
         }
-        if (compound.contains("DespawnDelay")) {
-            this.despawnDelay = compound.getIntOr("DespawnDelay", 0);
-        }
-
+        this.despawnDelay = compound.getIntOr("DespawnDelay", this.despawnDelay);
     }
 
     public boolean isChested() {
@@ -786,7 +760,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
     }
 
     @Nullable
-    public EntityElephant getNearestTusked(LevelAccessor world) {
+    public EntityElephant getNearestTusked(LevelAccessor world, double dist) {
         List<? extends EntityElephant> list = world.getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(dist, dist / 2, dist));
         if (list.isEmpty()) {
             return null;
@@ -851,7 +825,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
 
     public void addElephantLoot(@Nullable Player player, int seed) {
         if (this.level().getServer() != null) {
-            LootTable loottable = this.level().getServer().getLootData().getLootTable(TRADER_LOOT);
+            LootTable loottable = this.level().getServer().reloadableRegistries().getLootTable(TRADER_LOOT);
 
             LootParams.Builder lootcontext$builder = (new LootParams.Builder((ServerLevel) this.level()));
 
@@ -914,7 +888,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             double extraX = radius * Mth.sin(Mth.PI + angle);
             double extraZ = radius * Mth.cos(angle);
 
-            passenger.setPos(this.getX() + extraX, this.getY() + this.getPassengersRidingOffset() + scaleY + passenger.getMyRidingOffset(), this.getZ() + extraZ);
+            passenger.setPos(this.getX() + extraX, this.getY() + this.getPassengersRidingOffset() + scaleY, this.getZ() + extraZ);
         }
     }
 
@@ -948,8 +922,8 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         float scale = this.isBaby() ? 0.5F : this.isTusked() ? 1.1F : 1.0F;
         float f = Math.min(0.25F, this.walkAnimation.speed());
         float f1 = this.walkAnimation.position();
-        float sitAdd = 0.01F * 0;
-        float standAdd = 0.07F * 0;
+        float sitAdd = -0.05F * sitProgress;
+        float standAdd = 0.07F * standProgress;
         return (double) this.getBbHeight() - 0.05F - scale * ((double) (0.1F * Mth.cos(f1 * 1.4F) * 1.4F * f) + sitAdd + standAdd);
     }
 

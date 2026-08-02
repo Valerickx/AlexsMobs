@@ -21,7 +21,7 @@ import org.joml.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RenderSeal extends MobRenderer<EntitySeal, LivingEntityRenderState, ModelSeal> {
+public class RenderSeal extends MobRenderer<EntitySeal, ModelSeal> {
     private static final Identifier TEXTURE_BROWN_0 = Identifier.parse("alexsmobs:textures/entity/seal/seal_brown_0.png");
     private static final Identifier TEXTURE_BROWN_1 = Identifier.parse("alexsmobs:textures/entity/seal/seal_brown_1.png");
     private static final Identifier TEXTURE_ARCTIC_0 = Identifier.parse("alexsmobs:textures/entity/seal/seal_arctic_0.png");
@@ -112,3 +112,4 @@ public class RenderSeal extends MobRenderer<EntitySeal, LivingEntityRenderState,
         }
     }
 }
+

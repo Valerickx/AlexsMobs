@@ -63,20 +63,21 @@ public class ItemVineLasso extends Item {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity livingEntityIn, int i) {
+    public boolean releaseUsing(ItemStack stack, Level worldIn, LivingEntity livingEntityIn, int i) {
         if (!worldIn.isClientSide()) {
             boolean left = false;
             if (livingEntityIn.getUsedItemHand() == InteractionHand.OFF_HAND && livingEntityIn.getMainArm() == HumanoidArm.RIGHT
                     || livingEntityIn.getUsedItemHand() == InteractionHand.MAIN_HAND && livingEntityIn.getMainArm() == HumanoidArm.LEFT) {
                 left = true;
             }
-            int power = this.getUseDuration(stack) - i;
+            int power = this.getUseDuration(stack, livingEntityIn) - i;
             EntityVineLasso lasso = new EntityVineLasso(worldIn, livingEntityIn);
             Vec3 vector3d = livingEntityIn.getViewVector(1.0F);
             lasso.shoot(vector3d.x(), vector3d.y(), vector3d.z(), getPowerForTime(power), 1);
             worldIn.addFreshEntity(lasso);
             stack.shrink(1);
         }
+        return true;
     }
 
     public static float getPowerForTime(int p) {
@@ -88,7 +89,6 @@ public class ItemVineLasso extends Item {
         return f;
     }
 
-    @Override
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }

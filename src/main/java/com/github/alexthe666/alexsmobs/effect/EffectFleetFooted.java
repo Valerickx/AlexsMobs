@@ -12,8 +12,8 @@ import java.util.UUID;
 
 public class EffectFleetFooted extends MobEffect {
 
-    private static final UUID SPRINT_JUMP_SPEED_MODIFIER = UUID.fromString("7E0292F2-9434-48D5-A29F-9583AF7DF29A");
-    private static final AttributeModifier SPRINT_JUMP_SPEED_BONUS = new AttributeModifier(SPRINT_JUMP_SPEED_MODIFIER, "fleetfooted speed bonus", 0.2F, AttributeModifier.Operation.ADDITION);
+    private static final net.minecraft.resources.Identifier SPRINT_JUMP_SPEED_MODIFIER_ID = net.minecraft.resources.Identifier.parse("alexsmobs:fleet_footed");
+    private static final AttributeModifier SPRINT_JUMP_SPEED_BONUS = new AttributeModifier(SPRINT_JUMP_SPEED_MODIFIER_ID, 0.2F, AttributeModifier.Operation.ADD_VALUE);
     private int lastDuration = -1;
     private int removeEffectAfter = 0;
 
@@ -28,21 +28,18 @@ public class EffectFleetFooted extends MobEffect {
             removeEffectAfter--;
         }
         if (applyEffect) {
-            if(!modifiableattributeinstance.hasModifier(SPRINT_JUMP_SPEED_BONUS)){
+            if(!modifiableattributeinstance.hasModifier(SPRINT_JUMP_SPEED_MODIFIER_ID)){
                 modifiableattributeinstance.addPermanentModifier(SPRINT_JUMP_SPEED_BONUS);
             }
             removeEffectAfter = 5;
         }
         if (removeEffectAfter <= 0 || lastDuration < 2) {
-            modifiableattributeinstance.removeModifier(SPRINT_JUMP_SPEED_BONUS);
+            modifiableattributeinstance.removeModifier(SPRINT_JUMP_SPEED_MODIFIER_ID);
         }
     }
 
-    public void removeAttributeModifiers(LivingEntity livingEntity, AttributeMap attributeMap, int level) {
-        AttributeInstance modifiableattributeinstance = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-        if(modifiableattributeinstance != null && modifiableattributeinstance.hasModifier(SPRINT_JUMP_SPEED_BONUS)){
-            modifiableattributeinstance.removeModifier(SPRINT_JUMP_SPEED_BONUS);
-        }
+    public void removeAttributeModifiers(AttributeMap attributeMap) {
+        super.removeAttributeModifiers(attributeMap);
     }
 
     public boolean isDurationEffectTick(int duration, int amplifier) {

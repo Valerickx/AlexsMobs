@@ -348,7 +348,7 @@ public class EntityTusklin extends Animal implements IAnimatedEntity {
             if (conversionTime > 300 && !this.level().isClientSide()) {
                 Hoglin hoglin = this.convertTo(EntityType.HOGLIN, false);
                 if(hoglin != null){
-                    hoglin.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0));
+                    hoglin.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 200, 0));
                     this.dropEquipment();
                     level().addFreshEntity(hoglin);
                     this.remove(RemovalReason.DISCARDED);

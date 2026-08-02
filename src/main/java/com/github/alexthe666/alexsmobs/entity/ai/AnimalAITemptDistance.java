@@ -30,7 +30,7 @@ public class AnimalAITemptDistance extends Goal {
         this.items = p_25941_;
         this.canScare = p_25942_;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-        this.targetingConditions = TargetingConditions.forNonCombat().range(distance).ignoreLineOfSight().copy().selector(this::shouldFollow);
+        this.targetingConditions = TargetingConditions.forNonCombat().range(distance).ignoreLineOfSight().copy().selector((target, level) -> this.shouldFollow(target));
     }
 
     public boolean canUse() {
@@ -38,7 +38,11 @@ public class AnimalAITemptDistance extends Goal {
             --this.calmDown;
             return false;
         } else {
-            this.player = this.mob.level().getNearestPlayer(this.targetingConditions, this.mob);
+            if (this.mob.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                this.player = serverLevel.getNearestPlayer(this.targetingConditions, this.mob);
+            } else {
+                this.player = null;
+            }
             return this.player != null;
         }
     }

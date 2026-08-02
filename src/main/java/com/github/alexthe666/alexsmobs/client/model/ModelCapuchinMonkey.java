@@ -203,8 +203,11 @@ public class ModelCapuchinMonkey extends AdvancedEntityModel<EntityCapuchinMonke
 		return ImmutableList.of(root, body, leg_left, leg_right, tail1, tail2, tail2_r1, arm_left, arm_right, head, snout, hair);
 	}
 
+	public boolean young;
+
 	@Override
 	public void setupAnim(EntityCapuchinMonkey entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
+		this.young = entity.isBaby();
 		this.animate(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		float idleSpeed = 0.2F;
 		float idleDegree = 0.4F;
@@ -245,7 +248,7 @@ public class ModelCapuchinMonkey extends AdvancedEntityModel<EntityCapuchinMonke
 	}
 
 	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if (entity != null && entity.isBaby()) {
+		if (this.young) {
 			float f = 1.75F;
 			head.setScale(f, f, f);
 			head.setShouldScaleChildren(true);

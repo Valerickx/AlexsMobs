@@ -290,7 +290,7 @@ public class EntitySkunk extends Animal {
                         Collection<MobEffectInstance> collection = EntitySkunk.this.getActiveEffects();
                         for (LivingEntity entity : EntitySkunk.this.level().getEntitiesOfClass(LivingEntity.class, poisonBox)) {
                             if (!(entity instanceof EntitySkunk)) {
-                                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 300));
+                                entity.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 300));
                                 if(entity instanceof ServerPlayer serverPlayer){
                                     AMAdvancementTriggerRegistry.SKUNK_SPRAY.trigger(serverPlayer);
                                 }

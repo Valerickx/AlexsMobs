@@ -43,12 +43,10 @@ public class ModelEndPirateDoor extends AdvancedEntityModel<Entity> {
     public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 
-    public void renderDoor(TileEntityEndPirateDoor door, float partialTick, boolean left) {
+    public void renderDoor(float openAmount, float wiggleProgress, float ageInTicks, boolean left) {
         this.resetToDefaultPose();
-        float ageInTicks = door.ticksExisted + partialTick;
-        float openAmount = door.getOpenProgress(partialTick);
         double d = Math.sin(ageInTicks * 0.8F) - 0.5F;
-        float wiggle = (float) (door.getWiggleProgress(partialTick) * d * Math.PI * 0.1F);
+        float wiggle = (float) (wiggleProgress * d * Math.PI * 0.1F);
         if(left){
             this.doorRightHinge.showModel = false;
             this.doorLeftHinge.showModel = true;
@@ -58,6 +56,10 @@ public class ModelEndPirateDoor extends AdvancedEntityModel<Entity> {
         }
         this.doorRightHinge.rotateAngleY += openAmount * Math.PI * 0.5F + wiggle;
         this.doorLeftHinge.rotateAngleY -= openAmount * Math.PI * 0.5F + wiggle;
+    }
+
+    public void renderDoor(TileEntityEndPirateDoor door, float partialTick, boolean left) {
+        renderDoor(door.getOpenProgress(partialTick), door.getWiggleProgress(partialTick), door.ticksExisted + partialTick, left);
     }
 
 }

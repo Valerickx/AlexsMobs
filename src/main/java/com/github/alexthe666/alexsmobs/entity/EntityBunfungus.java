@@ -16,6 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -134,9 +135,8 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
                 return super.canUse() && EntityBunfungus.this.canUseComplexAI();
             }
         });
-        this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (mob) -> {
-            return mob instanceof Enemy && !(mob instanceof Creeper) && !(mob.getMobType() == MobType.WATER && mob.isInWater()) && !mob.getType().builtInRegistryHolder().is(AMTagRegistry.BUNFUNGUS_IGNORES);
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<LivingEntity>(this, LivingEntity.class, 5, false, false, (mob, level) -> {
+            return mob instanceof Enemy && !(mob instanceof Creeper) && !(mob.getType().builtInRegistryHolder().is(net.minecraft.tags.EntityTypeTags.AQUATIC) && mob.isInWater()) && !mob.getType().builtInRegistryHolder().is(AMTagRegistry.BUNFUNGUS_IGNORES);
         }));
     }
 
@@ -255,14 +255,14 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
         if (this.getAnimation() == ANIMATION_EAT) {
             if (this.getAnimationTick() % 4 == 0) {
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             }
             if (this.getAnimationTick() >= 18) {
                 ItemStack stack = this.getItemInHand(InteractionHand.MAIN_HAND);
                 if (!stack.isEmpty()) {
                     stack.shrink(1);
                     this.setCarroted(true);
-                    this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000));
+                    this.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 1000));
                     this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 1000, 1));
                     this.heal(8);
                 }
@@ -303,7 +303,7 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
                 this.level().addParticle(data, this.getX() + extraX, this.getY() + random.nextFloat() * 0.1F, this.getZ() + extraZ, 0, d0, 0);
             }
         } else {
-            if ((this.level().getDayTime() % 24000L < 13000L) && this.getTarget() == null && !this.isBegging() && !this.isInWater()) {
+            if ((this.level().getOverworldClockTime() % 24000L < 13000L) && this.getTarget() == null && !this.isBegging() && !this.isInWater()) {
                 if (tickCount % 10 == 0 && this.getRandom().nextInt(300) == 0) {
                     this.setSleeping(true);
                 }

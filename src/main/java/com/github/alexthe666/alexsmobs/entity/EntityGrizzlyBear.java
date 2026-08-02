@@ -413,7 +413,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
             }
             if(eatingTime % 5 == 0){
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             }
             if(eatingTime > 100){
                 ItemStack stack = this.getItemInHand(InteractionHand.MAIN_HAND);
@@ -560,7 +560,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
         } else if (world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, position).getY() > position.getY()) {
             return false;
         } else {
-            return world.getBiome(position).value().getPrecipitationAt(position) == Biome.Precipitation.SNOW;
+            return world.getBiome(position).getPrecipitationAt(position) == Biome.Precipitation.SNOW;
         }
     }
 

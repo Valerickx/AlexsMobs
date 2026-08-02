@@ -142,7 +142,7 @@ public class KomodoDragonAIJostle  extends Goal {
 
     @Nullable
     private EntityKomodoDragon getNearbyKomodoDragon() {
-        List<EntityKomodoDragon> komodoDragons = this.world.getNearbyEntities(EntityKomodoDragon.class, JOSTLE_PREDICATE, this.komodo, this.komodo.getBoundingBox().inflate(16.0D));
+        List<EntityKomodoDragon> komodoDragons = this.world.getEntitiesOfClass(EntityKomodoDragon.class, this.komodo.getBoundingBox().inflate(16.0D), entity -> JOSTLE_PREDICATE.test((net.minecraft.server.level.ServerLevel) this.world, this.komodo, entity));
         double lvt_2_1_ = 1.7976931348623157E308D;
         EntityKomodoDragon lvt_4_1_ = null;
         Iterator var5 = komodoDragons.iterator();

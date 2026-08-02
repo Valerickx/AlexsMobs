@@ -17,7 +17,7 @@ import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
-public class RenderEnderiophage extends MobRenderer<EntityEnderiophage, LivingEntityRenderState, ModelEnderiophage> {
+public class RenderEnderiophage extends MobRenderer<EntityEnderiophage, ModelEnderiophage> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/enderiophage.png");
     private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/enderiophage_glow.png");
     private static final Identifier TEXTURE_OVERWORLD = Identifier.parse("alexsmobs:textures/entity/enderiophage_overworld.png");
@@ -76,3 +76,4 @@ public class RenderEnderiophage extends MobRenderer<EntityEnderiophage, LivingEn
     }
 
 }
+

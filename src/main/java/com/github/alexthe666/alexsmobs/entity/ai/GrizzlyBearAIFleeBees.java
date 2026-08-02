@@ -25,7 +25,7 @@ public class GrizzlyBearAIFleeBees extends Goal {
     public GrizzlyBearAIFleeBees(EntityGrizzlyBear entityIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
         this.avoidTargetSelector = new Predicate<Bee>() {
             public boolean apply(@Nullable Bee p_apply_1_) {
-                return p_apply_1_.isAlive() && GrizzlyBearAIFleeBees.this.entity.getSensing().hasLineOfSight(p_apply_1_) && !GrizzlyBearAIFleeBees.this.entity.isAlliedTo(p_apply_1_) && p_apply_1_.getRemainingPersistentAngerTime() > 0;
+                return p_apply_1_.isAlive() && GrizzlyBearAIFleeBees.this.entity.getSensing().hasLineOfSight(p_apply_1_) && !GrizzlyBearAIFleeBees.this.entity.isAlliedTo(p_apply_1_) && p_apply_1_.isAngry();
             }
         };
         this.entity = entityIn;
@@ -76,7 +76,7 @@ public class GrizzlyBearAIFleeBees extends Goal {
     }
 
     public void tick() {
-        if(closestLivingEntity != null && closestLivingEntity.getRemainingPersistentAngerTime() <= 0){
+        if(closestLivingEntity != null && !closestLivingEntity.isAngry()){
             this.stop();
         }
         this.entity.getNavigation().setSpeedModifier(getRunSpeed());

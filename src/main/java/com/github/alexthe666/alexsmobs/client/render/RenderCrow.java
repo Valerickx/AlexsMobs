@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderCrow extends MobRenderer<EntityCrow, LivingEntityRenderState, ModelCrow> {
+public class RenderCrow extends MobRenderer<EntityCrow, ModelCrow> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/crow.png");
 
     public RenderCrow(EntityRendererProvider.Context renderManagerIn) {
@@ -27,3 +27,4 @@ public class RenderCrow extends MobRenderer<EntityCrow, LivingEntityRenderState,
         return TEXTURE;
     }
 }
+

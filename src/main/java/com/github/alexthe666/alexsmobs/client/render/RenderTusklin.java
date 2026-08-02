@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderTusklin extends MobRenderer<EntityTusklin, LivingEntityRenderState, ModelTusklin> {
+public class RenderTusklin extends MobRenderer<EntityTusklin, ModelTusklin> {
 
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/tusklin.png");
 
@@ -28,3 +28,4 @@ public class RenderTusklin extends MobRenderer<EntityTusklin, LivingEntityRender
         return TEXTURE;
     }
 }
+

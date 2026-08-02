@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.JumpGoal;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
 public class BoneSerpentAIMeleeJump extends JumpGoal {
@@ -79,7 +80,7 @@ public class BoneSerpentAIMeleeJump extends JumpGoal {
         LivingEntity target = this.dolphin.getTarget();
         if(target != null){
             if(this.dolphin.distanceTo(target) < 3F && attackCooldown <= 0){
-                this.dolphin.doHurtTarget((ServerLevel) this.level(), target);
+                this.dolphin.doHurtTarget((ServerLevel) this.dolphin.level(), target);
                 attackCooldown = 20;
             }
         }

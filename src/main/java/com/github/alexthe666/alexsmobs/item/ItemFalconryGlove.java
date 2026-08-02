@@ -24,7 +24,6 @@ public class ItemFalconryGlove extends Item implements ILeftClick {
         super(properties);
     }
 
-    @Override
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }
@@ -75,7 +74,7 @@ public class ItemFalconryGlove extends Item implements ILeftClick {
                     if(entity instanceof IFalconry && entity instanceof Animal animal){
                         IFalconry falcon = (IFalconry)entity;
                         animal.removeVehicle();
-                        animal.moveTo(playerIn.getX(), playerIn.getEyeY(), playerIn.getZ(), animal.getYRot(), animal.getXRot());
+                        animal.setPos(playerIn.getX(), playerIn.getEyeY(), playerIn.getZ());
                         if(animal.level().isClientSide()){
                             AlexsMobs.sendMSGToServer(new MessageSyncEntityPos(animal.getId(), playerIn.getX(), playerIn.getEyeY(), playerIn.getZ()));
                         }else{

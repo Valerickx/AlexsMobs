@@ -254,7 +254,7 @@ public class EntityEndergrade extends Animal {
 
     public void onGetItem(ItemEntity targetEntity) {
         this.gameEvent(GameEvent.EAT);
-        this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+        this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
         this.heal(5);
     }
 

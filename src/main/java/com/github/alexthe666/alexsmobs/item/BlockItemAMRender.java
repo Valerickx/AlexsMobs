@@ -11,7 +11,6 @@ public class BlockItemAMRender extends AMBlockItem {
         super(blockSupplier, props);
     }
 
-    @Override
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }

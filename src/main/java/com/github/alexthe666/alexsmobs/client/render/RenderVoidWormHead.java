@@ -15,7 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 import javax.annotation.Nullable;
 
-public class RenderVoidWormHead extends MobRenderer<EntityVoidWorm, LivingEntityRenderState, ModelVoidWorm> {
+public class RenderVoidWormHead extends MobRenderer<EntityVoidWorm, ModelVoidWorm> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/void_worm/void_worm_head.png");
     private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/void_worm/void_worm_head_glow.png");
 
@@ -54,3 +54,4 @@ public class RenderVoidWormHead extends MobRenderer<EntityVoidWorm, LivingEntity
         return TEXTURE;
     }
 }
+

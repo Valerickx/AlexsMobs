@@ -28,6 +28,7 @@ public class ModelAlligatorSnappingTurtle extends AdvancedEntityModel<EntityAlli
     private final AdvancedModelBox head_inside;
     private final AdvancedModelBox jaw;
     private final AdvancedModelBox tail;
+    public boolean young;
 
     public ModelAlligatorSnappingTurtle() {
         texWidth = 128;
@@ -113,6 +114,7 @@ public class ModelAlligatorSnappingTurtle extends AdvancedEntityModel<EntityAlli
     @Override
     public void setupAnim(EntityAlligatorSnappingTurtle entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetToDefaultPose();
+        this.young = entityIn.isBaby();
         float idleSpeed = 0.05F;
         float idleDegree = 0.25F;
         float walkSpeed = entityIn.isInWater() ? 0.5F : 1F;
@@ -142,7 +144,7 @@ public class ModelAlligatorSnappingTurtle extends AdvancedEntityModel<EntityAlli
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.head_inside.setScale(0.99F, 0.99F, 0.99F);
-        if (this.isBaby()) {
+        if (this.young) {
             this.head.setScale(1.5F, 1.5F, 1.5F);
             matrixStackIn.pushPose();
             matrixStackIn.scale(0.25F, 0.25F, 0.25F);

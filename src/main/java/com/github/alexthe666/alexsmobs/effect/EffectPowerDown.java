@@ -16,7 +16,7 @@ public class EffectPowerDown extends MobEffect {
 
     protected EffectPowerDown() {
         super(MobEffectCategory.NEUTRAL, 0x00000);
-        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, "7107DE5E-7CE8-4030-940E-514C1F160890", (double)-1.0F, AttributeModifier.Operation.MULTIPLY_BASE);
+        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, net.minecraft.resources.Identifier.parse("alexsmobs:power_down"), (double)-1.0F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
     public void applyEffectTick(LivingEntity entity, int amplifier) {
@@ -25,7 +25,7 @@ public class EffectPowerDown extends MobEffect {
         }
         if(firstDuration == lastDuration){
             entity.playSound(AMSoundRegistry.APRIL_FOOLS_POWER_OUTAGE.get(), 1.5F, 1);
-            entity.gameEvent(GameEvent.ENTITY_ROAR);
+            entity.gameEvent(GameEvent.ENTITY_ACTION);
         }
     }
 
@@ -45,16 +45,16 @@ public class EffectPowerDown extends MobEffect {
         return duration > 0;
     }
 
-    public void removeAttributeModifiers(LivingEntity entity, AttributeMap map, int i) {
+    public void removeAttributeModifiers(AttributeMap map) {
         lastDuration = -1;
         firstDuration = -1;
-        super.removeAttributeModifiers(entity, map, i);
+        super.removeAttributeModifiers(map);
     }
 
-    public void addAttributeModifiers(LivingEntity entity, AttributeMap map, int i) {
+    public void addAttributeModifiers(AttributeMap map, int i) {
         lastDuration = -1;
         firstDuration = -1;
-        super.addAttributeModifiers(entity, map, i);
+        super.addAttributeModifiers(map, i);
     }
 
     public String getDescriptionId() {

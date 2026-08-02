@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderCrimsonMosquito extends MobRenderer<EntityCrimsonMosquito, LivingEntityRenderState, ModelCrimsonMosquito> {
+public class RenderCrimsonMosquito extends MobRenderer<EntityCrimsonMosquito, ModelCrimsonMosquito> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/crimson_mosquito.png");
     private static final Identifier TEXTURE_SICK = Identifier.parse("alexsmobs:textures/entity/crimson_mosquito_blue.png");
     private static final Identifier TEXTURE_FLY = Identifier.parse("alexsmobs:textures/entity/crimson_mosquito_fly.png");
@@ -47,3 +47,4 @@ public class RenderCrimsonMosquito extends MobRenderer<EntityCrimsonMosquito, Li
         return entity.isFromFly() ? TEXTURE_FLY : TEXTURE;
     }
 }
+

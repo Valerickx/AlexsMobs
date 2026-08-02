@@ -9,7 +9,7 @@ public class EffectOrcaMight extends MobEffect {
 
     public EffectOrcaMight() {
         super(MobEffectCategory.BENEFICIAL, 0X4A4A52);
-        this.addAttributeModifier(Attributes.ATTACK_SPEED, "03C3C89D-7037-4B42-869F-B146BCB64D3A", 3D, AttributeModifier.Operation.ADDITION);
+        this.addAttributeModifier(Attributes.ATTACK_SPEED, net.minecraft.resources.Identifier.parse("alexsmobs:orcas_might"), 3D, AttributeModifier.Operation.ADD_VALUE);
     }
 
     public boolean isDurationEffectTick(int duration, int amplifier) {

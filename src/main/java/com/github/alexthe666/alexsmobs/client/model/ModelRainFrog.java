@@ -83,7 +83,7 @@ public class ModelRainFrog extends AdvancedEntityModel<EntityRainFrog> {
         return ImmutableList.of(root, body, right_eye, left_eye, right_arm, left_arm, right_leg, left_leg, tongue);
     }
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.25F;
             right_eye.setScale(f, f, f);
             left_eye.setScale(f, f, f);

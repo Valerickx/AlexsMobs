@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderCachalotWhale extends MobRenderer<EntityCachalotWhale, LivingEntityRenderState, ModelCachalotWhale> {
+public class RenderCachalotWhale extends MobRenderer<EntityCachalotWhale, ModelCachalotWhale> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/cachalot/cachalot_whale.png");
     private static final Identifier TEXTURE_SLEEPING = Identifier.parse("alexsmobs:textures/entity/cachalot/cachalot_whale_sleeping.png");
     private static final Identifier TEXTURE_ALBINO = Identifier.parse("alexsmobs:textures/entity/cachalot/cachalot_whale_albino.png");
@@ -48,3 +48,4 @@ public class RenderCachalotWhale extends MobRenderer<EntityCachalotWhale, Living
         }
     }
 }
+

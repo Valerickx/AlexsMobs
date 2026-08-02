@@ -90,7 +90,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
 
     protected EntityCrow(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, -1.0F);
         this.setPathfindingMalus(PathType.WATER, -1.0F);
         this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
         this.setPathfindingMalus(PathType.COCOA, -1.0F);
@@ -133,7 +133,8 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
         return isBrightEnoughToSpawn(worldIn, pos);
     }
 
-    public boolean isAlliedTo(Entity entityIn) {
+    @Override
+    protected boolean considersEntityAsAlly(Entity entityIn) {
         if (this.isTame()) {
             LivingEntity livingentity = this.getOwner();
             if (entityIn == livingentity) {
@@ -146,8 +147,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                 return livingentity.isAlliedTo(entityIn);
             }
         }
-
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     private void switchNavigator(boolean onLand) {
@@ -262,10 +262,10 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                 if (this.getCommand() == 4) {
                     this.setCommand(0);
                 }
-                if(this.getCommand() == 3){
-                    player.displayClientMessage(Component.translatable("entity.alexsmobs.crow.command_3", this.getName()), true);
-                }else{
-                    player.displayClientMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()), true);
+                if (this.getCommand() == 3) {
+                    player.sendSystemMessage(Component.translatable("entity.alexsmobs.crow.command_3", this.getName()));
+                } else {
+                    player.sendSystemMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()));
                 }
                 final boolean sit = this.getCommand() == 2;
                 this.setOrderedToSit(sit);
@@ -331,9 +331,9 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                 this.playSound(SoundEvents.PARROT_EAT, this.getSoundVolume(), this.getVoicePitch());
                 if (seedThrowerID != null && this.getMainHandItem().is(AMTagRegistry.CROW_TAMEABLES) && !this.isTame()) {
                     if (getRandom().nextFloat() < 0.3F) {
-                        this.setTame(true);
+                        this.setTame(true, true);
                         this.setCommand(1);
-                        this.setOwnerUUID(this.seedThrowerID);
+                        this.setOwnerReference(net.minecraft.world.entity.EntityReference.of(this.seedThrowerID));
                         final Player player = level().getPlayerByUUID(seedThrowerID);
                         if (player instanceof final ServerPlayer serverPlayer) {
                             CriteriaTriggers.TAME_ANIMAL.trigger(serverPlayer, this);
@@ -343,8 +343,9 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                         this.level().broadcastEntityEvent(this, (byte) 6);
                     }
                 }
-                if (this.getMainHandItem().hasCraftingRemainingItem()) {
-                    this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().getCraftingRemainingItem());
+                net.minecraft.world.item.ItemStackTemplate remaining = this.getMainHandItem().getItem().getCraftingRemainder();
+                if (remaining != null) {
+                    this.spawnAtLocation((ServerLevel) this.level(), remaining.create());
                 }
                 this.getMainHandItem().shrink(1);
             }
@@ -443,8 +444,11 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
         this.setFlying(compound.getBooleanOr("Flying", false));
         this.setOrderedToSit(compound.getBooleanOr("MonkeySitting", false));
         this.setCommand(compound.getIntOr("Command", 0));
-        if (compound.contains("PerchX") && compound.contains("PerchY") && compound.contains("PerchZ")) {
-            this.setPerchPos(new BlockPos(compound.getIntOr("PerchX", 0), compound.getIntOr("PerchY", 0), compound.getIntOr("PerchZ", 0)));
+        Optional<Integer> px = compound.getInt("PerchX");
+        Optional<Integer> py = compound.getInt("PerchY");
+        Optional<Integer> pz = compound.getInt("PerchZ");
+        if (px.isPresent() && py.isPresent() && pz.isPresent()) {
+            this.setPerchPos(new BlockPos(px.get(), py.get(), pz.get()));
         }
     }
 
@@ -594,7 +598,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
     }
 
     private boolean isCrowEdible(ItemStack stack) {
-        return stack.getItem().isEdible() || stack.is(AMTagRegistry.CROW_FOODSTUFFS);
+        return stack.has(net.minecraft.core.component.DataComponents.FOOD) || stack.is(AMTagRegistry.CROW_FOODSTUFFS);
     }
 
     public double getMaxDistToItem() {
@@ -1014,11 +1018,11 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                 @Override
                 public boolean apply(@Nullable ItemFrame e) {
                     BlockPos hangingPosition = e.getPos().relative(e.getDirection().getOpposite());
-                    BlockEntity entity = e.level().getBlockEntity(hangingPosition);
-                    if(entity != null){
-                        LazyOptional<IItemHandler> handler = entity.getCapability(Capabilities.ItemHandler.BLOCK, e.getDirection().getOpposite());
-                        if(handler != null && handler.isPresent()){
-                            return ItemStack.isSameItem(e.getItem(), EntityCrow.this.getMainHandItem());
+                    var handler = e.level().getCapability(Capabilities.Item.BLOCK, hangingPosition, e.getDirection().getOpposite());
+                    if (handler != null) {
+                        net.neoforged.neoforge.transfer.item.ItemResource resource = net.neoforged.neoforge.transfer.item.ItemResource.of(EntityCrow.this.getMainHandItem());
+                        try (net.neoforged.neoforge.transfer.transaction.Transaction tx = net.neoforged.neoforge.transfer.transaction.Transaction.openRoot()) {
+                            return handler.insert(resource, 1, tx) > 0;
                         }
                     }
                     return false;
@@ -1085,27 +1089,27 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
             if (targetEntity != null) {
                 flightTarget = targetEntity.position();
                 if (EntityCrow.this.distanceTo(targetEntity) < 2.0F) {
-                    try{
+                    try {
                         final BlockPos hangingPosition = targetEntity.getPos().relative(targetEntity.getDirection().getOpposite());
-                        final BlockEntity entity = targetEntity.level().getBlockEntity(hangingPosition);
                         final Direction deposit = targetEntity.getDirection();
-                        final LazyOptional<IItemHandler> handler = entity.getCapability(Capabilities.ItemHandler.BLOCK, deposit);
-                        if(handler.orElse(null) != null && cooldown == 0) {
-                            ItemStack duplicate = EntityCrow.this.getItemInHand(InteractionHand.MAIN_HAND).copy();
-                            ItemStack insertSimulate = ItemHandlerHelper.insertItem(handler.orElse(null), duplicate, true);
-                            if (!insertSimulate.equals(duplicate)) {
-                                ItemStack shrunkenStack = ItemHandlerHelper.insertItem(handler.orElse(null), duplicate, false);
-                                if(shrunkenStack.isEmpty()){
-                                    EntityCrow.this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-                                }else{
-                                    EntityCrow.this.setItemInHand(InteractionHand.MAIN_HAND, shrunkenStack);
+                        final var handler = targetEntity.level().getCapability(Capabilities.Item.BLOCK, hangingPosition, deposit);
+                        if (handler != null && cooldown == 0) {
+                            ItemStack held = EntityCrow.this.getItemInHand(InteractionHand.MAIN_HAND);
+                            net.neoforged.neoforge.transfer.item.ItemResource resource = net.neoforged.neoforge.transfer.item.ItemResource.of(held);
+                            try (net.neoforged.neoforge.transfer.transaction.Transaction tx = net.neoforged.neoforge.transfer.transaction.Transaction.openRoot()) {
+                                int inserted = handler.insert(resource, held.getCount(), tx);
+                                if (inserted > 0) {
+                                    tx.commit();
+                                    held.shrink(inserted);
+                                    if (held.isEmpty()) {
+                                        EntityCrow.this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                                    }
+                                    EntityCrow.this.peck();
                                 }
-                                EntityCrow.this.peck();
-                            }else{
-                                cooldown = 20;
                             }
+                            cooldown = 20;
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                     }
                     this.stop();
                 }

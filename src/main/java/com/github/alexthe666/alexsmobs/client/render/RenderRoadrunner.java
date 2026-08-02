@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderRoadrunner extends MobRenderer<EntityRoadrunner, LivingEntityRenderState, ModelRoadrunner> {
+public class RenderRoadrunner extends MobRenderer<EntityRoadrunner, ModelRoadrunner> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/roadrunner.png");
     private static final Identifier TEXTURE_MEEP = Identifier.parse("alexsmobs:textures/entity/roadrunner_meep.png");
 
@@ -21,3 +21,4 @@ public class RenderRoadrunner extends MobRenderer<EntityRoadrunner, LivingEntity
         return entity.isMeep() ? TEXTURE_MEEP : TEXTURE;
     }
 }
+

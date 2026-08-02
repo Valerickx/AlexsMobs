@@ -96,9 +96,12 @@ public class ModelCachalotWhale extends AdvancedEntityModel<EntityCachalotWhale>
 		return ImmutableList.of(root, head, body, tail1, tail2, tail3, top_fin, jaw, teeth, arm_left, arm_right);
 	}
 
+	public boolean young;
+
 	@Override
 	public void setupAnim(EntityCachalotWhale entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
 		this.resetToDefaultPose();
+		this.young = entity.isBaby();
 		float partialTicks = ageInTicks - entity.tickCount;
 		float renderYaw = (float)entity.getMovementOffsets(0, partialTicks)[0] ;
 		float properPitch = entity.xRotO + (entity.getXRot() - entity.xRotO) * partialTicks;
@@ -153,9 +156,8 @@ public class ModelCachalotWhale extends AdvancedEntityModel<EntityCachalotWhale>
 		}
 	}
 
-	@Override
 	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if (entity != null && entity.isBaby()) {
+		if (this.young) {
 			float f = 1.25F;
 			head.setScale(f, f, f);
 			head.setShouldScaleChildren(true);

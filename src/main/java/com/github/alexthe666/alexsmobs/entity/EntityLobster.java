@@ -280,7 +280,7 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH.value();
+        return SoundEvents.BUCKET_FILL_FISH;
     }
 
     @Nullable

@@ -124,7 +124,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
         this.goalSelector.addGoal(3, new AITackle());
         this.goalSelector.addGoal(4, new AILandOnGlove());
         this.goalSelector.addGoal(5, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(6, new TemptGoal(this, 1.1D, Ingredient.of(AMTagRegistry.BALD_EAGLE_TAMEABLES, AMTagRegistry.BALD_EAGLE_FOODSTUFFS), false));
+        this.goalSelector.addGoal(6, new TemptGoal(this, 1.1D, Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(AMTagRegistry.BALD_EAGLE_TAMEABLES)), false));
         this.goalSelector.addGoal(7, new AIWanderIdle());
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 6.0F) {
             @Override
@@ -165,23 +165,6 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
         return AMEntityRegistry.rollSpawn(AMConfig.baldEagleSpawnRolls, this.getRandom(), spawnReasonIn);
     }
 
-    public boolean isAlliedTo(Entity entityIn) {
-        if (this.isTame()) {
-            LivingEntity livingentity = this.getOwner();
-            if (entityIn == livingentity) {
-                return true;
-            }
-            if (entityIn instanceof TamableAnimal) {
-                return ((TamableAnimal) entityIn).isOwnedBy(livingentity);
-            }
-            if (livingentity != null) {
-                return livingentity.isAlliedTo(entityIn);
-            }
-        }
-
-        return super.isAlliedTo(entityIn);
-    }
-
     public boolean isFood(ItemStack stack) {
         return stack.is(AMTagRegistry.BALD_EAGLE_BREEDABLES);
     }
@@ -198,14 +181,14 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
         }
     }
 
-    public boolean save(CompoundTag compound) {
+    public boolean save(net.minecraft.world.level.storage.ValueOutput compound) {
         String s = this.getEncodeId();
         compound.putString("id", s);
         super.save(compound);
         return true;
     }
 
-    public boolean saveAsPassenger(CompoundTag compound) {
+    public boolean saveAsPassenger(net.minecraft.world.level.storage.ValueOutput compound) {
         if (!this.isTame()) {
             return super.saveAsPassenger(compound);
         } else {
@@ -351,8 +334,8 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
             this.level().broadcastEntityEvent(this, (byte) 7);
             return InteractionResult.CONSUME;
         } else if (itemstack.is(AMTagRegistry.BALD_EAGLE_TAMEABLES)) {
-            if (itemstack.hasCraftingRemainingItem() && !player.getAbilities().instabuild) {
-                this.spawnAtLocation((ServerLevel) this.level(), itemstack.getCraftingRemainingItem());
+            if (itemstack.getItem().getCraftingRemainder() != null && !player.getAbilities().instabuild) {
+                this.spawnAtLocation((ServerLevel) this.level(), itemstack.getItem().getCraftingRemainder().create());
             }
             if (!player.isCreative()) {
                 itemstack.shrink(1);
@@ -373,15 +356,15 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                         itemstack.shrink(1);
                     }
                     this.gameEvent(GameEvent.ENTITY_INTERACT);
-                    this.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), this.getSoundVolume(), this.getVoicePitch());
+                    this.playSound(SoundEvents.ARMOR_EQUIP_LEATHER, this.getSoundVolume(), this.getVoicePitch());
                     return InteractionResult.SUCCESS;
                 }
-            } else if (itemstack.is(Tags.Items.SHEARS) && this.hasCap()) {
+            } else if (itemstack.is(Items.SHEARS) && this.hasCap()) {
                 this.gameEvent(GameEvent.ENTITY_INTERACT);
                 this.playSound(SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                 if (!this.level().isClientSide()) {
                     if (player instanceof ServerPlayer) {
-                        itemstack.hurt(1, random, (ServerPlayer) player);
+                        itemstack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
                     }
                 }
                 this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.FALCONRY_HOOD.get());
@@ -404,7 +387,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                     if (this.getCommand() == 3) {
                         this.setCommand(0);
                     }
-                    player.displayClientMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()), true);
+                    player.sendSystemMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()));
                     boolean sit = this.getCommand() == 2;
                     if (sit) {
                         this.setOrderedToSit(true);
@@ -744,7 +727,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                 return true;
             }
         }
-        return !this.isAlive() || this.isInsidePortal || launchTime > 12000 || this.portalTime > 0 || this.isRemoved();
+        return !this.isAlive() || launchTime > 12000 || this.isRemoved();
     }
 
     public void remove(RemovalReason reason) {
@@ -838,7 +821,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                 AMAdvancementTriggerRegistry.BALD_EAGLE_CHALLENGE.trigger((ServerPlayer) this.getOwner());
             }
         }
-        super.awardKillScore(entity, score, src);
+        super.awardKillScore(entity, src);
     }
 
 
@@ -1167,7 +1150,7 @@ public class EntityBaldEagle extends TamableAnimal implements IFollower, IFalcon
                             maxCircleTime = 60 + random.nextInt(60);
                         }
                     } else {
-                        eagle.doHurtTarget((ServerLevel) this.level(), target);
+                        eagle.doHurtTarget((ServerLevel) eagle.level(), target);
                     }
                 } else if (eagle.distanceTo(target) > 12 || target.isInWater()) {
                     eagle.setFlying(true);

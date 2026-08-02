@@ -64,19 +64,9 @@ public class ModelAMElytra extends HumanoidModel {
 
         this.leftWing.x = 5.0F;
         this.leftWing.y = f2;
-        if (entityIn instanceof AbstractClientPlayer) {
-            AbstractClientPlayer abstractclientplayerentity = (AbstractClientPlayer)entityIn;
-            abstractclientplayerentity.elytraRotX = (float)((double)abstractclientplayerentity.elytraRotX + (double)(f - abstractclientplayerentity.elytraRotX) * 0.1D);
-            abstractclientplayerentity.elytraRotY = (float)((double)abstractclientplayerentity.elytraRotY + (double)(f3 - abstractclientplayerentity.elytraRotY) * 0.1D);
-            abstractclientplayerentity.elytraRotZ = (float)((double)abstractclientplayerentity.elytraRotZ + (double)(f1 - abstractclientplayerentity.elytraRotZ) * 0.1D);
-            this.leftWing.xRot = abstractclientplayerentity.elytraRotX;
-            this.leftWing.yRot = abstractclientplayerentity.elytraRotY;
-            this.leftWing.zRot = abstractclientplayerentity.elytraRotZ;
-        } else {
-            this.leftWing.xRot = f;
-            this.leftWing.zRot = f1;
-            this.leftWing.yRot = f3;
-        }
+        this.leftWing.xRot = f;
+        this.leftWing.zRot = f1;
+        this.leftWing.yRot = f3;
 
         this.rightWing.x = -this.leftWing.x;
         this.rightWing.yRot = -this.leftWing.yRot;

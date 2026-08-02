@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.AABB;
@@ -26,23 +27,21 @@ public class EffectDebilitatingSting extends MobEffect {
 
     protected EffectDebilitatingSting() {
         super(MobEffectCategory.NEUTRAL, 0XFFF385);
-        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, "7107DE5E-7CE8-4030-940E-514C1F160890", -1.0F, AttributeModifier.Operation.MULTIPLY_BASE);
+        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, net.minecraft.resources.Identifier.parse("alexsmobs:debilitating_sting"), -1.0F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
-    public void removeAttributeModifiers(LivingEntity entityLivingBaseIn, AttributeMap attributeMapIn, int amplifier) {
-        if (entityLivingBaseIn.getMobType() == MobType.ARTHROPOD) {
-            super.removeAttributeModifiers(entityLivingBaseIn, attributeMapIn, amplifier);
-        }
+    @Override
+    public void removeAttributeModifiers(AttributeMap attributeMapIn) {
+        super.removeAttributeModifiers(attributeMapIn);
     }
 
-    public void addAttributeModifiers(LivingEntity entityLivingBaseIn, AttributeMap attributeMapIn, int amplifier) {
-        if (entityLivingBaseIn.getMobType() == MobType.ARTHROPOD) {
-            super.addAttributeModifiers(entityLivingBaseIn, attributeMapIn, amplifier);
-        }
+    @Override
+    public void addAttributeModifiers(AttributeMap attributeMapIn, int amplifier) {
+        super.addAttributeModifiers(attributeMapIn, amplifier);
     }
 
     public void applyEffectTick(LivingEntity entity, int amplifier) {
-        if (entity.getMobType() != MobType.ARTHROPOD) {
+        if (!entity.is(net.minecraft.tags.EntityTypeTags.ARTHROPOD)) {
             if (entity.getHealth() > entity.getMaxHealth() * 0.5F) {
                 entity.hurt(entity.damageSources().magic(), 1.0F);
             }
@@ -68,7 +67,7 @@ public class EffectDebilitatingSting extends MobEffect {
                     baby.setBaby(true);
                     baby.setPos(entity.getX(), surface.getY() + 0.1F, entity.getZ());
                     if (!entity.level().isClientSide()) {
-                        baby.finalizeSpawn((ServerLevelAccessor) entity.level(), entity.level().getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.BREEDING, null);
+                        baby.finalizeSpawn((ServerLevelAccessor) entity.level(), ((ServerLevel) entity.level()).getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.BREEDING, null);
                         entity.level().addFreshEntity(baby);
                     }
                 }
@@ -80,7 +79,7 @@ public class EffectDebilitatingSting extends MobEffect {
 
     public boolean isEntityInsideOpaqueBlock(Entity entity) {
         Vec3 vec3 = entity.getEyePosition();
-        float f = entity.getDimensions(entity.getPose()).width * 0.8F;
+        float f = entity.getDimensions(entity.getPose()).width() * 0.8F;
         AABB axisalignedbb = AABB.ofSize(vec3, (double)f, 1.0E-6D, (double)f);
         return entity.level().getBlockStates(axisalignedbb).filter(Predicate.not(BlockBehaviour.BlockStateBase::isAir)).anyMatch((p_185969_) -> {
             BlockPos blockpos = AMBlockPos.fromVec3(vec3);

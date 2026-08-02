@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -236,17 +237,14 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
             }
             if (this.getTarget() instanceof WaterAnimal && !this.isTame()) {
                 WaterAnimal fish = (WaterAnimal) this.getTarget();
-                CompoundTag fishNbt = new CompoundTag();
-                fish.addAdditionalSaveData(fishNbt);
-                fishNbt.putString("DeathLootTable", BuiltInLootTables.EMPTY.toString());
-                fish.readAdditionalSaveData(fishNbt);
+                fish.skipDropExperience();
             }
         } else {
             if (this.isInWater() && this.isBellowing()) {
                 int particles = 4 + getRandom().nextInt(3);
                 for (int i = 0; i <= particles; i++) {
                     Vec3 particleVec = new Vec3(0, 0, 1.0F).yRot((i / (float) particles) * (Mth.PI) * 2F).add(this.position());
-                    double particleY = this.getBoundingBox().minY + getFluidTypeHeight(NeoForgeMod.WATER_TYPE.get());
+                    double particleY = this.getBoundingBox().minY + this.getFluidHeight(FluidTags.WATER);
                     this.level().addParticle(ParticleTypes.SPLASH, particleVec.x, particleY, particleVec.z, 0, 0.3F, 0);
                 }
             }
@@ -262,7 +260,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
         if (isTame() && itemstack.is(AMTagRegistry.CAIMAN_FOODSTUFFS) && this.getHealth() < this.getMaxHealth()) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.CAT_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             this.heal(5);
             return InteractionResult.SUCCESS;
         }
@@ -272,7 +270,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
             if (this.getCommand() == 3) {
                 this.setCommand(0);
             }
-            player.displayClientMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()), true);
+            player.sendSystemMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()));
             boolean sit = this.getCommand() == 2;
             if (sit) {
                 this.setOrderedToSit(true);
@@ -460,7 +458,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
             this.animal.setAge(6000);
             this.partner.setAge(6000);
             RandomSource random = this.animal.getRandom();
-            if (this.level.getGameRules().getBooleanOr(GameRules.RULE_DOMOBLOOT, false)) {
+            if (this.level instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.MOB_DROPS)) {
                 this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }
 

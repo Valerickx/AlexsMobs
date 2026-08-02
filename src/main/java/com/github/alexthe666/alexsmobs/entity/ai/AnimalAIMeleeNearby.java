@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
 
+import net.minecraft.server.level.ServerLevel;
 import java.util.EnumSet;
 
 public class AnimalAIMeleeNearby extends Goal {
@@ -37,7 +38,7 @@ public class AnimalAIMeleeNearby extends Goal {
 
     public void tick(){
         if(entity.distanceTo(entity.getTarget()) < 3F + entity.getBbWidth() + entity.getTarget().getBbWidth()){
-            entity.doHurtTarget((ServerLevel) this.level(), entity.getTarget());
+            entity.doHurtTarget((ServerLevel) entity.level(), entity.getTarget());
             entity.lookAt(entity.getTarget(), 180F, 180F);
         }else{
             if(fightStartPos != null){

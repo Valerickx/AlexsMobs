@@ -21,7 +21,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-public class RenderMurmurHead extends MobRenderer<EntityMurmurHead, LivingEntityRenderState, ModelMurmurHead> {
+public class RenderMurmurHead extends MobRenderer<EntityMurmurHead, ModelMurmurHead> {
 
     private static final ModelMurmurNeck NECK_MODEL = new ModelMurmurNeck();
     public static final int MAX_NECK_SEGMENTS = 128;
@@ -119,3 +119,4 @@ public class RenderMurmurHead extends MobRenderer<EntityMurmurHead, LivingEntity
         return entity.isAngry() ? RenderMurmurBody.TEXTURE_ANGRY : RenderMurmurBody.TEXTURE;
     }
 }
+

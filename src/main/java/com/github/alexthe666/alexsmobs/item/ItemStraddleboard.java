@@ -30,12 +30,15 @@ public class ItemStraddleboard extends Item {
     }
 
     public int getColor(ItemStack p_200886_1_) {
-        CompoundTag lvt_2_1_ = p_200886_1_.getTagElement("display");
-        return lvt_2_1_ != null && lvt_2_1_.contains("color") ? lvt_2_1_.getIntOr("color", 0) : 0XADC3D7;
+        return net.minecraft.world.item.component.DyedItemColor.getOrDefault(p_200886_1_, 0XADC3D7);
     }
 
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return super.canApplyAtEnchantingTable(stack, enchantment) && enchantment != Enchantments.UNBREAKING && enchantment != Enchantments.MENDING;
+    public boolean hasCustomColor(ItemStack p_200886_1_) {
+        return p_200886_1_.has(net.minecraft.core.component.DataComponents.DYED_COLOR);
+    }
+
+    public boolean canApplyAtEnchantingTable(ItemStack stack, net.minecraft.core.Holder<Enchantment> enchantment) {
+        return !enchantment.is(Enchantments.UNBREAKING) && !enchantment.is(Enchantments.MENDING);
     }
 
     public int getEnchantmentValue() {

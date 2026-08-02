@@ -530,7 +530,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
                         this.heal(foodStack.getItem().getFoodProperties().getNutrition() * 2);
                         foodStack.shrink(1);
                         this.gameEvent(GameEvent.EAT);
-                        this.playSound(SoundEvents.GENERIC_EAT.value(), this.getSoundVolume(), this.getVoicePitch());
+                        this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                     }
                 }
             }

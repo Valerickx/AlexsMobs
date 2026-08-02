@@ -134,9 +134,9 @@ public class CapuchinAITargetBalloons extends Goal {
     protected boolean isSuitableTarget(@Nullable LivingEntity potentialTarget, TargetingConditions targetPredicate) {
         if (potentialTarget == null) {
             return false;
-        } else if (!targetPredicate.test(this.monkey, potentialTarget)) {
+        } else if (!targetPredicate.test((net.minecraft.server.level.ServerLevel) this.monkey.level(), this.monkey, potentialTarget)) {
             return false;
-        } else if (!this.monkey.isWithinRestriction(potentialTarget.blockPosition())) {
+        } else if (!this.monkey.isWithinHome(potentialTarget.blockPosition())) {
             return false;
         } else {
             if (this.nearbyOnly) {

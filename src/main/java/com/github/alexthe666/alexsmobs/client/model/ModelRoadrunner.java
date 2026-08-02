@@ -184,7 +184,7 @@ public class ModelRoadrunner extends AdvancedEntityModel<EntityRoadrunner> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.75F;
             neck.setScale(f, f, f);
             neck.setShouldScaleChildren(true);

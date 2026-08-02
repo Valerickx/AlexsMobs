@@ -64,8 +64,12 @@ public class ModelEndPirateAnchor extends AdvancedEntityModel<Entity> {
     public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 
-    public void renderAnchor(TileEntityEndPirateAnchor anchor, float partialTick, boolean east) {
+    public void renderAnchor(boolean east) {
         this.resetToDefaultPose();
+    }
+
+    public void renderAnchor(TileEntityEndPirateAnchor anchor, float partialTick, boolean east) {
+        renderAnchor(east);
     }
 
     public void animateStack(ItemStack itemStackIn) {

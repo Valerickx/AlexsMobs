@@ -43,15 +43,18 @@ public class ModelVoidWormBeak extends AdvancedEntityModel<Entity> {
     public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 
-    public void renderBeak(TileEntityVoidWormBeak beak, float partialTick) {
+    public void renderBeak(float chompProgress, float ageInTicks) {
         this.resetToDefaultPose();
-        float amount = beak.getChompProgress(partialTick) * 0.2F;
-        float ageInTicks = beak.ticksExisted + partialTick;
+        float amount = chompProgress * 0.2F;
         this.flap(left, 0.5F, 0.5F, false, 0F, 0.3F, ageInTicks, amount);
         this.flap(right, 0.5F, -0.5F, false, 0F, -0.3F, ageInTicks, amount);
         float rotation = Mth.cos(ageInTicks * 0.5F) * 0.5F * amount + 0.3F * amount;
         left.rotationPointY -= rotation * 4.5F;
         right.rotationPointY -= rotation * 4.5F;
+    }
+
+    public void renderBeak(TileEntityVoidWormBeak beak, float partialTick) {
+        renderBeak(beak.getChompProgress(partialTick), beak.ticksExisted + partialTick);
     }
 
 }

@@ -17,7 +17,7 @@ import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
-public class RenderCombJelly extends MobRenderer<EntityCombJelly, LivingEntityRenderState, ModelCombJelly> {
+public class RenderCombJelly extends MobRenderer<EntityCombJelly, ModelCombJelly> {
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/comb_jelly_blue.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/comb_jelly_green.png");
     private static final Identifier TEXTURE_2 = Identifier.parse("alexsmobs:textures/entity/comb_jelly_red.png");
@@ -66,3 +66,4 @@ public class RenderCombJelly extends MobRenderer<EntityCombJelly, LivingEntityRe
         }
     }
 }
+

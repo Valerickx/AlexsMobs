@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
-public class RenderBlueJay extends MobRenderer<EntityBlueJay, LivingEntityRenderState, ModelBlueJay> {
+public class RenderBlueJay extends MobRenderer<EntityBlueJay, ModelBlueJay> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/blue_jay.png");
     private static final Identifier TEXTURE_SHINY = Identifier.parse("alexsmobs:textures/entity/blue_jay_shiny.png");
 
@@ -67,3 +67,4 @@ public class RenderBlueJay extends MobRenderer<EntityBlueJay, LivingEntityRender
         }
     }
 }
+

@@ -13,39 +13,77 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.resources.Identifier;
 
-public class RenderEndPirateAnchorWinch<T extends TileEntityEndPirateAnchorWinch> implements BlockEntityRenderer<T, BlockEntityRenderState> {
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.phys.Vec3;
+
+public class RenderEndPirateAnchorWinch<T extends TileEntityEndPirateAnchorWinch> implements BlockEntityRenderer<T, RenderEndPirateAnchorWinch.AnchorWinchRenderState> {
 
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/end_pirate/anchor_winch.png");
     private static final Identifier TEXTURE_CHAIN = Identifier.parse("alexsmobs:textures/entity/end_pirate/anchor_chain.png");
     private static final ModelEndPirateAnchorWinch WINCH_MODEL = new ModelEndPirateAnchorWinch();
     private static final ModelEndPirateAnchorChain CHAIN_MODEL = new ModelEndPirateAnchorChain();
 
+    public static class AnchorWinchRenderState extends BlockEntityRenderState {
+        public boolean east;
+        public boolean isAnchorEW;
+        public float bottomOfChain;
+        public float chainLengthForRender;
+        public boolean hasAnchor;
+        public float windCounter;
+        public float windProgress;
+        public boolean isWindingUp;
+        public boolean isWinching;
+        public float clientRoll;
+        public float partialTick;
+    }
+
     public RenderEndPirateAnchorWinch(Context rendererDispatcherIn) {
     }
 
     @Override
-    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public AnchorWinchRenderState createRenderState() {
+        return new AnchorWinchRenderState();
+    }
+
+    @Override
+    public void extractRenderState(T blockEntity, AnchorWinchRenderState state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPos, crumblingOverlay);
+        state.east = blockEntity.getBlockState().getValue(BlockEndPirateAnchorWinch.EASTORWEST);
+        state.isAnchorEW = blockEntity.isAnchorEW();
+        state.bottomOfChain = blockEntity.getChainLength(partialTick);
+        state.chainLengthForRender = blockEntity.getChainLengthForRender();
+        state.hasAnchor = blockEntity.hasAnchor();
+        state.windCounter = blockEntity.windCounter;
+        state.windProgress = blockEntity.getWindProgress(partialTick);
+        state.isWindingUp = blockEntity.isWindingUp();
+        state.isWinching = blockEntity.isWinching();
+        state.clientRoll = blockEntity.clientRoll;
+        state.partialTick = partialTick;
+    }
+
+    @Override
+    public void submit(AnchorWinchRenderState state, PoseStack matrixStackIn, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
         matrixStackIn.pushPose();
-        boolean east = tileEntityIn.getBlockState().getValue(BlockEndPirateAnchorWinch.EASTORWEST);
         matrixStackIn.translate(0.5F, 1.5F, 0.5F);
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(Axis.XP.rotationDegrees(180.0F));
-        if (east) {
+        if (state.east) {
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(90.0F));
         }
         boolean flag = false;
         matrixStackIn.pushPose();
-        if (!tileEntityIn.isAnchorEW()) {
+        if (!state.isAnchorEW) {
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(90.0F));
         }
-        float bottomOfChain = tileEntityIn.getChainLength(partialTicks);
-        for (float i = 0; i < tileEntityIn.getChainLengthForRender(); i += 0.5F) {
+        float bottomOfChain = state.bottomOfChain;
+        for (float i = 0; i < state.chainLengthForRender; i += 0.5F) {
             matrixStackIn.pushPose();
             float moveDown = Math.max(bottomOfChain - i, 0);
             matrixStackIn.translate(0, 0.1F + moveDown, 0);
-//            if (i == 0) {
-//                float leftovers = 1F - bottomOfChain % 0.5F;
-//            }
             if (flag) {
                 matrixStackIn.mulPose(Axis.YP.rotationDegrees(90.0F));
             }
@@ -54,29 +92,43 @@ public class RenderEndPirateAnchorWinch<T extends TileEntityEndPirateAnchorWinch
                 matrixStackIn.translate(0, (1F - moveDown) * 0.5F, 0);
                 matrixStackIn.scale(modulatedScale, modulatedScale, modulatedScale);
             }
-            CHAIN_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(TEXTURE_CHAIN)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
-            CHAIN_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.eyes(TEXTURE_CHAIN)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
+            CHAIN_MODEL.resetToDefaultPose();
+            submitNodeCollector.submitCustomGeometry(matrixStackIn, RenderTypes.entityCutout(TEXTURE_CHAIN), (pose, buffer) -> {
+                CHAIN_MODEL.renderToBuffer(matrixStackIn, buffer, state.lightCoords, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color(255, 255, 255, 255));
+            });
+            submitNodeCollector.submitCustomGeometry(matrixStackIn, RenderTypes.eyes(TEXTURE_CHAIN), (pose, buffer) -> {
+                CHAIN_MODEL.renderToBuffer(matrixStackIn, buffer, state.lightCoords, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color(255, 255, 255, 255));
+            });
             matrixStackIn.popPose();
             flag = !flag;
         }
         matrixStackIn.popPose();
-        WINCH_MODEL.renderAnchor(tileEntityIn, partialTicks, east);
-        WINCH_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
-        WINCH_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.eyes(TEXTURE)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
+
+        WINCH_MODEL.renderAnchor(state.windCounter, state.windProgress, state.isWindingUp, state.isWinching, state.clientRoll, state.partialTick, state.east);
+        submitNodeCollector.submitCustomGeometry(matrixStackIn, RenderTypes.entityCutout(TEXTURE), (pose, buffer) -> {
+            WINCH_MODEL.renderToBuffer(matrixStackIn, buffer, state.lightCoords, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color(255, 255, 255, 255));
+        });
+        submitNodeCollector.submitCustomGeometry(matrixStackIn, RenderTypes.eyes(TEXTURE), (pose, buffer) -> {
+            WINCH_MODEL.renderToBuffer(matrixStackIn, buffer, state.lightCoords, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color(255, 255, 255, 255));
+        });
         matrixStackIn.popPose();
         matrixStackIn.popPose();
 
-        if (tileEntityIn.hasAnchor()) {
+        if (state.hasAnchor) {
             matrixStackIn.pushPose();
-            matrixStackIn.translate(0.5F,  -1.5F - bottomOfChain, 0.5F);
+            matrixStackIn.translate(0.5F, -1.5F - bottomOfChain, 0.5F);
             matrixStackIn.pushPose();
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(180.0F));
-            if (tileEntityIn.isAnchorEW()) {
+            if (state.isAnchorEW) {
                 matrixStackIn.mulPose(Axis.YP.rotationDegrees(90.0F));
             }
             RenderEndPirateAnchor.ANCHOR_MODEL.resetToDefaultPose();
-            RenderEndPirateAnchor.ANCHOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(RenderEndPirateAnchor.TEXTURE_ANCHOR)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
-            RenderEndPirateAnchor.ANCHOR_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.eyes(RenderEndPirateAnchor.TEXTURE_ANCHOR_GLOW)), combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1F) * 255F), (int)((1) * 255F)));
+            submitNodeCollector.submitCustomGeometry(matrixStackIn, RenderTypes.entityCutout(RenderEndPirateAnchor.TEXTURE_ANCHOR), (pose, buffer) -> {
+                RenderEndPirateAnchor.ANCHOR_MODEL.renderToBuffer(matrixStackIn, buffer, state.lightCoords, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color(255, 255, 255, 255));
+            });
+            submitNodeCollector.submitCustomGeometry(matrixStackIn, RenderTypes.eyes(RenderEndPirateAnchor.TEXTURE_ANCHOR_GLOW), (pose, buffer) -> {
+                RenderEndPirateAnchor.ANCHOR_MODEL.renderToBuffer(matrixStackIn, buffer, state.lightCoords, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color(255, 255, 255, 255));
+            });
 
             matrixStackIn.popPose();
             matrixStackIn.popPose();

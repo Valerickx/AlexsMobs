@@ -113,7 +113,7 @@ public class ModelTusklin extends AdvancedEntityModel<EntityTusklin> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.6F;
             float f1 = 2.2F;
             float f2 = 1.4F;
@@ -289,7 +289,7 @@ public class ModelTusklin extends AdvancedEntityModel<EntityTusklin> {
         float walkDegree = 0.8F;
         float idleSpeed = 0.125F;
         float idleDegree = 0.5F;
-        if(entity != null && entity.isBaby()){
+        if(this.young){
             this.head.rotationPointY -= 4.0F;
             this.head.rotationPointZ += 2.0F;
         }

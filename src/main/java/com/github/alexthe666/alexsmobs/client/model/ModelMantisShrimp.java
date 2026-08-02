@@ -131,7 +131,7 @@ public class ModelMantisShrimp extends AdvancedEntityModel<EntityMantisShrimp> {
 	}
 
 	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if (entity != null && entity.isBaby()) {
+		if (this.young) {
 			this.eye_left.setScale(1.15F, 1.15F, 1.15F);
 			this.eye_right.setScale(1.15F, 1.15F, 1.15F);
 			matrixStackIn.pushPose();

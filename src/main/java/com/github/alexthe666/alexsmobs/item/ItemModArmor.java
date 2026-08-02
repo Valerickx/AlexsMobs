@@ -45,12 +45,10 @@ public class ItemModArmor extends Item {
         return this.type;
     }
 
-    @Override
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getArmorRenderProperties());
     }
 
-    @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         if (this.material == AMItemRegistry.CENTIPEDE_ARMOR_MATERIAL) {
             tooltip.add(Component.translatable("item.alexsmobs.centipede_leggings.desc").withStyle(ChatFormatting.GRAY));
@@ -58,7 +56,6 @@ public class ItemModArmor extends Item {
         if (this.material == AMItemRegistry.EMU_ARMOR_MATERIAL) {
             tooltip.add(Component.translatable("item.alexsmobs.emu_leggings.desc").withStyle(ChatFormatting.GRAY));
         }
-        super.appendHoverText(stack, context, tooltip, flagIn);
         if (this.material == AMItemRegistry.ROADRUNNER_ARMOR_MATERIAL) {
             tooltip.add(Component.translatable("item.alexsmobs.roadrunner_boots.desc").withStyle(ChatFormatting.BLUE));
         }

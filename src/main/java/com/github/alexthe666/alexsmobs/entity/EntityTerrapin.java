@@ -316,7 +316,7 @@ public class EntityTerrapin extends Animal implements ISemiAquatic, Bucketable {
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH.value();
+        return SoundEvents.BUCKET_FILL_FISH;
     }
 
     public boolean requiresCustomPersistence() {

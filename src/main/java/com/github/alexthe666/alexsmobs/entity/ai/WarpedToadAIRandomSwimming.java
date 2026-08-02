@@ -42,8 +42,8 @@ public class WarpedToadAIRandomSwimming extends RandomStrollGoal {
 
     @Nullable
     protected Vec3 getPosition() {
-        if(this.mob.hasRestriction() && this.mob.distanceToSqr(Vec3.atCenterOf(this.mob.getRestrictCenter())) > this.mob.getRestrictRadius() * this.mob.getRestrictRadius()){
-            return DefaultRandomPos.getPosTowards(this.mob, 7, 3, Vec3.atBottomCenterOf(this.mob.getRestrictCenter()), 1);
+        if(this.mob.hasHome() && this.mob.distanceToSqr(Vec3.atCenterOf(this.mob.getHomePosition())) > this.mob.getHomeRadius() * this.mob.getHomeRadius()){
+            return DefaultRandomPos.getPosTowards(this.mob, 7, 3, Vec3.atBottomCenterOf(this.mob.getHomePosition()), 1);
         }
         if(this.mob.getRandom().nextFloat() < 0.3F){
             Vec3 vector3d = findSurfaceTarget(this.mob, 15, 7);
@@ -53,7 +53,7 @@ public class WarpedToadAIRandomSwimming extends RandomStrollGoal {
         }
         Vec3 vector3d = DefaultRandomPos.getPos(this.mob, 7, 3);
 
-        for(int i = 0; vector3d != null && !this.mob.level().getFluidState(AMBlockPos.fromVec3(vector3d)).is(FluidTags.LAVA) && !this.mob.level().getBlockState(AMBlockPos.fromVec3(vector3d)).isPathfindable(this.mob.level(), AMBlockPos.fromVec3(vector3d), PathComputationType.WATER) && i++ < 15; vector3d = DefaultRandomPos.getPos(this.mob, 10, 7)) {
+        for(int i = 0; vector3d != null && !this.mob.level().getFluidState(AMBlockPos.fromVec3(vector3d)).is(FluidTags.LAVA) && !this.mob.level().getBlockState(AMBlockPos.fromVec3(vector3d)).isPathfindable(PathComputationType.WATER) && i++ < 15; vector3d = DefaultRandomPos.getPos(this.mob, 10, 7)) {
         }
 
         return vector3d;

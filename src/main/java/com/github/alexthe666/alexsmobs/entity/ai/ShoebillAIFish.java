@@ -15,6 +15,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
@@ -84,10 +85,9 @@ public class ShoebillAIFish extends Goal {
     public void spawnFishingLoot() {
         double luck = 0D + bird.luckLevel * 0.5F;
         LootParams.Builder lootcontext$builder = new LootParams.Builder((ServerLevel) this.bird.level());
-        lootcontext$builder.withLuck((float) luck); // Forge: add player & looted bird to LootContext
-        LootContextParamSet.Builder lootparameterset$builder = new LootContextParamSet.Builder();
-        LootTable loottable = bird.level().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
-        List<ItemStack> result = loottable.getRandomItems(lootcontext$builder.create(lootparameterset$builder.build()));
+        lootcontext$builder.withLuck((float) luck);
+        LootTable loottable = bird.level().getServer().reloadableRegistries().getLootTable(BuiltInLootTables.FISHING);
+        List<ItemStack> result = loottable.getRandomItems(lootcontext$builder.create(LootContextParamSets.FISHING));
         for (ItemStack itemstack : result) {
             ItemEntity item = new ItemEntity(this.bird.level(), this.bird.getX() + 0.5F, this.bird.getY(), this.bird.getZ(), itemstack);
             if (!this.bird.level().isClientSide()) {

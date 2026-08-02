@@ -14,7 +14,6 @@ public class ItemShatteredDimensionalCarver extends ItemDimensionalCarver {
         super(props);
     }
 
-    @Override
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }

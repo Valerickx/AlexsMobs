@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderOrca extends MobRenderer<EntityOrca, LivingEntityRenderState, ModelOrca> {
+public class RenderOrca extends MobRenderer<EntityOrca, ModelOrca> {
     private static final Identifier TEXTURE_NE = Identifier.parse("alexsmobs:textures/entity/orca_ne.png");
     private static final Identifier TEXTURE_NW = Identifier.parse("alexsmobs:textures/entity/orca_nw.png");
     private static final Identifier TEXTURE_SE = Identifier.parse("alexsmobs:textures/entity/orca_se.png");
@@ -34,3 +34,4 @@ public class RenderOrca extends MobRenderer<EntityOrca, LivingEntityRenderState,
         };
     }
 }
+

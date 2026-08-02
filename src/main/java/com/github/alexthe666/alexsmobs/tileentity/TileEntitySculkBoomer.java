@@ -103,7 +103,7 @@ public class TileEntitySculkBoomer extends BlockEntity implements GameEventListe
     }
 
     @Override
-    public boolean handleGameEvent(ServerLevel serverLevel, Holder<GameEvent> event, GameEventListener.Context message, Vec3 from) {
+    public boolean handleGameEvent(ServerLevel serverLevel, Holder<GameEvent> event, GameEvent.Context message, Vec3 from) {
         if(event.is(GameEvent.SCULK_SENSOR_TENDRILS_CLICKING) && !isOccluded(serverLevel, Vec3.atCenterOf(this.getBlockPos()), from)){
             double distance = from.distanceTo(Vec3.atCenterOf(this.getBlockPos()));
             serverLevel.sendParticles(new VibrationParticleOption(new BlockPositionSource(this.getBlockPos()), Mth.floor(distance)), from.x, from.y, from.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);

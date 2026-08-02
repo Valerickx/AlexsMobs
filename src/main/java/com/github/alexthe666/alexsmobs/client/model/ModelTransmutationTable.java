@@ -91,9 +91,8 @@ public class ModelTransmutationTable extends AdvancedEntityModel<Entity> {
         this.resetToDefaultPose();
     }
 
-    public void animate(TileEntityTransmutationTable beak, float partialTick) {
+    public void animate(float ageInTicks) {
         this.resetToDefaultPose();
-        float ageInTicks = beak.ticksExisted + partialTick;
         this.flap(leftArm, 0.5F, 0.2F, false, 0F, 0.1F, ageInTicks, 1F);
         this.flap(rightArm, 0.5F, -0.2F, false, 0F, -0.1F, ageInTicks, 1F);
         this.flap(leftElbow, 0.5F, 0.1F, true, 1F, 0F, ageInTicks, 1F);
@@ -105,6 +104,10 @@ public class ModelTransmutationTable extends AdvancedEntityModel<Entity> {
         this.bob(portal, 0.25F, 1F, false, ageInTicks, 1F);
         this.portal.setScale(0.35F * (float)Math.sin(ageInTicks * 0.5F + 1F) + 1.35F, 0.1F * (float)Math.cos(ageInTicks * 0.5F + 1F) + 1.1F, 1F);
         this.star.rotateAngleY = ageInTicks * 0.1F;
+    }
+
+    public void animate(TileEntityTransmutationTable beak, float partialTick) {
+        animate(beak.ticksExisted + partialTick);
     }
 
 

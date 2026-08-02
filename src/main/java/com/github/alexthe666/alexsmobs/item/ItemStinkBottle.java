@@ -27,7 +27,4 @@ public class ItemStinkBottle extends AMBlockItem {
         }
         return result;
     }
-    public String getDescriptionId() {
-        return this.getOrCreateDescriptionId();
-    }
 }

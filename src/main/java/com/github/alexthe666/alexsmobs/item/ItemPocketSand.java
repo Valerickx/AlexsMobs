@@ -7,6 +7,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -29,10 +30,10 @@ public class ItemPocketSand extends Item {
     }
 
     public ItemStack findAmmo(Player entity) {
-        if(entity.isCreative()){
+        if (entity.isCreative()) {
             return ItemStack.EMPTY;
         }
-        for(int i = 0; i < entity.getInventory().getContainerSize(); ++i) {
+        for (int i = 0; i < entity.getInventory().getContainerSize(); ++i) {
             ItemStack itemstack1 = entity.getInventory().getItem(i);
             if (IS_SAND.test(itemstack1)) {
                 return itemstack1;
@@ -44,12 +45,12 @@ public class ItemPocketSand extends Item {
     public InteractionResult use(Level worldIn, Player livingEntityIn, InteractionHand handIn) {
         ItemStack itemstack = livingEntityIn.getItemInHand(handIn);
         ItemStack ammo = findAmmo(livingEntityIn);
-        if(livingEntityIn.isCreative()){
+        if (livingEntityIn.isCreative()) {
             ammo = new ItemStack(Items.SAND);
         }
         if (!worldIn.isClientSide() && !ammo.isEmpty()) {
             livingEntityIn.gameEvent(GameEvent.ITEM_INTERACT_START);
-            worldIn.playSound((Player)null, livingEntityIn.getX(), livingEntityIn.getY(), livingEntityIn.getZ(), SoundEvents.SAND_BREAK, SoundSource.PLAYERS, 0.5F, 0.4F + (livingEntityIn.getRandom().nextFloat() * 0.4F + 0.8F));
+            worldIn.playSound((Player) null, livingEntityIn.getX(), livingEntityIn.getY(), livingEntityIn.getZ(), SoundEvents.SAND_BREAK, SoundSource.PLAYERS, 0.5F, 0.4F + (livingEntityIn.getRandom().nextFloat() * 0.4F + 0.8F));
             boolean left = false;
             if (livingEntityIn.getUsedItemHand() == InteractionHand.OFF_HAND && livingEntityIn.getMainArm() == HumanoidArm.RIGHT || livingEntityIn.getUsedItemHand() == InteractionHand.MAIN_HAND && livingEntityIn.getMainArm() == HumanoidArm.LEFT) {
                 left = true;
@@ -60,15 +61,11 @@ public class ItemPocketSand extends Item {
             if (!worldIn.isClientSide()) {
                 worldIn.addFreshEntity(blood);
             }
-            livingEntityIn.getCooldowns().addCooldown(this, 2);
+            livingEntityIn.getCooldowns().addCooldown(itemstack, 2);
             ammo.shrink(1);
-            itemstack.hurtAndBreak(1, livingEntityIn, (player) -> {
-                player.broadcastBreakEvent(livingEntityIn.getUsedItemHand());
-            });
+            itemstack.hurtAndBreak(1, livingEntityIn, livingEntityIn.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
         }
         livingEntityIn.awardStat(Stats.ITEM_USED.get(this));
         return InteractionResult.SUCCESS;
     }
-
-
 }

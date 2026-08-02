@@ -1,8 +1,8 @@
 package com.github.alexthe666.alexsmobs.item;
 
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorType;
 
 public class AMArmorMaterial {
 
@@ -36,50 +36,39 @@ public class AMArmorMaterial {
         this.knockbackResistance = knockbackResist;
     }
 
-
-    @Override
     public int getDurabilityForType(ArmorType type) {
         return MAX_DAMAGE_ARRAY[type.ordinal()] * this.durability;
     }
 
-    @Override
     public int getDefenseForType(ArmorType type) {
         return this.damageReduction[type.ordinal()];
     }
 
-    @Override
     public int getEnchantmentValue() {
         return this.encantability;
     }
 
-    @Override
     public SoundEvent getEquipSound() {
         return this.sound;
     }
 
-    @Override
     public Ingredient getRepairIngredient() {
-        return this.ingredient == null ? Ingredient.EMPTY : this.ingredient;
+        return this.ingredient == null ? Ingredient.of() : this.ingredient;
     }
 
     public void setRepairMaterial(Ingredient ingredient) {
         this.ingredient = ingredient;
     }
 
-
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public float getToughness() {
         return toughness;
     }
 
-    @Override
     public float getKnockbackResistance() {
         return knockbackResistance;
     }
-
 }

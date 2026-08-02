@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
@@ -107,7 +108,7 @@ public class FroststalkerAIMelee extends Goal {
                 if (froststalker.distanceTo(target) <= froststalker.getBbWidth() + target.getBbWidth() + 1.1F && froststalker.hasLineOfSight(target)) {
                     if (pursuitTime == maxPursuitTime) {
                         if (!froststalker.isTackling()) {
-                            froststalker.doHurtTarget((ServerLevel) this.level(), target);
+                            froststalker.doHurtTarget((ServerLevel) froststalker.level(), target);
                         }
                         start();
                     }

@@ -291,34 +291,12 @@ public class ModelElephant extends AdvancedEntityModel<EntityElephant> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
-            float f = 1.5F;
-            float f2 = 0.75F;
-            head.rotationPointY = -10;
-            head.setScale(f, f, f);
-            tail.setScale(f, f, f);
-            head.setShouldScaleChildren(true);
-            trunk1.setScale(f2, f2, f2);
-            trunk1.setShouldScaleChildren(true);
-            matrixStackIn.pushPose();
-            matrixStackIn.scale(0.35F, 0.35F, 0.35F);
-            matrixStackIn.translate(0.0D, 2.8D, 0D);
-            parts().forEach((p_228292_8_) -> {
-                p_228292_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
-            });
-            matrixStackIn.popPose();
-            head.setScale(1, 1, 1);
-            tail.setScale(1, 1, 1);
-            trunk1.setScale(1, 1, 1);
-        } else {
-            head.rotationPointY = -2.0F;
-            matrixStackIn.pushPose();
-            parts().forEach((p_228290_8_) -> {
-                p_228290_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
-            });
-            matrixStackIn.popPose();
-        }
-
+        head.rotationPointY = -2.0F;
+        matrixStackIn.pushPose();
+        parts().forEach((p_228290_8_) -> {
+            p_228290_8_.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((red) * 255F), (int)((green) * 255F), (int)((blue) * 255F)));
+        });
+        matrixStackIn.popPose();
     }
 
     @Override

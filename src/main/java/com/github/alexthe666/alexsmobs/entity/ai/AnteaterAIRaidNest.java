@@ -45,7 +45,8 @@ public class AnteaterAIRaidNest extends MoveToBlockGoal {
     }
 
     private static List<ItemStack> getItemStacks(EntityAnteater anteater) {
-        LootTable loottable = anteater.level().getServer().getLootData().getLootTable(ANTEATER_REWARD);
+        net.minecraft.resources.ResourceKey<LootTable> key = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, ANTEATER_REWARD);
+        LootTable loottable = anteater.level().getServer().reloadableRegistries().getLootTable(key);
         return loottable.getRandomItems((new LootParams.Builder((ServerLevel) anteater.level())).withParameter(LootContextParams.THIS_ENTITY, anteater).create(LootContextParamSets.PIGLIN_BARTER));
     }
 
@@ -132,7 +133,7 @@ public class AnteaterAIRaidNest extends MoveToBlockGoal {
     }
 
     private void breakHiveEffect(){
-        if (net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(anteater.level(), anteater)) {
+        if (net.neoforged.neoforge.event.EventHooks.canEntityGrief((net.minecraft.server.level.ServerLevel) anteater.level(), anteater)) {
             BlockState blockstate = anteater.level().getBlockState(this.blockPos);
             if (blockstate.is(AMBlockRegistry.LEAFCUTTER_ANTHILL.get())) {
                 if (anteater.level().getBlockEntity(this.blockPos) instanceof TileEntityLeafcutterAnthill) {
@@ -152,7 +153,7 @@ public class AnteaterAIRaidNest extends MoveToBlockGoal {
     }
 
     private void eatHive() {
-        if (net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(anteater.level(), anteater)) {
+        if (net.neoforged.neoforge.event.EventHooks.canEntityGrief((net.minecraft.server.level.ServerLevel) anteater.level(), anteater)) {
             BlockState blockstate = anteater.level().getBlockState(this.blockPos);
             if (blockstate.is(AMBlockRegistry.LEAFCUTTER_ANTHILL.get())) {
                 if (anteater.level().getBlockEntity(this.blockPos) instanceof TileEntityLeafcutterAnthill) {

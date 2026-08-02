@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderBoneSerpent extends MobRenderer<EntityBoneSerpent, LivingEntityRenderState, ModelBoneSerpentHead> {
+public class RenderBoneSerpent extends MobRenderer<EntityBoneSerpent, ModelBoneSerpentHead> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/bone_serpent_head.png");
 
     public RenderBoneSerpent(EntityRendererProvider.Context renderManagerIn) {
@@ -26,3 +26,4 @@ public class RenderBoneSerpent extends MobRenderer<EntityBoneSerpent, LivingEnti
         return TEXTURE;
     }
 }
+

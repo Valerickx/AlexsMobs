@@ -17,7 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.item.DyeColor;
 
-public class RenderRaccoon extends MobRenderer<EntityRaccoon, LivingEntityRenderState, ModelRaccoon> {
+public class RenderRaccoon extends MobRenderer<EntityRaccoon, ModelRaccoon> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/raccoon.png");
     private static final Identifier TEXTURE_RIGBY = Identifier.parse("alexsmobs:textures/entity/raccoon_rigby.png");
     private static final Identifier TEXTURE_BANDANA = Identifier.parse("alexsmobs:textures/entity/raccoon_bandana.png");
@@ -70,3 +70,4 @@ public class RenderRaccoon extends MobRenderer<EntityRaccoon, LivingEntityRender
         }
     }
 }
+

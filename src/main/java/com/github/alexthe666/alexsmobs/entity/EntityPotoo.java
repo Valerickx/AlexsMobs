@@ -209,7 +209,7 @@ public class EntityPotoo extends Animal implements IFalconry {
                 this.timeFlying = 0;
             }
             if (this.isPerching() && !this.isVehicle()) {
-                this.setSleeping((this.level().getDayTime() % 24000L < 13000L) && (this.getTarget() == null || !this.getTarget().isAlive()));
+                this.setSleeping((this.level().getGameTime() % 24000L < 13000L) && (this.getTarget() == null || !this.getTarget().isAlive()));
             } else if (isSleeping()) {
                 this.setSleeping(false);
             }
@@ -657,7 +657,7 @@ public class EntityPotoo extends Animal implements IFalconry {
 
         @Override
         public boolean canContinueToUse() {
-            return (perchingTime < 300 || (EntityPotoo.this.level().getDayTime() % 24000L < 13000L)) && (EntityPotoo.this.getTarget() == null || !EntityPotoo.this.getTarget().isAlive()) && !EntityPotoo.this.isPassenger();
+            return (perchingTime < 300 || (EntityPotoo.this.level().getGameTime() % 24000L < 13000L)) && (EntityPotoo.this.getTarget() == null || !EntityPotoo.this.getTarget().isAlive()) && !EntityPotoo.this.isPassenger();
         }
 
         public void tick() {

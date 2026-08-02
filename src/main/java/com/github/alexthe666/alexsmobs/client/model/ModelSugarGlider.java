@@ -157,7 +157,7 @@ public class ModelSugarGlider extends AdvancedEntityModel<EntitySugarGlider> {
 
     @Override
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.35F;
             head.setScale(f, f, f);
             head.setShouldScaleChildren(true);

@@ -134,7 +134,7 @@ public class FlyingAIFollowOwner extends Goal {
         } else if (!this.isTeleportFriendlyBlock(new BlockPos(x, y, z))) {
             return false;
         } else {
-            this.tameable.moveTo((double)x + 0.5D, (double)y, (double)z + 0.5D, this.tameable.getYRot(), this.tameable.getXRot());
+            this.tameable.setPos((double)x + 0.5D, (double)y, (double)z + 0.5D);
             this.navigator.stop();
             return true;
         }
@@ -145,7 +145,7 @@ public class FlyingAIFollowOwner extends Goal {
             BlockPos blockpos = pos.subtract(this.tameable.blockPosition());
             return this.world.noCollision(this.tameable, this.tameable.getBoundingBox().move(blockpos));
         }
-        PathType pathnodetype = WalkNodeEvaluator.getPathTypetatic(this.world, pos.mutable());
+        PathType pathnodetype = WalkNodeEvaluator.getPathTypeStatic(this.tameable, pos.mutable());
         if (pathnodetype != PathType.WALKABLE) {
             return false;
         } else {

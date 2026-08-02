@@ -72,11 +72,10 @@ public class ItemAnimalDictionary extends Item {
         }
         usedOnEntity = false;
 
-        return new InteractionResultHolder(InteractionResult.PASS, itemStackIn);
+        return InteractionResult.PASS;
     }
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(Component.translatable("item.alexsmobs.animal_dictionary.desc").withStyle(ChatFormatting.GRAY));
     }
 }

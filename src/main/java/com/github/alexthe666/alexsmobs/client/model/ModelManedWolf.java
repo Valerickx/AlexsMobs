@@ -116,7 +116,7 @@ public class ModelManedWolf extends AdvancedEntityModel<EntityManedWolf> {
     }
 
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.35F;
             float feet = 0.8F;
             head.setScale(f, f, f);

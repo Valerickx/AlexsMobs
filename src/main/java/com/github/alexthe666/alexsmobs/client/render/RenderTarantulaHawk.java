@@ -16,7 +16,7 @@ import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
-public class RenderTarantulaHawk extends MobRenderer<EntityTarantulaHawk, LivingEntityRenderState, EntityModel<EntityTarantulaHawk>> {
+public class RenderTarantulaHawk extends MobRenderer<EntityTarantulaHawk, EntityModel<EntityTarantulaHawk>> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/tarantula_hawk.png");
     private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/tarantula_hawk_angry.png");
     private static final Identifier TEXTURE_NETHER = Identifier.parse("alexsmobs:textures/entity/tarantula_hawk_nether.png");
@@ -60,3 +60,4 @@ public class RenderTarantulaHawk extends MobRenderer<EntityTarantulaHawk, Living
         return entity.isBaby() ? TEXTURE_BABY : entity.isNether() ? entity.isAngry() ? TEXTURE_NETHER_ANGRY : TEXTURE_NETHER : entity.isAngry() ? TEXTURE_ANGRY : TEXTURE;
     }
 }
+

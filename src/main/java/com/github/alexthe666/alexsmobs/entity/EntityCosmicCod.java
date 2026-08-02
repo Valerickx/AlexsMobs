@@ -110,7 +110,7 @@ public class EntityCosmicCod extends Mob implements Bucketable {
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH.value();
+        return SoundEvents.BUCKET_FILL_FISH;
     }
 
     @Override
@@ -118,27 +118,19 @@ public class EntityCosmicCod extends Mob implements Bucketable {
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.COSMIC_COD_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setCustomName(this.getCustomName());
+            stack.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, this.getCustomName());
         }
         return stack;
     }
 
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
-        if (this.hasCustomName()) {
-            bucket.setCustomName(this.getCustomName());
-        }
-        CompoundTag platTag = new CompoundTag();
-        this.addAdditionalSaveData(platTag);
-        CompoundTag compound = bucket.getOrCreateTag();
-        compound.put("CosmicCodData", platTag);
+        Bucketable.saveDefaultDataToBucketTag(this, bucket);
     }
 
     @Override
     public void loadFromBucketTag(@Nonnull CompoundTag compound) {
-        if (compound.contains("CosmicCodData")) {
-            this.readAdditionalSaveData(compound.getCompoundOrEmpty("CosmicCodData"));
-        }
+        Bucketable.loadDefaultDataFromBucketTag(this, compound);
     }
 
     public boolean requiresCustomPersistence() {
@@ -314,7 +306,7 @@ public class EntityCosmicCod extends Mob implements Bucketable {
         final boolean flag = blockstate.isAir();
         if (flag && !blockstate.getFluidState().is(FluidTags.WATER)) {
             this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
-            net.neoforged.neoforge.event.entity.EntityTeleportEvent.EnderEntity event = net.neoforged.neoforge.event.ForgeEventFactory.onEnderTeleport(this, x, y, z);
+            net.neoforged.neoforge.event.entity.EntityTeleportEvent.EnderEntity event = net.neoforged.neoforge.event.EventHooks.onEnderTeleport(this, x, y, z);
             if (event.isCanceled()) return false;
             level().broadcastEntityEvent(this, (byte) 46);
             this.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
@@ -412,24 +404,8 @@ public class EntityCosmicCod extends Mob implements Bucketable {
 
     @Override
     @Nonnull
-    protected InteractionResult mobInteract(@Nonnull Player player) {
-        final ItemStack itemstack = player.getItemInHand(hand);
-        if (itemstack.getItem() == Items.BUCKET && this.isAlive()) {
-            this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(this.getPickupSound(), 1.0F, 1.0F);
-            final ItemStack itemstack1 = this.getBucketItemStack();
-            this.saveToBucketTag(itemstack1);
-            final ItemStack itemstack2 = ItemUtils.createFilledResult(itemstack, player, itemstack1, false);
-            player.setItemInHand(hand, itemstack2);
-            final Level level = this.level();
-            if (!this.level().isClientSide()) {
-                CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer)player, itemstack1);
-            }
-
-            this.discard();
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
-        }
-        return super.mobInteract(player, hand);
+    protected InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
+        return Bucketable.bucketMobPickup(player, hand, this).orElse(super.mobInteract(player, hand));
     }
 
     public static class GroupData extends AgeableMob.AgeableMobGroupData {

@@ -1,6 +1,7 @@
 package com.github.alexthe666.alexsmobs.entity.ai;
 
 import com.github.alexthe666.alexsmobs.entity.EntityCrocodile;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -24,11 +25,11 @@ public class CrocodileAIMelee extends MeleeAttackGoal {
     }
 
     protected void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
-        double d0 = this.getAttackReachSqr(enemy);
+        double d0 = (double)(this.crocodile.getBbWidth() * 2.0F * this.crocodile.getBbWidth() * 2.0F + enemy.getBbWidth());
         if (distToEnemySqr <= d0) {
             this.resetAttackCooldown();
             this.mob.swing(InteractionHand.MAIN_HAND);
-            this.mob.doHurtTarget((ServerLevel) this.level(), enemy);
+            this.mob.doHurtTarget((ServerLevel) this.mob.level(), enemy);
         }
 
     }

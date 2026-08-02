@@ -30,9 +30,9 @@ public class RockyChestplateUtil {
         }
         CitadelEntityData.setCitadelTag(roller, lassoedTag);
         if (!roller.level().isClientSide()) {
-            Citadel.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, roller.getId()));
+            com.github.alexthe666.alexsmobs.AlexsMobs.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, roller.getId()));
         }else{
-            Citadel.sendMSGToServer(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, roller.getId()));
+            com.github.alexthe666.alexsmobs.AlexsMobs.sendMSGToServer(new PropertiesMessage("CitadelPatreonConfig", lassoedTag, roller.getId()));
         }
     }
 
@@ -111,7 +111,7 @@ public class RockyChestplateUtil {
         }
         if (!roller.level().isClientSide() && update) {
             CitadelEntityData.setCitadelTag(roller, tag);
-            Citadel.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", tag, roller.getId()));
+            com.github.alexthe666.alexsmobs.AlexsMobs.sendMSGToAll(new PropertiesMessage("CitadelPatreonConfig", tag, roller.getId()));
         }
     }
 

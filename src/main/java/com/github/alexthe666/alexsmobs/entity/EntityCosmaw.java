@@ -201,7 +201,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
             final float f = this.walkAnimation.position();
             final float f1 = this.walkAnimation.speed();
             final float bob = (float) (Math.sin(f * 0.7F) * (double) f1 * 0.0625F * 1.6F - (f1 * 0.0625F * 1.6F));
-            passenger.setPos(this.getX(), this.getY() - bob + 0.3F - this.getPassengersRidingOffset(), this.getZ());
+            passenger.setPos(this.getX(), this.getY() - bob + 0.3F, this.getZ());
         }
     }
 
@@ -252,10 +252,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
                 if (this.getTarget() != null && this.distanceTo(this.getTarget()) < 3.3D) {
                     if (this.getTarget() instanceof EntityCosmicCod && !this.isTame()) {
                         EntityCosmicCod fish = (EntityCosmicCod) this.getTarget();
-                        CompoundTag fishNbt = new CompoundTag();
-                        fish.addAdditionalSaveData(fishNbt);
-                        fishNbt.putString("DeathLootTable", BuiltInLootTables.EMPTY.toString());
-                        fish.readAdditionalSaveData(fishNbt);
+                        fish.skipDropExperience();
                     }
                     this.getTarget().hurt(this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
                 }
@@ -275,9 +272,9 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
                 this.playSound(SoundEvents.DOLPHIN_EAT, this.getSoundVolume(), this.getVoicePitch());
                 if (this.getMainHandItem().is(AMTagRegistry.COSMAW_TAMEABLES) && fishThrowerID != null && !this.isTame()) {
                     if (getRandom().nextFloat() < 0.3F) {
-                        this.setTame(true);
+                        this.setTame(true, true);
                         this.setCommand(1);
-                        this.setOwnerUUID(this.fishThrowerID);
+                        this.setOwnerReference(EntityReference.of(this.fishThrowerID));
                         Player player = level().getPlayerByUUID(fishThrowerID);
                         if (player instanceof ServerPlayer) {
                             CriteriaTriggers.TAME_ANIMAL.trigger((ServerPlayer) player, this);
@@ -287,8 +284,9 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
                         this.level().broadcastEntityEvent(this, (byte) 6);
                     }
                 }
-                if (this.getMainHandItem().hasCraftingRemainingItem()) {
-                    this.spawnAtLocation((ServerLevel) this.level(), this.getMainHandItem().getCraftingRemainingItem());
+                net.minecraft.world.item.ItemStackTemplate remaining = this.getMainHandItem().getItem().getCraftingRemainder();
+                if (remaining != null) {
+                    this.spawnAtLocation((ServerLevel) this.level(), remaining.create());
                 }
                 this.getMainHandItem().shrink(1);
             }
@@ -359,7 +357,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
             if (this.getCommand() == 3) {
                 this.setCommand(0);
             }
-            player.displayClientMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()), true);
+            player.sendSystemMessage(Component.translatable("entity.alexsmobs.all.command_" + this.getCommand(), this.getName()));
             final boolean sit = this.getCommand() == 2;
             if (sit) {
                 this.setOrderedToSit(true);
@@ -389,7 +387,8 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
         return new DirectPathNavigator(this, level, 0.5F);
     }
 
-    public boolean isAlliedTo(Entity entityIn) {
+    @Override
+    protected boolean considersEntityAsAlly(Entity entityIn) {
         if (this.isTame()) {
             final LivingEntity livingentity = this.getOwner();
             if (entityIn == livingentity) {
@@ -402,7 +401,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
                 return livingentity.isAlliedTo(entityIn);
             }
         }
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     @Nullable
@@ -595,7 +594,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
 
         public void tick() {
             if (EntityCosmaw.this.distanceTo(EntityCosmaw.this.getTarget()) < 3D * (EntityCosmaw.this.isBaby() ? 0.5F : 1)) {
-                EntityCosmaw.this.doHurtTarget((ServerLevel) this.level(), EntityCosmaw.this.getTarget());
+                EntityCosmaw.this.doHurtTarget((ServerLevel) EntityCosmaw.this.level(), EntityCosmaw.this.getTarget());
             } else {
                 EntityCosmaw.this.getNavigation().moveTo(EntityCosmaw.this.getTarget(), 1);
             }

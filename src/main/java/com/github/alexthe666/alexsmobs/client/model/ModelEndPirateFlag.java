@@ -50,11 +50,14 @@ public class ModelEndPirateFlag extends AdvancedEntityModel<Entity> {
     public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 
-    public void renderFlag(TileEntityEndPirateFlag wheel, float partialTick) {
+    public void renderFlag(float ticks) {
         this.resetToDefaultPose();
-        float f = wheel.ticksExisted + partialTick;
-        float speed = (float) (0.6F + Math.sin(f * 0.1F) * 0.5F);
-        this.swing(flag1, 0.4F, 0.5F, false, 0.0F, 0F, f, speed);
-        this.swing(flag2, 0.4F, 0.5F, false, -2.0F, 0F, f, speed);
+        float speed = (float) (0.6F + Math.sin(ticks * 0.1F) * 0.5F);
+        this.swing(flag1, 0.4F, 0.5F, false, 0.0F, 0F, ticks, speed);
+        this.swing(flag2, 0.4F, 0.5F, false, -2.0F, 0F, ticks, speed);
+    }
+
+    public void renderFlag(TileEntityEndPirateFlag wheel, float partialTick) {
+        renderFlag(wheel.ticksExisted + partialTick);
     }
 }

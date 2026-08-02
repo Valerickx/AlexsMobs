@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 
-public class RenderKangaroo extends MobRenderer<EntityKangaroo, LivingEntityRenderState, ModelKangaroo> {
+public class RenderKangaroo extends MobRenderer<EntityKangaroo, ModelKangaroo> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/kangaroo.png");
 
     public RenderKangaroo(EntityRendererProvider.Context renderManagerIn) {
@@ -39,3 +39,4 @@ public class RenderKangaroo extends MobRenderer<EntityKangaroo, LivingEntityRend
         return TEXTURE;
     }
 }
+

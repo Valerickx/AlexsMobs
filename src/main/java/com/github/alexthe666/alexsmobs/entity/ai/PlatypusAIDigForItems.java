@@ -38,7 +38,8 @@ public class PlatypusAIDigForItems extends Goal {
     }
 
     private static List<ItemStack> getItemStacks(EntityPlatypus platypus) {
-        LootTable loottable = platypus.level().getServer().getLootData().getLootTable(platypus.superCharged ? PLATYPUS_REWARD_CHARGED : PLATYPUS_REWARD);
+        net.minecraft.resources.ResourceKey<LootTable> key = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, platypus.superCharged ? PLATYPUS_REWARD_CHARGED : PLATYPUS_REWARD);
+        LootTable loottable = platypus.level().getServer().reloadableRegistries().getLootTable(key);
         return loottable.getRandomItems((new LootParams.Builder((ServerLevel) platypus.level())).withParameter(LootContextParams.THIS_ENTITY, platypus).create(LootContextParamSets.PIGLIN_BARTER));
     }
 

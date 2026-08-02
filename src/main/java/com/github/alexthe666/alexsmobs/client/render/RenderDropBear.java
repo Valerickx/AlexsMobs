@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 
-public class RenderDropBear extends MobRenderer<EntityDropBear, LivingEntityRenderState, ModelDropBear> {
+public class RenderDropBear extends MobRenderer<EntityDropBear, ModelDropBear> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/dropbear.png");
     private static final Identifier TEXTURE_EYES = Identifier.parse("alexsmobs:textures/entity/dropbear_eyes.png");
 
@@ -45,3 +45,4 @@ public class RenderDropBear extends MobRenderer<EntityDropBear, LivingEntityRend
         }
     }
 }
+

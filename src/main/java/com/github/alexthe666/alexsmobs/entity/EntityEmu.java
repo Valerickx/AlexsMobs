@@ -243,9 +243,7 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
     public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
         this.setVariant(compound.getIntOr("Variant", 0));
-        if (compound.contains("EggLayTime")) {
-            this.timeUntilNextEgg = compound.getIntOr("EggLayTime", 0);
-        }
+        this.timeUntilNextEgg = compound.getIntOr("EggLayTime", this.timeUntilNextEgg);
     }
 
     public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput compound) {

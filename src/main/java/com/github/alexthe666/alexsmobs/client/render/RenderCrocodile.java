@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 
-public class RenderCrocodile extends MobRenderer<EntityCrocodile, LivingEntityRenderState, ModelCrocodile> {
+public class RenderCrocodile extends MobRenderer<EntityCrocodile, ModelCrocodile> {
     private static final Identifier TEXTURE_0 = Identifier.parse("alexsmobs:textures/entity/crocodile_0.png");
     private static final Identifier TEXTURE_1 = Identifier.parse("alexsmobs:textures/entity/crocodile_1.png");
     private static final Identifier TEXTURE_CROWN = Identifier.parse("alexsmobs:textures/entity/crocodile_crown.png");
@@ -51,3 +51,4 @@ public class RenderCrocodile extends MobRenderer<EntityCrocodile, LivingEntityRe
 
 
 }
+

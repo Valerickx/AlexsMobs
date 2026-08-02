@@ -75,9 +75,14 @@ public class EntityFart extends Entity {
 
     }
 
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource damageSource, float amount) {
+        return false;
+    }
+
     protected void onEntityHit(EntityHitResult result) {
         if (result.getEntity() instanceof LivingEntity living) {
-            living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 300, 0));
+            living.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 300, 0));
             for(int i = 0; i < 10 + random.nextInt(6); i++){
                 level().addParticle(AMParticleRegistry.SMELLY.get(), living.getRandomX(1.0F), living.getRandomY(), living.getRandomZ(1.0F), 0, 0, 0);
             }
@@ -133,7 +138,7 @@ public class EntityFart extends Entity {
             this.setYRot( (float) (Mth.atan2(x, z) * (double) Mth.RAD_TO_DEG));
             this.xRotO = this.getXRot();
             this.yRotO = this.getYRot();
-            this.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+            this.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
         }
 
     }

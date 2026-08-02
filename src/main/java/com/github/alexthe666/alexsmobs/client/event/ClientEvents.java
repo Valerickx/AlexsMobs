@@ -124,7 +124,7 @@ public class ClientEvents {
         if (Minecraft.getInstance().player.hasEffect(AMEffectRegistry.POWER_DOWN)) {
             if (Minecraft.getInstance().player.getEffect(AMEffectRegistry.POWER_DOWN) != null) {
                 MobEffectInstance instance = Minecraft.getInstance().player.getEffect(AMEffectRegistry.POWER_DOWN);
-                EffectPowerDown powerDown = (EffectPowerDown) instance.getEffect().value();
+                EffectPowerDown powerDown = (EffectPowerDown) instance.getEffect();
                 int duration = instance.getDuration();
                 float partialTicks = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
                 float f = (Math.min(powerDown.getActiveTime(), duration) + partialTicks) * 0.1F;
@@ -159,7 +159,7 @@ public class ClientEvents {
             if (Minecraft.getInstance().player.getEffect(AMEffectRegistry.POWER_DOWN) != null) {
                 float initEnd = event.getFarPlaneDistance();
                 MobEffectInstance instance = Minecraft.getInstance().player.getEffect(AMEffectRegistry.POWER_DOWN);
-                EffectPowerDown powerDown = (EffectPowerDown) instance.getEffect().value();
+                EffectPowerDown powerDown = (EffectPowerDown) instance.getEffect();
                 int duration = instance.getDuration();
                 float partialTicks = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
                 float f = Math.min(20, (Math.min(powerDown.getActiveTime() + partialTicks, duration + partialTicks))) * 0.05F;
@@ -218,7 +218,7 @@ public class ClientEvents {
             } else if (player.getItemInHand(InteractionHand.OFF_HAND).getItem() == AMItemRegistry.FALCONRY_GLOVE.get()) {
                 leftHand = player.getMainArm() != HumanoidArm.LEFT;
             }
-            float partialTick = event.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+            float partialTick = event.getPartialTick();
             for (Entity entity : player.getPassengers()) {
                 if (entity instanceof IFalconry falconry) {
                     float yaw = player.yBodyRotO + (player.yBodyRot - player.yBodyRotO) * partialTick;
@@ -244,7 +244,7 @@ public class ClientEvents {
             matrixStackIn.pushPose();
             ItemInHandRenderer renderer = Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer();
             InteractionHand hand = MoreObjects.firstNonNull(Minecraft.getInstance().player.swingingArm, InteractionHand.MAIN_HAND);
-            float f = Minecraft.getInstance().player.getAttackAnim(event.getDeltaTracker().getGameTimeDeltaPartialTick(false));
+            float f = Minecraft.getInstance().player.getAttackAnim(event.getPartialTick());
             float f5 = -0.4F * Mth.sin(Mth.sqrt(f) * Mth.PI);
             float f6 = 0.2F * Mth.sin(Mth.sqrt(f) * Mth.TWO_PI);
             float f10 = -0.2F * Mth.sin(f * Mth.PI);
@@ -346,7 +346,7 @@ public class ClientEvents {
                 int screenWidth = event.getGuiGraphics().guiWidth();
                 int screenHeight = event.getGuiGraphics().guiHeight();
 
-                float ageInTicks = Minecraft.getInstance().level.getGameTime() + event.getDeltaTracker().getGameTimeDeltaPartialTick(false).getGameTimeDeltaPartialTick(true);
+                float ageInTicks = Minecraft.getInstance().level.getGameTime() + event.getPartialTick().getGameTimeDeltaPartialTick(false);
                 float staticIndexX = (float) Math.sin(ageInTicks * 0.2F) * 2;
                 float staticIndexY = (float) Math.cos(ageInTicks * 0.2F + 3F) * 2;
                 float minU = 10 * staticIndexX * 0.125F;

@@ -33,6 +33,8 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.component.DataComponents;
+
 public class EntityCombJelly extends WaterAnimal implements Bucketable {
 
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(EntityCombJelly.class, EntityDataSerializers.INT);
@@ -71,7 +73,7 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
     }
 
     private static boolean isLightLevelOk(BlockPos pos, ServerLevelAccessor iServerWorld) {
-        float time = iServerWorld.getTimeOfDay(1.0F);
+        float time = ((net.minecraft.world.level.storage.ServerLevelData) iServerWorld.getLevel().getLevelData()).getDayTimeFraction();
         int light = iServerWorld.getMaxLocalRawBrightness(pos);
         return light <= 4 && time > 0.27F && time <= 0.8F;
     }
@@ -130,7 +132,7 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
     @Override
     @Nonnull
     public SoundEvent getPickupSound() {
-        return SoundEvents.BUCKET_FILL_FISH.value();
+        return SoundEvents.BUCKET_FILL_FISH;
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -142,7 +144,7 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
     public ItemStack getBucketItemStack() {
         ItemStack stack = new ItemStack(AMItemRegistry.COMB_JELLY_BUCKET.get());
         if (this.hasCustomName()) {
-            stack.setCustomName(this.getCustomName());
+            stack.set(DataComponents.CUSTOM_NAME, this.getCustomName());
         }
         return stack;
     }
@@ -245,24 +247,18 @@ public class EntityCombJelly extends WaterAnimal implements Bucketable {
 
     @Override
     public void saveToBucketTag(@Nonnull ItemStack bucket) {
-        if (this.hasCustomName()) {
-            bucket.setCustomName(this.getCustomName());
-        }
         Bucketable.saveDefaultDataToBucketTag(this, bucket);
-        CompoundTag compoundnbt = bucket.getOrCreateTag();
-        compoundnbt.putFloat("BucketScale", this.getJellyScale());
-        compoundnbt.putInt("BucketVariantTag", this.getVariant());
+        net.minecraft.world.item.component.CustomData.update(DataComponents.BUCKET_ENTITY_DATA, bucket, tag -> {
+            tag.putFloat("BucketScale", this.getJellyScale());
+            tag.putInt("BucketVariantTag", this.getVariant());
+        });
     }
 
     @Override
     public void loadFromBucketTag(@Nonnull CompoundTag compound) {
         Bucketable.loadDefaultDataFromBucketTag(this, compound);
-        if (compound.contains("BucketScale")){
-            this.setJellyScale(compound.getFloatOr("BucketScale", 0.0F));
-        }
-        if (compound.contains("BucketVariantTag")){
-            this.setVariant(compound.getIntOr("BucketVariantTag", 0));
-        }
+        compound.getFloat("BucketScale").ifPresent(this::setJellyScale);
+        compound.getInt("BucketVariantTag").ifPresent(this::setVariant);
     }
 
     @Nullable

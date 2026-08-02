@@ -83,9 +83,12 @@ public class ModelBlueJay extends AdvancedEntityModel<EntityBlueJay> {
         return ImmutableList.of(root);
     }
 
+    public boolean young;
+
     @Override
     public void setupAnim(EntityBlueJay entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetToDefaultPose();
+        this.young = entity.isBaby();
         float flapSpeed = 0.6F;
         float flapDegree = 0.2F;
         float walkSpeed = 0.95F;
@@ -147,9 +150,8 @@ public class ModelBlueJay extends AdvancedEntityModel<EntityBlueJay> {
         }
     }
 
-    @Override
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-        if (entity != null && entity.isBaby()) {
+        if (this.young) {
             float f = 1.35F;
             head.setScale(f, f, f);
             head.setShouldScaleChildren(true);

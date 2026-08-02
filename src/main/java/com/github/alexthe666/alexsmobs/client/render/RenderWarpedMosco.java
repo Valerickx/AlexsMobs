@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class RenderWarpedMosco extends MobRenderer<EntityWarpedMosco, LivingEntityRenderState, ModelWarpedMosco> {
+public class RenderWarpedMosco extends MobRenderer<EntityWarpedMosco, ModelWarpedMosco> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/warped_mosco.png");
     private static final Identifier TEXTURE_EYES = Identifier.parse("alexsmobs:textures/entity/warped_mosco_glow.png");
 
@@ -42,3 +42,4 @@ public class RenderWarpedMosco extends MobRenderer<EntityWarpedMosco, LivingEnti
         }
     }
 }
+

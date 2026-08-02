@@ -3,6 +3,7 @@ package com.github.alexthe666.alexsmobs.item;
 import com.github.alexthe666.alexsmobs.AlexsMobs;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -10,23 +11,22 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.ItemAbility;
-import net.neoforged.neoforge.common.ItemAbilities;
 
 public class ItemShieldOfTheDeep extends Item {
+
     public ItemShieldOfTheDeep(Item.Properties group) {
         super(group);
     }
 
-    @Override
-    public boolean canPerformAction(ItemStack stack, ItemAbility ItemAbility) {
-        return ItemAbilities.DEFAULT_SHIELD_ACTIONS.contains(ItemAbility);
+    public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
+        return itemAbility != null && itemAbility.name().contains("shield");
     }
 
     public ItemUseAnimation getUseAnimation(ItemStack p_77661_1_) {
         return ItemUseAnimation.BLOCK;
     }
 
-    public int getUseDuration(ItemStack p_77626_1_) {
+    public int getUseDuration(ItemStack p_77626_1_, LivingEntity entity) {
         return 72000;
     }
 
@@ -37,10 +37,9 @@ public class ItemShieldOfTheDeep extends Item {
     }
 
     public boolean isValidRepairItem(ItemStack p_82789_1_, ItemStack p_82789_2_) {
-        return AMItemRegistry.SERRATED_SHARK_TOOTH.get() == p_82789_2_.getItem() || super.isValidRepairItem(p_82789_1_, p_82789_2_);
+        return AMItemRegistry.SERRATED_SHARK_TOOTH.get() == p_82789_2_.getItem();
     }
 
-    @Override
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }

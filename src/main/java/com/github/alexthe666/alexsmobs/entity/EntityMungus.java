@@ -333,7 +333,7 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
             }
             setChunkBiomes(chunk, container);
             if (!this.level().isClientSide()) {
-                //AlexsMobs.sendMSGToAll(new MessageMungusBiomeChange(this.getId(), pos.getX(), pos.getZ(), BuiltInRegistries.BIOME.getKey(biome.value()).toString()));
+                //AlexsMobs.sendMSGToAll(new MessageMungusBiomeChange(this.getId(), pos.getX(), pos.getZ(), BuiltInRegistries.BIOME.getKey(biome).toString()));
             }
         } else {
             if (biome == null) {
@@ -348,7 +348,7 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
                     }
                 }
                 setChunkBiomes(chunk, container);
-                Identifier biomeKey = BuiltInRegistries.BIOME.getKey(biome.value());
+                Identifier biomeKey = BuiltInRegistries.BIOME.getKey(biome);
                 if(biomeKey != null){
                     AlexsMobs.sendMSGToAll(new MessageMungusBiomeChange(this.getId(), pos.getX(), pos.getZ(), biomeKey.toString()));
                 }

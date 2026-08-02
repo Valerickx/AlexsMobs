@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 
-public class RenderRhinoceros extends MobRenderer<EntityRhinoceros, LivingEntityRenderState, ModelRhinoceros> {
+public class RenderRhinoceros extends MobRenderer<EntityRhinoceros, ModelRhinoceros> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/rhinoceros.png");
     private static final Identifier TEXTURE_ANGRY = Identifier.parse("alexsmobs:textures/entity/rhinoceros_angry.png");
     private static final Identifier TEXTURE_POTION = Identifier.parse("alexsmobs:textures/entity/rhinoceros_potion.png");
@@ -48,3 +48,4 @@ public class RenderRhinoceros extends MobRenderer<EntityRhinoceros, LivingEntity
         }
     }
 }
+

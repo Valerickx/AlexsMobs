@@ -45,8 +45,12 @@ public class ModelEndPirateShipWheel extends AdvancedEntityModel<Entity> {
     public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 
-    public void renderWheel(TileEntityEndPirateShipWheel wheel, float partialTick) {
+    public void renderWheel(float wheelRot) {
         this.resetToDefaultPose();
-        this.wheel.rotateAngleY = Maths.rad(wheel.getWheelRot(partialTick));
+        this.wheel.rotateAngleY = Maths.rad(wheelRot);
+    }
+
+    public void renderWheel(TileEntityEndPirateShipWheel wheel, float partialTick) {
+        renderWheel(wheel.getWheelRot(partialTick));
     }
 }

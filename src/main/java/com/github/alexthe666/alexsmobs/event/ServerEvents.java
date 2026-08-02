@@ -9,6 +9,9 @@ import com.github.alexthe666.alexsmobs.config.AMConfig;
 import com.github.alexthe666.alexsmobs.effect.AMEffectRegistry;
 import com.github.alexthe666.alexsmobs.effect.EffectClinging;
 import com.github.alexthe666.alexsmobs.entity.*;
+
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.minecraft.resources.Identifier;
 import com.github.alexthe666.alexsmobs.entity.util.FlyingFishBootsUtil;
 import com.github.alexthe666.alexsmobs.entity.util.RainbowUtil;
 import com.github.alexthe666.alexsmobs.entity.util.RockyChestplateUtil;
@@ -53,7 +56,14 @@ import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NonTameRandomTargetGoal;
-import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.rabbit.Rabbit;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.animal.polarbear.PolarBear;
+import net.minecraft.world.entity.animal.fox.Fox;
+import net.minecraft.world.entity.animal.feline.Cat;
+import net.minecraft.world.entity.animal.feline.Ocelot;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
+import net.minecraft.world.entity.animal.squid.Squid;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.spider.Spider;
@@ -106,8 +116,8 @@ public class ServerEvents {
 
     public static final UUID ALEX_UUID = UUID.fromString("71363abe-fd03-49c9-940d-aae8b8209b7c");
     public static final UUID CARRO_UUID = UUID.fromString("98905d4a-1cbc-41a4-9ded-2300404e2290");
-    private static final net.minecraft.resources.ResourceLocation SAND_SPEED_MODIFIER = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("alexsmobs", "sand_speed_bonus");
-    private static final net.minecraft.resources.ResourceLocation SNEAK_SPEED_MODIFIER = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("alexsmobs", "sneak_speed_bonus");
+    private static final Identifier SAND_SPEED_MODIFIER = Identifier.fromNamespaceAndPath("alexsmobs", "sand_speed_bonus");
+    private static final Identifier SNEAK_SPEED_MODIFIER = Identifier.fromNamespaceAndPath("alexsmobs", "sneak_speed_bonus");
     private static final AttributeModifier SAND_SPEED_BONUS = new AttributeModifier(SAND_SPEED_MODIFIER, 0.1F, AttributeModifier.Operation.ADD_VALUE);
     private static final AttributeModifier SNEAK_SPEED_BONUS = new AttributeModifier(SNEAK_SPEED_MODIFIER, 0.1F, AttributeModifier.Operation.ADD_VALUE);
     private static final Map<ServerLevel, BeachedCachalotWhaleSpawner> BEACHED_CACHALOT_WHALE_SPAWNER_MAP = new HashMap<>();
@@ -128,16 +138,14 @@ public class ServerEvents {
                     BlockPos endpoint = triple.getRight();
                     final int heightFromMap = endpointWorld.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, endpoint.getX(), endpoint.getZ());
                     endpoint = new BlockPos(endpoint.getX(), Math.max(heightFromMap, endpoint.getY()), endpoint.getZ());
-                    player.teleportTo(endpointWorld, endpoint.getX() + 0.5D, endpoint.getY() + 0.5D, endpoint.getZ() + 0.5D, player.getYRot(), player.getXRot());
-                    ChunkPos chunkpos = new ChunkPos(endpoint);
-                    endpointWorld.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, player.getId());
+                    player.teleportTo(endpointWorld, endpoint.getX() + 0.5D, endpoint.getY() + 0.5D, endpoint.getZ() + 0.5D, java.util.Collections.emptySet(), player.getYRot(), player.getXRot(), true);
                     player.connection.send(new ClientboundSetExperiencePacket(player.experienceProgress, player.totalExperience, player.experienceLevel));
 
                 }
                 teleportPlayers.clear();
             }
         }
-        AMWorldData data = AMWorldData.get(tick.level);
+        AMWorldData data = AMWorldData.get(tick.getLevel());
         if (data != null) {
             data.tickPupfish();
         }
@@ -155,7 +163,7 @@ public class ServerEvents {
         final float f5 = Mth.sin(f1);
         final float f6 = f3 * f4;
         final float f7 = f2 * f4;
-        final double d0 = player.getAttribute(net.neoforged.neoforge.common.NeoForgeMod.BLOCK_REACH.get()).getValue();
+        final double d0 = player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE).getValue();
         Vec3 vector3d1 = vector3d.add(f6 * d0, f5 * d0, f7 * d0);
         return worldIn.clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.OUTLINE, fluidMode, player));
     }
@@ -173,17 +181,6 @@ public class ServerEvents {
 
     @SubscribeEvent
     public static void onEntityResize(EntityEvent.Size event) {
-        if (event.getEntity() instanceof Player entity) {
-            final var potions = entity.getActiveEffectsMap();
-            if (event.getEntity().level() != null && potions != null && !potions.isEmpty()
-                && potions.containsKey(AMEffectRegistry.CLINGING)) {
-                if (EffectClinging.isUpsideDown(entity)) {
-                    float minus = event.getOldSize().height - event.getOldEyeHeight();
-                    event.setNewEyeHeight(minus);
-                }
-            }
-        }
-
     }
 
     @SubscribeEvent
@@ -226,20 +223,24 @@ public class ServerEvents {
 
     @SubscribeEvent
     public static void onStruckByLightning(EntityStruckByLightningEvent event) {
-        if (event.getEntity().getType() == EntityType.SQUID && !event.getEntity().level().isClientSide()) {
+        if (event.getEntity() instanceof Squid && !event.getEntity().level().isClientSide()) {
             ServerLevel level = (ServerLevel) event.getEntity().level();
             event.setCanceled(true);
             EntityGiantSquid squid = AMEntityRegistry.GIANT_SQUID.get().create(level, EntitySpawnReason.MOB_SUMMONED);
-            squid.moveTo(event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), event.getEntity().getYRot(), event.getEntity().getXRot());
-            squid.finalizeSpawn(level, level.getCurrentDifficultyAt(squid.blockPosition()), EntitySpawnReason.CONVERSION, null);
-            if (event.getEntity().hasCustomName()) {
-                squid.setCustomName(event.getEntity().getCustomName());
-                squid.setCustomNameVisible(event.getEntity().isCustomNameVisible());
+            if (squid != null) {
+                squid.setPos(event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ());
+                squid.setYRot(event.getEntity().getYRot());
+                squid.setXRot(event.getEntity().getXRot());
+                squid.finalizeSpawn(level, level.getCurrentDifficultyAt(squid.blockPosition()), EntitySpawnReason.CONVERSION, null);
+                if (event.getEntity().hasCustomName()) {
+                    squid.setCustomName(event.getEntity().getCustomName());
+                    squid.setCustomNameVisible(event.getEntity().isCustomNameVisible());
+                }
+                squid.setBlue(true);
+                squid.setPersistenceRequired();
+                level.addFreshEntityWithPassengers(squid);
+                event.getEntity().discard();
             }
-            squid.setBlue(true);
-            squid.setPersistenceRequired();
-            level.addFreshEntityWithPassengers(squid);
-            event.getEntity().discard();
         }
     }
 
@@ -249,7 +250,6 @@ public class ServerEvents {
             && hitResult.getEntity() instanceof EntityEmu emu && !event.getEntity().level().isClientSide()) {
             if (event.getEntity() instanceof AbstractArrow arrow) {
                 //fixes soft crash with vanilla
-                arrow.setPierceLevel((byte) 0);
             }
             if ((emu.getAnimation() == EntityEmu.ANIMATION_DODGE_RIGHT || emu.getAnimation() == EntityEmu.ANIMATION_DODGE_LEFT) && emu.getAnimationTick() < 7) {
                 event.setCanceled(true);
@@ -322,7 +322,7 @@ public class ServerEvents {
                         player.gameEvent(GameEvent.ITEM_INTERACT_START);
                         event.getLevel().playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
                         player.awardStat(Stats.ITEM_USED.get(Items.GLASS_BOTTLE));
-                        player.setSecondsOnFire(6);
+                        player.igniteForSeconds(6);
                         if (!player.addItem(new ItemStack(AMItemRegistry.LAVA_BOTTLE.get()))) {
                             player.spawnAtLocation((ServerLevel) player.level(), new ItemStack(AMItemRegistry.LAVA_BOTTLE.get()));
                         }
@@ -340,8 +340,8 @@ public class ServerEvents {
     public void onInteractWithEntity(PlayerInteractEvent.EntityInteract event) {
         if (event.getTarget() instanceof LivingEntity living) {
             if (!event.getEntity().isShiftKeyDown() && VineLassoUtil.hasLassoData(living)) {
-                if (!event.getEntity().level().isClientSide()) {
-                    event.getTarget().spawnAtLocation(new ItemStack(AMItemRegistry.VINE_LASSO.get()));
+                if (event.getEntity().level() instanceof ServerLevel serverLevel) {
+                    event.getTarget().spawnAtLocation(serverLevel, new ItemStack(AMItemRegistry.VINE_LASSO.get()));
                 }
                 VineLassoUtil.lassoTo(null, living);
                 event.setCanceled(true);
@@ -354,7 +354,7 @@ public class ServerEvents {
                         event.getItemStack().shrink(1);
                     }
                     event.getTarget().gameEvent(GameEvent.EAT);
-                    event.getTarget().playSound(SoundEvents.GENERIC_EAT.value(), 1.0F, 0.5F + event.getEntity().getRandom().nextFloat());
+                    event.getTarget().playSound(SoundEvents.GENERIC_EAT, 1.0F, 0.5F + event.getEntity().getRandom().nextFloat());
                     if (event.getEntity().getRandom().nextFloat() < 0.4F) {
                         living.removeEffect(AMEffectRegistry.ENDER_FLU);
                         Items.CHORUS_FRUIT.finishUsingItem(event.getItemStack().copy(), event.getLevel(), ((LivingEntity) event.getTarget()));
@@ -379,7 +379,7 @@ public class ServerEvents {
                     && AMConfig.bunfungusTransformation) {
                 final var random = ThreadLocalRandom.current();
                 if (!event.getEntity().level().isClientSide() && random.nextFloat() < 0.15F) {
-                    final EntityBunfungus bunfungus = rabbit.convertTo(AMEntityRegistry.BUNFUNGUS.get(), true);
+                    final EntityBunfungus bunfungus = rabbit.convertTo(AMEntityRegistry.BUNFUNGUS.get(), net.minecraft.world.entity.ConversionParams.single(rabbit, true, false), (b) -> {});
                     if (bunfungus != null) {
                         event.getEntity().level().addFreshEntity(bunfungus);
                         bunfungus.setTransformsIn(EntityBunfungus.MAX_TRANSFORM_TIME);
@@ -423,7 +423,7 @@ public class ServerEvents {
     @SubscribeEvent
     public void onUseItemOnBlock(PlayerInteractEvent.RightClickBlock event) {
         if (AlexsMobs.isAprilFools() && event.getItemStack().is(Items.STICK)
-            && !event.getEntity().getCooldowns().isOnCooldown(Items.STICK)) {
+            && !event.getEntity().getCooldowns().isOnCooldown(event.getItemStack())) {
             BlockState state = event.getEntity().level().getBlockState(event.getPos());
             boolean flag = false;
             if (state.is(Blocks.SAND)) {
@@ -437,7 +437,7 @@ public class ServerEvents {
                 event.setCanceled(true);
                 event.getEntity().gameEvent(GameEvent.BLOCK_PLACE);
                 event.getEntity().playSound(SoundEvents.SAND_BREAK, 1, 1);
-                event.getEntity().getCooldowns().addCooldown(Items.STICK, 30);
+                event.getEntity().getCooldowns().addCooldown(event.getItemStack(), 30);
                 event.setCancellationResult(InteractionResult.SUCCESS);
             }
         }
@@ -455,10 +455,10 @@ public class ServerEvents {
     public void onEntityFinalizeSpawn(FinalizeSpawnEvent event) {
         final var entity = event.getEntity();
         if (entity instanceof WanderingTrader trader && AMConfig.elephantTraderSpawnChance > 0) {
-            Biome biome = event.getLevel().getBiome(entity.blockPosition()).value();
+            Biome biome = event.getLevel().getBiome(entity.blockPosition());
             if (RAND.nextFloat() <= AMConfig.elephantTraderSpawnChance && (!AMConfig.limitElephantTraderBiomes || biome.getBaseTemperature() >= 1.0F)) {
-                ChunkPos chunkPos = new ChunkPos(trader.blockPosition());
-                if(event.getLevel().getChunkSource().getChunkNow(chunkPos.x, chunkPos.z) != null) {
+                ChunkPos chunkPos = new ChunkPos(trader.blockPosition().getX() >> 4, trader.blockPosition().getZ() >> 4);
+                if(event.getLevel().getChunkSource().getChunkNow(chunkPos.x(), chunkPos.z()) != null) {
                     EntityElephant elephant = AMEntityRegistry.ELEPHANT.get().create(trader.level(), EntitySpawnReason.MOB_SUMMONED);
                     elephant.copyPosition(trader);
                     if (elephant.canSpawnWithTraderHere()) {
@@ -528,7 +528,7 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onLivingDamageEvent(LivingDamageEvent event) {
+    public void onLivingDamageEvent(LivingIncomingDamageEvent event) {
         if (event.getSource().getEntity() instanceof final LivingEntity attacker) {
             if (event.getAmount() > 0 && attacker.hasEffect(AMEffectRegistry.SOULSTEAL) && attacker.getEffect(AMEffectRegistry.SOULSTEAL) != null) {
                 final int level = attacker.getEffect(AMEffectRegistry.SOULSTEAL).getAmplifier() + 1;
@@ -560,15 +560,16 @@ public class ServerEvents {
 
     @SubscribeEvent
     public void onLivingSetTargetEvent(LivingChangeTargetEvent event) {
-        if (event.getNewTarget() != null && event.getEntity() instanceof Mob mob) {
-            if (mob.getMobType() == MobType.ARTHROPOD) {
-                if (event.getNewTarget().hasEffect(AMEffectRegistry.BUG_PHEROMONES) && event.getEntity().getLastHurtByMob() != event.getNewTarget()) {
+        LivingEntity target = event.getEntity() instanceof Mob mob ? mob.getTarget() : null;
+        if (target != null && event.getEntity() instanceof Mob mob) {
+            if (mob.getType().builtInRegistryHolder().is(net.minecraft.tags.EntityTypeTags.ARTHROPOD)) {
+                if (target.hasEffect(AMEffectRegistry.BUG_PHEROMONES) && mob.getLastHurtByMob() != target) {
                     event.setCanceled(true);
                     return;
                 }
             }
-            if (mob.getMobType() == MobType.UNDEAD && !mob.getType().builtInRegistryHolder().is(AMTagRegistry.IGNORES_KIMONO)) {
-                if (event.getNewTarget().getItemBySlot(EquipmentSlot.CHEST).is(AMItemRegistry.UNSETTLING_KIMONO.get()) && event.getEntity().getLastHurtByMob() != event.getNewTarget()) {
+            if (mob.isInvertedHealAndHarm() && !mob.getType().builtInRegistryHolder().is(AMTagRegistry.IGNORES_KIMONO)) {
+                if (target.getItemBySlot(EquipmentSlot.CHEST).is(AMItemRegistry.UNSETTLING_KIMONO.get()) && mob.getLastHurtByMob() != target) {
                     event.setCanceled(true);
                     return;
                 }
@@ -578,112 +579,114 @@ public class ServerEvents {
 
     @SubscribeEvent
     public void onLivingUpdateEvent(EntityTickEvent.Post event) {
-        final var entity = event.getEntity();
-        if (entity instanceof Player player) {
-            if (player.getEyeHeight() < player.getBbHeight() * 0.5D) {
-                player.refreshDimensions();
-            }
-            if(entity.getAttributes().hasAttribute(Attributes.MOVEMENT_SPEED)){
-                final var attributes = entity.getAttribute(Attributes.MOVEMENT_SPEED);
-                if (player.getItemBySlot(EquipmentSlot.FEET).getItem() == AMItemRegistry.ROADDRUNNER_BOOTS.get()
-                        || attributes.hasModifier(SAND_SPEED_MODIFIER)) {
-                    final boolean sand = player.level().getBlockState(getDownPos(player.blockPosition(), player.level()))
-                            .is(BlockTags.SAND);
-                    if (sand && !attributes.hasModifier(SAND_SPEED_MODIFIER)) {
-                        attributes.addPermanentModifier(SAND_SPEED_BONUS);
+        if (event.getEntity() instanceof LivingEntity living) {
+            if (living instanceof Player player) {
+                if (player.getEyeHeight() < player.getBbHeight() * 0.5D) {
+                    player.refreshDimensions();
+                }
+                if (player.getAttributes().hasAttribute(Attributes.MOVEMENT_SPEED)) {
+                    final var attributes = player.getAttribute(Attributes.MOVEMENT_SPEED);
+                    if (player.getItemBySlot(EquipmentSlot.FEET).getItem() == AMItemRegistry.ROADDRUNNER_BOOTS.get()
+                            || attributes.hasModifier(SAND_SPEED_MODIFIER)) {
+                        final boolean sand = player.level().getBlockState(getDownPos(player.blockPosition(), player.level()))
+                                .is(BlockTags.SAND);
+                        if (sand && !attributes.hasModifier(SAND_SPEED_MODIFIER)) {
+                            attributes.addPermanentModifier(SAND_SPEED_BONUS);
+                        }
+                        if (player.tickCount % 25 == 0
+                                && (player.getItemBySlot(EquipmentSlot.FEET).getItem() != AMItemRegistry.ROADDRUNNER_BOOTS.get()
+                                || !sand)
+                                && attributes.hasModifier(SAND_SPEED_MODIFIER)) {
+                            attributes.removeModifier(SAND_SPEED_MODIFIER);
+                        }
                     }
-                    if (player.tickCount % 25 == 0
-                            && (player.getItemBySlot(EquipmentSlot.FEET).getItem() != AMItemRegistry.ROADDRUNNER_BOOTS.get()
-                            || !sand)
-                            && attributes.hasModifier(SAND_SPEED_MODIFIER)) {
-                        attributes.removeModifier(SAND_SPEED_MODIFIER);
+                    if (player.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.FRONTIER_CAP.get()
+                            || attributes.hasModifier(SNEAK_SPEED_MODIFIER)) {
+                        final var shift = player.isShiftKeyDown();
+                        if (shift && !attributes.hasModifier(SNEAK_SPEED_MODIFIER)) {
+                            attributes.addPermanentModifier(SNEAK_SPEED_BONUS);
+                        }
+                        if ((!shift || player.getItemBySlot(EquipmentSlot.HEAD).getItem() != AMItemRegistry.FRONTIER_CAP.get())
+                                && attributes.hasModifier(SNEAK_SPEED_MODIFIER)) {
+                            attributes.removeModifier(SNEAK_SPEED_MODIFIER);
+                        }
                     }
                 }
-                if (player.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.FRONTIER_CAP.get()
-                        || attributes.hasModifier(SNEAK_SPEED_MODIFIER)) {
-                    final var shift = player.isShiftKeyDown();
-                    if (shift && !attributes.hasModifier(SNEAK_SPEED_MODIFIER)) {
-                        attributes.addPermanentModifier(SNEAK_SPEED_BONUS);
-                    }
-                    if ((!shift || player.getItemBySlot(EquipmentSlot.HEAD).getItem() != AMItemRegistry.FRONTIER_CAP.get())
-                            && attributes.hasModifier(SNEAK_SPEED_MODIFIER)) {
-                        attributes.removeModifier(SNEAK_SPEED_MODIFIER);
+                if (player.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.SPIKED_TURTLE_SHELL.get()) {
+                    if (!player.isEyeInFluid(FluidTags.WATER)) {
+                        player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 310, 0, false, false, true));
                     }
                 }
             }
-            if (player.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.SPIKED_TURTLE_SHELL.get()) {
-                if (!player.isEyeInFluid(FluidTags.WATER)) {
-                    player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 310, 0, false, false, true));
+            final ItemStack boots = living.getItemBySlot(EquipmentSlot.FEET);
+            net.minecraft.world.item.component.CustomData bootsData = boots.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+            if (!boots.isEmpty() && bootsData != null && bootsData.copyTag().getBooleanOr("BisonFur", false)) {
+                BlockPos posBelow = new BlockPos((int) living.getX(), (int) (living.getBoundingBox().minY - 0.1F), (int) living.getZ());
+                if (living.level().getBlockState(posBelow).is(Blocks.POWDER_SNOW)) {
+                    living.setOnGround(true);
+                    living.setTicksFrozen(0);
+                    living.setPos(living.getX(), Math.max(living.getY(), posBelow.getY() + 1F), living.getZ());
+                }
+                if (living.isInPowderSnow) {
+                    living.setOnGround(true);
+                    living.setDeltaMovement(living.getDeltaMovement().add(0, 0.1F, 0));
                 }
             }
-        }
-        final ItemStack boots = entity.getItemBySlot(EquipmentSlot.FEET);
-        if (!boots.isEmpty() && boots.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA) != null && boots.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA).copyTag().getBoolean("BisonFur")) {
-            BlockPos posBelow = new BlockPos((int) event.getEntity().getX(), (int) (entity.getBoundingBox().minY - 0.1F), (int) entity.getZ());
-            if (entity.level().getBlockState(posBelow).is(Blocks.POWDER_SNOW)) {
-                entity.setOnGround(true);
-                entity.setTicksFrozen(0);
-                entity.setPos(entity.getX(), Math.max(entity.getY(), posBelow.getY() + 1F), entity.getZ());
-            }
-            if (entity.isInPowderSnow) {
-                entity.setOnGround(true);
-                entity.setDeltaMovement(entity.getDeltaMovement().add(0, 0.1F, 0));
-            }
-        }
-        if (entity.getItemBySlot(EquipmentSlot.LEGS).getItem() == AMItemRegistry.CENTIPEDE_LEGGINGS.get()) {
-            if (entity.horizontalCollision && !entity.isInWater()) {
-                entity.fallDistance = 0.0F;
-                Vec3 motion = entity.getDeltaMovement();
-                double d2 = 0.1D;
-                if (entity.isShiftKeyDown() || !entity.getFeetBlockState().isScaffolding(entity) && entity.isSuppressingSlidingDownLadder()) {
-                    d2 = 0.0D;
+            if (living.getItemBySlot(EquipmentSlot.LEGS).getItem() == AMItemRegistry.CENTIPEDE_LEGGINGS.get()) {
+                if (living.horizontalCollision && !living.isInWater()) {
+                    living.fallDistance = 0.0F;
+                    Vec3 motion = living.getDeltaMovement();
+                    double d2 = 0.1D;
+                    if (living.isShiftKeyDown() || living.getBlockStateOn().is(Blocks.SCAFFOLDING)) {
+                        d2 = 0.0D;
+                    }
+                    motion = new Vec3(Mth.clamp(motion.x, -0.15F, 0.15F), d2, Mth.clamp(motion.z, -0.15F, 0.15F));
+                    living.setDeltaMovement(motion);
                 }
-                motion = new Vec3(Mth.clamp(motion.x, -0.15F, 0.15F), d2, Mth.clamp(motion.z, -0.15F, 0.15F));
-                entity.setDeltaMovement(motion);
             }
-        }
-        if (entity.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.SOMBRERO.get() && !entity.level().isClientSide() && AlexsMobs.isAprilFools() && entity.isInWater()) {
-            RandomSource random = entity.getRandom();
-            if (random.nextInt(245) == 0 && !EntitySeaBear.isMobSafe(entity)) {
-                final int dist = 32;
-                final var nearbySeabears = entity.level().getEntitiesOfClass(EntitySeaBear.class,
-                    entity.getBoundingBox().inflate(dist, dist, dist));
+            if (living.getItemBySlot(EquipmentSlot.HEAD).getItem() == AMItemRegistry.SOMBRERO.get() && !living.level().isClientSide() && AlexsMobs.isAprilFools() && living.isInWater()) {
+                RandomSource random = living.getRandom();
+                if (random.nextInt(245) == 0 && !EntitySeaBear.isMobSafe(living)) {
+                    final int dist = 32;
+                    final var nearbySeabears = living.level().getEntitiesOfClass(EntitySeaBear.class,
+                        living.getBoundingBox().inflate(dist, dist, dist));
                 if (nearbySeabears.isEmpty()) {
-                    final EntitySeaBear bear = AMEntityRegistry.SEA_BEAR.get().create(entity.level(), EntitySpawnReason.MOB_SUMMONED);
-                    final BlockPos at = entity.blockPosition();
+                    final EntitySeaBear bear = AMEntityRegistry.SEA_BEAR.get().create(living.level(), EntitySpawnReason.MOB_SUMMONED);
+                    final BlockPos at = living.blockPosition();
                     BlockPos farOff = null;
                     for (int i = 0; i < 15; i++) {
                         final int f1 = (int) Math.signum(random.nextInt() - 0.5F);
                         final int f2 = (int) Math.signum(random.nextInt() - 0.5F);
                         final BlockPos pos1 = at.offset(f1 * (10 + random.nextInt(dist - 10)), random.nextInt(1),
                             f2 * (10 + random.nextInt(dist - 10)));
-                        if (entity.level().isWaterAt(pos1)) {
+                        if (living.level().isWaterAt(pos1)) {
                             farOff = pos1;
                         }
                     }
                     if (farOff != null) {
                         bear.setPos(farOff.getX() + 0.5F, farOff.getY() + 0.5F, farOff.getZ() + 0.5F);
                         bear.setYRot(random.nextFloat() * 360F);
-                        bear.setTarget(entity);
-                        entity.level().addFreshEntity(bear);
+                        bear.setTarget(living);
+                        living.level().addFreshEntity(bear);
                     }
                 } else {
                     for (EntitySeaBear bear : nearbySeabears) {
-                        bear.setTarget(entity);
+                        bear.setTarget(living);
                     }
                 }
             }
         }
-        if (VineLassoUtil.hasLassoData(entity)) {
-            VineLassoUtil.tickLasso(entity);
+        if (VineLassoUtil.hasLassoData(living)) {
+            VineLassoUtil.tickLasso(living);
         }
-        if (RockyChestplateUtil.isWearing(entity)) {
-            RockyChestplateUtil.tickRockyRolling(entity);
+        if (RockyChestplateUtil.isWearing(living)) {
+            RockyChestplateUtil.tickRockyRolling(living);
         }
-        if (FlyingFishBootsUtil.isWearing(entity)) {
-            FlyingFishBootsUtil.tickFlyingFishBoots(entity);
+        if (FlyingFishBootsUtil.isWearing(living)) {
+            FlyingFishBootsUtil.tickFlyingFishBoots(living);
         }
     }
+}
 
     private BlockPos getDownPos(BlockPos entered, LevelAccessor world) {
         int i = 0;
@@ -717,8 +720,7 @@ public class ServerEvents {
                         flag = true;
                     }
                     if (flag) {
-                        event.getEntity().getUseItem().hurtAndBreak(1, event.getEntity(),
-                            player -> player.broadcastBreakEvent(event.getEntity().getUsedItemHand()));
+                        event.getEntity().getUseItem().hurtAndBreak(1, event.getEntity(), event.getEntity().getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                     }
                 }
             }
@@ -727,8 +729,8 @@ public class ServerEvents {
 
     @SubscribeEvent
     public void onTooltip(ItemTooltipEvent event) {
-        CompoundTag tag = event.getItemStack().getTag();
-        if (tag != null && tag.contains("BisonFur") && tag.getBooleanOr("BisonFur", false)) {
+        net.minecraft.world.item.component.CustomData customData = event.getItemStack().get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+        if (customData != null && customData.copyTag().contains("BisonFur") && customData.copyTag().getBooleanOr("BisonFur", false)) {
             event.getToolTip().add(Component.translatable("item.alexsmobs.insulated_with_fur").withStyle(ChatFormatting.AQUA));
         }
     }
@@ -736,7 +738,7 @@ public class ServerEvents {
     @SubscribeEvent
     public void onAddReloadListener(AddServerReloadListenersEvent event){
         AlexsMobs.LOGGER.info("Adding datapack listener capsid_recipes");
-        event.addListener(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("alexsmobs", "capsid_recipes"), AlexsMobs.PROXY.getCapsidRecipeManager());
+        event.addListener(net.minecraft.resources.Identifier.fromNamespaceAndPath("alexsmobs", "capsid_recipes"), AlexsMobs.PROXY.getCapsidRecipeManager());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

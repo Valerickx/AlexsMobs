@@ -24,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, LivingEntityRenderState, ModelMimicOctopus> {
+public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, ModelMimicOctopus> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/mimic_octopus.png");
     private static final Identifier TEXTURE_OVERLAY = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_overlay.png");
     private static final Identifier TEXTURE_CREEPER = Identifier.parse("alexsmobs:textures/entity/mimic_octopus_creeper.png");
@@ -232,3 +232,4 @@ public class RenderMimicOctopus extends MobRenderer<EntityMimicOctopus, LivingEn
         }
     }
 }
+

@@ -31,26 +31,27 @@ import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.common.DeferredSpawnEggItem;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class AMItemRegistry {
-    public static final AMArmorMaterial ROADRUNNER_ARMOR_MATERIAL = new AMArmorMaterial("roadrunner", 18, new int[]{3, 3, 3, 3}, 20, SoundEvents.ARMOR_EQUIP_TURTLE.value(), 0);
-    public static final AMArmorMaterial CROCODILE_ARMOR_MATERIAL = new AMArmorMaterial("crocodile", 22, new int[]{2, 5, 7, 3}, 25, SoundEvents.ARMOR_EQUIP_TURTLE.value(), 1);
-    public static final AMArmorMaterial CENTIPEDE_ARMOR_MATERIAL = new AMArmorMaterial("centipede", 20, new int[]{6, 6, 6, 6}, 22, SoundEvents.ARMOR_EQUIP_TURTLE.value(), 0.5F);
-    public static final AMArmorMaterial MOOSE_ARMOR_MATERIAL = new AMArmorMaterial("moose", 19, new int[]{3, 3, 3, 3}, 21, SoundEvents.ARMOR_EQUIP_TURTLE.value(), 0.5F);
-    public static final AMArmorMaterial RACCOON_ARMOR_MATERIAL = new AMArmorMaterial("raccoon", 17, new int[]{3, 3, 3, 3}, 21, SoundEvents.ARMOR_EQUIP_LEATHER.value(), 2.5F);
-    public static final AMArmorMaterial SOMBRERO_ARMOR_MATERIAL = new AMArmorMaterial("sombrero", 14, new int[]{2, 2, 2, 2}, 30, SoundEvents.ARMOR_EQUIP_LEATHER.value(), 0.5F);
-    public static final AMArmorMaterial SPIKED_TURTLE_SHELL_ARMOR_MATERIAL = new AMArmorMaterial("spiked_turtle_shell", 35, new int[]{3, 3, 3, 3}, 30, SoundEvents.ARMOR_EQUIP_TURTLE.value(), 1F, 0.2F);
-    public static final AMArmorMaterial FEDORA_ARMOR_MATERIAL = new AMArmorMaterial("fedora", 10, new int[]{2, 2, 2, 2}, 30, SoundEvents.ARMOR_EQUIP_LEATHER.value(), 0.5F);
-    public static final AMArmorMaterial EMU_ARMOR_MATERIAL = new AMArmorMaterial("emu", 9, new int[]{4, 4, 4, 4}, 20, SoundEvents.ARMOR_EQUIP_LEATHER.value(), 0.5F);
-    public static final AMArmorMaterial TARANTULA_HAWK_ELYTRA_MATERIAL = new AMArmorMaterial("tarantula_hawk_elytra", 9, new int[]{3, 3, 3, 3}, 5, SoundEvents.ARMOR_EQUIP_LEATHER.value(), 0);
-    public static final AMArmorMaterial FROSTSTALKER_ARMOR_MATERIAL = new AMArmorMaterial("froststalker", 9, new int[]{3, 3, 3, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER.value(), 0.5F);
-    public static final AMArmorMaterial ROCKY_ARMOR_MATERIAL = new AMArmorMaterial("rocky_roller", 20, new int[]{2, 5, 7, 3}, 10, SoundEvents.ARMOR_EQUIP_TURTLE.value(), 0.5F);
-    public static final AMArmorMaterial FLYING_FISH_MATERIAL = new AMArmorMaterial("flying_fish", 9, new int[]{1, 1, 1, 1}, 8, SoundEvents.ARMOR_EQUIP_LEATHER.value(), 0F);
-    public static final AMArmorMaterial NOVELTY_HAT_MATERIAL = new AMArmorMaterial("novelty_hat", 10, new int[]{2, 2, 2, 2}, 30, SoundEvents.ARMOR_EQUIP_LEATHER.value(), 0F);
-    public static final AMArmorMaterial KIMONO_MATERIAL = new AMArmorMaterial("kimono", 8, new int[]{3, 3, 3, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER.value(), 0F);
+    public static final AMArmorMaterial ROADRUNNER_ARMOR_MATERIAL = new AMArmorMaterial("roadrunner", 18, new int[]{3, 3, 3, 3}, 20, SoundEvents.ARMOR_EQUIP_TURTLE, 0);
+    public static final AMArmorMaterial CROCODILE_ARMOR_MATERIAL = new AMArmorMaterial("crocodile", 22, new int[]{2, 5, 7, 3}, 25, SoundEvents.ARMOR_EQUIP_TURTLE, 1);
+    public static final AMArmorMaterial CENTIPEDE_ARMOR_MATERIAL = new AMArmorMaterial("centipede", 20, new int[]{6, 6, 6, 6}, 22, SoundEvents.ARMOR_EQUIP_TURTLE, 0.5F);
+    public static final AMArmorMaterial MOOSE_ARMOR_MATERIAL = new AMArmorMaterial("moose", 19, new int[]{3, 3, 3, 3}, 21, SoundEvents.ARMOR_EQUIP_TURTLE, 0.5F);
+    public static final AMArmorMaterial RACCOON_ARMOR_MATERIAL = new AMArmorMaterial("raccoon", 17, new int[]{3, 3, 3, 3}, 21, SoundEvents.ARMOR_EQUIP_LEATHER, 2.5F);
+    public static final AMArmorMaterial SOMBRERO_ARMOR_MATERIAL = new AMArmorMaterial("sombrero", 14, new int[]{2, 2, 2, 2}, 30, SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F);
+    public static final AMArmorMaterial SPIKED_TURTLE_SHELL_ARMOR_MATERIAL = new AMArmorMaterial("spiked_turtle_shell", 35, new int[]{3, 3, 3, 3}, 30, SoundEvents.ARMOR_EQUIP_TURTLE, 1F, 0.2F);
+    public static final AMArmorMaterial FEDORA_ARMOR_MATERIAL = new AMArmorMaterial("fedora", 10, new int[]{2, 2, 2, 2}, 30, SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F);
+    public static final AMArmorMaterial EMU_ARMOR_MATERIAL = new AMArmorMaterial("emu", 9, new int[]{4, 4, 4, 4}, 20, SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F);
+    public static final AMArmorMaterial TARANTULA_HAWK_ELYTRA_MATERIAL = new AMArmorMaterial("tarantula_hawk_elytra", 9, new int[]{3, 3, 3, 3}, 5, SoundEvents.ARMOR_EQUIP_LEATHER, 0);
+    public static final AMArmorMaterial FROSTSTALKER_ARMOR_MATERIAL = new AMArmorMaterial("froststalker", 9, new int[]{3, 3, 3, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F);
+    public static final AMArmorMaterial ROCKY_ARMOR_MATERIAL = new AMArmorMaterial("rocky_roller", 20, new int[]{2, 5, 7, 3}, 10, SoundEvents.ARMOR_EQUIP_TURTLE, 0.5F);
+    public static final AMArmorMaterial FLYING_FISH_MATERIAL = new AMArmorMaterial("flying_fish", 9, new int[]{1, 1, 1, 1}, 8, SoundEvents.ARMOR_EQUIP_LEATHER, 0F);
+    public static final AMArmorMaterial NOVELTY_HAT_MATERIAL = new AMArmorMaterial("novelty_hat", 10, new int[]{2, 2, 2, 2}, 30, SoundEvents.ARMOR_EQUIP_LEATHER, 0F);
+    public static final AMArmorMaterial KIMONO_MATERIAL = new AMArmorMaterial("kimono", 8, new int[]{3, 3, 3, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0F);
 
     public static final DeferredRegister<Item> DEF_REG = DeferredRegister.create(BuiltInRegistries.ITEM, AlexsMobs.MODID);
 
@@ -69,8 +70,8 @@ public class AMItemRegistry {
     public static final DeferredHolder<Item, Item> GAZELLE_HORN = DEF_REG.register("gazelle_horn", () -> new Item(new Item.Properties().fireResistant()));
     public static final DeferredHolder<Item, Item> CROCODILE_SCUTE = DEF_REG.register("crocodile_scute", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> CROCODILE_CHESTPLATE = DEF_REG.register("crocodile_chestplate", () -> new ItemModArmor(CROCODILE_ARMOR_MATERIAL, ArmorType.CHESTPLATE));
-    public static final DeferredHolder<Item, Item> MAGGOT = DEF_REG.register("maggot", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(1).saturationMod(0.2F).build())));
-    public static final DeferredHolder<Item, Item> BANANA = DEF_REG.register("banana", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(0.3F).build())));
+    public static final DeferredHolder<Item, Item> MAGGOT = DEF_REG.register("maggot", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).build())));
+    public static final DeferredHolder<Item, Item> BANANA = DEF_REG.register("banana", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.3F).build())));
     public static final DeferredHolder<Item, Item> ANCIENT_DART = DEF_REG.register("ancient_dart", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> HALO = DEF_REG.register("halo", () -> new ItemInventoryOnly(new Item.Properties()));
     public static final DeferredHolder<Item, Item> BLOOD_SAC = DEF_REG.register("blood_sac", () -> new Item(new Item.Properties()));
@@ -81,26 +82,26 @@ public class AMItemRegistry {
     public static final DeferredHolder<Item, Item> CHORUS_ON_A_STICK = DEF_REG.register("chorus_on_a_stick", () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredHolder<Item, Item> SHARK_TOOTH = DEF_REG.register("shark_tooth", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> SHARK_TOOTH_ARROW = DEF_REG.register("shark_tooth_arrow", () -> new ItemModArrow(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> LOBSTER_TAIL = DEF_REG.register("lobster_tail", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationMod(0.4F).meat().build())));
-    public static final DeferredHolder<Item, Item> COOKED_LOBSTER_TAIL = DEF_REG.register("cooked_lobster_tail", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.65F).meat().build())));
+    public static final DeferredHolder<Item, Item> LOBSTER_TAIL = DEF_REG.register("lobster_tail", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.4F).build())));
+    public static final DeferredHolder<Item, Item> COOKED_LOBSTER_TAIL = DEF_REG.register("cooked_lobster_tail", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.65F).build())));
     public static final DeferredHolder<Item, Item> LOBSTER_BUCKET = DEF_REG.register("lobster_bucket", () -> new ItemModFishBucket(AMEntityRegistry.LOBSTER, Fluids.WATER, new Item.Properties()));
     public static final DeferredHolder<Item, Item> KOMODO_SPIT = DEF_REG.register("komodo_spit", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> KOMODO_SPIT_BOTTLE = DEF_REG.register("komodo_spit_bottle", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> POISON_BOTTLE = DEF_REG.register("poison_bottle", () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> SOPA_DE_MACACO = DEF_REG.register("sopa_de_macaco", () -> new BowlFoodItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(5).saturationMod(0.4F).meat().build()).stacksTo(1)));
+    public static final DeferredHolder<Item, Item> SOPA_DE_MACACO = DEF_REG.register("sopa_de_macaco", () -> new Item(new Item.Properties().usingConvertsTo(Items.BOWL).food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.4F).build()).stacksTo(1)));
     public static final DeferredHolder<Item, Item> CENTIPEDE_LEG = DEF_REG.register("centipede_leg", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> CENTIPEDE_LEGGINGS = DEF_REG.register("centipede_leggings", () -> new ItemModArmor(CENTIPEDE_ARMOR_MATERIAL, ArmorType.LEGGINGS));
     public static final DeferredHolder<Item, Item> MOSQUITO_LARVA = DEF_REG.register("mosquito_larva", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> MOOSE_ANTLER = DEF_REG.register("moose_antler", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> MOOSE_HEADGEAR = DEF_REG.register("moose_headgear", () -> new ItemModArmor(MOOSE_ARMOR_MATERIAL, ArmorType.HELMET));
-    public static final DeferredHolder<Item, Item> MOOSE_RIBS = DEF_REG.register("moose_ribs", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationMod(0.6F).meat().build())));
-    public static final DeferredHolder<Item, Item> COOKED_MOOSE_RIBS = DEF_REG.register("cooked_moose_ribs", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(7).saturationMod(0.85F).meat().build())));
+    public static final DeferredHolder<Item, Item> MOOSE_RIBS = DEF_REG.register("moose_ribs", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationModifier(0.6F).build())));
+    public static final DeferredHolder<Item, Item> COOKED_MOOSE_RIBS = DEF_REG.register("cooked_moose_ribs", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(7).saturationModifier(0.85F).build())));
     public static final DeferredHolder<Item, Item> MIMICREAM = DEF_REG.register("mimicream", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> RACCOON_TAIL = DEF_REG.register("raccoon_tail", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> FRONTIER_CAP = DEF_REG.register("frontier_cap", () -> new ItemModArmor(RACCOON_ARMOR_MATERIAL, ArmorType.HELMET));
-    public static final DeferredHolder<Item, Item> BLOBFISH = DEF_REG.register("blobfish", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationMod(0.4F).meat().effect(new MobEffectInstance(MobEffects.POISON, 120, 0), 1F).build())));
+    public static final DeferredHolder<Item, Item> BLOBFISH = DEF_REG.register("blobfish", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationModifier(0.4F).build())));
     public static final DeferredHolder<Item, Item> BLOBFISH_BUCKET = DEF_REG.register("blobfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.BLOBFISH, Fluids.WATER, new Item.Properties()));
-    public static final DeferredHolder<Item, Item> FISH_OIL = DEF_REG.register("fish_oil", () -> new ItemFishOil(new Item.Properties().craftRemainder(Items.GLASS_BOTTLE).food(new FoodProperties.Builder().nutrition(0).saturationMod(0.2F).build())));
+    public static final DeferredHolder<Item, Item> FISH_OIL = DEF_REG.register("fish_oil", () -> new ItemFishOil(new Item.Properties().craftRemainder(Items.GLASS_BOTTLE).food(new FoodProperties.Builder().nutrition(0).saturationModifier(0.2F).build())));
     public static final DeferredHolder<Item, Item> MARACA = DEF_REG.register("maraca", () -> new ItemMaraca(new Item.Properties()));
     public static final DeferredHolder<Item, Item> SOMBRERO = DEF_REG.register("sombrero", () -> new ItemModArmor(SOMBRERO_ARMOR_MATERIAL, ArmorType.HELMET));
     public static final DeferredHolder<Item, Item> COCKROACH_WING_FRAGMENT = DEF_REG.register("cockroach_wing_fragment", () -> new Item(new Item.Properties()));
@@ -110,7 +111,7 @@ public class AMItemRegistry {
     public static final DeferredHolder<Item, Item> SOUL_HEART = DEF_REG.register("soul_heart", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> SPIKED_SCUTE = DEF_REG.register("spiked_scute", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> SPIKED_TURTLE_SHELL = DEF_REG.register("spiked_turtle_shell", () -> new ItemModArmor(SPIKED_TURTLE_SHELL_ARMOR_MATERIAL, ArmorType.HELMET));
-    public static final DeferredHolder<Item, Item> SHRIMP_FRIED_RICE = DEF_REG.register("shrimp_fried_rice", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(12).saturationMod(1F).build())));
+    public static final DeferredHolder<Item, Item> SHRIMP_FRIED_RICE = DEF_REG.register("shrimp_fried_rice", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(12).saturationModifier(1F).build())));
     public static final DeferredHolder<Item, Item> GUSTER_EYE = DEF_REG.register("guster_eye", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> POCKET_SAND = DEF_REG.register("pocket_sand", () -> new ItemPocketSand(new Item.Properties().durability(220)));
     public static final DeferredHolder<Item, Item> WARPED_MUSCLE = DEF_REG.register("warped_muscle", () -> new Item(new Item.Properties()));
@@ -121,21 +122,21 @@ public class AMItemRegistry {
     public static final DeferredHolder<Item, Item> STRADPOLE_BUCKET = DEF_REG.register("stradpole_bucket", () -> new ItemModFishBucket(AMEntityRegistry.STRADPOLE, Fluids.LAVA, new Item.Properties()));
     public static final DeferredHolder<Item, Item> STRADDLEBOARD = DEF_REG.register("straddleboard", () -> new ItemStraddleboard(new Item.Properties().fireResistant().durability(220)));
     public static final DeferredHolder<Item, Item> EMU_EGG = DEF_REG.register("emu_egg", () -> new ItemAnimalEgg(new Item.Properties().stacksTo(8)));
-    public static final DeferredHolder<Item, Item> BOILED_EMU_EGG = DEF_REG.register("boiled_emu_egg", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(1F).meat().build())));
+    public static final DeferredHolder<Item, Item> BOILED_EMU_EGG = DEF_REG.register("boiled_emu_egg", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(1F).build())));
     public static final DeferredHolder<Item, Item> EMU_FEATHER = DEF_REG.register("emu_feather", () -> new Item(new Item.Properties().fireResistant()));
     public static final DeferredHolder<Item, Item> EMU_LEGGINGS = DEF_REG.register("emu_leggings", () -> new ItemModArmor(EMU_ARMOR_MATERIAL, ArmorType.LEGGINGS));
     public static final DeferredHolder<Item, Item> PLATYPUS_BUCKET = DEF_REG.register("platypus_bucket", () -> new ItemModFishBucket(AMEntityRegistry.PLATYPUS, Fluids.WATER, new Item.Properties()));
     public static final DeferredHolder<Item, Item> FEDORA = DEF_REG.register("fedora", () -> new ItemModArmor(FEDORA_ARMOR_MATERIAL, ArmorType.HELMET));
     public static final DeferredHolder<Item, Item> DROPBEAR_CLAW = DEF_REG.register("dropbear_claw", () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> KANGAROO_MEAT = DEF_REG.register("kangaroo_meat", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).meat().build())));
-    public static final DeferredHolder<Item, Item> COOKED_KANGAROO_MEAT = DEF_REG.register("cooked_kangaroo_meat", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(8).saturationMod(0.85F).meat().build())));
+    public static final DeferredHolder<Item, Item> KANGAROO_MEAT = DEF_REG.register("kangaroo_meat", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6F).build())));
+    public static final DeferredHolder<Item, Item> COOKED_KANGAROO_MEAT = DEF_REG.register("cooked_kangaroo_meat", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(8).saturationModifier(0.85F).build())));
     public static final DeferredHolder<Item, Item> KANGAROO_HIDE = DEF_REG.register("kangaroo_hide", () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> KANGAROO_BURGER = DEF_REG.register("kangaroo_burger", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(12).saturationMod(1F).meat().build())));
+    public static final DeferredHolder<Item, Item> KANGAROO_BURGER = DEF_REG.register("kangaroo_burger", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(12).saturationModifier(1F).build())));
     public static final DeferredHolder<Item, Item> AMBERGRIS = DEF_REG.register("ambergris", () -> new ItemFuel(new Item.Properties(), 12800));
     public static final DeferredHolder<Item, Item> CACHALOT_WHALE_TOOTH = DEF_REG.register("cachalot_whale_tooth", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> ECHOLOCATOR = DEF_REG.register("echolocator", () -> new ItemEcholocator(new Item.Properties().durability(100), ItemEcholocator.EchoType.ECHOLOCATION));
     public static final DeferredHolder<Item, Item> ENDOLOCATOR = DEF_REG.register("endolocator", () -> new ItemEcholocator(new Item.Properties().durability(25), ItemEcholocator.EchoType.ENDER));
-    public static final DeferredHolder<Item, Item> GONGYLIDIA = DEF_REG.register("gongylidia", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationMod(1.2F).build())));
+    public static final DeferredHolder<Item, Item> GONGYLIDIA = DEF_REG.register("gongylidia", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationModifier(1.2F).build())));
     public static final DeferredHolder<Item, Item> LEAFCUTTER_ANT_PUPA = DEF_REG.register("leafcutter_ant_pupa", () -> new ItemLeafcutterPupa(new Item.Properties()));
     public static final DeferredHolder<Item, Item> ENDERIOPHAGE_ROCKET = DEF_REG.register("enderiophage_rocket", () -> new ItemEnderiophageRocket(new Item.Properties()));
     public static final DeferredHolder<Item, Item> FALCONRY_GLOVE_INVENTORY = DEF_REG.register("falconry_glove_inventory", () -> new ItemInventoryOnly(new Item.Properties()));
@@ -159,7 +160,7 @@ public class AMItemRegistry {
     public static final DeferredHolder<Item, Item> PIGSHOES = DEF_REG.register("pigshoes", () -> new ItemPigshoes(new Item.Properties().stacksTo(1)));
     public static final DeferredHolder<Item, Item> STRADDLE_HELMET = DEF_REG.register("straddle_helmet", () -> new Item(new Item.Properties().fireResistant()));
     public static final DeferredHolder<Item, Item> STRADDLE_SADDLE = DEF_REG.register("straddle_saddle", () -> new Item(new Item.Properties().fireResistant()));
-    public static final DeferredHolder<Item, Item> COSMIC_COD = DEF_REG.register("cosmic_cod", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.3F).effect(new MobEffectInstance(AMEffectRegistry.ENDER_FLU, 12000), 0.15F).build())));
+    public static final DeferredHolder<Item, Item> COSMIC_COD = DEF_REG.register("cosmic_cod", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.3F).build())));
     public static final DeferredHolder<Item, Item> SHED_SNAKE_SKIN = DEF_REG.register("shed_snake_skin", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> VINE_LASSO_INVENTORY = DEF_REG.register("vine_lasso_inventory", () -> new ItemInventoryOnly(new Item.Properties()));
     public static final DeferredHolder<Item, Item> VINE_LASSO_HAND = DEF_REG.register("vine_lasso_hand", () -> new ItemInventoryOnly(new Item.Properties()));
@@ -169,7 +170,7 @@ public class AMItemRegistry {
     public static final DeferredHolder<Item, Item> POTTED_FLUTTER = DEF_REG.register("potted_flutter", () -> new ItemFlutterPot(new Item.Properties()));
     public static final DeferredHolder<Item, Item> TERRAPIN_BUCKET = DEF_REG.register("terrapin_bucket", () -> new ItemModFishBucket(AMEntityRegistry.TERRAPIN, Fluids.WATER, new Item.Properties()));
     public static final DeferredHolder<Item, Item> COMB_JELLY_BUCKET = DEF_REG.register("comb_jelly_bucket", () -> new ItemModFishBucket(AMEntityRegistry.COMB_JELLY, Fluids.WATER, new Item.Properties()));
-    public static final DeferredHolder<Item, Item> RAINBOW_JELLY = DEF_REG.register("rainbow_jelly", () -> new ItemRainbowJelly(new Item.Properties().food(new FoodProperties.Builder().nutrition(1).saturationMod(0.2F).build())));
+    public static final DeferredHolder<Item, Item> RAINBOW_JELLY = DEF_REG.register("rainbow_jelly", () -> new ItemRainbowJelly(new Item.Properties().food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).build())));
     public static final DeferredHolder<Item, Item> COSMIC_COD_BUCKET = DEF_REG.register("cosmic_cod_bucket", () -> new ItemCosmicCodBucket(new Item.Properties()));
     public static final DeferredHolder<Item, Item> MUNGAL_SPORES = DEF_REG.register("mungal_spores", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> BISON_FUR = DEF_REG.register("bison_fur", () -> new Item(new Item.Properties()));
@@ -180,9 +181,9 @@ public class AMItemRegistry {
     public static final DeferredHolder<Item, Item> SMALL_CATFISH_BUCKET = DEF_REG.register("small_catfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.CATFISH, Fluids.WATER, new Item.Properties()));
     public static final DeferredHolder<Item, Item> MEDIUM_CATFISH_BUCKET = DEF_REG.register("medium_catfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.CATFISH, Fluids.WATER, new Item.Properties()));
     public static final DeferredHolder<Item, Item> LARGE_CATFISH_BUCKET = DEF_REG.register("large_catfish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.CATFISH, Fluids.WATER, new Item.Properties()));
-    public static final DeferredHolder<Item, Item> RAW_CATFISH = DEF_REG.register("raw_catfish", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationMod(0.3F).meat().build())));
-    public static final DeferredHolder<Item, Item> COOKED_CATFISH = DEF_REG.register("cooked_catfish", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(5).saturationMod(0.5F).meat().build())));
-    public static final DeferredHolder<Item, Item> FLYING_FISH = DEF_REG.register("flying_fish", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationMod(0.4F).meat().build())));
+    public static final DeferredHolder<Item, Item> RAW_CATFISH = DEF_REG.register("raw_catfish", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.3F).build())));
+    public static final DeferredHolder<Item, Item> COOKED_CATFISH = DEF_REG.register("cooked_catfish", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build())));
+    public static final DeferredHolder<Item, Item> FLYING_FISH = DEF_REG.register("flying_fish", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationModifier(0.4F).build())));
     public static final DeferredHolder<Item, Item> FLYING_FISH_BOOTS = DEF_REG.register("flying_fish_boots", () -> new ItemModArmor(FLYING_FISH_MATERIAL, ArmorType.BOOTS));
     public static final DeferredHolder<Item, Item> FLYING_FISH_BUCKET = DEF_REG.register("flying_fish_bucket", () -> new ItemModFishBucket(AMEntityRegistry.FLYING_FISH, Fluids.WATER, new Item.Properties()));
     public static final DeferredHolder<Item, Item> FISH_BONES = DEF_REG.register("fish_bones", () -> new Item(new Item.Properties()));
@@ -204,107 +205,101 @@ public class AMItemRegistry {
     public static final DeferredHolder<Item, Item> STINK_RAY_INVENTORY = DEF_REG.register("stink_ray_inventory", () -> new ItemInventoryOnly(new Item.Properties()));
 
     public static final DeferredHolder<Item, Item> STINK_RAY_EMPTY_HAND = DEF_REG.register("stink_ray_empty_hand", () -> new ItemInventoryOnly(new Item.Properties()));
-
     public static final DeferredHolder<Item, Item> STINK_RAY_EMPTY_INVENTORY = DEF_REG.register("stink_ray_empty_inventory", () -> new ItemInventoryOnly(new Item.Properties()));
 
     public static final DeferredHolder<Item, Item> STINK_RAY = DEF_REG.register("stink_ray", () -> new ItemStinkRay(new Item.Properties().durability(5)));
     public static final DeferredHolder<Item, Item> BANANA_SLUG_SLIME = DEF_REG.register("banana_slug_slime", () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> MOSQUITO_REPELLENT_STEW = DEF_REG.register("mosquito_repellent_stew", () -> new BowlFoodItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).alwaysEat().saturationMod(0.3F).effect(() -> new MobEffectInstance(AMEffectRegistry.MOSQUITO_REPELLENT, 24000), 1.0F).build()).stacksTo(1)));
+    public static final DeferredHolder<Item, Item> MOSQUITO_REPELLENT_STEW = DEF_REG.register("mosquito_repellent_stew", () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).alwaysEdible().saturationModifier(0.3F).build()).stacksTo(1)));
     public static final DeferredHolder<Item, Item> TRIOPS_BUCKET = DEF_REG.register("triops_bucket", () -> new ItemModFishBucket(AMEntityRegistry.TRIOPS, Fluids.WATER, new Item.Properties()));
 
-    public static final DeferredHolder<Item, Item> MUSIC_DISC_THIME = DEF_REG.register("music_disc_thime", () -> new RecordItem(14, AMSoundRegistry.MUSIC_DISC_THIME, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 314 * 20));
-    public static final DeferredHolder<Item, Item> MUSIC_DISC_DAZE = DEF_REG.register("music_disc_daze", () -> new RecordItem(14, AMSoundRegistry.MUSIC_DISC_DAZE, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 191 * 20));
+    public static final DeferredHolder<Item, Item> MUSIC_DISC_THIME = DEF_REG.register("music_disc_thime", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final DeferredHolder<Item, Item> MUSIC_DISC_DAZE = DEF_REG.register("music_disc_daze", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
 
     public static void initSpawnEggs() {
-        DEF_REG.register("spawn_egg_grizzly_bear", () -> new DeferredSpawnEggItem(AMEntityRegistry.GRIZZLY_BEAR, 0X693A2C, 0X976144, new Item.Properties()));
-        DEF_REG.register("spawn_egg_roadrunner", () -> new DeferredSpawnEggItem(AMEntityRegistry.ROADRUNNER, 0X3A2E26, 0XFBE9CE, new Item.Properties()));
-        DEF_REG.register("spawn_egg_bone_serpent", () -> new DeferredSpawnEggItem(AMEntityRegistry.BONE_SERPENT, 0XE5D9C4, 0XFF6038, new Item.Properties()));
-        DEF_REG.register("spawn_egg_gazelle", () -> new DeferredSpawnEggItem(AMEntityRegistry.GAZELLE, 0XDDA675,0X2C2925, new Item.Properties()));
-        DEF_REG.register("spawn_egg_crocodile", () -> new DeferredSpawnEggItem(AMEntityRegistry.CROCODILE, 0X738940,0XA6A15E, new Item.Properties()));
-        DEF_REG.register("spawn_egg_fly", () -> new DeferredSpawnEggItem(AMEntityRegistry.FLY, 0X464241,0X892E2E, new Item.Properties()));
-        DEF_REG.register("spawn_egg_hummingbird", () -> new DeferredSpawnEggItem(AMEntityRegistry.HUMMINGBIRD, 0X325E7F,0X44A75F, new Item.Properties()));
-        DEF_REG.register("spawn_egg_orca", () -> new DeferredSpawnEggItem(AMEntityRegistry.ORCA, 0X2C2C2C,0XD6D8E4, new Item.Properties()));
-        DEF_REG.register("spawn_egg_sunbird", () -> new DeferredSpawnEggItem(AMEntityRegistry.SUNBIRD, 0XF6694F,0XFFDDA0, new Item.Properties()));
-        DEF_REG.register("spawn_egg_gorilla", () -> new DeferredSpawnEggItem(AMEntityRegistry.GORILLA, 0X595B5D,0X1C1C21, new Item.Properties()));
-        DEF_REG.register("spawn_egg_crimson_mosquito", () -> new DeferredSpawnEggItem(AMEntityRegistry.CRIMSON_MOSQUITO, 0X53403F,0XC11A1A, new Item.Properties()));
-        DEF_REG.register("spawn_egg_rattlesnake", () -> new DeferredSpawnEggItem(AMEntityRegistry.RATTLESNAKE, 0XCEB994,0X937A5B, new Item.Properties()));
-        DEF_REG.register("spawn_egg_endergrade", () -> new DeferredSpawnEggItem(AMEntityRegistry.ENDERGRADE, 0X7862B3,0x81BDEB, new Item.Properties()));
-        DEF_REG.register("spawn_egg_hammerhead_shark", () -> new DeferredSpawnEggItem(AMEntityRegistry.HAMMERHEAD_SHARK, 0X8A92B5,0XB9BED8, new Item.Properties()));
-        DEF_REG.register("spawn_egg_lobster", () -> new DeferredSpawnEggItem(AMEntityRegistry.LOBSTER, 0XC43123,0XDD5F38, new Item.Properties()));
-        DEF_REG.register("spawn_egg_komodo_dragon", () -> new DeferredSpawnEggItem(AMEntityRegistry.KOMODO_DRAGON, 0X746C4F,0X564231, new Item.Properties()));
-        DEF_REG.register("spawn_egg_capuchin_monkey", () -> new DeferredSpawnEggItem(AMEntityRegistry.CAPUCHIN_MONKEY, 0X25211F,0XF1DAB3, new Item.Properties()));
-        DEF_REG.register("spawn_egg_centipede", () -> new DeferredSpawnEggItem(AMEntityRegistry.CENTIPEDE_HEAD, 0X342B2E,0X733449, new Item.Properties()));
-        DEF_REG.register("spawn_egg_warped_toad", () -> new DeferredSpawnEggItem(AMEntityRegistry.WARPED_TOAD, 0X1F968E,0XFEAC6D, new Item.Properties()));
-        DEF_REG.register("spawn_egg_moose", () -> new DeferredSpawnEggItem(AMEntityRegistry.MOOSE, 0X36302A,0XD4B183, new Item.Properties()));
-        DEF_REG.register("spawn_egg_mimicube", () -> new DeferredSpawnEggItem(AMEntityRegistry.MIMICUBE, 0X8A80C1,0X5E4F6F, new Item.Properties()));
-        DEF_REG.register("spawn_egg_raccoon", () -> new DeferredSpawnEggItem(AMEntityRegistry.RACCOON, 0X85827E,0X2A2726, new Item.Properties()));
-        DEF_REG.register("spawn_egg_blobfish", () -> new DeferredSpawnEggItem(AMEntityRegistry.BLOBFISH, 0XDBC6BD,0X9E7A7F, new Item.Properties()));
-        DEF_REG.register("spawn_egg_seal", () -> new DeferredSpawnEggItem(AMEntityRegistry.SEAL, 0X483C32,0X66594C, new Item.Properties()));
-        DEF_REG.register("spawn_egg_cockroach", () -> new DeferredSpawnEggItem(AMEntityRegistry.COCKROACH, 0X0D0909,0X42241E, new Item.Properties()));
-        DEF_REG.register("spawn_egg_shoebill", () -> new DeferredSpawnEggItem(AMEntityRegistry.SHOEBILL, 0X828282,0XD5B48A, new Item.Properties()));
-        DEF_REG.register("spawn_egg_elephant", () -> new DeferredSpawnEggItem(AMEntityRegistry.ELEPHANT, 0X8D8987,0XEDE5D1, new Item.Properties()));
-        DEF_REG.register("spawn_egg_soul_vulture", () -> new DeferredSpawnEggItem(AMEntityRegistry.SOUL_VULTURE, 0X23262D,0X57F4FF, new Item.Properties()));
-        DEF_REG.register("spawn_egg_snow_leopard", () -> new DeferredSpawnEggItem(AMEntityRegistry.SNOW_LEOPARD, 0XACA293,0X26201D, new Item.Properties()));
-        DEF_REG.register("spawn_egg_spectre", () -> new DeferredSpawnEggItem(AMEntityRegistry.SPECTRE, 0XC8D0EF,0X8791EF, new Item.Properties()));
-        DEF_REG.register("spawn_egg_crow", () -> new DeferredSpawnEggItem(AMEntityRegistry.CROW, 0X0D111C,0X1C2030, new Item.Properties()));
-        DEF_REG.register("spawn_egg_alligator_snapping_turtle", () -> new DeferredSpawnEggItem(AMEntityRegistry.ALLIGATOR_SNAPPING_TURTLE, 0X6C5C52,0X456926, new Item.Properties()));
-        DEF_REG.register("spawn_egg_mungus", () -> new DeferredSpawnEggItem(AMEntityRegistry.MUNGUS, 0X836A8D,0X45454C, new Item.Properties()));
-        DEF_REG.register("spawn_egg_mantis_shrimp", () -> new DeferredSpawnEggItem(AMEntityRegistry.MANTIS_SHRIMP, 0XDB4858,0X15991E, new Item.Properties()));
-        DEF_REG.register("spawn_egg_guster", () -> new DeferredSpawnEggItem(AMEntityRegistry.GUSTER, 0XF8D49A,0XFF720A, new Item.Properties()));
-        DEF_REG.register("spawn_egg_warped_mosco", () -> new DeferredSpawnEggItem(AMEntityRegistry.WARPED_MOSCO, 0X322F58,0X5B5EF1, new Item.Properties()));
-        DEF_REG.register("spawn_egg_straddler", () -> new DeferredSpawnEggItem(AMEntityRegistry.STRADDLER, 0X5D5F6E,0XCDA886, new Item.Properties()));
-        DEF_REG.register("spawn_egg_stradpole", () -> new DeferredSpawnEggItem(AMEntityRegistry.STRADPOLE, 0X5D5F6E,0X576A8B, new Item.Properties()));
-        DEF_REG.register("spawn_egg_emu", () -> new DeferredSpawnEggItem(AMEntityRegistry.EMU, 0X665346,0X3B3938, new Item.Properties()));
-        DEF_REG.register("spawn_egg_platypus", () -> new DeferredSpawnEggItem(AMEntityRegistry.PLATYPUS, 0X7D503E,0X363B43, new Item.Properties()));
-        DEF_REG.register("spawn_egg_dropbear", () -> new DeferredSpawnEggItem(AMEntityRegistry.DROPBEAR, 0X8A2D35,0X60A3A3, new Item.Properties()));
-        DEF_REG.register("spawn_egg_tasmanian_devil", () -> new DeferredSpawnEggItem(AMEntityRegistry.TASMANIAN_DEVIL, 0X252426,0XA8B4BF, new Item.Properties()));
-        DEF_REG.register("spawn_egg_kangaroo", () -> new DeferredSpawnEggItem(AMEntityRegistry.KANGAROO, 0XCE9D65,0XDEBDA0, new Item.Properties()));
-        DEF_REG.register("spawn_egg_cachalot_whale", () -> new DeferredSpawnEggItem(AMEntityRegistry.CACHALOT_WHALE, 0X949899,0X5F666E, new Item.Properties()));
-        DEF_REG.register("spawn_egg_leafcutter_ant", () -> new DeferredSpawnEggItem(AMEntityRegistry.LEAFCUTTER_ANT, 0X964023,0XA65930, new Item.Properties()));
-        DEF_REG.register("spawn_egg_enderiophage", () -> new DeferredSpawnEggItem(AMEntityRegistry.ENDERIOPHAGE, 0X872D83,0XF6E2CD, new Item.Properties()));
-        DEF_REG.register("spawn_egg_bald_eagle", () -> new DeferredSpawnEggItem(AMEntityRegistry.BALD_EAGLE, 0X321F18,0XF4F4F4, new Item.Properties()));
-        DEF_REG.register("spawn_egg_tiger", () -> new DeferredSpawnEggItem(AMEntityRegistry.TIGER, 0XC7612E,0X2A3233, new Item.Properties()));
-        DEF_REG.register("spawn_egg_tarantula_hawk", () -> new DeferredSpawnEggItem(AMEntityRegistry.TARANTULA_HAWK, 0X234763,0XE37B38, new Item.Properties()));
-        DEF_REG.register("spawn_egg_void_worm", () -> new DeferredSpawnEggItem(AMEntityRegistry.VOID_WORM, 0X0F1026,0X1699AB, new Item.Properties()));
-        DEF_REG.register("spawn_egg_frilled_shark", () -> new DeferredSpawnEggItem(AMEntityRegistry.FRILLED_SHARK, 0X726B6B,0X873D3D, new Item.Properties()));
-        DEF_REG.register("spawn_egg_mimic_octopus", () -> new DeferredSpawnEggItem(AMEntityRegistry.MIMIC_OCTOPUS, 0XFFEBDC,0X1D1C1F, new Item.Properties()));
-        DEF_REG.register("spawn_egg_seagull", () -> new DeferredSpawnEggItem(AMEntityRegistry.SEAGULL, 0XC9D2DC,0XFFD850, new Item.Properties()));
-        DEF_REG.register("spawn_egg_froststalker", () -> new DeferredSpawnEggItem(AMEntityRegistry.FROSTSTALKER, 0X788AC1,0XA1C3FF, new Item.Properties()));
-        DEF_REG.register("spawn_egg_tusklin", () -> new DeferredSpawnEggItem(AMEntityRegistry.TUSKLIN, 0X735841,0XE8E2D5, new Item.Properties()));
-        DEF_REG.register("spawn_egg_laviathan", () -> new DeferredSpawnEggItem(AMEntityRegistry.LAVIATHAN, 0XD68356,0X3C3947, new Item.Properties()));
-        DEF_REG.register("spawn_egg_cosmaw", () -> new DeferredSpawnEggItem(AMEntityRegistry.COSMAW, 0X746DBD,0XD6BFE3, new Item.Properties()));
-        DEF_REG.register("spawn_egg_toucan", () -> new DeferredSpawnEggItem(AMEntityRegistry.TOUCAN, 0XF58F33,0X1E2133, new Item.Properties()));
-        DEF_REG.register("spawn_egg_maned_wolf", () -> new DeferredSpawnEggItem(AMEntityRegistry.MANED_WOLF, 0XBB7A47,0X40271A, new Item.Properties()));
-        DEF_REG.register("spawn_egg_anaconda", () -> new DeferredSpawnEggItem(AMEntityRegistry.ANACONDA, 0X565C22,0XD3763F, new Item.Properties()));
-        DEF_REG.register("spawn_egg_anteater", () -> new DeferredSpawnEggItem(AMEntityRegistry.ANTEATER, 0X4C3F3A, 0XCCBCB4, new Item.Properties()));
-        DEF_REG.register("spawn_egg_rocky_roller", () -> new DeferredSpawnEggItem(AMEntityRegistry.ROCKY_ROLLER, 0XB0856F, 0X999184, new Item.Properties()));
-        DEF_REG.register("spawn_egg_flutter", () -> new DeferredSpawnEggItem(AMEntityRegistry.FLUTTER, 0X70922D, 0XD07BE3, new Item.Properties()));
-        DEF_REG.register("spawn_egg_gelada_monkey", () -> new DeferredSpawnEggItem(AMEntityRegistry.GELADA_MONKEY, 0XB08C64, 0XFF4F53, new Item.Properties()));
-        DEF_REG.register("spawn_egg_jerboa", () -> new DeferredSpawnEggItem(AMEntityRegistry.JERBOA, 0XDEC58A, 0XDE9D90, new Item.Properties()));
-        DEF_REG.register("spawn_egg_terrapin", () -> new DeferredSpawnEggItem(AMEntityRegistry.TERRAPIN, 0X6E6E30, 0X929647, new Item.Properties()));
-        DEF_REG.register("spawn_egg_comb_jelly", () -> new DeferredSpawnEggItem(AMEntityRegistry.COMB_JELLY, 0XCFE9FE, 0X6EFF8B, new Item.Properties()));
-        DEF_REG.register("spawn_egg_cosmic_cod", () -> new DeferredSpawnEggItem(AMEntityRegistry.COSMIC_COD, 0X6985C7, 0XE2D1FF, new Item.Properties()));
-        DEF_REG.register("spawn_egg_bunfungus", () -> new DeferredSpawnEggItem(AMEntityRegistry.BUNFUNGUS, 0X6F6D91, 0XC92B29, new Item.Properties()));
-        DEF_REG.register("spawn_egg_bison", () -> new DeferredSpawnEggItem(AMEntityRegistry.BISON, 0X4C3A2E, 0X7A6546, new Item.Properties()));
-        DEF_REG.register("spawn_egg_giant_squid", () -> new DeferredSpawnEggItem(AMEntityRegistry.GIANT_SQUID, 0XAB4B4D, 0XD67D6B, new Item.Properties()));
-        DEF_REG.register("spawn_egg_devils_hole_pupfish", () -> new DeferredSpawnEggItem(AMEntityRegistry.DEVILS_HOLE_PUPFISH, 0X567BC4, 0X6C4475, new Item.Properties()));
-        DEF_REG.register("spawn_egg_catfish", () -> new DeferredSpawnEggItem(AMEntityRegistry.CATFISH, 0X807757, 0X8A7466, new Item.Properties()));
-        DEF_REG.register("spawn_egg_flying_fish", () -> new DeferredSpawnEggItem(AMEntityRegistry.FLYING_FISH, 0X7BBCED, 0X6881B3, new Item.Properties()));
-        DEF_REG.register("spawn_egg_skelewag", () -> new DeferredSpawnEggItem(AMEntityRegistry.SKELEWAG, 0XD9FCB1, 0X3A4F30, new Item.Properties()));
-        DEF_REG.register("spawn_egg_rain_frog", () -> new DeferredSpawnEggItem(AMEntityRegistry.RAIN_FROG, 0XC0B59B, 0X7B654F, new Item.Properties()));
-        DEF_REG.register("spawn_egg_potoo", () -> new DeferredSpawnEggItem(AMEntityRegistry.POTOO, 0X8C7753, 0XFFC042, new Item.Properties()));
-        DEF_REG.register("spawn_egg_mudskipper", () -> new DeferredSpawnEggItem(AMEntityRegistry.MUDSKIPPER, 0X60704A, 0X49806C, new Item.Properties()));
-        DEF_REG.register("spawn_egg_rhinoceros", () -> new DeferredSpawnEggItem(AMEntityRegistry.RHINOCEROS, 0XA19594, 0X827474, new Item.Properties()));
-        DEF_REG.register("spawn_egg_sugar_glider", () -> new DeferredSpawnEggItem(AMEntityRegistry.SUGAR_GLIDER, 0X868181, 0XEBEBE0, new Item.Properties()));
-        DEF_REG.register("spawn_egg_farseer", () -> new DeferredSpawnEggItem(AMEntityRegistry.FARSEER, 0X33374F, 0X91FF59, new Item.Properties()));
-        DEF_REG.register("spawn_egg_skreecher", () -> new DeferredSpawnEggItem(AMEntityRegistry.SKREECHER, 0X074857, 0X7FF8FF, new Item.Properties()));
-        DEF_REG.register("spawn_egg_underminer", () -> new DeferredSpawnEggItem(AMEntityRegistry.UNDERMINER, 0XD6E2FF, 0X6C84C4, new Item.Properties()));
-        DEF_REG.register("spawn_egg_murmur", () -> new DeferredSpawnEggItem(AMEntityRegistry.MURMUR, 0X804448, 0XB5AF9C, new Item.Properties()));
-        DEF_REG.register("spawn_egg_skunk", () -> new DeferredSpawnEggItem(AMEntityRegistry.SKUNK, 0X222D36, 0XE4E5F2, new Item.Properties()));
-        DEF_REG.register("spawn_egg_banana_slug", () -> new DeferredSpawnEggItem(AMEntityRegistry.BANANA_SLUG, 0XFFD045, 0XFFF173, new Item.Properties()));
-        DEF_REG.register("spawn_egg_blue_jay", () -> new DeferredSpawnEggItem(AMEntityRegistry.BLUE_JAY, 0X5FB7FE, 0X293B42, new Item.Properties()));
-        DEF_REG.register("spawn_egg_caiman", () -> new DeferredSpawnEggItem(AMEntityRegistry.CAIMAN, 0X5C5631, 0XBBC45C, new Item.Properties()));
-        DEF_REG.register("spawn_egg_triops", () -> new DeferredSpawnEggItem(AMEntityRegistry.TRIOPS, 0X967954, 0XCA7150, new Item.Properties()));
+        DEF_REG.register("spawn_egg_fly", () -> makeSpawnEgg(AMEntityRegistry.FLY, 0X464241,0X892E2E, new Item.Properties()));
+        DEF_REG.register("spawn_egg_hummingbird", () -> makeSpawnEgg(AMEntityRegistry.HUMMINGBIRD, 0X325E7F,0X44A75F, new Item.Properties()));
+        DEF_REG.register("spawn_egg_orca", () -> makeSpawnEgg(AMEntityRegistry.ORCA, 0X2C2C2C,0XD6D8E4, new Item.Properties()));
+        DEF_REG.register("spawn_egg_sunbird", () -> makeSpawnEgg(AMEntityRegistry.SUNBIRD, 0XF6694F,0XFFDDA0, new Item.Properties()));
+        DEF_REG.register("spawn_egg_gorilla", () -> makeSpawnEgg(AMEntityRegistry.GORILLA, 0X595B5D,0X1C1C21, new Item.Properties()));
+        DEF_REG.register("spawn_egg_crimson_mosquito", () -> makeSpawnEgg(AMEntityRegistry.CRIMSON_MOSQUITO, 0X53403F,0XC11A1A, new Item.Properties()));
+        DEF_REG.register("spawn_egg_rattlesnake", () -> makeSpawnEgg(AMEntityRegistry.RATTLESNAKE, 0XCEB994,0X937A5B, new Item.Properties()));
+        DEF_REG.register("spawn_egg_endergrade", () -> makeSpawnEgg(AMEntityRegistry.ENDERGRADE, 0X7862B3,0x81BDEB, new Item.Properties()));
+        DEF_REG.register("spawn_egg_hammerhead_shark", () -> makeSpawnEgg(AMEntityRegistry.HAMMERHEAD_SHARK, 0X8A92B5,0XB9BED8, new Item.Properties()));
+        DEF_REG.register("spawn_egg_lobster", () -> makeSpawnEgg(AMEntityRegistry.LOBSTER, 0XC43123,0XDD5F38, new Item.Properties()));
+        DEF_REG.register("spawn_egg_komodo_dragon", () -> makeSpawnEgg(AMEntityRegistry.KOMODO_DRAGON, 0X746C4F,0X564231, new Item.Properties()));
+        DEF_REG.register("spawn_egg_capuchin_monkey", () -> makeSpawnEgg(AMEntityRegistry.CAPUCHIN_MONKEY, 0X25211F,0XF1DAB3, new Item.Properties()));
+        DEF_REG.register("spawn_egg_centipede", () -> makeSpawnEgg(AMEntityRegistry.CENTIPEDE_HEAD, 0X342B2E,0X733449, new Item.Properties()));
+        DEF_REG.register("spawn_egg_warped_toad", () -> makeSpawnEgg(AMEntityRegistry.WARPED_TOAD, 0X1F968E,0XFEAC6D, new Item.Properties()));
+        DEF_REG.register("spawn_egg_moose", () -> makeSpawnEgg(AMEntityRegistry.MOOSE, 0X36302A,0XD4B183, new Item.Properties()));
+        DEF_REG.register("spawn_egg_mimicube", () -> makeSpawnEgg(AMEntityRegistry.MIMICUBE, 0X8A80C1,0X5E4F6F, new Item.Properties()));
+        DEF_REG.register("spawn_egg_raccoon", () -> makeSpawnEgg(AMEntityRegistry.RACCOON, 0X85827E,0X2A2726, new Item.Properties()));
+        DEF_REG.register("spawn_egg_blobfish", () -> makeSpawnEgg(AMEntityRegistry.BLOBFISH, 0XDBC6BD,0X9E7A7F, new Item.Properties()));
+        DEF_REG.register("spawn_egg_seal", () -> makeSpawnEgg(AMEntityRegistry.SEAL, 0X483C32,0X66594C, new Item.Properties()));
+        DEF_REG.register("spawn_egg_cockroach", () -> makeSpawnEgg(AMEntityRegistry.COCKROACH, 0X0D0909,0X42241E, new Item.Properties()));
+        DEF_REG.register("spawn_egg_shoebill", () -> makeSpawnEgg(AMEntityRegistry.SHOEBILL, 0X828282,0XD5B48A, new Item.Properties()));
+        DEF_REG.register("spawn_egg_elephant", () -> makeSpawnEgg(AMEntityRegistry.ELEPHANT, 0X8D8987,0XEDE5D1, new Item.Properties()));
+        DEF_REG.register("spawn_egg_soul_vulture", () -> makeSpawnEgg(AMEntityRegistry.SOUL_VULTURE, 0X23262D,0X57F4FF, new Item.Properties()));
+        DEF_REG.register("spawn_egg_snow_leopard", () -> makeSpawnEgg(AMEntityRegistry.SNOW_LEOPARD, 0XACA293,0X26201D, new Item.Properties()));
+        DEF_REG.register("spawn_egg_spectre", () -> makeSpawnEgg(AMEntityRegistry.SPECTRE, 0XC8D0EF,0X8791EF, new Item.Properties()));
+        DEF_REG.register("spawn_egg_crow", () -> makeSpawnEgg(AMEntityRegistry.CROW, 0X0D111C,0X1C2030, new Item.Properties()));
+        DEF_REG.register("spawn_egg_alligator_snapping_turtle", () -> makeSpawnEgg(AMEntityRegistry.ALLIGATOR_SNAPPING_TURTLE, 0X6C5C52,0X456926, new Item.Properties()));
+        DEF_REG.register("spawn_egg_mungus", () -> makeSpawnEgg(AMEntityRegistry.MUNGUS, 0X836A8D,0X45454C, new Item.Properties()));
+        DEF_REG.register("spawn_egg_mantis_shrimp", () -> makeSpawnEgg(AMEntityRegistry.MANTIS_SHRIMP, 0XDB4858,0X15991E, new Item.Properties()));
+        DEF_REG.register("spawn_egg_guster", () -> makeSpawnEgg(AMEntityRegistry.GUSTER, 0XF8D49A,0XFF720A, new Item.Properties()));
+        DEF_REG.register("spawn_egg_warped_mosco", () -> makeSpawnEgg(AMEntityRegistry.WARPED_MOSCO, 0X322F58,0X5B5EF1, new Item.Properties()));
+        DEF_REG.register("spawn_egg_straddler", () -> makeSpawnEgg(AMEntityRegistry.STRADDLER, 0X5D5F6E,0XCDA886, new Item.Properties()));
+        DEF_REG.register("spawn_egg_stradpole", () -> makeSpawnEgg(AMEntityRegistry.STRADPOLE, 0X5D5F6E,0X576A8B, new Item.Properties()));
+        DEF_REG.register("spawn_egg_emu", () -> makeSpawnEgg(AMEntityRegistry.EMU, 0X665346,0X3B3938, new Item.Properties()));
+        DEF_REG.register("spawn_egg_platypus", () -> makeSpawnEgg(AMEntityRegistry.PLATYPUS, 0X7D503E,0X363B43, new Item.Properties()));
+        DEF_REG.register("spawn_egg_dropbear", () -> makeSpawnEgg(AMEntityRegistry.DROPBEAR, 0X8A2D35,0X60A3A3, new Item.Properties()));
+        DEF_REG.register("spawn_egg_tasmanian_devil", () -> makeSpawnEgg(AMEntityRegistry.TASMANIAN_DEVIL, 0X252426,0XA8B4BF, new Item.Properties()));
+        DEF_REG.register("spawn_egg_kangaroo", () -> makeSpawnEgg(AMEntityRegistry.KANGAROO, 0XCE9D65,0XDEBDA0, new Item.Properties()));
+        DEF_REG.register("spawn_egg_cachalot_whale", () -> makeSpawnEgg(AMEntityRegistry.CACHALOT_WHALE, 0X949899,0X5F666E, new Item.Properties()));
+        DEF_REG.register("spawn_egg_leafcutter_ant", () -> makeSpawnEgg(AMEntityRegistry.LEAFCUTTER_ANT, 0X964023,0XA65930, new Item.Properties()));
+        DEF_REG.register("spawn_egg_enderiophage", () -> makeSpawnEgg(AMEntityRegistry.ENDERIOPHAGE, 0X872D83,0XF6E2CD, new Item.Properties()));
+        DEF_REG.register("spawn_egg_bald_eagle", () -> makeSpawnEgg(AMEntityRegistry.BALD_EAGLE, 0X321F18,0XF4F4F4, new Item.Properties()));
+        DEF_REG.register("spawn_egg_tiger", () -> makeSpawnEgg(AMEntityRegistry.TIGER, 0XC7612E,0X2A3233, new Item.Properties()));
+        DEF_REG.register("spawn_egg_tarantula_hawk", () -> makeSpawnEgg(AMEntityRegistry.TARANTULA_HAWK, 0X234763,0XE37B38, new Item.Properties()));
+        DEF_REG.register("spawn_egg_void_worm", () -> makeSpawnEgg(AMEntityRegistry.VOID_WORM, 0X0F1026,0X1699AB, new Item.Properties()));
+        DEF_REG.register("spawn_egg_frilled_shark", () -> makeSpawnEgg(AMEntityRegistry.FRILLED_SHARK, 0X726B6B,0X873D3D, new Item.Properties()));
+        DEF_REG.register("spawn_egg_mimic_octopus", () -> makeSpawnEgg(AMEntityRegistry.MIMIC_OCTOPUS, 0XFFEBDC,0X1D1C1F, new Item.Properties()));
+        DEF_REG.register("spawn_egg_seagull", () -> makeSpawnEgg(AMEntityRegistry.SEAGULL, 0XC9D2DC,0XFFD850, new Item.Properties()));
+        DEF_REG.register("spawn_egg_froststalker", () -> makeSpawnEgg(AMEntityRegistry.FROSTSTALKER, 0X788AC1,0XA1C3FF, new Item.Properties()));
+        DEF_REG.register("spawn_egg_tusklin", () -> makeSpawnEgg(AMEntityRegistry.TUSKLIN, 0X735841,0XE8E2D5, new Item.Properties()));
+        DEF_REG.register("spawn_egg_laviathan", () -> makeSpawnEgg(AMEntityRegistry.LAVIATHAN, 0XD68356,0X3C3947, new Item.Properties()));
+        DEF_REG.register("spawn_egg_cosmaw", () -> makeSpawnEgg(AMEntityRegistry.COSMAW, 0X746DBD,0XD6BFE3, new Item.Properties()));
+        DEF_REG.register("spawn_egg_toucan", () -> makeSpawnEgg(AMEntityRegistry.TOUCAN, 0XF58F33,0X1E2133, new Item.Properties()));
+        DEF_REG.register("spawn_egg_maned_wolf", () -> makeSpawnEgg(AMEntityRegistry.MANED_WOLF, 0XBB7A47,0X40271A, new Item.Properties()));
+        DEF_REG.register("spawn_egg_anaconda", () -> makeSpawnEgg(AMEntityRegistry.ANACONDA, 0X565C22,0XD3763F, new Item.Properties()));
+        DEF_REG.register("spawn_egg_anteater", () -> makeSpawnEgg(AMEntityRegistry.ANTEATER, 0X4C3F3A, 0XCCBCB4, new Item.Properties()));
+        DEF_REG.register("spawn_egg_rocky_roller", () -> makeSpawnEgg(AMEntityRegistry.ROCKY_ROLLER, 0XB0856F, 0X999184, new Item.Properties()));
+        DEF_REG.register("spawn_egg_flutter", () -> makeSpawnEgg(AMEntityRegistry.FLUTTER, 0X70922D, 0XD07BE3, new Item.Properties()));
+        DEF_REG.register("spawn_egg_gelada_monkey", () -> makeSpawnEgg(AMEntityRegistry.GELADA_MONKEY, 0XB08C64, 0XFF4F53, new Item.Properties()));
+        DEF_REG.register("spawn_egg_jerboa", () -> makeSpawnEgg(AMEntityRegistry.JERBOA, 0XDEC58A, 0XDE9D90, new Item.Properties()));
+        DEF_REG.register("spawn_egg_terrapin", () -> makeSpawnEgg(AMEntityRegistry.TERRAPIN, 0X6E6E30, 0X929647, new Item.Properties()));
+        DEF_REG.register("spawn_egg_comb_jelly", () -> makeSpawnEgg(AMEntityRegistry.COMB_JELLY, 0XCFE9FE, 0X6EFF8B, new Item.Properties()));
+        DEF_REG.register("spawn_egg_cosmic_cod", () -> makeSpawnEgg(AMEntityRegistry.COSMIC_COD, 0X6985C7, 0XE2D1FF, new Item.Properties()));
+        DEF_REG.register("spawn_egg_bunfungus", () -> makeSpawnEgg(AMEntityRegistry.BUNFUNGUS, 0X6F6D91, 0XC92B29, new Item.Properties()));
+        DEF_REG.register("spawn_egg_bison", () -> makeSpawnEgg(AMEntityRegistry.BISON, 0X4C3A2E, 0X7A6546, new Item.Properties()));
+        DEF_REG.register("spawn_egg_giant_squid", () -> makeSpawnEgg(AMEntityRegistry.GIANT_SQUID, 0XAB4B4D, 0XD67D6B, new Item.Properties()));
+        DEF_REG.register("spawn_egg_devils_hole_pupfish", () -> makeSpawnEgg(AMEntityRegistry.DEVILS_HOLE_PUPFISH, 0X567BC4, 0X6C4475, new Item.Properties()));
+        DEF_REG.register("spawn_egg_catfish", () -> makeSpawnEgg(AMEntityRegistry.CATFISH, 0X807757, 0X8A7466, new Item.Properties()));
+        DEF_REG.register("spawn_egg_flying_fish", () -> makeSpawnEgg(AMEntityRegistry.FLYING_FISH, 0X7BBCED, 0X6881B3, new Item.Properties()));
+        DEF_REG.register("spawn_egg_skelewag", () -> makeSpawnEgg(AMEntityRegistry.SKELEWAG, 0XD9FCB1, 0X3A4F30, new Item.Properties()));
+        DEF_REG.register("spawn_egg_rain_frog", () -> makeSpawnEgg(AMEntityRegistry.RAIN_FROG, 0XC0B59B, 0X7B654F, new Item.Properties()));
+        DEF_REG.register("spawn_egg_potoo", () -> makeSpawnEgg(AMEntityRegistry.POTOO, 0X8C7753, 0XFFC042, new Item.Properties()));
+        DEF_REG.register("spawn_egg_mudskipper", () -> makeSpawnEgg(AMEntityRegistry.MUDSKIPPER, 0X60704A, 0X49806C, new Item.Properties()));
+        DEF_REG.register("spawn_egg_rhinoceros", () -> makeSpawnEgg(AMEntityRegistry.RHINOCEROS, 0XA19594, 0X827474, new Item.Properties()));
+        DEF_REG.register("spawn_egg_sugar_glider", () -> makeSpawnEgg(AMEntityRegistry.SUGAR_GLIDER, 0X868181, 0XEBEBE0, new Item.Properties()));
+        DEF_REG.register("spawn_egg_farseer", () -> makeSpawnEgg(AMEntityRegistry.FARSEER, 0X33374F, 0X91FF59, new Item.Properties()));
+        DEF_REG.register("spawn_egg_skreecher", () -> makeSpawnEgg(AMEntityRegistry.SKREECHER, 0X074857, 0X7FF8FF, new Item.Properties()));
+        DEF_REG.register("spawn_egg_underminer", () -> makeSpawnEgg(AMEntityRegistry.UNDERMINER, 0XD6E2FF, 0X6C84C4, new Item.Properties()));
+        DEF_REG.register("spawn_egg_murmur", () -> makeSpawnEgg(AMEntityRegistry.MURMUR, 0X804448, 0XB5AF9C, new Item.Properties()));
+        DEF_REG.register("spawn_egg_skunk", () -> makeSpawnEgg(AMEntityRegistry.SKUNK, 0X222D36, 0XE4E5F2, new Item.Properties()));
+        DEF_REG.register("spawn_egg_banana_slug", () -> makeSpawnEgg(AMEntityRegistry.BANANA_SLUG, 0XFFD045, 0XFFF173, new Item.Properties()));
+        DEF_REG.register("spawn_egg_blue_jay", () -> makeSpawnEgg(AMEntityRegistry.BLUE_JAY, 0X5FB7FE, 0X293B42, new Item.Properties()));
+        DEF_REG.register("spawn_egg_caiman", () -> makeSpawnEgg(AMEntityRegistry.CAIMAN, 0X5C5631, 0XBBC45C, new Item.Properties()));
+        DEF_REG.register("spawn_egg_triops", () -> makeSpawnEgg(AMEntityRegistry.TRIOPS, 0X967954, 0XCA7150, new Item.Properties()));
         registerPatternItem("bear");
         registerPatternItem("australia_0");
         registerPatternItem("australia_1");
@@ -316,8 +311,7 @@ public class AMItemRegistry {
     }
 
     private static void registerPatternItem(String name) {
-        TagKey<BannerPattern> bannerPatternTagKey = TagKey.create(Registries.BANNER_PATTERN, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "pattern_for_" + name));
-        DEF_REG.register("banner_pattern_" + name, () -> new BannerPatternItem(bannerPatternTagKey, (new Item.Properties()).stacksTo(1)));
+        DEF_REG.register("banner_pattern_" + name, () -> new Item((new Item.Properties()).stacksTo(1)));
     }
 
     public static void init() {
@@ -333,46 +327,16 @@ public class AMItemRegistry {
         ROCKY_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(ROCKY_SHELL.get()));
         FLYING_FISH_MATERIAL.setRepairMaterial(Ingredient.of(FLYING_FISH.get()));
         NOVELTY_HAT_MATERIAL.setRepairMaterial(Ingredient.of(Items.BONE));
-        KIMONO_MATERIAL.setRepairMaterial(Ingredient.of(ItemTags.WOOL));
+        KIMONO_MATERIAL.setRepairMaterial(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.WOOL)));
         LecternBooks.BOOKS.put(ANIMAL_DICTIONARY.getId(), new LecternBooks.BookData(0X606B26, 0XFDF8ED));
     }
 
     public static void initDispenser(){
-        DispenserBlock.registerBehavior(SHARK_TOOTH_ARROW.get(), new AbstractProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-                EntitySharkToothArrow entityarrow = new EntitySharkToothArrow(AMEntityRegistry.SHARK_TOOTH_ARROW.get(), position.x(), position.y(), position.z(), worldIn);
-                entityarrow.pickup = EntitySharkToothArrow.Pickup.ALLOWED;
-                return entityarrow;
-            }
-        });
-        DispenserBlock.registerBehavior(ANCIENT_DART.get(), new AbstractProjectileDispenseBehavior() {
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-                EntityTossedItem tossedItem = new EntityTossedItem(worldIn, position.x(), position.y(), position.z());
-                tossedItem.setDart(true);
-                return tossedItem;
-            }
-        });
-        DispenserBlock.registerBehavior(COCKROACH_OOTHECA.get(), new AbstractProjectileDispenseBehavior() {
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-                EntityCockroachEgg entityarrow = new EntityCockroachEgg(worldIn, position.x(), position.y(), position.z());
-                return entityarrow;
-            }
-        });
-        DispenserBlock.registerBehavior(EMU_EGG.get(), new AbstractProjectileDispenseBehavior() {
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-                EntityEmuEgg entityarrow = new EntityEmuEgg(worldIn, position.x(), position.y(), position.z());
-                return entityarrow;
-            }
-        });
-        DispenserBlock.registerBehavior(ENDERIOPHAGE_ROCKET.get(), new AbstractProjectileDispenseBehavior() {
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-                EntityEnderiophageRocket entityarrow = new EntityEnderiophageRocket(worldIn, position.x(), position.y(), position.z(), stackIn);
-                return entityarrow;
-            }
-        });
+        DispenserBlock.registerBehavior(SHARK_TOOTH_ARROW.get(), new ProjectileDispenseBehavior(SHARK_TOOTH_ARROW.get()));
+        DispenserBlock.registerBehavior(ANCIENT_DART.get(), new ProjectileDispenseBehavior(ANCIENT_DART.get()));
+        DispenserBlock.registerBehavior(COCKROACH_OOTHECA.get(), new ProjectileDispenseBehavior(COCKROACH_OOTHECA.get()));
+        DispenserBlock.registerBehavior(EMU_EGG.get(), new ProjectileDispenseBehavior(EMU_EGG.get()));
+        DispenserBlock.registerBehavior(ENDERIOPHAGE_ROCKET.get(), new ProjectileDispenseBehavior(ENDERIOPHAGE_ROCKET.get()));
         DispenseItemBehavior bucketDispenseBehavior = new DefaultDispenseItemBehavior() {
             private final DefaultDispenseItemBehavior defaultDispenseItemBehavior = new DefaultDispenseItemBehavior();
 
@@ -407,6 +371,11 @@ public class AMItemRegistry {
         ComposterBlock.COMPOSTABLES.put(AMBlockRegistry.BANANA_PEEL.get().asItem(), 1F);
         ComposterBlock.COMPOSTABLES.put(ACACIA_BLOSSOM.get(), 0.65F);
         ComposterBlock.COMPOSTABLES.put(GONGYLIDIA.get(), 0.9F);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static SpawnEggItem makeSpawnEgg(java.util.function.Supplier<? extends net.minecraft.world.entity.EntityType<?>> entityType, int primary, int secondary, Item.Properties properties) {
+        return new SpawnEggItem(properties);
     }
 
 }

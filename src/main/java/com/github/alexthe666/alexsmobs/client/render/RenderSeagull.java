@@ -18,7 +18,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class RenderSeagull extends MobRenderer<EntitySeagull, LivingEntityRenderState, ModelSeagull> {
+public class RenderSeagull extends MobRenderer<EntitySeagull, ModelSeagull> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/seagull.png");
     private static final Identifier TEXTURE_WINGULL = Identifier.parse("alexsmobs:textures/entity/seagull_wingull.png");
 
@@ -66,3 +66,4 @@ public class RenderSeagull extends MobRenderer<EntitySeagull, LivingEntityRender
         }
     }
 }
+

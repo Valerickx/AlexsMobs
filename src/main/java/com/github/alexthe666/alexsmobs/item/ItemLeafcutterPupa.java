@@ -52,7 +52,7 @@ public class ItemLeafcutterPupa extends Item {
                 }
             }
 
-            return InteractionResult.sidedSuccess(world.isClientSide());
+            return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
         } else {
             return InteractionResult.PASS;
         }

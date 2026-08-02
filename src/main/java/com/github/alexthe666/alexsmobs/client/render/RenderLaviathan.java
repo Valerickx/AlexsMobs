@@ -26,7 +26,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
-public class RenderLaviathan extends MobRenderer<EntityLaviathan, LivingEntityRenderState, ModelLaviathan> {
+public class RenderLaviathan extends MobRenderer<EntityLaviathan, ModelLaviathan> {
     private static final Identifier TEXTURE = Identifier.parse("alexsmobs:textures/entity/laviathan.png");
     private static final Identifier TEXTURE_GLOW = Identifier.parse("alexsmobs:textures/entity/laviathan_glow.png");
     private static final Identifier TEXTURE_OBSIDIAN = Identifier.parse("alexsmobs:textures/entity/laviathan_obsidian.png");
@@ -229,3 +229,4 @@ public class RenderLaviathan extends MobRenderer<EntityLaviathan, LivingEntityRe
 
     }
 }
+

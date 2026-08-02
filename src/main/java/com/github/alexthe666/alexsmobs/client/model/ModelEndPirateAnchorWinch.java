@@ -41,18 +41,21 @@ public class ModelEndPirateAnchorWinch extends AdvancedEntityModel<Entity> {
     public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 
-    public void renderAnchor(TileEntityEndPirateAnchorWinch anchor, float partialTick, boolean east) {
+    public void renderAnchor(float windCounter, float windProgress, boolean windingUp, boolean winching, float clientRoll, float partialTick, boolean east) {
         this.resetToDefaultPose();
-        float timeWinching = anchor.windCounter + partialTick;
-        float f = anchor.getWindProgress(partialTick);
-        float f1 = anchor.isWindingUp() ? 1 : -1;
-        if(anchor.isWinching()){
+        float timeWinching = windCounter + partialTick;
+        float f = windProgress;
+        float f1 = windingUp ? 1 : -1;
+        if (winching) {
             chains.rotateAngleX = timeWinching * 0.2F * f * f1;
-            anchor.clientRoll = chains.rotateAngleX;
-        }else{
-            float rollDeg = (float) Mth.wrapDegrees(Math.toDegrees(anchor.clientRoll));
+        } else {
+            float rollDeg = (float) Mth.wrapDegrees(Math.toDegrees(clientRoll));
             chains.rotateAngleX = f1 * f * 0.2F * Maths.rad(rollDeg);
         }
+    }
+
+    public void renderAnchor(TileEntityEndPirateAnchorWinch anchor, float partialTick, boolean east) {
+        renderAnchor(anchor.windCounter, anchor.getWindProgress(partialTick), anchor.isWindingUp(), anchor.isWinching(), anchor.clientRoll, partialTick, east);
     }
 
     public void animateStack(ItemStack itemStackIn) {

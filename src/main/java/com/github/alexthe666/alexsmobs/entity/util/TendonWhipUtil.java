@@ -19,9 +19,9 @@ public class TendonWhipUtil {
     private static void sync(LivingEntity enchanted, CompoundTag tag) {
         CitadelEntityData.setCitadelTag(enchanted, tag);
         if (!enchanted.level().isClientSide()) {
-            Citadel.sendMSGToAll(new PropertiesMessage("CitadelTagUpdate", tag, enchanted.getId()));
+            com.github.alexthe666.alexsmobs.AlexsMobs.sendMSGToAll(new PropertiesMessage("CitadelTagUpdate", tag, enchanted.getId()));
         } else {
-            Citadel.sendMSGToServer(new PropertiesMessage("CitadelTagUpdate", tag, enchanted.getId()));
+            com.github.alexthe666.alexsmobs.AlexsMobs.sendMSGToServer(new PropertiesMessage("CitadelTagUpdate", tag, enchanted.getId()));
         }
     }
 

@@ -147,7 +147,7 @@ public class EntityBananaSlug extends Animal {
             b0 = (byte) (b0 & -2);
         }
 
-        this.entityData.set(CLIMBING);
+        this.entityData.set(CLIMBING, b0);
     }
 
     public Direction getAttachmentFacing() {
@@ -224,7 +224,8 @@ public class EntityBananaSlug extends Animal {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, 1, 0));
             }else{
                 if (!this.horizontalCollision && this.getAttachmentFacing() != Direction.UP) {
-                    Vec3 vec = Vec3.atLowerCornerOf(this.getAttachmentFacing().getNormal());
+                    Direction facing = this.getAttachmentFacing();
+                    Vec3 vec = new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ());
                     this.setDeltaMovement(this.getDeltaMovement().add(vec.normalize().multiply(0.1F, 0.1F, 0.1F)));
                 }
                 if (!this.onGround() && vector3d.y < 0.0D) {
@@ -322,9 +323,7 @@ public class EntityBananaSlug extends Animal {
 
     public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("SlimeTime")) {
-            this.timeUntilSlime = compound.getIntOr("SlimeTime", 0);
-        }
+        this.timeUntilSlime = compound.getIntOr("SlimeTime", this.timeUntilSlime);
         this.setVariant(compound.getIntOr("Variant", 0));
     }
 

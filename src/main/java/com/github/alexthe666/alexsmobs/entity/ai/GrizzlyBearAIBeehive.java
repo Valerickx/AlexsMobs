@@ -86,7 +86,7 @@ public class GrizzlyBearAIBeehive extends MoveToBlockGoal {
     }
 
     private void eatHive() {
-        if (net.neoforged.neoforge.common.NeoForgeMod.isGriefingEnabled(bear.level(), bear)) {
+        if (net.neoforged.neoforge.event.EventHooks.canEntityGrief((net.minecraft.server.level.ServerLevel) bear.level(), bear)) {
             BlockState blockstate = bear.level().getBlockState(this.blockPos);
             if (blockstate.is(AMTagRegistry.GRIZZLY_BEEHIVE)) {
                 if (bear.level().getBlockEntity(this.blockPos) instanceof BeehiveBlockEntity) {
@@ -110,7 +110,7 @@ public class GrizzlyBearAIBeehive extends MoveToBlockGoal {
                     }
                     double d0 = 15;
                     for (Bee bee : bear.level().getEntitiesOfClass(Bee.class, new AABB((double) blockPos.getX() - d0, (double) blockPos.getY() - d0, (double) blockPos.getZ() - d0, (double) blockPos.getX() + d0, (double) blockPos.getY() + d0, (double) blockPos.getZ() + d0))) {
-                        bee.setRemainingPersistentAngerTime(100);
+                        bee.startPersistentAngerTimer();
                         bee.setTarget(bear);
                         bee.setStayOutOfHiveCountdown(400);
                     }

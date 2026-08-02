@@ -2,6 +2,8 @@ package com.github.alexthe666.alexsmobs.entity.ai;
 
 import com.github.alexthe666.alexsmobs.entity.EntityBunfungus;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -32,7 +34,7 @@ public class MungusAIAlertBunfungus  extends TargetGoal {
         int i = this.mob.getLastHurtByMobTimestamp();
         LivingEntity livingentity = this.mob.getLastHurtByMob();
         if (i != this.timestamp && livingentity != null) {
-            if (livingentity.getType() == EntityType.PLAYER && this.mob.level().getGameRules().getBooleanOr(GameRules.RULE_UNIVERSAL_ANGER, false)) {
+            if (livingentity instanceof Player) {
                 return false;
             } else {
                 for(Class<?> oclass : this.toIgnoreDamage) {
