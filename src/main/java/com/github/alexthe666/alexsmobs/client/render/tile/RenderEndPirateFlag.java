@@ -5,7 +5,7 @@ import com.github.alexthe666.alexsmobs.client.model.ModelEndPirateFlag;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityEndPirateFlag;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -65,3 +65,4 @@ public class RenderEndPirateFlag<T extends TileEntityEndPirateFlag> implements B
         matrixStackIn.popPose();
     }
 }
+

@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -42,7 +42,7 @@ public class RenderTendonSegment extends EntityRenderer<EntityTendonSegment, Ent
     }
 
     @Override
-    public void render(EntityTendonSegment entity, float yaw, float partialTicks, PoseStack poseStack, OrderedSubmitNodeCollector buffer, int light) {
+    public void render(EntityTendonSegment entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light) {
         super.render(entity, yaw, partialTicks, poseStack, buffer, light);
         poseStack.pushPose();
         Entity fromEntity = entity.getFromEntity();
@@ -161,3 +161,4 @@ public class RenderTendonSegment extends EntityRenderer<EntityTendonSegment, Ent
     }
 
 }
+

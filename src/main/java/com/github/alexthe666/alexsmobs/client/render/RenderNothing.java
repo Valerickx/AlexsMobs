@@ -1,7 +1,7 @@
 package com.github.alexthe666.alexsmobs.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.Identifier;
@@ -16,7 +16,7 @@ public class RenderNothing extends LivingEntityRenderer {
 
 
     @Override
-    public void render(LivingEntity entity, float f, float f1, PoseStack stack, OrderedSubmitNodeCollector buf, int i) {
+    public void render(LivingEntity entity, float f, float f1, PoseStack stack, MultiBufferSource buf, int i) {
 
     }
 
@@ -28,3 +28,4 @@ public class RenderNothing extends LivingEntityRenderer {
         return null;
     }
 }
+

@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.client.model.ModelSpectre;
 import com.github.alexthe666.alexsmobs.entity.EntitySpectre;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -62,7 +62,7 @@ public class RenderSpectre extends MobRenderer<EntitySpectre, LivingEntityRender
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntitySpectre entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntitySpectre entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer lvt_11_1_ = bufferIn.getBuffer(this.getRenderType());
             this.getParentModel().renderToBuffer(matrixStackIn, lvt_11_1_, 15728640, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), 1.0F, 1.0F, 1.0F, getAlphaForRender(entitylivingbaseIn, partialTicks));
             if (entitylivingbaseIn.isLeashed()) {
@@ -76,5 +76,6 @@ public class RenderSpectre extends MobRenderer<EntitySpectre, LivingEntityRender
         }
     }
 }
+
 
 

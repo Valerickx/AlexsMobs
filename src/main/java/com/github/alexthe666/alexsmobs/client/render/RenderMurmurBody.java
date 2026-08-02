@@ -7,7 +7,7 @@ import com.github.alexthe666.alexsmobs.client.model.ModelMurmurHead;
 import com.github.alexthe666.alexsmobs.client.model.ModelMurmurNeck;
 import com.github.alexthe666.alexsmobs.entity.EntityMurmur;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -30,7 +30,7 @@ public class RenderMurmurBody extends MobRenderer<EntityMurmur, LivingEntityRend
         matrixStackIn.scale(0.85F, 0.85F, 0.85F);
     }
 
-    public void render(EntityMurmur body, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+    public void render(EntityMurmur body, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         super.render(body, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         if (renderWithHead || body.shouldRenderFakeHead()) {
             float f = Mth.rotLerp(partialTicks, body.yBodyRotO, body.yBodyRot);
@@ -59,5 +59,6 @@ public class RenderMurmurBody extends MobRenderer<EntityMurmur, LivingEntityRend
         return entity.isAngry() ? TEXTURE_ANGRY : TEXTURE;
     }
 }
+
 
 

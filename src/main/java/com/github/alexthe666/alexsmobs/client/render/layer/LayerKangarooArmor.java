@@ -13,7 +13,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
@@ -64,7 +64,7 @@ public class LayerKangarooArmor extends RenderLayer<EntityKangaroo, ModelKangaro
         return Identifier;
     }
 
-    public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityKangaroo roo, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityKangaroo roo, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         matrixStackIn.pushPose();
         if(roo.isRoger()){
             ItemStack haloStack = new ItemStack(AMItemRegistry.HALO.get());
@@ -167,7 +167,7 @@ public class LayerKangarooArmor extends RenderLayer<EntityKangaroo, ModelKangaro
     }
 
 
-    private void renderChestplate(EntityKangaroo entity, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
+    private void renderChestplate(EntityKangaroo entity, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
         VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutout(armorResource), false, glintIn);
         renderer.getModel().copyPropertiesTo(modelIn);
         float sitProgress = entity.prevSitProgress + (entity.sitProgress - entity.prevSitProgress) * Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
@@ -207,7 +207,7 @@ public class LayerKangarooArmor extends RenderLayer<EntityKangaroo, ModelKangaro
 
     }
 
-    private void renderHelmet(EntityKangaroo entity, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
+    private void renderHelmet(EntityKangaroo entity, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
         VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutout(armorResource), false, glintIn);
         renderer.getModel().copyPropertiesTo(modelIn);
         modelIn.head.xRot = 0F;
@@ -262,3 +262,4 @@ public class LayerKangarooArmor extends RenderLayer<EntityKangaroo, ModelKangaro
          return basicModel instanceof HumanoidModel ? (HumanoidModel<?>) basicModel : model;
     }
 }
+

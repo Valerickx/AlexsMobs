@@ -5,7 +5,7 @@ import com.github.alexthe666.alexsmobs.client.render.AMRenderTypes;
 import com.github.alexthe666.alexsmobs.client.render.RenderSoulVulture;
 import com.github.alexthe666.alexsmobs.entity.EntitySoulVulture;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.Identifier;
@@ -20,7 +20,7 @@ public class LayerSoulVultureGlow extends RenderLayer<EntitySoulVulture, ModelSo
         super(renderSoulVulture);
     }
 
-    public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntitySoulVulture entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntitySoulVulture entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getParentModel().renderToBuffer(matrixStackIn, bufferIn.getBuffer(AMRenderTypes.getGhost(TEXTURE_GLOW)), 240, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1F);
         if(entitylivingbaseIn.hasSoulHeart()){
             this.getParentModel().renderToBuffer(matrixStackIn, bufferIn.getBuffer(AMRenderTypes.getGhost(getFlames(entitylivingbaseIn.tickCount))), 240, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1F);
@@ -36,3 +36,4 @@ public class LayerSoulVultureGlow extends RenderLayer<EntitySoulVulture, ModelSo
         };
     }
 }
+

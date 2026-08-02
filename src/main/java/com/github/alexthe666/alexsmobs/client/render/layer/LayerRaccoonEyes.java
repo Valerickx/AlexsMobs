@@ -5,7 +5,7 @@ import com.github.alexthe666.alexsmobs.client.render.RenderRaccoon;
 import com.github.alexthe666.alexsmobs.entity.EntityRaccoon;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -20,7 +20,7 @@ public class LayerRaccoonEyes extends RenderLayer<EntityRaccoon, ModelRaccoon> {
         super(render);
     }
 
-    public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityRaccoon raccoon, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityRaccoon raccoon, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         long roundedTime = raccoon.level().getGameTime() % 24000;
         boolean night = roundedTime >= 13000 && roundedTime <= 22000;
         BlockPos ratPos = raccoon.getLightPosition();
@@ -39,3 +39,4 @@ public class LayerRaccoonEyes extends RenderLayer<EntityRaccoon, ModelRaccoon> {
 
     }
 }
+

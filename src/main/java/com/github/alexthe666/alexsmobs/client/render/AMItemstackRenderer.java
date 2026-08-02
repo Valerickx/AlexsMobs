@@ -18,7 +18,7 @@ import com.mojang.math.Axis;
 import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.resources.Identifier;
@@ -134,11 +134,11 @@ public class AMItemstackRenderer {
         quaternion1.conjugate();
         entityrenderdispatcher.overrideCameraOrientation(quaternion1);
         entityrenderdispatcher.setRenderShadow(false);
-        OrderedSubmitNodeCollector.BufferSource OrderedSubmitNodeCollector$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
+        MultiBufferSource.BufferSource MultiBufferSource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
         RenderSystem.runAsFancy(() -> {
-            entityrenderdispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicksForRender, matrixstack, OrderedSubmitNodeCollector$buffersource, 15728880);
+            entityrenderdispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicksForRender, matrixstack, MultiBufferSource$buffersource, 15728880);
         });
-        OrderedSubmitNodeCollector$buffersource.endBatch();
+        MultiBufferSource$buffersource.endBatch();
         entityrenderdispatcher.setRenderShadow(true);
         entity.setYRot(0.0F);
         entity.setXRot(0.0F);
@@ -152,7 +152,7 @@ public class AMItemstackRenderer {
     }
 
     @Override
-    public void renderByItem(ItemStack itemStackIn, ItemDisplayContext transformType, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void renderByItem(ItemStack itemStackIn, ItemDisplayContext transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         int tick;
         if (Minecraft.getInstance().player == null || Minecraft.getInstance().isPaused()) {
             tick = ticksExisted;
@@ -414,3 +414,4 @@ public class AMItemstackRenderer {
     }
 
 }
+

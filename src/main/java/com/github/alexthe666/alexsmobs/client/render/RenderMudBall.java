@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.entity.EntityMudBall;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -22,7 +22,7 @@ public class RenderMudBall extends EntityRenderer<EntityMudBall, EntityRenderSta
         super(p_173962_);
     }
 
-    public void render(EntityMudBall entityMudBall, float f, float f2, PoseStack p_114083_, OrderedSubmitNodeCollector p_114084_, int p_114085_) {
+    public void render(EntityMudBall entityMudBall, float f, float f2, PoseStack p_114083_, MultiBufferSource p_114084_, int p_114085_) {
         p_114083_.pushPose();
         p_114083_.scale(0.7F, 0.7F, 0.7F);
         p_114083_.mulPose(this.entityRenderDispatcher.cameraOrientation());
@@ -47,3 +47,4 @@ public class RenderMudBall extends EntityRenderer<EntityMudBall, EntityRenderSta
         return TEXTURE;
   }
 }
+

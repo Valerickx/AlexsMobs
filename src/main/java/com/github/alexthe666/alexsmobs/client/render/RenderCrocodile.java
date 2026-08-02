@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.client.model.ModelCrocodile;
 import com.github.alexthe666.alexsmobs.entity.EntityCrocodile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -39,7 +39,7 @@ public class RenderCrocodile extends MobRenderer<EntityCrocodile, LivingEntityRe
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityCrocodile entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityCrocodile entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (entitylivingbaseIn.isCrowned()) {
                 VertexConsumer shoeBuffer = bufferIn.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_CROWN));
                 matrixStackIn.pushPose();
@@ -51,5 +51,6 @@ public class RenderCrocodile extends MobRenderer<EntityCrocodile, LivingEntityRe
 
 
 }
+
 
 

@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -40,7 +40,7 @@ public class RenderVineLasso extends EntityRenderer<EntityVineLasso, EntityRende
         super(renderManagerIn);
     }
 
-    public void render(EntityVineLasso entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+    public void render(EntityVineLasso entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.0D, 0.25F, 0.0D);
         matrixStackIn.mulPose(Axis.YN.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 180F));
@@ -65,7 +65,7 @@ public class RenderVineLasso extends EntityRenderer<EntityVineLasso, EntityRende
         }
     }
 
-    private void renderCircle(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+    private void renderCircle(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(TEXTURE));
         PoseStack.Pose lvt_19_1_ = matrixStackIn.last();
@@ -79,7 +79,7 @@ public class RenderVineLasso extends EntityRenderer<EntityVineLasso, EntityRende
     }
 
 
-    public static <E extends Entity> void renderVine(Entity mob, float partialTick, PoseStack p_115464_, OrderedSubmitNodeCollector p_115465_, LivingEntity player, boolean left, float zOffset) {
+    public static <E extends Entity> void renderVine(Entity mob, float partialTick, PoseStack p_115464_, MultiBufferSource p_115465_, LivingEntity player, boolean left, float zOffset) {
         p_115464_.pushPose();
         float bodyRot = mob instanceof LivingEntity ? ((LivingEntity) mob).yBodyRot : mob.getYRot();
         float bodyRot0 = mob instanceof LivingEntity ? ((LivingEntity) mob).yBodyRotO : mob.yRotO;
@@ -182,3 +182,4 @@ public class RenderVineLasso extends EntityRenderer<EntityVineLasso, EntityRende
         p_229039_3_.vertex(p_229039_1_, (float) p_229039_4_, (float) p_229039_5_, (float) p_229039_6_).color(255, 255, 255, 255).uv(p_229039_7_, p_229039_8_).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(p_229039_12_).normal(p_229039_2_, (float) p_229039_9_, (float) p_229039_11_, (float) p_229039_10_).endVertex();
     }
 }
+

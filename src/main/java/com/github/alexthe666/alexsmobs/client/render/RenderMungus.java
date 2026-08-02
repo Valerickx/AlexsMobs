@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -103,7 +103,7 @@ public class RenderMungus extends MobRenderer<EntityMungus, LivingEntityRenderSt
         return new Vec3(d0, d1, d2);
     }
 
-    public void render(EntityMungus entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+    public void render(EntityMungus entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         BlockPos target = entityIn.getBeamTarget();
         if (target != null) {
@@ -189,7 +189,7 @@ public class RenderMungus extends MobRenderer<EntityMungus, LivingEntityRenderSt
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityMungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityMungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer lead = bufferIn.getBuffer(AMRenderTypes.getEyesFlickering(TEXTURE_SACK_OVERLAY, 0));
             float alpha = 0.75F + (Mth.cos(ageInTicks * 0.2F) + 1F) * 0.125F;
             this.getParentModel().renderToBuffer(matrixStackIn, lead, 240, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((alpha) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
@@ -216,7 +216,7 @@ public class RenderMungus extends MobRenderer<EntityMungus, LivingEntityRenderSt
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityMungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityMungus entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
             BlockState blockstate = entitylivingbaseIn.getMushroomState();
             if (blockstate == null) {
@@ -287,5 +287,6 @@ public class RenderMungus extends MobRenderer<EntityMungus, LivingEntityRenderSt
     }
 
 }
+
 
 

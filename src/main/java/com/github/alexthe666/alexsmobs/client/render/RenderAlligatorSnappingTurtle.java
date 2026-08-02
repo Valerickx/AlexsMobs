@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.client.model.ModelAlligatorSnappingTurtle
 import com.github.alexthe666.alexsmobs.entity.EntityAlligatorSnappingTurtle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -39,7 +39,7 @@ public class RenderAlligatorSnappingTurtle extends MobRenderer<EntityAlligatorSn
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityAlligatorSnappingTurtle entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityAlligatorSnappingTurtle entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(entitylivingbaseIn.getMoss() > 0){
                 float mossAlpha = 0.15F * Mth.clamp(entitylivingbaseIn.getMoss(), 0, 10);
                 VertexConsumer mossbuffer = bufferIn.getBuffer(AMRenderTypes.entityTranslucent(TEXTURE_MOSS));
@@ -48,5 +48,6 @@ public class RenderAlligatorSnappingTurtle extends MobRenderer<EntityAlligatorSn
         }
     }
 }
+
 
 

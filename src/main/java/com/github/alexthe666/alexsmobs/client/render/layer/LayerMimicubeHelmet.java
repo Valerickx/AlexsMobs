@@ -10,7 +10,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
@@ -59,7 +59,7 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
         return Identifier;
     }
 
-    public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityMimicube cube, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityMimicube cube, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         matrixStackIn.pushPose();
         ItemStack itemstack = cube.getItemBySlot(EquipmentSlot.HEAD);
         float helmetSwap = Mth.lerp(partialTicks, cube.prevHelmetSwapProgress, cube.helmetSwapProgress) * 0.2F;
@@ -95,7 +95,7 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
         matrixStackIn.popPose();
     }
 
-    private void renderArmor(EntityMimicube entity, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
+    private void renderArmor(EntityMimicube entity, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, Identifier armorResource, boolean notAVanillaModel) {
         VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutout(armorResource), false, glintIn);
         if(notAVanillaModel){
             renderer.getModel().copyPropertiesTo(modelIn);
@@ -152,3 +152,4 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
         }
     }
 }
+

@@ -7,7 +7,7 @@ import com.github.alexthe666.alexsmobs.client.render.layer.LayerRaccoonEyes;
 import com.github.alexthe666.alexsmobs.client.render.layer.LayerRaccoonItem;
 import com.github.alexthe666.alexsmobs.entity.EntityRaccoon;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -43,7 +43,7 @@ public class RenderRaccoon extends MobRenderer<EntityRaccoon, LivingEntityRender
             super(renderRaccoon);
         }
 
-        public void render(PoseStack p_225628_1_, OrderedSubmitNodeCollector p_225628_2_, int p_225628_3_, EntityRaccoon raccoon, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
+        public void render(PoseStack p_225628_1_, MultiBufferSource p_225628_2_, int p_225628_3_, EntityRaccoon raccoon, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
             if (raccoon.getColor() != null && !raccoon.isInvisible()) {
                 float lvt_11_2_;
                 float lvt_12_2_;
@@ -70,5 +70,6 @@ public class RenderRaccoon extends MobRenderer<EntityRaccoon, LivingEntityRender
         }
     }
 }
+
 
 

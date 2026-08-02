@@ -5,7 +5,7 @@ import com.github.alexthe666.alexsmobs.client.model.ModelEndPirateDoor;
 import com.github.alexthe666.alexsmobs.tileentity.TileEntityEndPirateDoor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -81,3 +81,4 @@ public class RenderEndPirateDoor<T extends TileEntityEndPirateDoor> implements B
         return 128;
     }
 }
+

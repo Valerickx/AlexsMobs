@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -33,7 +33,7 @@ public class RenderTossedItem  extends EntityRenderer<EntityTossedItem, EntityRe
     }
 
     @Override
-    public void render(EntityTossedItem entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+    public void render(EntityTossedItem entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         if(entityIn.isDart()){
             matrixStackIn.translate(0.0D, (double)-0.15F, 0.0D);
@@ -58,3 +58,4 @@ public class RenderTossedItem  extends EntityRenderer<EntityTossedItem, EntityRe
     }
 
 }
+

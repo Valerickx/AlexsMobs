@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.entity.EntityMimicube;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.util.Mth;
@@ -20,7 +20,7 @@ public class LayerMimicubeHeldItem extends RenderLayer<EntityMimicube, ModelMimi
         super(render);
     }
 
-    public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityMimicube entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityMimicube entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         ItemStack itemRight = entitylivingbaseIn.getMainHandItem();
         ItemStack itemLeft = entitylivingbaseIn.getOffhandItem();
         float rightSwap = Mth.lerp(partialTicks, entitylivingbaseIn.prevRightSwapProgress, entitylivingbaseIn.rightSwapProgress) * 0.2F;
@@ -70,3 +70,4 @@ public class LayerMimicubeHeldItem extends RenderLayer<EntityMimicube, ModelMimi
         this.getParentModel().innerbody.translateAndRotate(matrixStack);
     }
 }
+

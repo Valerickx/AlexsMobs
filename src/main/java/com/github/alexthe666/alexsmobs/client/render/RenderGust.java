@@ -7,7 +7,7 @@ import com.github.alexthe666.alexsmobs.entity.EntityGust;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -23,7 +23,7 @@ public class RenderGust extends EntityRenderer<EntityGust, EntityRenderState> {
         super(renderManagerIn);
     }
 
-    public void render(EntityGust entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+    public void render(EntityGust entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.0D, (double)0.5F, 0.0D);
         if(!entityIn.getVertical()){
@@ -47,3 +47,4 @@ public class RenderGust extends EntityRenderer<EntityGust, EntityRenderState> {
         return TEXTURE;
     }
 }
+

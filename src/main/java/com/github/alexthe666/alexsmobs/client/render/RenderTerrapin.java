@@ -7,7 +7,7 @@ import com.github.alexthe666.alexsmobs.entity.EntityTerrapin;
 import com.github.alexthe666.alexsmobs.entity.util.TerrapinTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -87,7 +87,7 @@ public class RenderTerrapin extends MobRenderer<EntityTerrapin, LivingEntityRend
             this.layer = layer;
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector buffer, int packedLightIn, EntityTerrapin turtle, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource buffer, int packedLightIn, EntityTerrapin turtle, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(turtle.getTurtleType() == TerrapinTypes.OVERLAY && !turtle.isKoopa()){
                 Identifier tex = layer == 0 ? this.getTextureLocation(turtle) : layer == 1 ? SHELL_TEXTURES[turtle.getShellType() % SHELL_TEXTURES.length] : SKIN_PATTERN_TEXTURES[turtle.getSkinType() % SKIN_PATTERN_TEXTURES.length];
                 int color = layer == 0 ? turtle.getTurtleColor() : layer == 1 ? turtle.getShellColor() : turtle.getSkinColor();
@@ -100,5 +100,6 @@ public class RenderTerrapin extends MobRenderer<EntityTerrapin, LivingEntityRend
     }
 
 }
+
 
 

@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.github.alexthe666.alexsmobs.entity.EntityVoidPortal;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -32,7 +32,7 @@ public class RenderVoidPortal extends EntityRenderer<EntityVoidPortal, EntityRen
         }
     }
 
-    public void render(EntityVoidPortal entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+    public void render(EntityVoidPortal entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(entityIn.getAttachmentFacing().getOpposite().getRotation());
         matrixStackIn.translate(0.5D, 0, 0.5D);
@@ -53,7 +53,7 @@ public class RenderVoidPortal extends EntityRenderer<EntityVoidPortal, EntityRen
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
-    private void renderPortal(EntityVoidPortal entityIn, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, boolean shattered){
+    private void renderPortal(EntityVoidPortal entityIn, PoseStack matrixStackIn, MultiBufferSource bufferIn, boolean shattered){
         Identifier tex;
         if(entityIn.getLifespan() < 20){
             tex = getGrowingTexture((int) ((entityIn.getLifespan() * 0.5F) % 10), shattered);
@@ -104,3 +104,4 @@ public class RenderVoidPortal extends EntityRenderer<EntityVoidPortal, EntityRen
         return shattered ? TEXTURE_SHATTERED_PROGRESS[Mth.clamp(age, 0, 9)] : TEXTURE_PROGRESS[Mth.clamp(age, 0, 9)];
     }
 }
+

@@ -5,7 +5,7 @@ import com.github.alexthe666.alexsmobs.client.render.RenderTiger;
 import com.github.alexthe666.alexsmobs.entity.EntityTiger;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -22,7 +22,7 @@ public class LayerTigerEyes  extends RenderLayer<EntityTiger, ModelTiger> {
         super(render);
     }
 
-    public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityTiger tiger, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityTiger tiger, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if(!tiger.isSleeping()){
             long roundedTime = tiger.level().getGameTime() % 24000;
             boolean night = roundedTime >= 13000 && roundedTime <= 22000;
@@ -42,3 +42,4 @@ public class LayerTigerEyes  extends RenderLayer<EntityTiger, ModelTiger> {
         }
     }
 }
+

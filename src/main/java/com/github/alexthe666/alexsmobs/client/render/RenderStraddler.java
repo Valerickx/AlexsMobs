@@ -7,7 +7,7 @@ import com.github.alexthe666.alexsmobs.client.model.ModelStradpole;
 import com.github.alexthe666.alexsmobs.entity.EntityStraddler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -39,7 +39,7 @@ public class RenderStraddler extends MobRenderer<EntityStraddler, LivingEntityRe
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityStraddler straddler, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityStraddler straddler, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             int t = straddler.getAnimationTick();
             if(straddler.getAnimation() == EntityStraddler.ANIMATION_LAUNCH && t < 20 && t > 6){
                 matrixStackIn.pushPose();
@@ -59,5 +59,6 @@ public class RenderStraddler extends MobRenderer<EntityStraddler, LivingEntityRe
         }
     }
 }
+
 
 

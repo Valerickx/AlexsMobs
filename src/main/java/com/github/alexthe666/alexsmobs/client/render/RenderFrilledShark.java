@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.client.model.ModelFrilledShark;
 import com.github.alexthe666.alexsmobs.entity.EntityFrilledShark;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -42,12 +42,13 @@ public class RenderFrilledShark extends MobRenderer<EntityFrilledShark, LivingEn
             super(render);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector buffer, int packedLightIn, EntityFrilledShark entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource buffer, int packedLightIn, EntityFrilledShark entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer glintBuilder = buffer.getBuffer(AMRenderTypes.getEyesFlickering(TEXTURE_TEETH, 240));
             this.getParentModel().renderToBuffer(matrixStackIn, glintBuilder, 240, NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1) * 255F), (int)((1) * 255F), (int)((1) * 255F), (int)((1) * 255F)));
 
         }
     }
 }
+
 
 

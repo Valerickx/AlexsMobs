@@ -7,7 +7,7 @@ import com.github.alexthe666.alexsmobs.entity.EntityFart;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -23,7 +23,7 @@ public class RenderFart extends EntityRenderer<EntityFart, EntityRenderState> {
         super(renderManagerIn);
     }
 
-    public void render(EntityFart entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+    public void render(EntityFart entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         float f = Math.min(entityIn.tickCount + partialTicks, 30F) / 30F;
         float alpha = 1F - f;
         matrixStackIn.pushPose();
@@ -44,3 +44,4 @@ public class RenderFart extends EntityRenderer<EntityFart, EntityRenderState> {
         return FART_TEXTURE;
     }
 }
+

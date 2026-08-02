@@ -80,7 +80,7 @@ public class RenderToucan extends MobRenderer<EntityToucan, LivingEntityRenderSt
             super(render);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityToucan entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityToucan entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             ItemStack itemstack = entitylivingbaseIn.getItemBySlot(EquipmentSlot.MAINHAND);
             matrixStackIn.pushPose();
             if (entitylivingbaseIn.isBaby()) {
@@ -106,4 +106,5 @@ public class RenderToucan extends MobRenderer<EntityToucan, LivingEntityRenderSt
         }
     }
 }
+
 

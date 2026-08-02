@@ -9,7 +9,7 @@ import com.github.alexthe666.alexsmobs.misc.AMBlockPos;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -78,7 +78,7 @@ public class RenderLaviathan extends MobRenderer<EntityLaviathan, LivingEntityRe
         }
     }
 
-    public void render(EntityLaviathan mob, float p_115456_, float partialTick, PoseStack ms, OrderedSubmitNodeCollector p_115459_, int p_115460_) {
+    public void render(EntityLaviathan mob, float p_115456_, float partialTick, PoseStack ms, MultiBufferSource p_115459_, int p_115460_) {
         super.render(mob, p_115456_, partialTick, ms, p_115459_, p_115460_);
         Entity entity = mob.getControllingPassenger();
         if (entity != null) {
@@ -131,7 +131,7 @@ public class RenderLaviathan extends MobRenderer<EntityLaviathan, LivingEntityRe
         return 0.8F * Mth.cos(swing * idleSpeed * moveScale + boxOffset * (float) 2) * swingAmount * idleDegree * moveScale;
     }
 
-    private <E extends Entity> void renderRein(EntityLaviathan mob, float partialTick, PoseStack p_115464_, OrderedSubmitNodeCollector p_115465_, E rider, boolean left) {
+    private <E extends Entity> void renderRein(EntityLaviathan mob, float partialTick, PoseStack p_115464_, MultiBufferSource p_115465_, E rider, boolean left) {
         p_115464_.pushPose();
         Entity head = mob.headPart;
         if (head == null) {
@@ -212,7 +212,7 @@ public class RenderLaviathan extends MobRenderer<EntityLaviathan, LivingEntityRe
             super(render);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityLaviathan laviathan, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityLaviathan laviathan, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (!laviathan.isObsidian()) {
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.eyes(TEXTURE_GLOW));
                 this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
@@ -229,5 +229,6 @@ public class RenderLaviathan extends MobRenderer<EntityLaviathan, LivingEntityRe
 
     }
 }
+
 
 

@@ -7,7 +7,7 @@ import com.github.alexthe666.alexsmobs.entity.EntitySunbird;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -33,7 +33,7 @@ public class RenderSunbird extends MobRenderer<EntitySunbird, LivingEntityRender
     }
 
     @Override
-    public void render(EntitySunbird entity, float yaw, float partialTicks, PoseStack poseStack, OrderedSubmitNodeCollector buffer, int light) {
+    public void render(EntitySunbird entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light) {
         super.render(entity, yaw, partialTicks, poseStack, buffer, light);
         final float ageInTicks = entity.tickCount + partialTicks;
         final float scale = (12.0F + (float) Math.sin(ageInTicks * 0.3F)) * entity.getScorchProgress(partialTicks);
@@ -75,12 +75,13 @@ public class RenderSunbird extends MobRenderer<EntitySunbird, LivingEntityRender
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntitySunbird entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntitySunbird entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             VertexConsumer scorch = bufferIn.getBuffer(AMRenderTypes.getEyesAlphaEnabled(TEXTURE_GLOW));
             float alpha = entitylivingbaseIn.getScorchProgress(partialTicks);
             this.getParentModel().renderToBuffer(matrixStackIn, scorch, 240, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), 1.0F, 1.0F, 1.0F, alpha);
         }
     }
 }
+
 
 

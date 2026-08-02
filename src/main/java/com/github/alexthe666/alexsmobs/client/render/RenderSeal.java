@@ -8,7 +8,7 @@ import com.github.alexthe666.alexsmobs.entity.EntitySeal;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -48,7 +48,7 @@ public class RenderSeal extends MobRenderer<EntitySeal, LivingEntityRenderState,
     }
 
     @Override
-    protected void renderNameTag(EntitySeal seal, Component text, PoseStack poseStack, OrderedSubmitNodeCollector bufferSrc, int numberIn) {
+    protected void renderNameTag(EntitySeal seal, Component text, PoseStack poseStack, MultiBufferSource bufferSrc, int numberIn) {
         if(seal.isTearsEasterEgg()){
             double d0 = this.entityRenderDispatcher.distanceToSqr(seal);
             if (net.neoforged.neoforge.client.ClientHooks.isNameplateInRenderDistance(seal, d0)) {
@@ -104,7 +104,7 @@ public class RenderSeal extends MobRenderer<EntitySeal, LivingEntityRenderState,
             super(p_i50928_1_);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntitySeal entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntitySeal entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(entitylivingbaseIn.isTearsEasterEgg()){
                 VertexConsumer lead = bufferIn.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_TEARS));
                 this.getParentModel().renderToBuffer(matrixStackIn, lead, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0), 1.0F, 1.0F, 1.0F, 1.0F);
@@ -112,5 +112,6 @@ public class RenderSeal extends MobRenderer<EntitySeal, LivingEntityRenderState,
         }
     }
 }
+
 
 

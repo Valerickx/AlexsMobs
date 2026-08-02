@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.entity.EntityHemolymph;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -23,7 +23,7 @@ public class RenderHemolymph extends EntityRenderer<EntityHemolymph, EntityRende
         super(renderManagerIn);
     }
 
-    public void render(EntityHemolymph p_225623_1_, float p_225623_2_, float p_225623_3_, PoseStack p_225623_4_, OrderedSubmitNodeCollector p_225623_5_, int p_225623_6_) {
+    public void render(EntityHemolymph p_225623_1_, float p_225623_2_, float p_225623_3_, PoseStack p_225623_4_, MultiBufferSource p_225623_5_, int p_225623_6_) {
         p_225623_4_.pushPose();
         p_225623_4_.mulPose(Axis.YP.rotationDegrees(Mth.lerp(p_225623_3_, p_225623_1_.yRotO, p_225623_1_.getYRot()) - 90.0F));
         p_225623_4_.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(p_225623_3_, p_225623_1_.xRotO, p_225623_1_.getXRot())));
@@ -70,3 +70,4 @@ public class RenderHemolymph extends EntityRenderer<EntityHemolymph, EntityRende
         return TEXTURE;
     }
 }
+

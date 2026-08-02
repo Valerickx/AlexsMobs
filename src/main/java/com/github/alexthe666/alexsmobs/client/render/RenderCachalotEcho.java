@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.entity.EntityCachalotEcho;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -30,7 +30,7 @@ public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho, Entit
         super(renderManagerIn);
     }
 
-    public void render(EntityCachalotEcho entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn) {
+    public void render(EntityCachalotEcho entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.0D, 0.25F, 0.0D);
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 90.0F));
@@ -47,7 +47,7 @@ public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho, Entit
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
-    private void renderArc(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int age, boolean fast, boolean green) {
+    private void renderArc(PoseStack matrixStackIn, MultiBufferSource bufferIn, int age, boolean fast, boolean green) {
         matrixStackIn.pushPose();
         Identifier res;
         if(fast){
@@ -103,3 +103,4 @@ public class RenderCachalotEcho extends EntityRenderer<EntityCachalotEcho, Entit
         }
     }
 }
+

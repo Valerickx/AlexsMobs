@@ -6,7 +6,7 @@ import com.github.alexthe666.alexsmobs.client.model.ModelKomodoDragon;
 import com.github.alexthe666.alexsmobs.entity.EntityKomodoDragon;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -40,7 +40,7 @@ public class RenderKomodoDragon extends MobRenderer<EntityKomodoDragon, LivingEn
             super(render);
         }
 
-        public void render(PoseStack matrixStackIn, OrderedSubmitNodeCollector bufferIn, int packedLightIn, EntityKomodoDragon entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityKomodoDragon entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(entitylivingbaseIn.isMaid()){
                 VertexConsumer maid = bufferIn.getBuffer(AMRenderTypes.entityCutoutNoCull(TEXTURE_MAID));
                 this.getParentModel().copyPropertiesTo(MAID_MODEL);
@@ -58,5 +58,6 @@ public class RenderKomodoDragon extends MobRenderer<EntityKomodoDragon, LivingEn
         }
     }
 }
+
 
 
