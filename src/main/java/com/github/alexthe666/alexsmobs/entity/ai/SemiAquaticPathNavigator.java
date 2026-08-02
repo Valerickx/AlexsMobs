@@ -41,3 +41,6 @@ public class SemiAquaticPathNavigator extends WaterBoundPathNavigation {
     public void setCanFloat(boolean canSwim) {
     }
 }
+
+
+

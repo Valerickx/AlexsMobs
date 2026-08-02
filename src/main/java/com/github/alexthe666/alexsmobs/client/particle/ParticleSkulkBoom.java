@@ -10,14 +10,16 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.util.RandomSource;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -63,8 +65,8 @@ public class ParticleSkulkBoom extends Particle {
         float f1 = (float)(Mth.lerp((double)partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float)(Mth.lerp((double)partialTick, this.zo, this.z) - vec3.z());
         Quaternionf quaternion = Axis.XP.rotationDegrees(90F);
-        OrderedSubmitNodeCollector.BufferSource OrderedSubmitNodeCollector$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer portalStatic = OrderedSubmitNodeCollector$buffersource.getBuffer(AMRenderTypes.getSkulkBoom());
+        var bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer portalStatic = bufferSource.getBuffer(AMRenderTypes.getSkulkBoom());
         PoseStack posestack = new PoseStack();
         PoseStack.Pose posestack$pose = posestack.last();
         Matrix4f matrix4f = posestack$pose.pose();
@@ -86,22 +88,25 @@ public class ParticleSkulkBoom extends Particle {
         float f5 = 0;
         float f6 = 1;
         int j = 240;
-        portalStatic.vertex((double)avector3f[0].x(), (double)avector3f[0].y(), (double)avector3f[0].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f8, f6).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(j).normal(matrix3f, 0.0F, -1.0F, 0.0F).endVertex();
-        portalStatic.vertex((double)avector3f[1].x(), (double)avector3f[1].y(), (double)avector3f[1].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f8, f5).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(j).normal(matrix3f, 0.0F, -1.0F, 0.0F).endVertex();
-        portalStatic.vertex((double)avector3f[2].x(), (double)avector3f[2].y(), (double)avector3f[2].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f7, f5).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(j).normal(matrix3f, 0.0F, -1.0F, 0.0F).endVertex();
-        portalStatic.vertex((double)avector3f[3].x(), (double)avector3f[3].y(), (double)avector3f[3].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f7, f6).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(j).normal(matrix3f, 0.0F, -1.0F, 0.0F).endVertex();
+        portalStatic.vertex((double)avector3f[0].x(), (double)avector3f[0].y(), (double)avector3f[0].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f8, f6) .overlay(OverlayTexture.NO_OVERLAY).uv2(j).normal(0.0F, -1.0F, 0.0F).endVertex();
+        portalStatic.vertex((double)avector3f[1].x(), (double)avector3f[1].y(), (double)avector3f[1].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f8, f5) .overlay(OverlayTexture.NO_OVERLAY).uv2(j).normal(0.0F, -1.0F, 0.0F).endVertex();
+        portalStatic.vertex((double)avector3f[2].x(), (double)avector3f[2].y(), (double)avector3f[2].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f7, f5) .overlay(OverlayTexture.NO_OVERLAY).uv2(j).normal(0.0F, -1.0F, 0.0F).endVertex();
+        portalStatic.vertex((double)avector3f[3].x(), (double)avector3f[3].y(), (double)avector3f[3].z()).color(this.rCol, this.gCol, this.bCol, alphaLerp).uv(f7, f6) .overlay(OverlayTexture.NO_OVERLAY).uv2(j).normal(0.0F, -1.0F, 0.0F).endVertex();
 
-        OrderedSubmitNodeCollector$buffersource.endBatch();
+        bufferSource.endBatch();
     }
     @Override
-    public ParticleRenderType getRenderType() {
+    public ParticleRenderType getGroup() {
         return ParticleRenderType.CUSTOM;
     }
 
     @OnlyIn(Dist.CLIENT)
     public static class Factory implements ParticleProvider<SimpleParticleType> {
-        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             return new ParticleSkulkBoom(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
         }
     }
 }
+
+
+

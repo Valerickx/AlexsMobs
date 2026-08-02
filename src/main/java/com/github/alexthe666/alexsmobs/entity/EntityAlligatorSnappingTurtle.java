@@ -410,3 +410,6 @@ public class EntityAlligatorSnappingTurtle extends Animal implements ISemiAquati
         return AMEntityRegistry.ALLIGATOR_SNAPPING_TURTLE.get().create(p_241840_1_, EntitySpawnReason.MOB_SUMMONED);
     }
 }
+
+
+

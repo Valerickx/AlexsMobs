@@ -44,3 +44,6 @@ public class ItemShieldOfTheDeep extends Item {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }
 }
+
+
+

@@ -149,3 +149,6 @@ public class BlockBananaSlugSlime extends HalfTransparentBlock {
         return fullBlocks > 0;
     }
 }
+
+
+

@@ -260,7 +260,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
         if (isTame() && itemstack.is(AMTagRegistry.CAIMAN_FOODSTUFFS) && this.getHealth() < this.getMaxHealth()) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             this.heal(5);
             return InteractionResult.SUCCESS;
         }
@@ -510,3 +510,7 @@ public class EntityCaiman extends TamableAnimal implements ISemiAquatic,IFollowe
         }
     }
 }
+
+
+
+

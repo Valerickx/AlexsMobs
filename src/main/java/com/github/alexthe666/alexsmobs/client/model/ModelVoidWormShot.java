@@ -65,3 +65,6 @@ public class ModelVoidWormShot extends AdvancedEntityModel<Entity> {
         this.cube.setScale(outerScale, outerScale, outerScale);
     }
 }
+
+
+

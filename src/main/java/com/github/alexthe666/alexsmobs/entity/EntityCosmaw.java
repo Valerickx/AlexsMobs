@@ -269,7 +269,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
                 heldItemTime = 0;
                 this.heal(4);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.DOLPHIN_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DOLPHIN_EAT, this.getSoundVolume(), this.getVoicePitch());
                 if (this.getMainHandItem().is(AMTagRegistry.COSMAW_TAMEABLES) && fishThrowerID != null && !this.isTame()) {
                     if (getRandom().nextFloat() < 0.3F) {
                         this.setTame(true, true);
@@ -601,3 +601,7 @@ public class EntityCosmaw extends TamableAnimal implements ITargetsDroppedItems,
         }
     }
 }
+
+
+
+

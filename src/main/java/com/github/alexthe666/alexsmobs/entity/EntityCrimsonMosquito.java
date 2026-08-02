@@ -271,7 +271,7 @@ public class EntityCrimsonMosquito extends Monster {
                                     flightTicks = -150 - random.nextInt(200);
                                 }
                                 this.gameEvent(GameEvent.EAT);
-                                this.playSound(SoundEvents.HONEY_DRINK, this.getSoundVolume(), this.getVoicePitch());
+                                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.HONEY_DRINK, this.getSoundVolume(), this.getVoicePitch());
                                 this.setBloodLevel(this.getBloodLevel() + 1);
                                 if (this.getBloodLevel() > 3) {
                                     this.removeVehicle();
@@ -879,3 +879,7 @@ public class EntityCrimsonMosquito extends Monster {
     }
 
 }
+
+
+
+

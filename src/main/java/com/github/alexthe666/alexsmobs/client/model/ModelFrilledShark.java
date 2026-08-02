@@ -147,3 +147,6 @@ public class ModelFrilledShark extends AdvancedEntityModel<EntityFrilledShark> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

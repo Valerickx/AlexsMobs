@@ -72,3 +72,6 @@ public class MungusAITemptMushroom extends Goal {
         return mob.shouldFollowMushroom(stack) || stack.getItem() == AMItemRegistry.MUNGAL_SPORES.get();
     }
 }
+
+
+

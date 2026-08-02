@@ -108,3 +108,6 @@ public class BeachedCachalotWhaleSpawner {
         return this.world.getBlockState(p_226559_1_.below()).is(Blocks.WATER);
     }
 }
+
+
+

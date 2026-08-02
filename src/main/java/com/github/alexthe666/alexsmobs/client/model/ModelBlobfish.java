@@ -87,3 +87,6 @@ public class ModelBlobfish extends AdvancedEntityModel<EntityBlobfish> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

@@ -153,3 +153,6 @@ public class LayerMimicubeHelmet extends RenderLayer<EntityMimicube, ModelMimicu
     }
 }
 
+
+
+

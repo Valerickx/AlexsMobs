@@ -84,3 +84,6 @@ public class ModelMimicube extends AdvancedEntityModel<EntityMimicube> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

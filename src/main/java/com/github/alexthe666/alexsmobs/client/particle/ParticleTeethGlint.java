@@ -31,7 +31,7 @@ public class ParticleTeethGlint extends SingleQuadParticle {
         return 240 | lvt_4_1_ << 16;
     }
 
-    public ParticleRenderType getRenderType() {
+    public ParticleRenderType getGroup() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
@@ -76,3 +76,6 @@ public class ParticleTeethGlint extends SingleQuadParticle {
 
 
 }
+
+
+

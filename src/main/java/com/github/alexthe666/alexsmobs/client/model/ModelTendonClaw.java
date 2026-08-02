@@ -72,3 +72,6 @@ public class ModelTendonClaw extends AdvancedEntityModel<EntityTendonSegment> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

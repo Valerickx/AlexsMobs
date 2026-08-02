@@ -548,3 +548,6 @@ public class EntityKomodoDragon extends TamableAnimal implements ITargetsDropped
 
     }
 }
+
+
+

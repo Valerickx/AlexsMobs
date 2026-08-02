@@ -98,7 +98,7 @@ public class ItemDimensionalCarver extends Item {
         RandomSource random = player.getRandom();
         if (count % 5 == 0) {
             player.gameEvent(GameEvent.ITEM_INTERACT_START);
-            player.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1, 0.5F + random.nextFloat());
+            player.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.NETHERITE_BLOCK_HIT, 1, 0.5F + random.nextFloat());
         }
         boolean flag = false;
         CompoundTag tag = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
@@ -117,7 +117,7 @@ public class ItemDimensionalCarver extends Item {
             }
             if (count == 1 && !player.level().isClientSide()) {
                 player.gameEvent(GameEvent.ITEM_INTERACT_START);
-                player.playSound(SoundEvents.GLASS_BREAK, 1, 0.5F);
+                player.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GLASS_BREAK, 1, 0.5F);
                 EntityVoidPortal portal = new EntityVoidPortal(player.level(), this);
                 portal.setPos(x, y, z);
                 Direction dir = Direction.orderedByNearest(player)[0].getOpposite();
@@ -176,3 +176,7 @@ public class ItemDimensionalCarver extends Item {
         portal.setDestination(respawnPosition.above(2));
     }
 }
+
+
+
+

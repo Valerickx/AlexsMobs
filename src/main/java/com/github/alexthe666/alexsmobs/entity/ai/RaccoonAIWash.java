@@ -75,7 +75,7 @@ public class RaccoonAIWash extends Goal {
                 this.raccoon.lookForWaterBeforeEatingTimer = 0;
                 if(washTime % 10 == 0){
                     this.raccoon.gameEvent(GameEvent.BLOCK_ACTIVATE);
-                    this.raccoon.playSound(SoundEvents.GENERIC_SWIM, 0.7F, 0.5F + raccoon.getRandom().nextFloat());
+                    this.raccoon.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_SWIM, 0.7F, 0.5F + raccoon.getRandom().nextFloat());
                 }
                 washTime++;
                 if(washTime > 100 || raccoon.isHoldingSugar() && washTime > 20){
@@ -144,3 +144,7 @@ public class RaccoonAIWash extends Goal {
         return null;
     }
 }
+
+
+
+

@@ -24,3 +24,6 @@ public class LayerMimicubeTexture extends RenderLayer<EntityMimicube, ModelMimic
     }
 }
 
+
+
+

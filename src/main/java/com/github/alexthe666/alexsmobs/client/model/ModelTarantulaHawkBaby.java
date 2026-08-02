@@ -67,3 +67,6 @@ public class ModelTarantulaHawkBaby extends AdvancedEntityModel<EntityTarantulaH
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

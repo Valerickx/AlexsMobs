@@ -73,3 +73,6 @@ public class RenderRaccoon extends MobRenderer<EntityRaccoon, LivingEntityRender
 
 
 
+
+
+

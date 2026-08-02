@@ -69,3 +69,6 @@ public class RecipeBisonUpgrade extends CustomRecipe {
         return AMRecipeRegistry.BISON_UPGRADE.get();
     }
 }
+
+
+

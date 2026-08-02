@@ -36,3 +36,6 @@ public class RenderBoneSerpentPart extends LivingEntityRenderer<EntityBoneSerpen
         return entity.isTail() ? TEXTURE_TAIL : TEXTURE_BODY;
     }
 }
+
+
+

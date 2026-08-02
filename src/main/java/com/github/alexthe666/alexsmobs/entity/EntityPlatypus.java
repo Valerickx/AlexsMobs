@@ -457,7 +457,7 @@ public class EntityPlatypus extends Animal implements ISemiAquatic, ITargetsDrop
     @Override
     public void onGetItem(ItemEntity e) {
         this.gameEvent(GameEvent.EAT);
-        this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
         if(e.getItem().is(AMTagRegistry.PLATYPUS_CHARGEABLES)) {
             superCharged = e.getItem().is(AMTagRegistry.PLATYPUS_SUPER_CHARGEABLES);
             this.setSensing(true);
@@ -553,3 +553,7 @@ public class EntityPlatypus extends Animal implements ISemiAquatic, ITargetsDrop
         }
     }
 }
+
+
+
+

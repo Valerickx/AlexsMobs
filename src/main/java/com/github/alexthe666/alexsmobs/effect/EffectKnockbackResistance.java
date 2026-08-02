@@ -25,3 +25,6 @@ public class EffectKnockbackResistance extends MobEffect {
     }
 
 }
+
+
+

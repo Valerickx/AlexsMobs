@@ -7,3 +7,6 @@ public interface ILeftClick {
 
     boolean onLeftClick(ItemStack stack, LivingEntity playerIn);
 }
+
+
+

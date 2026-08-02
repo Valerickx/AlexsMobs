@@ -321,7 +321,7 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
         if (!isTame() && itemstack.is(AMTagRegistry.MANTIS_SHRIMP_TAMEABLES)) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
             fishFeedings++;
             if (fishFeedings > 10 && getRandom().nextInt(6) == 0 || fishFeedings > 30) {
                 this.tame(player);
@@ -335,7 +335,7 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
             if (this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, hand, itemstack);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.heal(5);
                 return InteractionResult.SUCCESS;
             }
@@ -736,3 +736,7 @@ public class EntityMantisShrimp extends TamableAnimal implements ISemiAquatic, I
         }
     }
 }
+
+
+
+

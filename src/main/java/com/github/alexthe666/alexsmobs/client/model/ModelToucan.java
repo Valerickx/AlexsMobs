@@ -184,3 +184,6 @@ public class ModelToucan extends AdvancedEntityModel<EntityToucan> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

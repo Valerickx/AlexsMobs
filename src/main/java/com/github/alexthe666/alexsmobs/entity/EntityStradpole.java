@@ -370,7 +370,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
                     } else {
                         holder.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                     }
-                    holder.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
+                    holder.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
                 }
             }
 
@@ -488,3 +488,7 @@ public class EntityStradpole extends WaterAnimal implements Bucketable {
     }
 
 }
+
+
+
+

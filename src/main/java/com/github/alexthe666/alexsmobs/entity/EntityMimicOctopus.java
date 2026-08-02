@@ -346,7 +346,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
         if (!tame && itemstack.is(AMTagRegistry.MIMIC_OCTOPUS_TAMEABLES)) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.DOLPHIN_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DOLPHIN_EAT, this.getSoundVolume(), this.getVoicePitch());
             fishFeedings++;
             if (this.getMimicState() == MimicState.OVERLAY && this.getMimickedBlock() == null) {
                 if (fishFeedings > 5 && getRandom().nextInt(2) == 0 || fishFeedings > 8) {
@@ -362,7 +362,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
             if (this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, hand, itemstack);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.DOLPHIN_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DOLPHIN_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.heal(5);
                 return InteractionResult.SUCCESS;
             }
@@ -1251,3 +1251,7 @@ public class EntityMimicOctopus extends TamableAnimal implements ISemiAquatic, I
         }
     }
 }
+
+
+
+

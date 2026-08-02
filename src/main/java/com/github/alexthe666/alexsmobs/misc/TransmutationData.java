@@ -108,3 +108,6 @@ public class TransmutationData {
         return itemstackData.values().doubleStream().sum();
     }
 }
+
+
+

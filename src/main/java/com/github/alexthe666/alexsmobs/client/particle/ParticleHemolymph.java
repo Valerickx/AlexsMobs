@@ -3,6 +3,7 @@ package com.github.alexthe666.alexsmobs.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -32,7 +33,7 @@ public class ParticleHemolymph extends SingleQuadParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public ParticleRenderType getGroup() {
         return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
@@ -44,10 +45,13 @@ public class ParticleHemolymph extends SingleQuadParticle {
             this.spriteSet = spriteSet;
         }
 
-        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             ParticleHemolymph p = new ParticleHemolymph(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
             p.pickSprite(spriteSet);
             return p;
         }
     }
 }
+
+
+

@@ -162,3 +162,6 @@ public class ModelGuster extends AdvancedEntityModel<EntityGuster> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

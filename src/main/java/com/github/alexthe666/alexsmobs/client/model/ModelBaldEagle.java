@@ -273,3 +273,6 @@ public class ModelBaldEagle extends AdvancedEntityModel<EntityBaldEagle> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

@@ -48,3 +48,6 @@ public class LayerGrizzlyItem extends RenderLayer<EntityGrizzlyBear, ModelGrizzl
     }
 }
 
+
+
+

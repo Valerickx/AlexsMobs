@@ -211,3 +211,6 @@ public class ModelDropBear extends AdvancedEntityModel<EntityDropBear> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

@@ -33,3 +33,6 @@ public class RenderMantisShrimp extends MobRenderer<EntityMantisShrimp, LivingEn
 }
 
 
+
+
+

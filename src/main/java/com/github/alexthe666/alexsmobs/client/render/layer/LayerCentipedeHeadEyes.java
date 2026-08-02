@@ -25,3 +25,6 @@ public class LayerCentipedeHeadEyes extends RenderLayer<EntityCentipedeHead, Adv
     }
 }
 
+
+
+

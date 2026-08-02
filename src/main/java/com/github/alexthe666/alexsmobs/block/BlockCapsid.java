@@ -122,3 +122,6 @@ public class BlockCapsid extends BaseEntityBlock {
         return createTickerHelper(p_152182_, AMTileEntityRegistry.CAPSID.get(), TileEntityCapsid::commonTick);
     }
 }
+
+
+

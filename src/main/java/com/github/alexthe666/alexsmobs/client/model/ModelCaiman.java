@@ -249,3 +249,6 @@ public class ModelCaiman extends AdvancedEntityModel<EntityCaiman> {
         return (float) ((Math.cos(limbSwing * speed + offset) * degree * limbSwingAmount) * (inverse ? -1 : 1));
     }
 }
+
+
+

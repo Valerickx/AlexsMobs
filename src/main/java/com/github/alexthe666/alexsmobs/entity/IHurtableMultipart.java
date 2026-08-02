@@ -33,3 +33,6 @@ public interface IHurtableMultipart {
         return f1;
     }
 }
+
+
+

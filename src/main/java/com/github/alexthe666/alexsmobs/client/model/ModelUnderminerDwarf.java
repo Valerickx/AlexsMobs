@@ -348,3 +348,6 @@ public class ModelUnderminerDwarf extends AdvancedEntityModel<EntityUnderminer> 
         return p_102857_.swingingArm == InteractionHand.MAIN_HAND ? humanoidarm : humanoidarm.getOpposite();
     }
 }
+
+
+

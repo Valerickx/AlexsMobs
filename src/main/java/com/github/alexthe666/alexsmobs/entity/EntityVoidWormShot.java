@@ -249,7 +249,7 @@ public class EntityVoidWormShot extends Entity {
             this.onHitBlock((BlockHitResult) result);
         }
         this.gameEvent(GameEvent.ENTITY_DIE);
-        this.playSound(SoundEvents.GLASS_BREAK, 1F, 0.5F);
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GLASS_BREAK, 1F, 0.5F);
         Entity entity = this.getShooter();
     }
 
@@ -283,3 +283,7 @@ public class EntityVoidWormShot extends Entity {
         this.setYRot( lerpRotation(this.yRotO, (float) (Mth.atan2(vector3d.x, vector3d.z) * (double) Mth.RAD_TO_DEG)));
     }
 }
+
+
+
+

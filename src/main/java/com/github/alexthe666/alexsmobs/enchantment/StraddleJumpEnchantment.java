@@ -5,3 +5,6 @@ public class StraddleJumpEnchantment extends StraddleEnchantment {
         super();
     }
 }
+
+
+

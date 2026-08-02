@@ -242,3 +242,6 @@ public class ModelEnderiophage extends AdvancedEntityModel<EntityEnderiophage> {
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

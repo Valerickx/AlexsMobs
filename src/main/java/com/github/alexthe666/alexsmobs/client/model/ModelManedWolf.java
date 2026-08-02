@@ -241,3 +241,6 @@ public class ModelManedWolf extends AdvancedEntityModel<EntityManedWolf> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

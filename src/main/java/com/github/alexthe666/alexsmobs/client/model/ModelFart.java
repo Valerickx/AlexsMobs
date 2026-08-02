@@ -61,3 +61,6 @@ public class ModelFart extends AdvancedEntityModel<EntityFart> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

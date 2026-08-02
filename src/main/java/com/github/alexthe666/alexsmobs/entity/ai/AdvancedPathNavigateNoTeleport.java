@@ -29,3 +29,6 @@ public class AdvancedPathNavigateNoTeleport extends AdvancedPathNavigate {
         return wide ? this.mob.getBbWidth() * 0.75F : super.calculateMaxDistanceToWaypoint();
     }
 }
+
+
+

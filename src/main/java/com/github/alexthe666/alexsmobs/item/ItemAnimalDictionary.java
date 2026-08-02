@@ -79,3 +79,6 @@ public class ItemAnimalDictionary extends Item {
         tooltip.add(Component.translatable("item.alexsmobs.animal_dictionary.desc").withStyle(ChatFormatting.GRAY));
     }
 }
+
+
+

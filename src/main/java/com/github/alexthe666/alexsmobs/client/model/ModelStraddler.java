@@ -157,3 +157,6 @@ public class ModelStraddler extends AdvancedEntityModel<EntityStraddler> {
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

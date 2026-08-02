@@ -27,3 +27,6 @@ public class EffectPoisonResistance extends MobEffect {
     }
 
 }
+
+
+

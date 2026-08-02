@@ -68,7 +68,7 @@ public class RenderToucan extends MobRenderer<EntityToucan, LivingEntityRenderSt
 
         public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityToucan entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(entitylivingbaseIn.isEnchanted()){
-                        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(TEXTURE_GOLDEN), false, true);
+                        VertexConsumer vertexconsumer = AMRenderTypes.getArmorFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(TEXTURE_GOLDEN), false, true);
                 this.getParentModel().renderToBuffer(matrixStackIn, vertexconsumer, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1, 1, 1, 1.0F);
             }
         }
@@ -106,5 +106,8 @@ public class RenderToucan extends MobRenderer<EntityToucan, LivingEntityRenderSt
         }
     }
 }
+
+
+
 
 

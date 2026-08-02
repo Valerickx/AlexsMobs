@@ -73,3 +73,6 @@ public class EntityCockroachEgg extends ThrowableItemProjectile {
         return AMItemRegistry.COCKROACH_OOTHECA.get();
     }
 }
+
+
+

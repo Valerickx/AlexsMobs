@@ -240,7 +240,7 @@ public class EntityEnderiophage extends Animal implements Enemy {
                             if (mount instanceof EnderMan) {
                                 this.setMissingEye(false);
                                 this.gameEvent(GameEvent.EAT);
-                                this.playSound(SoundEvents.ENDER_EYE_DEATH, this.getSoundVolume(), this.getVoicePitch());
+                                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.ENDER_EYE_DEATH, this.getSoundVolume(), this.getVoicePitch());
                                 this.heal(5);
                                 ((EnderMan) mount).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 400));
                                 this.fleeAfterStealTime = 400;
@@ -264,7 +264,7 @@ public class EntityEnderiophage extends Animal implements Enemy {
                                         }
                                         this.heal(5);
                                         this.gameEvent(GameEvent.ENTITY_ROAR);
-                                        this.playSound(SoundEvents.ITEM_BREAK, this.getSoundVolume(), this.getVoicePitch());
+                                        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.ITEM_BREAK, this.getSoundVolume(), this.getVoicePitch());
                                         this.setMissingEye(true);
                                     }
                                     if (!this.level().isClientSide()) {
@@ -771,3 +771,7 @@ public class EntityEnderiophage extends Animal implements Enemy {
     }
 
 }
+
+
+
+

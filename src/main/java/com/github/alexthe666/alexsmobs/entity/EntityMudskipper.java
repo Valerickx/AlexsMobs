@@ -456,7 +456,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
             this.usePlayerItem(player, hand, itemstack);
             this.openMouth(10);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
             if (getRandom().nextInt(2) == 0) {
                 this.tame(player);
                 this.level().broadcastEntityEvent(this, (byte) 7);
@@ -470,7 +470,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
                 this.usePlayerItem(player, hand, itemstack);
                 this.openMouth(10);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.heal(5);
                 return InteractionResult.SUCCESS;
             }
@@ -512,3 +512,7 @@ public class EntityMudskipper extends TamableAnimal implements IFollower, ISemiA
         return super.isAlliedTo(entityIn);
     }
 }
+
+
+
+

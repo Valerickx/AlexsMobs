@@ -178,3 +178,6 @@ public class ModelSoulVulture extends AdvancedEntityModel<EntitySoulVulture> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

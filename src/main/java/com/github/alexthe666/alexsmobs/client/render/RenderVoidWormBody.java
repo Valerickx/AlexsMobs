@@ -81,3 +81,6 @@ public class RenderVoidWormBody extends LivingEntityRenderer<EntityVoidWormPart,
         return super.shouldShowName(entity) && (entity.shouldShowName() || entity.hasCustomName() && entity == this.entityRenderDispatcher.crosshairPickEntity);
     }
 }
+
+
+

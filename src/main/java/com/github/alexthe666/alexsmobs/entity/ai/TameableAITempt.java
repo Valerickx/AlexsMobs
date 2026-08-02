@@ -44,3 +44,6 @@ public class TameableAITempt extends TemptGoal {
     }
 
 }
+
+
+

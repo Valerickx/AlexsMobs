@@ -49,3 +49,6 @@ public class LayerLeafcutterAntLeaf extends RenderLayer<EntityLeafcutterAnt, Adv
     }
 }
 
+
+
+

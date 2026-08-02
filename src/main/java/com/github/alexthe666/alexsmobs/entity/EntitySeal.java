@@ -448,7 +448,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
         if (e.getItem().is(AMTagRegistry.SEAL_OFFERINGS)) {
             fishFeedings++;
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
             Entity itemThrower = e.getOwner();
             if (fishFeedings >= 3) {
                 if(itemThrower != null){
@@ -483,3 +483,7 @@ public class EntitySeal extends Animal implements ISemiAquatic, IHerdPanic, ITar
 
     }
 }
+
+
+
+

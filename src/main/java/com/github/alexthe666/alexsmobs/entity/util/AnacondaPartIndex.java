@@ -32,3 +32,6 @@ public enum AnacondaPartIndex {
         return backOffset;
     }
 }
+
+
+

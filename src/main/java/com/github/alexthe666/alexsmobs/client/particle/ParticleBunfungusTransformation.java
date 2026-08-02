@@ -29,7 +29,7 @@ public class ParticleBunfungusTransformation  extends SingleQuadParticle {
         this.setAlpha((float) (Math.random() * 0.3F + 0.7F));
     }
 
-    public ParticleRenderType getRenderType() {
+    public ParticleRenderType getGroup() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
@@ -69,3 +69,6 @@ public class ParticleBunfungusTransformation  extends SingleQuadParticle {
         }
     }
 }
+
+
+

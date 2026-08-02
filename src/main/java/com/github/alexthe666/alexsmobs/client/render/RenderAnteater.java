@@ -40,3 +40,6 @@ public class RenderAnteater extends MobRenderer<EntityAnteater, LivingEntityRend
 }
 
 
+
+
+

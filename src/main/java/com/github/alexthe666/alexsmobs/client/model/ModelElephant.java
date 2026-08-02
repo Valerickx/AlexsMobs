@@ -371,3 +371,6 @@ public class ModelElephant extends AdvancedEntityModel<EntityElephant> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

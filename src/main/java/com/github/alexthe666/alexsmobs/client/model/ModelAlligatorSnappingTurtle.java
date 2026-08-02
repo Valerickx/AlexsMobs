@@ -181,3 +181,6 @@ public class ModelAlligatorSnappingTurtle extends AdvancedEntityModel<EntityAlli
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

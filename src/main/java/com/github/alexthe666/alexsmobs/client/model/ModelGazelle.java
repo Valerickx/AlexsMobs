@@ -301,3 +301,6 @@ public class ModelGazelle extends AdvancedEntityModel<EntityGazelle> {
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

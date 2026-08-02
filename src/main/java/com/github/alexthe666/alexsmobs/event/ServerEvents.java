@@ -354,7 +354,7 @@ public class ServerEvents {
                         event.getItemStack().shrink(1);
                     }
                     event.getTarget().gameEvent(GameEvent.EAT);
-                    event.getTarget().playSound(SoundEvents.GENERIC_EAT, 1.0F, 0.5F + event.getEntity().getRandom().nextFloat());
+                    event.getTarget().playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, 1.0F, 0.5F + event.getEntity().getRandom().nextFloat());
                     if (event.getEntity().getRandom().nextFloat() < 0.4F) {
                         living.removeEffect(AMEffectRegistry.ENDER_FLU);
                         Items.CHORUS_FRUIT.finishUsingItem(event.getItemStack().copy(), event.getLevel(), ((LivingEntity) event.getTarget()));
@@ -436,7 +436,7 @@ public class ServerEvents {
             if (flag) {
                 event.setCanceled(true);
                 event.getEntity().gameEvent(GameEvent.BLOCK_PLACE);
-                event.getEntity().playSound(SoundEvents.SAND_BREAK, 1, 1);
+                event.getEntity().playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SAND_BREAK, 1, 1);
                 event.getEntity().getCooldowns().addCooldown(event.getItemStack(), 30);
                 event.setCancellationResult(InteractionResult.SUCCESS);
             }
@@ -750,3 +750,7 @@ public class ServerEvents {
     }
 
 }
+
+
+
+

@@ -454,3 +454,6 @@ public class EntityAnacondaPart extends LivingEntity implements IHurtableMultipa
         return this.entityData.get(BABY);
     }
 }
+
+
+

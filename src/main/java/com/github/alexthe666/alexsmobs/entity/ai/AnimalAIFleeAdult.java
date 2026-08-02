@@ -83,3 +83,6 @@ public class AnimalAIFleeAdult extends Goal {
     public void tick() {
     }
 }
+
+
+

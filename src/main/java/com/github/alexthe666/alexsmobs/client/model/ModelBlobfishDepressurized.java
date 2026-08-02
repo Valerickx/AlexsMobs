@@ -95,3 +95,6 @@ public class ModelBlobfishDepressurized extends AdvancedEntityModel<EntityBlobfi
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

@@ -179,3 +179,6 @@ public class ModelSkelewag extends AdvancedEntityModel<EntitySkelewag> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

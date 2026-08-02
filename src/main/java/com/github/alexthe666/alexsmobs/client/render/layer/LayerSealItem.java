@@ -47,3 +47,6 @@ public class LayerSealItem extends RenderLayer<EntitySeal, ModelSeal> {
     }
 }
 
+
+
+

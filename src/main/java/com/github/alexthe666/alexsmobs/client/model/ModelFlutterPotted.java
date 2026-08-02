@@ -195,3 +195,6 @@ public class ModelFlutterPotted extends AdvancedEntityModel<EntityFlutter> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

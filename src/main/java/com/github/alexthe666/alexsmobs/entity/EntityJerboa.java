@@ -232,7 +232,7 @@ public class EntityJerboa extends Animal {
         if (type != InteractionResult.SUCCESS && !isFood(itemstack) && itemstack.is(AMTagRegistry.JERBOA_BEGS_FOR)) {
             this.setSleeping(false);
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.PARROT_EAT, this.getVoicePitch(), this.getSoundVolume());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.PARROT_EAT, this.getVoicePitch(), this.getSoundVolume());
             for (int i = 0; i < 6 + random.nextInt(3); i++) {
                 double d2 = this.random.nextGaussian() * 0.02D;
                 double d0 = this.random.nextGaussian() * 0.02D;
@@ -516,3 +516,7 @@ public class EntityJerboa extends Animal {
         }
     }
 }
+
+
+
+

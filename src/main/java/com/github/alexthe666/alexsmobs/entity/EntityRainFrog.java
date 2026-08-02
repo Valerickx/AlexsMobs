@@ -306,7 +306,7 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
             this.setDisturbed(true);
             this.burrowCooldown += 150 + random.nextInt(120);
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.SAND_BREAK, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SAND_BREAK, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         return type;
@@ -463,3 +463,7 @@ public class EntityRainFrog extends Animal implements ITargetsDroppedItems,IDanc
         }
     }
 }
+
+
+
+

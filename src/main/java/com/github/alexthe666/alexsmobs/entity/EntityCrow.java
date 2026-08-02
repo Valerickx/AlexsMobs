@@ -328,7 +328,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
                 heldItemTime = 0;
                 this.heal(4);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.PARROT_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.PARROT_EAT, this.getSoundVolume(), this.getVoicePitch());
                 if (seedThrowerID != null && this.getMainHandItem().is(AMTagRegistry.CROW_TAMEABLES) && !this.isTame()) {
                     if (getRandom().nextFloat() < 0.3F) {
                         this.setTame(true, true);
@@ -1136,3 +1136,7 @@ public class EntityCrow extends TamableAnimal implements ITargetsDroppedItems {
         }
     }
 }
+
+
+
+

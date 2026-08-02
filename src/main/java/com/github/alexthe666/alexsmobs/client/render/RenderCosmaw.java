@@ -68,3 +68,6 @@ public class RenderCosmaw extends MobRenderer<EntityCosmaw, LivingEntityRenderSt
 
 
 
+
+
+

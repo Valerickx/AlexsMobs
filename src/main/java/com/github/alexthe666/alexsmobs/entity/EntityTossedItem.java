@@ -137,3 +137,6 @@ public class EntityTossedItem extends ThrowableItemProjectile {
         return isDart() ? AMItemRegistry.ANCIENT_DART.get() : Items.COBBLESTONE;
     }
 }
+
+
+

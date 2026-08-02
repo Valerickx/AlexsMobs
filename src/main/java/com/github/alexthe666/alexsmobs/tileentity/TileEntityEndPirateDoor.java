@@ -80,3 +80,6 @@ public class TileEntityEndPirateDoor extends BlockEntity {
         return prevWiggleProgress + (wiggleProgress - prevWiggleProgress) * partialTick;
     }
 }
+
+
+

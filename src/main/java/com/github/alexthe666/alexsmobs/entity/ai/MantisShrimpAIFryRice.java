@@ -92,3 +92,6 @@ public class MantisShrimpAIFryRice extends MoveToBlockGoal {
 
 
 }
+
+
+

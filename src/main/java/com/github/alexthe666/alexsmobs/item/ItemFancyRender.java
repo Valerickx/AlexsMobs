@@ -14,3 +14,6 @@ public class ItemFancyRender extends Item {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }
 }
+
+
+

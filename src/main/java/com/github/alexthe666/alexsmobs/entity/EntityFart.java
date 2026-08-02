@@ -20,6 +20,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.damagesource.DamageSource;
 
 
 
@@ -214,3 +215,6 @@ public class EntityFart extends Entity {
         return true;
     }
 }
+
+
+

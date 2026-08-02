@@ -516,3 +516,6 @@ public class ModelGiantSquid extends AdvancedEntityModel<EntityGiantSquid> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

@@ -57,3 +57,6 @@ public class ModelMurmurNeck extends AdvancedEntityModel<LivingEntity> {
         this.neck.showModel = !HIDE;
     }
 }
+
+
+

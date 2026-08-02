@@ -56,3 +56,6 @@ public class LayerRaccoonItem extends RenderLayer<EntityRaccoon, ModelRaccoon> {
     }
 }
 
+
+
+

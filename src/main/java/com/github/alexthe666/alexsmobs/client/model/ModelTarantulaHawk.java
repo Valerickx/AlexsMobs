@@ -276,3 +276,6 @@ public class ModelTarantulaHawk extends AdvancedEntityModel<EntityTarantulaHawk>
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

@@ -432,7 +432,7 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
         if (!isTame() && itemstack.is(AMTagRegistry.TARANTULA_HAWK_TAMEABLES)) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
             spiderFeedings++;
             if (spiderFeedings >= 15 && getRandom().nextInt(6) == 0 || spiderFeedings > 25) {
                 this.tame(player);
@@ -446,7 +446,7 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
             if (this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, hand, itemstack);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.heal(5);
                 return InteractionResult.SUCCESS;
             }
@@ -1027,3 +1027,7 @@ public class EntityTarantulaHawk extends TamableAnimal implements IFollower {
         }
     }
 }
+
+
+
+

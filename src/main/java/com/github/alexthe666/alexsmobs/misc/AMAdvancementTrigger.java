@@ -35,3 +35,6 @@ public class AMAdvancementTrigger extends SimpleCriterionTrigger<AMAdvancementTr
         );
     }
 }
+
+
+

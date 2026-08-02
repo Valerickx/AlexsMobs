@@ -36,7 +36,7 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -67,7 +67,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.phys.EntityHitResult;
 import com.github.alexthe666.alexsmobs.message.MessageUpdateEagleControls;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.level.material.Fluids;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -233,8 +233,9 @@ public class ClientEvents {
                     } else {
                         matrixStackIn.mulPose(Axis.YN.rotationDegrees(90));
                     }
-                    renderEntity(entity, 0, 0, 0, 0, partialTick, matrixStackIn, event.getSubmitNodeCollector(), event.getPackedLight());
-                    matrixStackIn.popPose();
+                                        var bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+                                        renderEntity(entity, 0, 0, 0, 0, partialTick, matrixStackIn, bufferSource, event.getPackedLight());
+                                        matrixStackIn.popPose();
                     ClientProxy.currentUnrenderedEntities.add(entity.getUUID());
                 }
             }
@@ -255,7 +256,7 @@ public class ClientEvents {
         }
     }
 
-    public <E extends Entity> void renderEntity(E entityIn, double x, double y, double z, float yaw, float partialTicks, PoseStack matrixStack, OrderedSubmitNodeCollector bufferIn, int packedLight) {
+    public <E extends Entity> void renderEntity(E entityIn, double x, double y, double z, float yaw, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int packedLight) {
     }
 
     @SubscribeEvent
@@ -359,3 +360,6 @@ public class ClientEvents {
         }
     }
 }
+
+
+

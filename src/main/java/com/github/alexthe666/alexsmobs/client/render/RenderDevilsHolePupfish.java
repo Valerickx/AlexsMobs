@@ -32,3 +32,6 @@ public class RenderDevilsHolePupfish extends MobRenderer<EntityDevilsHolePupfish
 }
 
 
+
+
+

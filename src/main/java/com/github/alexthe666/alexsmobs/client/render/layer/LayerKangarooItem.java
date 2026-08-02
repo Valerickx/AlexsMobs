@@ -52,3 +52,6 @@ public class LayerKangarooItem extends RenderLayer<EntityKangaroo, ModelKangaroo
     }
 }
 
+
+
+

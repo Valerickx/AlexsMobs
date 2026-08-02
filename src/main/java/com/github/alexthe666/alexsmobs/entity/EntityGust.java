@@ -212,3 +212,6 @@ public class EntityGust extends Entity {
         this.setYRot( lerpRotation(this.yRotO, (float) (Mth.atan2(vector3d.x, vector3d.z) * (double) Mth.RAD_TO_DEG)));
     }
 }
+
+
+

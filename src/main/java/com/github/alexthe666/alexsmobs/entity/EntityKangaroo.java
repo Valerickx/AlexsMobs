@@ -45,6 +45,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.DispenserMenu;
@@ -227,7 +228,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
         if (!isTame() && itemstack.is(AMTagRegistry.KANGAROO_TAMEABLES)) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.HORSE_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.HORSE_EAT, this.getSoundVolume(), this.getVoicePitch());
             carrotFeedings++;
             if (carrotFeedings > 10 && getRandom().nextInt(2) == 0 || carrotFeedings > 15) {
                 this.tame(player);
@@ -240,7 +241,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
         if (isTame() && this.getHealth() < this.getMaxHealth() && item.isEdible() && item.getFoodProperties() != null && !item.getFoodProperties().isMeat()) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.HORSE_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.HORSE_EAT, this.getSoundVolume(), this.getVoicePitch());
             this.heal(item.getFoodProperties().getNutrition());
             return InteractionResult.SUCCESS;
         }
@@ -530,7 +531,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
                         this.heal(foodStack.getItem().getFoodProperties().getNutrition() * 2);
                         foodStack.shrink(1);
                         this.gameEvent(GameEvent.EAT);
-                        this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                     }
                 }
             }
@@ -1057,3 +1058,7 @@ public class EntityKangaroo extends TamableAnimal implements ContainerListener, 
         }
     }
 }
+
+
+
+

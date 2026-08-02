@@ -195,7 +195,7 @@ public class EntityRoadrunner extends Animal {
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if(!this.isMeep()){
-            this.playSound(SoundEvents.CHICKEN_STEP, 0.15F, 1.0F);
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.CHICKEN_STEP, 0.15F, 1.0F);
         }
     }
 
@@ -219,3 +219,7 @@ public class EntityRoadrunner extends Animal {
         return (s != null && s.toLowerCase().contains("meep")) || AlexsMobs.isAprilFools();
     }
 }
+
+
+
+

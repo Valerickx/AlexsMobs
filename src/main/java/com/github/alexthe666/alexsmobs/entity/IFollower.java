@@ -10,3 +10,6 @@ public interface IFollower {
        tameable.getNavigation().moveTo(owner, followSpeed);
    }
 }
+
+
+

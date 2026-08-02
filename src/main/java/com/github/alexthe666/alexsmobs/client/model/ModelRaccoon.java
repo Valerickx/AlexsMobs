@@ -263,3 +263,6 @@ public class ModelRaccoon extends AdvancedEntityModel<EntityRaccoon> {
         return vec3;
     }
 }
+
+
+

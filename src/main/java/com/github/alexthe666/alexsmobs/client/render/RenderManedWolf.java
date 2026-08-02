@@ -29,3 +29,6 @@ public class RenderManedWolf extends MobRenderer<EntityManedWolf, LivingEntityRe
 }
 
 
+
+
+

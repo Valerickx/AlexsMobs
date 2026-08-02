@@ -131,3 +131,6 @@ public class ModelCatfishLarge extends AdvancedEntityModel<EntityCatfish> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

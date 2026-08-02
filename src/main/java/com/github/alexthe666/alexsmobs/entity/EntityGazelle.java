@@ -197,3 +197,6 @@ public class EntityGazelle extends Animal implements IAnimatedEntity, IHerdPanic
         return true;
     }
 }
+
+
+

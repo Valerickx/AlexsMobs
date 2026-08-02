@@ -255,7 +255,7 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
         if (this.getAnimation() == ANIMATION_EAT) {
             if (this.getAnimationTick() % 4 == 0) {
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             }
             if (this.getAnimationTick() >= 18) {
                 ItemStack stack = this.getItemInHand(InteractionHand.MAIN_HAND);
@@ -428,3 +428,7 @@ public class EntityBunfungus extends PathfinderMob implements IAnimatedEntity {
         //this.playSound(AMSoundRegistry.BUNFUNGUS_JUMP, this.getSoundVolume(), this.getVoicePitch());
     }
 }
+
+
+
+

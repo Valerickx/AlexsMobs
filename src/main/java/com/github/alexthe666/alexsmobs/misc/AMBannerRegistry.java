@@ -18,3 +18,6 @@ public class AMBannerRegistry {
         DEF_REG.register("brazil", () ->  new BannerPattern(Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "brazil"), "alexsmobs.banner.brazil"));
     }
 }
+
+
+

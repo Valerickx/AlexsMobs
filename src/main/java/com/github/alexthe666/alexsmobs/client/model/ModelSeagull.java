@@ -191,3 +191,6 @@ public class ModelSeagull extends AdvancedEntityModel<EntitySeagull> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

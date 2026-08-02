@@ -66,3 +66,6 @@ public class ModelCombJelly extends AdvancedEntityModel<EntityCombJelly> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

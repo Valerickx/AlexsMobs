@@ -37,3 +37,6 @@ public class RenderCapuchinMonkey extends MobRenderer<EntityCapuchinMonkey, Livi
 }
 
 
+
+
+

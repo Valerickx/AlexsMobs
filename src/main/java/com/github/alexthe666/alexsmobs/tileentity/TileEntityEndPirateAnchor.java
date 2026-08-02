@@ -63,3 +63,6 @@ public class TileEntityEndPirateAnchor extends BlockEntity {
     private void tick() {
     }
 }
+
+
+

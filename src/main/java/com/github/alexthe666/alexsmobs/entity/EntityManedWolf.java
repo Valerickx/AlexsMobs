@@ -359,3 +359,6 @@ public class EntityManedWolf extends Animal implements ITargetsDroppedItems, IDa
     }
 
 }
+
+
+

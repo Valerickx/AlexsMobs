@@ -87,3 +87,6 @@ public class ModelStraddleboard extends AdvancedEntityModel<EntityStraddleboard>
 		advancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

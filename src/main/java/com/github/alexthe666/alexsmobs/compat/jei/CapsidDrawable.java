@@ -25,3 +25,6 @@ public class CapsidDrawable implements IDrawable {
         guiGraphics.blit(TEXTURE, i, j, 0, 0, 125, 59, 256, 256);
     }
 }
+
+
+

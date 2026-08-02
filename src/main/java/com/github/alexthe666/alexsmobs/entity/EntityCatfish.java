@@ -38,6 +38,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.server.level.ServerLevel;
@@ -249,7 +250,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable {
         if(inSeaPickle && this.canSpit()){
             if(this.getSpitTime() == 0){
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.PLAYER_BURP, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.PLAYER_BURP, this.getSoundVolume(), this.getVoicePitch());
             }
             if(vomitTo != null){
                 final Vec3 face = Vec3.atCenterOf(vomitTo).subtract(this.getMouthVec());
@@ -454,7 +455,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable {
             this.take(itemEntity, itemstack.getCount());
             itemEntity.discard();
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
         }
     }
 
@@ -489,7 +490,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable {
                 this.setSwallowedData(output.buildResult());
             }
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             return true;
         }
         if (this.getCatfishSize() < 2 && entity instanceof final ItemEntity item) {
@@ -634,7 +635,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable {
                         food.hurt(catfish.damageSources().mobAttack(catfish), 12000);
                     } else if (catfish.swallowEntity(food)) {
                         catfish.gameEvent(GameEvent.EAT);
-                        catfish.playSound(SoundEvents.GENERIC_EAT, catfish.getSoundVolume(), catfish.getVoicePitch());
+                        catfish.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, catfish.getSoundVolume(), catfish.getVoicePitch());
                         food.discard();
                     }
                 }
@@ -729,3 +730,7 @@ public class EntityCatfish extends WaterAnimal implements Bucketable {
         }
     }
 }
+
+
+
+

@@ -57,3 +57,6 @@ public class ModelRockyChestplateRolling extends AdvancedEntityModel<LivingEntit
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

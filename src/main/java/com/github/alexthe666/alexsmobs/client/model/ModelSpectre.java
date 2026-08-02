@@ -94,3 +94,6 @@ public class ModelSpectre extends AdvancedEntityModel<EntitySpectre> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

@@ -127,3 +127,6 @@ public class ItemStinkRay extends Item {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }
 }
+
+
+

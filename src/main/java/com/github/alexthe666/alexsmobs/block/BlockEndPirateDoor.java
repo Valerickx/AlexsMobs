@@ -231,3 +231,6 @@ public class BlockEndPirateDoor extends BaseEntityBlock {
         return state.getValue(SEGMENT) == 0? super.getDrops(state, builder) : Collections.emptyList();
     }
 }
+
+
+

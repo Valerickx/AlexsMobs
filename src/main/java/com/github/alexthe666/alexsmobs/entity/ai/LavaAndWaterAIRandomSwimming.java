@@ -76,3 +76,6 @@ public class LavaAndWaterAIRandomSwimming extends RandomStrollGoal {
         return null;
     }
 }
+
+
+

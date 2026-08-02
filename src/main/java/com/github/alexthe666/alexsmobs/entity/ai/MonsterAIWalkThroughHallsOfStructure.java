@@ -96,3 +96,6 @@ public class MonsterAIWalkThroughHallsOfStructure extends RandomStrollGoal {
         }
     }
 }
+
+
+

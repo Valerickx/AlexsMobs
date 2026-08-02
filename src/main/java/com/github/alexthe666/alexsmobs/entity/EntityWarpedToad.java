@@ -223,7 +223,7 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
         if (!isTame() && itemstack.is(AMTagRegistry.WARPED_TOAD_TAMEABLES)) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
             if (getRandom().nextInt(3) == 0) {
                 this.tame(player);
                 this.level().broadcastEntityEvent(this, (byte) 7);
@@ -236,7 +236,7 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
             if (this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, hand, itemstack);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.STRIDER_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.heal(5);
                 return InteractionResult.SUCCESS;
             }
@@ -703,3 +703,7 @@ public class EntityWarpedToad extends TamableAnimal implements ITargetsDroppedIt
     }
 
 }
+
+
+
+

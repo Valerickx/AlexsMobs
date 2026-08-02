@@ -133,3 +133,6 @@ public class EntityGiantSquidPart extends PartEntity<EntityGiantSquid> implement
         parent.hurt(damageSource, damage);
     }
 }
+
+
+

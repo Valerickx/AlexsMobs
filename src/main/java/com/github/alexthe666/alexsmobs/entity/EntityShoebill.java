@@ -300,7 +300,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
                      this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (lvt_3_1_).getItem()), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
                  }
                  this.gameEvent(GameEvent.EAT);
-                 this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+                 this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
                  lvt_3_1_.shrink(1);
                  return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide());
              }else{
@@ -321,7 +321,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
                  }
                  lvt_3_1_.shrink(1);
                  this.gameEvent(GameEvent.EAT);
-                 this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+                 this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
                  return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide());
              }else{
                  if(this.getAnimation() == NO_ANIMATION){
@@ -353,7 +353,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
     @Override
     public void onGetItem(ItemEntity e) {
         this.gameEvent(GameEvent.EAT);
-        this.playSound(SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.CAT_EAT, this.getSoundVolume(), this.getVoicePitch());
         if (e.getItem().is(AMTagRegistry.SHOEBILL_LUCK_FOODS)) {
             luckLevel = Mth.clamp(luckLevel + 1, 0, 10);
         }
@@ -363,3 +363,7 @@ public class EntityShoebill extends Animal implements IAnimatedEntity, ITargetsD
         this.heal(5);
     }
 }
+
+
+
+

@@ -61,3 +61,6 @@ public class AnimalAIWanderRanged extends RandomStrollGoal {
         }
     }
 }
+
+
+

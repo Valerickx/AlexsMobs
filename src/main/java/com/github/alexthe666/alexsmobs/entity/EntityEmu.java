@@ -192,7 +192,7 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
             }
         }
         if (!this.level().isClientSide() && this.isAlive() && !this.isBaby() && --this.timeUntilNextEgg <= 0) {
-            this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             this.spawnAtLocation((ServerLevel) this.level(), AMItemRegistry.EMU_EGG.get());
             this.timeUntilNextEgg = this.random.nextInt(6000) + 6000;
         }
@@ -294,3 +294,7 @@ public class EntityEmu extends Animal implements IAnimatedEntity, IHerdPanic {
         }
     }
 }
+
+
+
+

@@ -61,3 +61,6 @@ public class ModelEndPirateFlag extends AdvancedEntityModel<Entity> {
         renderFlag(wheel.ticksExisted + partialTick);
     }
 }
+
+
+

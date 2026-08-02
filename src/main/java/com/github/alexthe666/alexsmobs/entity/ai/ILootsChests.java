@@ -9,3 +9,6 @@ public interface ILootsChests {
 
     boolean shouldLootItem(ItemStack stack);
 }
+
+
+

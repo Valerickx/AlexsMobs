@@ -47,3 +47,6 @@ public class LayerElephantOverlays extends RenderLayer<EntityElephant, ModelElep
     }
 }
 
+
+
+

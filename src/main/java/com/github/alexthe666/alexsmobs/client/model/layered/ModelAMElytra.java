@@ -75,3 +75,6 @@ public class ModelAMElytra extends HumanoidModel {
         this.rightWing.zRot = -this.leftWing.zRot;
     }
 }
+
+
+

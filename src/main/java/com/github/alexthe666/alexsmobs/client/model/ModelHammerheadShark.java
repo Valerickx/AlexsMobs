@@ -151,3 +151,6 @@ public class ModelHammerheadShark extends AdvancedEntityModel<EntityHammerheadSh
 		advancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

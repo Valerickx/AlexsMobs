@@ -70,3 +70,6 @@ public class BottomFeederAIWander extends RandomStrollGoal {
         return world.getFluidState(pos).is(FluidTags.WATER) && world.getFluidState(pos.below()).isEmpty() && world.getBlockState(pos.below()).canOcclude();
     }
 }
+
+
+

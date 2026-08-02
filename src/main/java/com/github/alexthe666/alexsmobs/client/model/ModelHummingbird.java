@@ -168,3 +168,6 @@ public class ModelHummingbird extends AdvancedEntityModel<EntityHummingbird> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

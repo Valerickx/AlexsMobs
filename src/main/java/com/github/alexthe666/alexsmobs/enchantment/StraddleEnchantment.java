@@ -4,3 +4,6 @@ public class StraddleEnchantment {
     protected StraddleEnchantment() {
     }
 }
+
+
+

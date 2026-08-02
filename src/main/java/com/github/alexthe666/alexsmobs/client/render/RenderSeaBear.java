@@ -26,3 +26,6 @@ public class RenderSeaBear extends MobRenderer<EntitySeaBear, LivingEntityRender
 }
 
 
+
+
+

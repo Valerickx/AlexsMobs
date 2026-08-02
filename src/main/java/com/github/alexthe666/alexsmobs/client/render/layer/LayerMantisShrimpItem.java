@@ -58,3 +58,6 @@ public class LayerMantisShrimpItem extends RenderLayer<EntityMantisShrimp, Model
     }
 }
 
+
+
+

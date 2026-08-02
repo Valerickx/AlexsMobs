@@ -34,3 +34,6 @@ public class LayerBasicGlow<T extends LivingEntity> extends RenderLayer<T, Entit
 
 }
 
+
+
+

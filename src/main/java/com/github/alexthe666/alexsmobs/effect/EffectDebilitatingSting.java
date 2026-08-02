@@ -96,3 +96,6 @@ public class EffectDebilitatingSting extends MobEffect {
         return "alexsmobs.potion.debilitating_sting";
     }
 }
+
+
+

@@ -250,3 +250,6 @@ public class ModelSeal extends AdvancedEntityModel<EntitySeal> {
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

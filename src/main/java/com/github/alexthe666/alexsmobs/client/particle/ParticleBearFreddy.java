@@ -13,12 +13,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.util.RandomSource;
 
 public class ParticleBearFreddy extends Particle {
     private final ModelGrizzlyBear model = new ModelGrizzlyBear();
@@ -30,7 +31,7 @@ public class ParticleBearFreddy extends Particle {
         this.lifetime = 15;
     }
 
-    public ParticleRenderType getRenderType() {
+    public ParticleRenderType getGroup() {
         return ParticleRenderType.CUSTOM;
     }
 
@@ -47,8 +48,8 @@ public class ParticleBearFreddy extends Particle {
         posestack.mulPose(Axis.XP.rotationDegrees(10F - laterFlip * 35F));
         posestack.scale(-scale, -scale, scale);
         posestack.translate(0.0D, 0.5F, 2 + (1F - initalFlip));
-        OrderedSubmitNodeCollector.BufferSource OrderedSubmitNodeCollector$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer vertexconsumer = OrderedSubmitNodeCollector$buffersource.getBuffer(AMRenderTypes.getFreddy(RenderGrizzlyBear.TEXTURE_FREDDY));
+        var bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer vertexconsumer = bufferSource.getBuffer(AMRenderTypes.getFreddy(RenderGrizzlyBear.TEXTURE_FREDDY));
         posestack.mulPose(Axis.XP.rotationDegrees(initalFlip * 20F - 5F));
         float swing = laterFlip * (float) Math.sin((age + partialTick) * 0.3F) * 20;
         posestack.mulPose(Axis.ZP.rotationDegrees((1F - initalFlip) * 45F + swing));
@@ -57,14 +58,17 @@ public class ParticleBearFreddy extends Particle {
         this.model.positionForParticle(partialTick, age + partialTick);
         this.model.renderToBuffer(posestack, vertexconsumer, 240, OverlayTexture.NO_OVERLAY, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
         this.model.young = baby;
-        OrderedSubmitNodeCollector$buffersource.endBatch();
+        bufferSource.endBatch();
         RenderSystem.setShaderFogEnd(fogBefore);
     }
 
     @OnlyIn(Dist.CLIENT)
     public static class Factory implements ParticleProvider<SimpleParticleType> {
-        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             return new ParticleBearFreddy(worldIn, x, y, z);
         }
     }
 }
+
+
+

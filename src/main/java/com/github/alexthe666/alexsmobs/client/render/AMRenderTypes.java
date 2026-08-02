@@ -91,4 +91,13 @@ public class AMRenderTypes {
     public static RenderType entityTranslucent(Identifier location) {
         return RenderTypes.entityTranslucent(location);
     }
+
+    // Compatibility helper for ItemRenderer.getArmorFoilBuffer which moved/changed in mappings.
+    public static VertexConsumer getArmorFoilBuffer(net.minecraft.client.renderer.MultiBufferSource bufferIn, RenderType type, boolean p1, boolean p2) {
+        // The original method handled enchanted glint and layering. For now, return the buffer directly.
+        return bufferIn.getBuffer(type);
+    }
 }
+
+
+

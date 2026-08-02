@@ -59,3 +59,6 @@ public class ModelMurmurBody extends AdvancedEntityModel<EntityMurmur> {
         this.walk(arms, idleSpeed, idleDegree, false, -1, 0.15F, ageInTicks, 1);
     }
 }
+
+
+

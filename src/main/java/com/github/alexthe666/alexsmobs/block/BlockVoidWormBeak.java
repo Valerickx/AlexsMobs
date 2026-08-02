@@ -97,3 +97,6 @@ public class BlockVoidWormBeak extends BaseEntityBlock {
         return createTickerHelper(p_152182_, AMTileEntityRegistry.VOID_WORM_BEAK.get(), TileEntityVoidWormBeak::commonTick);
     }
 }
+
+
+

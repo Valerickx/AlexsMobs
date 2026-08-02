@@ -61,3 +61,6 @@ public class EffectPowerDown extends MobEffect {
         return "alexsmobs.potion.power_down";
     }
 }
+
+
+

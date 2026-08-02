@@ -55,3 +55,6 @@ public class KomodoDragonAIBreed extends BreedGoal {
         komodo.slaughterCooldown = 200;
     }
 }
+
+
+

@@ -45,3 +45,6 @@ public class ModelSquidGrapple extends AdvancedEntityModel<Entity> {
 		modelRenderer.rotateAngleZ = z;
 	}
 }
+
+
+

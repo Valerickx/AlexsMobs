@@ -50,6 +50,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
@@ -58,6 +59,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.WoolCarpetBlock;
@@ -474,7 +476,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
 
     private void eatItemEffect(ItemStack heldItemMainhand) {
         this.gameEvent(GameEvent.EAT);
-        this.playSound(SoundEvents.STRIDER_EAT, this.getVoicePitch(), this.getSoundVolume());
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.STRIDER_EAT, this.getVoicePitch(), this.getSoundVolume());
         for (int i = 0; i < 8 + random.nextInt(3); i++) {
             double d2 = this.random.nextGaussian() * 0.02D;
             double d0 = this.random.nextGaussian() * 0.02D;
@@ -526,7 +528,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
                     this.spawnAtLocation((ServerLevel) this.level(), this.getCarpetItemBeingWorn());
                 }
                 this.gameEvent(GameEvent.ENTITY_INTERACT);
-                this.playSound(SoundEvents.LLAMA_SWAG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.LLAMA_SWAG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                 if(!this.level().isClientSide() && player instanceof ServerPlayer serverPlayer){
                     AMAdvancementTriggerRegistry.ELEPHANT_SWAG.trigger(serverPlayer);
                 }
@@ -537,7 +539,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
             return InteractionResult.PASS;
         } else if (owner && this.getColor() != null && stack.is(Items.SHEARS)) {
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             if (this.getColor() != null) {
                 this.spawnAtLocation((ServerLevel) this.level(), this.getCarpetItemBeingWorn());
             }
@@ -546,14 +548,14 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         } else if (owner && !this.isChested() && stack.is(Tags.Items.CHESTS_WOODEN)) {
             this.setChested(true);
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.DONKEY_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DONKEY_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
             return InteractionResult.SUCCESS;
         } else if (owner && isChested() && stack.is(Items.SHEARS)) {
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             this.spawnAtLocation((ServerLevel) this.level(), Blocks.CHEST);
             for (int i = 0; i < elephantInventory.getContainerSize(); i++) {
                 this.spawnAtLocation((ServerLevel) this.level(), elephantInventory.getItem(i));
@@ -1041,3 +1043,7 @@ public class EntityElephant extends TamableAnimal implements ITargetsDroppedItem
         }
     }
 }
+
+
+
+

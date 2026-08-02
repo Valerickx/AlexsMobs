@@ -15,3 +15,6 @@ public class AMPaintingRegistry {
     public static final DeferredHolder<PaintingVariant, PaintingVariant> NFT = DEF_REG.register("nft", () -> new PaintingVariant(32, 32, Identifier.fromNamespaceAndPath("alexsmobs", "nft"), Optional.empty(), Optional.empty()));
     public static final DeferredHolder<PaintingVariant, PaintingVariant> DOG_POKER = DEF_REG.register("dog_poker", () -> new PaintingVariant(32, 16, Identifier.fromNamespaceAndPath("alexsmobs", "dog_poker"), Optional.empty(), Optional.empty()));
 }
+
+
+

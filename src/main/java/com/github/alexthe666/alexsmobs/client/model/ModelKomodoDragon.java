@@ -235,3 +235,6 @@ public class ModelKomodoDragon extends AdvancedEntityModel<EntityKomodoDragon> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

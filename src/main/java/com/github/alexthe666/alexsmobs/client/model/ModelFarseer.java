@@ -469,3 +469,6 @@ public class ModelFarseer extends AdvancedEntityModel<EntityFarseer> {
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

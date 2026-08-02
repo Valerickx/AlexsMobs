@@ -91,3 +91,6 @@ public class ItemSquidGrapple extends Item {
         tooltip.add(Component.translatable("item.alexsmobs.squid_grapple.desc").withStyle(ChatFormatting.GRAY));
     }
 }
+
+
+

@@ -236,7 +236,7 @@ public class EntityTasmanianDevil extends Animal implements IAnimatedEntity, ITa
         InteractionResult type = super.mobInteract(player, hand);
         if (itemstack.is(AMTagRegistry.TASMANIAN_DEVIL_HOWLING_FOODS) && this.getAnimation() != ANIMATION_HOWL) {
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.FOX_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.FOX_EAT, this.getSoundVolume(), this.getVoicePitch());
             this.spawnAtLocation((ServerLevel) this.level(), item.getCraftingRemainingItem(itemstack));
             if (!player.isCreative()) {
                 itemstack.shrink(1);
@@ -301,9 +301,9 @@ public class EntityTasmanianDevil extends Animal implements IAnimatedEntity, ITa
         this.gameEvent(GameEvent.EAT);
         if(e.getItem().getItem() == Items.BONE){
             dropBonemeal();
-            this.playSound(SoundEvents.SKELETON_STEP, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SKELETON_STEP, this.getSoundVolume(), this.getVoicePitch());
         }else{
-            this.playSound(SoundEvents.FOX_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.FOX_EAT, this.getSoundVolume(), this.getVoicePitch());
             this.heal(5);
         }
     }
@@ -315,3 +315,7 @@ public class EntityTasmanianDevil extends Animal implements IAnimatedEntity, ITa
         }
     }
 }
+
+
+
+

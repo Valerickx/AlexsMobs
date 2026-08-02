@@ -51,3 +51,6 @@ public class TileEntityVoidWormBeak extends BlockEntity {
         return prevChompProgress + (chompProgress - prevChompProgress) * partialTick;
     }
 }
+
+
+

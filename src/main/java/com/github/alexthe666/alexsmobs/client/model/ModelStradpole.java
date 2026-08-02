@@ -82,3 +82,6 @@ public class ModelStradpole extends AdvancedEntityModel<EntityStradpole> {
 		advancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

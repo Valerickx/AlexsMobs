@@ -60,3 +60,6 @@ public class CapsidRecipeCategory implements IRecipeCategory<CapsidRecipe> {
         builder.addSlot(RecipeIngredientRole.OUTPUT, 94, 23).addItemStack(recipe.getResult());
     }
 }
+
+
+

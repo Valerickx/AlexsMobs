@@ -117,3 +117,6 @@ public class ModelTransmutationTable extends AdvancedEntityModel<Entity> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

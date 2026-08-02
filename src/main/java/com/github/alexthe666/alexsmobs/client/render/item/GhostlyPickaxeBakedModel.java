@@ -39,3 +39,6 @@ public class GhostlyPickaxeBakedModel {
         return new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), quad.getSprite(), quad.isShade());
     }
 }
+
+
+

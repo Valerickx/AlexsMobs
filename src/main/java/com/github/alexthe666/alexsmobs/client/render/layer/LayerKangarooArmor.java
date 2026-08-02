@@ -263,3 +263,6 @@ public class LayerKangarooArmor extends RenderLayer<EntityKangaroo, ModelKangaro
     }
 }
 
+
+
+

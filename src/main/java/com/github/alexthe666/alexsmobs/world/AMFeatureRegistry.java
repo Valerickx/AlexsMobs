@@ -13,3 +13,6 @@ public class AMFeatureRegistry {
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> LEAFCUTTER_ANTHILL = DEF_REG.register("leafcutter_anthill", () -> new FeatureLeafcutterAnthill(NoneFeatureConfiguration.CODEC));
 
 }
+
+
+

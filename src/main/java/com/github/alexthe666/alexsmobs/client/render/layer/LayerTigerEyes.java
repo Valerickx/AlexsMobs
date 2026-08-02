@@ -43,3 +43,6 @@ public class LayerTigerEyes  extends RenderLayer<EntityTiger, ModelTiger> {
     }
 }
 
+
+
+

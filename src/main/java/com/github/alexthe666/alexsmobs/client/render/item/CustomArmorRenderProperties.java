@@ -90,3 +90,6 @@ public class CustomArmorRenderProperties implements IClientItemExtensions {
         return _default;
     }
 }
+
+
+

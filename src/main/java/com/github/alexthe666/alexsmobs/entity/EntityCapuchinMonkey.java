@@ -451,7 +451,7 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
             if (isTame() && (getAllFoods().test(itemstack) && !isFood(itemstack)) && this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, hand, itemstack);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.heal(5);
                 return InteractionResult.SUCCESS;
             }
@@ -518,7 +518,7 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
     public void onGetItem(ItemEntity e) {
         this.heal(5);
         this.gameEvent(GameEvent.EAT);
-        this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
         if (e.getItem().is(AMTagRegistry.BANANAS)) {
             if (getRandom().nextInt(4) == 0) {
                 this.spawnAtLocation((ServerLevel) this.level(), new ItemStack(AMBlockRegistry.BANANA_PEEL.get()));
@@ -565,3 +565,7 @@ public class EntityCapuchinMonkey extends TamableAnimal implements IAnimatedEnti
     }
 
 }
+
+
+
+

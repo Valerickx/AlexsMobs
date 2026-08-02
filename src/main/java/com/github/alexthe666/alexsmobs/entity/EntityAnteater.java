@@ -294,7 +294,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
         if (ticksAntOnTongue > 10 && this.hasAntOnTongue()) {
             this.heal(6);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             this.setAntOnTongue(false);
         }
         if (this.hasAntOnTongue()) {
@@ -321,7 +321,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
             if (heldItemTime > 10 && getTongueStickOut() < 0.3F && canTargetItem(this.getMainHandItem())) {
                 heldItemTime = 0;
                 this.heal(4);
-                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.gameEvent(GameEvent.EAT);
                 ItemStack mainStack = this.getMainHandItem();
                 if (mainStack.getItem().getCraftingRemainder() != null) {
@@ -511,3 +511,7 @@ public class EntityAnteater extends Animal implements NeutralMob, IAnimatedEntit
     }
 
 }
+
+
+
+

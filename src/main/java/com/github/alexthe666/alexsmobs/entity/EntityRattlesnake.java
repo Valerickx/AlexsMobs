@@ -309,3 +309,6 @@ public class EntityRattlesnake extends Animal implements IAnimatedEntity {
     }
 
 }
+
+
+

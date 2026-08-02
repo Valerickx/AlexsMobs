@@ -335,7 +335,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
             this.permSnow = true;
             this.setSnowy(true);
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.SNOW_PLACE, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SNOW_PLACE, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         if (item instanceof ShovelItem && this.isSnowy() && !this.level().isClientSide()) {
@@ -345,7 +345,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
             }
             this.setSnowy(false);
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.SNOW_BREAK, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SNOW_BREAK, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         return type;
@@ -427,3 +427,7 @@ public class EntityMoose extends Animal implements IAnimatedEntity {
     }
 
 }
+
+
+
+

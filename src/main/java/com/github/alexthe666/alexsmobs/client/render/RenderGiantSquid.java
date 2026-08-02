@@ -70,3 +70,6 @@ public class RenderGiantSquid extends MobRenderer<EntityGiantSquid, LivingEntity
 
 
 
+
+
+

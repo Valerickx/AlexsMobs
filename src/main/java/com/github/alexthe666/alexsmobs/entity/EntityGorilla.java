@@ -320,7 +320,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
             this.heal(5);
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         InteractionResult type = super.mobInteract(player, hand);
@@ -383,7 +383,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
             }
             if (eatingTime % 5 == 0) {
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.PANDA_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.PANDA_EAT, this.getSoundVolume(), this.getVoicePitch());
             }
             if (eatingTime > 100) {
                 ItemStack stack = this.getItemInHand(InteractionHand.MAIN_HAND);
@@ -598,3 +598,7 @@ public class EntityGorilla extends TamableAnimal implements IAnimatedEntity, ITa
 
     }
 }
+
+
+
+

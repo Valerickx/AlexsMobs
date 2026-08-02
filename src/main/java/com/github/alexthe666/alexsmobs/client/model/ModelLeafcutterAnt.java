@@ -220,3 +220,6 @@ public class ModelLeafcutterAnt extends AdvancedEntityModel<EntityLeafcutterAnt>
 		this.swing(root, struggleSpeed, struggleDegree * 0.8F, false, 0, 0, ageInTicks, 1);
 	}
 }
+
+
+

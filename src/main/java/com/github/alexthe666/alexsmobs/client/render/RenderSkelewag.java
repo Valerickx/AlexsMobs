@@ -33,3 +33,6 @@ public class RenderSkelewag extends MobRenderer<EntitySkelewag, LivingEntityRend
 }
 
 
+
+
+

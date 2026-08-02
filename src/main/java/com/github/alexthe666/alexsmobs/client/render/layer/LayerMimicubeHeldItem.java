@@ -71,3 +71,6 @@ public class LayerMimicubeHeldItem extends RenderLayer<EntityMimicube, ModelMimi
     }
 }
 
+
+
+

@@ -15,3 +15,6 @@ public class AMLootRegistry {
     public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<AncientDartLootModifier>> ANCIENT_DART = DEF_REG.register("ancient_dart", AncientDartLootModifier.CODEC);
     public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<PigshoesLootModifier>> PIGSHOES = DEF_REG.register("pigshoes", PigshoesLootModifier.CODEC);
 }
+
+
+

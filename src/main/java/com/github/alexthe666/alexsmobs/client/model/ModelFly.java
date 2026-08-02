@@ -107,3 +107,6 @@ public class ModelFly extends AdvancedEntityModel<EntityFly> {
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

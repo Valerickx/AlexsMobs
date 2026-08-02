@@ -15,3 +15,6 @@ public class BlockItemAMRender extends AMBlockItem {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }
 }
+
+
+

@@ -192,3 +192,6 @@ public class ModelSeaBear extends AdvancedEntityModel<EntitySeaBear> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

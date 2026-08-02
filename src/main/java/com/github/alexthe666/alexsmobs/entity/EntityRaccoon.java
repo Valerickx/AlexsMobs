@@ -226,7 +226,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
                     this.spawnAtLocation((ServerLevel) this.level(), this.getCarpetItemBeingWorn());
                 }
                 this.gameEvent(GameEvent.ENTITY_INTERACT);
-                this.playSound(SoundEvents.LLAMA_SWAG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.LLAMA_SWAG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                 itemstack.shrink(1);
                 this.setColor(color);
                 return InteractionResult.SUCCESS;
@@ -234,7 +234,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
             return InteractionResult.PASS;
         } else if (owner && this.getColor() != null && itemstack.is(Tags.Items.SHEARS)) {
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SHEEP_SHEAR, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             if (this.getColor() != null) {
                 this.spawnAtLocation((ServerLevel) this.level(), this.getCarpetItemBeingWorn());
             }
@@ -255,7 +255,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
                 this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             } else {
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.heal(5);
             }
             this.usePlayerItem(player, hand, itemstack);
@@ -441,7 +441,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
         this.heal(10);
         this.level().broadcastEntityEvent(this, (byte) 92);
         this.gameEvent(GameEvent.EAT);
-        this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
     }
 
     public void postWashItem(ItemStack stack) {
@@ -799,3 +799,7 @@ public class EntityRaccoon extends TamableAnimal implements IAnimatedEntity, IFo
 
     }
 }
+
+
+
+

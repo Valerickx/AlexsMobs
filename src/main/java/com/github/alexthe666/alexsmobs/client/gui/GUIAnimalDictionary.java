@@ -49,3 +49,6 @@ public class GUIAnimalDictionary extends GuiBasicBook {
         return "alexsmobs:book/animal_dictionary/";
     }
 }
+
+
+

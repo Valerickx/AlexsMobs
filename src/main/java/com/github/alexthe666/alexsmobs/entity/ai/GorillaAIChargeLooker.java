@@ -84,3 +84,6 @@ public class GorillaAIChargeLooker extends Goal {
         return d1 > 1.0D - 0.025D / d0 && player.hasLineOfSight(gorilla);
     }
 }
+
+
+

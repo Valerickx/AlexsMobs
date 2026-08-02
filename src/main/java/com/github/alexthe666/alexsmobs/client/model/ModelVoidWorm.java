@@ -121,3 +121,6 @@ public class ModelVoidWorm extends AdvancedEntityModel<EntityVoidWorm> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

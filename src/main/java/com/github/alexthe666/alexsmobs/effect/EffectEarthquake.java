@@ -21,3 +21,6 @@ public class EffectEarthquake extends MobEffect {
         return "alexsmobs.potion.earthquake";
     }
 }
+
+
+

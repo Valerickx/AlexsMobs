@@ -184,3 +184,6 @@ public class ModelCachalotWhale extends AdvancedEntityModel<EntityCachalotWhale>
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

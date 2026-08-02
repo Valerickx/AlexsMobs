@@ -114,3 +114,6 @@ public class BlockEndPirateShipWheel extends BaseEntityBlock implements AMSpecia
         return createTickerHelper(p_152182_, AMTileEntityRegistry.END_PIRATE_SHIP_WHEEL.get(), TileEntityEndPirateShipWheel::commonTick);
     }
 }
+
+
+

@@ -252,3 +252,6 @@ public class AMTagRegistry {
         return TagKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, name));
     }
 }
+
+
+

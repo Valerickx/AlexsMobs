@@ -30,3 +30,6 @@ public class RenderSoulVulture extends MobRenderer<EntitySoulVulture, LivingEnti
 }
 
 
+
+
+

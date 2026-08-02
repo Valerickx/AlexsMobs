@@ -66,3 +66,6 @@ public class ItemFishOil extends Item {
         return ItemUtils.startUsingInstantly(level, player, interactionHand);
     }
 }
+
+
+

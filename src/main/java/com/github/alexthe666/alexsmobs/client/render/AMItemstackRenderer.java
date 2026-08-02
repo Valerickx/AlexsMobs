@@ -134,7 +134,7 @@ public class AMItemstackRenderer {
         quaternion1.conjugate();
         entityrenderdispatcher.overrideCameraOrientation(quaternion1);
         entityrenderdispatcher.setRenderShadow(false);
-        MultiBufferSource.BufferSource MultiBufferSource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
+        var MultiBufferSource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
         RenderSystem.runAsFancy(() -> {
             entityrenderdispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicksForRender, matrixstack, MultiBufferSource$buffersource, 15728880);
         });
@@ -164,7 +164,7 @@ public class AMItemstackRenderer {
             matrixStackIn.pushPose();
             matrixStackIn.translate(0.4F, -0.75F, 0.5F);
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(-180));
-            VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.armorCutoutNoCull(SHIELD_OF_THE_DEEP_TEXTURE), false, itemStackIn.hasFoil());
+            VertexConsumer vertexconsumer = AMRenderTypes.getArmorFoilBuffer(bufferIn, RenderType.armorCutoutNoCull(SHIELD_OF_THE_DEEP_TEXTURE), false, itemStackIn.hasFoil());
             SHIELD_OF_THE_DEEP_MODEL.renderToBuffer(matrixStackIn, vertexconsumer, combinedLightIn, combinedOverlayIn, net.minecraft.util.ARGB.color((int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F), (int)((1.0F) * 255F)));
             matrixStackIn.popPose();
         }
@@ -414,4 +414,7 @@ public class AMItemstackRenderer {
     }
 
 }
+
+
+
 

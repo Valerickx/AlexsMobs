@@ -376,3 +376,6 @@ public class ModelKangaroo extends AdvancedEntityModel<EntityKangaroo> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

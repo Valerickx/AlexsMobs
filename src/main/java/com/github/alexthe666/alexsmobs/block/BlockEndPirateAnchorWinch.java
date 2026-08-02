@@ -96,3 +96,6 @@ public class BlockEndPirateAnchorWinch extends BaseEntityBlock implements AMSpec
         return createTickerHelper(p_152182_, AMTileEntityRegistry.END_PIRATE_ANCHOR_WINCH.get(), TileEntityEndPirateAnchorWinch::commonTick);
     }
 }
+
+
+

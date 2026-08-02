@@ -92,3 +92,6 @@ public class BlockSculkBoomer extends BaseEntityBlock {
         builder.add(POWERED, OPEN);
     }
 }
+
+
+

@@ -179,3 +179,6 @@ public class ModelJerboa extends AdvancedEntityModel<EntityJerboa> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

@@ -328,3 +328,6 @@ public class EntitySnowLeopard extends Animal implements IAnimatedEntity, ITarge
         this.heal(5);
     }
 }
+
+
+

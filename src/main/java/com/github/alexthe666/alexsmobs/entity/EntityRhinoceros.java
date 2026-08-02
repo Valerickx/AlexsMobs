@@ -436,7 +436,7 @@ public class EntityRhinoceros extends Animal implements IAnimatedEntity {
             Potion contained = PotionUtils.getPotion(itemstack);
             if(applyPotion(contained)){
                 this.gameEvent(GameEvent.ENTITY_INTERACT);
-                this.playSound(SoundEvents.DYE_USE);
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DYE_USE);
                 this.usePlayerItem(player, hand, itemstack);
                 ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
                 if(!player.addItem(bottle)){
@@ -448,7 +448,7 @@ public class EntityRhinoceros extends Animal implements IAnimatedEntity {
             addTrustedUUID(player.getUUID());
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.HORSE_EAT);
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.HORSE_EAT);
             return InteractionResult.SUCCESS;
         }
         return type;
@@ -579,3 +579,7 @@ public class EntityRhinoceros extends Animal implements IAnimatedEntity {
     }
 
 }
+
+
+
+

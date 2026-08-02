@@ -204,3 +204,6 @@ public class ModelCockroach extends AdvancedEntityModel<EntityCockroach> {
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

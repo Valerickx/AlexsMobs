@@ -343,3 +343,6 @@ public class ModelMimicOctopus extends AdvancedEntityModel<EntityMimicOctopus> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

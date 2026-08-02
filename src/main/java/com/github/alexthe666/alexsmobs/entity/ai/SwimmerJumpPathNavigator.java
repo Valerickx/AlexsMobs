@@ -138,3 +138,6 @@ public class SwimmerJumpPathNavigator  extends PathNavigation {
     public void setCanFloat(boolean canSwim) {
     }
 }
+
+
+

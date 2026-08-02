@@ -26,3 +26,6 @@ public class LayerGrizzlyHoney extends RenderLayer<EntityGrizzlyBear, ModelGrizz
     }
 }
 
+
+
+

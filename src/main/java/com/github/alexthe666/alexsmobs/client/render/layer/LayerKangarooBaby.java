@@ -83,3 +83,6 @@ public class LayerKangarooBaby extends RenderLayer<EntityKangaroo, ModelKangaroo
     }
 }
 
+
+
+

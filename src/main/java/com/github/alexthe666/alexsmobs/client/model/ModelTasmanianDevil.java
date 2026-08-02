@@ -208,3 +208,6 @@ public class ModelTasmanianDevil extends AdvancedEntityModel<EntityTasmanianDevi
 		advancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

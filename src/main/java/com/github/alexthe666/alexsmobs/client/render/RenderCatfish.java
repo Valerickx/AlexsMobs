@@ -50,3 +50,6 @@ public class RenderCatfish extends MobRenderer<EntityCatfish, LivingEntityRender
 }
 
 
+
+
+

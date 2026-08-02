@@ -276,3 +276,6 @@ public class ModelCapuchinMonkey extends AdvancedEntityModel<EntityCapuchinMonke
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

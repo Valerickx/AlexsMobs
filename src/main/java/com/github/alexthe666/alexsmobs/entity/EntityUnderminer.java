@@ -294,7 +294,7 @@ public class EntityUnderminer extends PathfinderMob {
                 this.playSound(AMSoundRegistry.UNDERMINER_STEP.get(), 1F, 0.75F + random.nextFloat() * 0.25F);
                 lastPosition = this.blockPosition();
                 if(random.nextFloat() < 0.015F && !level().canSeeSky(lastPosition)){
-                    this.playSound(SoundEvents.AMBIENT_CAVE.get(), 3F, 0.75F + random.nextFloat() * 0.25F);
+                    this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.AMBIENT_CAVE.get(), 3F, 0.75F + random.nextFloat() * 0.25F);
                 }
             }
             Player player = this.level().getNearestPlayer(this.getX(), this.getY(), this.getZ(), AMConfig.underminerDisappearDistance, true);
@@ -561,3 +561,7 @@ public class EntityUnderminer extends PathfinderMob {
 
     }
 }
+
+
+
+

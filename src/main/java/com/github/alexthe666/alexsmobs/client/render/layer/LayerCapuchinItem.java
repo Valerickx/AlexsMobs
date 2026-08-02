@@ -84,3 +84,6 @@ public class LayerCapuchinItem extends RenderLayer<EntityCapuchinMonkey, ModelCa
     }
 }
 
+
+
+

@@ -336,3 +336,6 @@ public class ModelGrizzlyBear extends AdvancedEntityModel<EntityGrizzlyBear> {
         box.rotateAngleZ = z;
     }
 }
+
+
+

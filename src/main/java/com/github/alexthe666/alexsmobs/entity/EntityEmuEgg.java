@@ -78,3 +78,6 @@ public class EntityEmuEgg extends ThrowableItemProjectile {
         return AMItemRegistry.EMU_EGG.get();
     }
 }
+
+
+

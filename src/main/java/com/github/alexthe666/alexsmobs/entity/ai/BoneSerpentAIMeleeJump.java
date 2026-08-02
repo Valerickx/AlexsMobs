@@ -75,7 +75,7 @@ public class BoneSerpentAIMeleeJump extends JumpGoal {
             attackCooldown--;
         }
         if (this.inWater && !flag) {
-            this.dolphin.playSound(SoundEvents.DOLPHIN_JUMP, 1.0F, 1.0F);
+            this.dolphin.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DOLPHIN_JUMP, 1.0F, 1.0F);
         }
         LivingEntity target = this.dolphin.getTarget();
         if(target != null){
@@ -96,3 +96,7 @@ public class BoneSerpentAIMeleeJump extends JumpGoal {
 
     }
 }
+
+
+
+

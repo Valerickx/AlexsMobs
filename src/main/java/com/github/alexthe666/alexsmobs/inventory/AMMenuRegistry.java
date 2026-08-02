@@ -14,3 +14,6 @@ public class AMMenuRegistry {
     public static final DeferredHolder<MenuType<?>, MenuType<MenuTransmutationTable>> TRANSMUTATION_TABLE = DEF_REG.register("transmutation_table", () -> new MenuType<MenuTransmutationTable>(MenuTransmutationTable::new, FeatureFlags.DEFAULT_FLAGS));
 
 }
+
+
+

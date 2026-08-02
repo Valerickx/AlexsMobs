@@ -280,3 +280,6 @@ public class ModelGeladaMonkey extends AdvancedEntityModel<EntityGeladaMonkey> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

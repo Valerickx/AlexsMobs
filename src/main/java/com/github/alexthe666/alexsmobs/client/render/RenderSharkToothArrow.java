@@ -23,3 +23,6 @@ public class RenderSharkToothArrow extends ArrowRenderer<EntitySharkToothArrow, 
         return TEXTURE;
     }
 }
+
+
+

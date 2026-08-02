@@ -35,3 +35,6 @@ public class AMParticleRegistry {
 
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BIRD_SONG = DEF_REG.register("bird_song", ()-> new SimpleParticleType(false));
 }
+
+
+

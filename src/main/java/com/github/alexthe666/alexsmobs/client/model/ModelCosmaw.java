@@ -220,3 +220,6 @@ public class ModelCosmaw extends AdvancedEntityModel<EntityCosmaw> {
         matrixStackIn.popPose();
     }
 }
+
+
+

@@ -10,3 +10,6 @@ public interface ISemiAquatic {
 
     int getWaterSearchRange();
 }
+
+
+

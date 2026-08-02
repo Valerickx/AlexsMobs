@@ -28,3 +28,6 @@ public class RenderGazelle extends MobRenderer<EntityGazelle, LivingEntityRender
 }
 
 
+
+
+

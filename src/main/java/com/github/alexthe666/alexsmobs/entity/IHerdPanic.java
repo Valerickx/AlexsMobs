@@ -6,3 +6,6 @@ public interface IHerdPanic {
 
     boolean canPanic();
 }
+
+
+

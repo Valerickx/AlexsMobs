@@ -21,3 +21,6 @@ public class EffectTigersBlessing extends MobEffect {
         return "alexsmobs.potion.tigers_blessing";
     }
 }
+
+
+

@@ -296,3 +296,6 @@ public class ModelFroststalker extends AdvancedEntityModel<EntityFroststalker> {
         this.faceTarget(netHeadYaw, headPitch, 1.0F, head, neck);
     }
 }
+
+
+

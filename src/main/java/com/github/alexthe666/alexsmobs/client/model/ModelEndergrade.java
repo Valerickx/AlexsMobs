@@ -155,3 +155,6 @@ public class ModelEndergrade extends AdvancedEntityModel<EntityEndergrade> {
 		advancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

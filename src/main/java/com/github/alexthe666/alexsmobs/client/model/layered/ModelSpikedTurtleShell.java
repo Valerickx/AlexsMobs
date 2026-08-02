@@ -22,3 +22,6 @@ public class ModelSpikedTurtleShell extends HumanoidModel{
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 }
+
+
+

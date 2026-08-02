@@ -254,3 +254,6 @@ public class EntityBoneSerpentPart extends LivingEntity implements IHurtableMult
         return !this.isRemoved();
     }
 }
+
+
+

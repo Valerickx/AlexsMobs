@@ -76,3 +76,6 @@ public class ModelEndPirateAnchor extends AdvancedEntityModel<Entity> {
         this.resetToDefaultPose();
     }
 }
+
+
+

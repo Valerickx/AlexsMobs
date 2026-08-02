@@ -54,3 +54,6 @@ public class ModelEndPirateShipWheel extends AdvancedEntityModel<Entity> {
         renderWheel(wheel.getWheelRot(partialTick));
     }
 }
+
+
+

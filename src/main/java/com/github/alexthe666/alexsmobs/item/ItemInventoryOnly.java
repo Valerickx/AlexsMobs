@@ -14,3 +14,6 @@ public class ItemInventoryOnly extends Item implements CustomTabBehavior {
 
     }
 }
+
+
+

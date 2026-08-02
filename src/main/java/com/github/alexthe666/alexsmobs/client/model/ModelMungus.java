@@ -178,3 +178,6 @@ public class ModelMungus extends AdvancedEntityModel<EntityMungus> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

@@ -44,3 +44,6 @@ public class AlexMobsJEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(AMBlockRegistry.CAPSID.get()), CAPID_RECIPE_TYPE);
     }
 }
+
+
+

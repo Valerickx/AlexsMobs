@@ -482,7 +482,7 @@ public class EntitySugarGlider extends TamableAnimal implements IFollower {
         if (!isTame() && itemstack.is(AMTagRegistry.SUGAR_GLIDER_TAMEABLES)) {
             this.usePlayerItem(player, hand, itemstack);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.FOX_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.FOX_EAT, this.getSoundVolume(), this.getVoicePitch());
             if (getRandom().nextInt(2) == 0) {
                 this.tame(player);
                 this.level().broadcastEntityEvent(this, (byte) 7);
@@ -495,7 +495,7 @@ public class EntitySugarGlider extends TamableAnimal implements IFollower {
             if (this.getHealth() < this.getMaxHealth()) {
                 this.usePlayerItem(player, hand, itemstack);
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.FOX_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.FOX_EAT, this.getSoundVolume(), this.getVoicePitch());
                 this.heal(5);
                 return InteractionResult.SUCCESS;
             }
@@ -753,3 +753,7 @@ public class EntitySugarGlider extends TamableAnimal implements IFollower {
         }
     }
 }
+
+
+
+

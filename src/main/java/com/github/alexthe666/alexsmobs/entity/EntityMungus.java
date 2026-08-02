@@ -258,7 +258,7 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
                 transformBiome(center, biome);
             }
             this.gameEvent(GameEvent.EXPLODE);
-            this.playSound(SoundEvents.GENERIC_EXPLODE, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EXPLODE, this.getSoundVolume(), this.getVoicePitch());
             if (!isReverting()) {
                 BlockPos.betweenClosedStream(center.offset(-j, -k, -l), center.offset(j, k, l)).forEach(blockpos -> {
                     if (blockpos.distSqr(center) <= ffDouble) {
@@ -381,7 +381,7 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
             this.entityData.set(REVERTING, false);
             BlockState state = getMushroomBlockstate(itemstack.getItem());
             this.gameEvent(GameEvent.BLOCK_PLACE);
-            this.playSound(SoundEvents.FUNGUS_PLACE, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.FUNGUS_PLACE, this.getSoundVolume(), this.getVoicePitch());
             if (this.getMushroomState() != null && state != null && state.getBlock() != this.getMushroomState().getBlock()) {
                 this.setMushroomCount(0);
             }
@@ -612,7 +612,7 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
                 this.setMushroomCount(0);
             }
             this.gameEvent(GameEvent.BLOCK_PLACE);
-            this.playSound(SoundEvents.FUNGUS_PLACE, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.FUNGUS_PLACE, this.getSoundVolume(), this.getVoicePitch());
             this.setMushroomState(state);
             this.setMushroomCount(this.getMushroomCount() + 1);
         }
@@ -756,3 +756,7 @@ public class EntityMungus extends Animal implements ITargetsDroppedItems, Sheara
 
     }
 }
+
+
+
+

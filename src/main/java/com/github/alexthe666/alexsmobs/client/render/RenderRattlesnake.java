@@ -27,3 +27,6 @@ public class RenderRattlesnake extends MobRenderer<EntityRattlesnake, LivingEnti
 }
 
 
+
+
+

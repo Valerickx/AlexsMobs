@@ -70,3 +70,6 @@ public class RenderVoidWormBeak<T extends TileEntityVoidWormBeak> implements Blo
         poseStack.popPose();
     }
 }
+
+
+

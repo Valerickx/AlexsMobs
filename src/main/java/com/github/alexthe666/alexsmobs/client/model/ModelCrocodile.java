@@ -306,3 +306,6 @@ public class ModelCrocodile extends AdvancedEntityModel<EntityCrocodile> {
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

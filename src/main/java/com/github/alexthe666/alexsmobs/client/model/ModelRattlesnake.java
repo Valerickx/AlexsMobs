@@ -154,3 +154,6 @@ public class ModelRattlesnake extends AdvancedEntityModel<EntityRattlesnake> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

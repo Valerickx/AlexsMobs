@@ -762,3 +762,6 @@ public class EntityFroststalker extends Animal implements IAnimatedEntity, ISemi
 
     }
 }
+
+
+

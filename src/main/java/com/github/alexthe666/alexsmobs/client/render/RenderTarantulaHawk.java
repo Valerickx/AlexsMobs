@@ -62,3 +62,6 @@ public class RenderTarantulaHawk extends MobRenderer<EntityTarantulaHawk, Living
 }
 
 
+
+
+

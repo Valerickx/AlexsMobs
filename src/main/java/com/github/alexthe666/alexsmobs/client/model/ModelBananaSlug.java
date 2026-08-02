@@ -130,3 +130,6 @@ public class ModelBananaSlug extends AdvancedEntityModel<EntityBananaSlug> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

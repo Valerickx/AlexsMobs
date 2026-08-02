@@ -200,3 +200,6 @@ public class TileEntityTransmutationTable  extends BlockEntity {
         this.rerollPlayerUUID = uuid;
     }
 }
+
+
+

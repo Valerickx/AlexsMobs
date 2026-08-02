@@ -25,3 +25,6 @@ public class ModelMooseHeadgear extends HumanoidModel {
         return LayerDefinition.create(meshdefinition, 64, 32);
     }
 }
+
+
+

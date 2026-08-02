@@ -260,3 +260,6 @@ public class EntitySeaBear extends WaterAnimal implements IAnimatedEntity {
         }
     }
 }
+
+
+

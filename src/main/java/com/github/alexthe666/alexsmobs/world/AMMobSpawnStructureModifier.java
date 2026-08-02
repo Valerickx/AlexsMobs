@@ -36,3 +36,6 @@ public class AMMobSpawnStructureModifier implements StructureModifier {
         return MapCodec.unit(AMMobSpawnStructureModifier::new);
     }
 }
+
+
+

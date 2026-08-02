@@ -26,3 +26,6 @@ public class ModelNoveltyHat extends HumanoidModel {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 }
+
+
+

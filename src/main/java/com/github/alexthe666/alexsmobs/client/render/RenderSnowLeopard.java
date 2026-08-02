@@ -29,3 +29,6 @@ public class RenderSnowLeopard extends MobRenderer<EntitySnowLeopard, LivingEnti
 }
 
 
+
+
+

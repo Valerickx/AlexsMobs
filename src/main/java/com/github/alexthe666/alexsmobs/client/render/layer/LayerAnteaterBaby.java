@@ -81,3 +81,6 @@ public class LayerAnteaterBaby extends RenderLayer<EntityAnteater, ModelAnteater
     }
 }
 
+
+
+

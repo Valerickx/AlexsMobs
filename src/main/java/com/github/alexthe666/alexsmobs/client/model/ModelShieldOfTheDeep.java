@@ -48,3 +48,6 @@ public class ModelShieldOfTheDeep extends AdvancedEntityModel<Entity> {
 		return ImmutableList.of(shield);
 	}
 }
+
+
+

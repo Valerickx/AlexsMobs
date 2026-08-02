@@ -381,7 +381,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
                     } else {
                         holder.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                     }
-                    holder.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
+                    holder.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
                 }
             }
 
@@ -611,7 +611,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
             this.usePlayerItem(player, hand, itemstack);
             this.heal(10);
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         final InteractionResult type = super.mobInteract(player, hand);
@@ -761,3 +761,7 @@ public class EntityCrocodile extends TamableAnimal implements IAnimatedEntity, I
         }
     }
 }
+
+
+
+

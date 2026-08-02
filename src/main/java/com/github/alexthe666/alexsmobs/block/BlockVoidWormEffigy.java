@@ -63,3 +63,6 @@ public class BlockVoidWormEffigy extends Block {
         };
     }
 }
+
+
+

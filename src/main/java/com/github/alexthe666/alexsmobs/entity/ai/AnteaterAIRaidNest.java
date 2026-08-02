@@ -202,3 +202,6 @@ public class AnteaterAIRaidNest extends MoveToBlockGoal {
         return blockEntity.hasAtleastThisManyAnts(2);
     }
 }
+
+
+

@@ -90,7 +90,7 @@ public class ItemBloodSprayer extends Item {
                 Vec3 vector3d = livingEntityIn.getViewVector(1.0F);
                 RandomSource rand = worldIn.getRandom();
                 livingEntityIn.gameEvent(GameEvent.ITEM_INTERACT_START);
-                livingEntityIn.playSound(SoundEvents.LAVA_POP,1.0F, 1.2F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+                livingEntityIn.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.LAVA_POP,1.0F, 1.2F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
                 blood.shoot((double) vector3d.x(), (double) vector3d.y(), (double) vector3d.z(), 1F, 10);
                 if (!worldIn.isClientSide()) {
                     worldIn.addFreshEntity(blood);
@@ -114,3 +114,7 @@ public class ItemBloodSprayer extends Item {
         }
     }
 }
+
+
+
+

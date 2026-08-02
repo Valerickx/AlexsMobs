@@ -58,3 +58,6 @@ public class TileEntityEndPirateShipWheel extends BlockEntity {
         return prevWheelRot + (wheelRot - prevWheelRot) * partialTick;
     }
 }
+
+
+

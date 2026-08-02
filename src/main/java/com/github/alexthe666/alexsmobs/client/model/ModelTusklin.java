@@ -315,3 +315,6 @@ public class ModelTusklin extends AdvancedEntityModel<EntityTusklin> {
         advancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

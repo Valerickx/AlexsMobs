@@ -270,3 +270,6 @@ public class ModelSnowLeopard extends AdvancedEntityModel<EntitySnowLeopard> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

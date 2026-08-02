@@ -103,3 +103,6 @@ public class ModelDevilsHolePupfish extends AdvancedEntityModel<EntityDevilsHole
         modelRenderer.rotateAngleZ = z;
     }
 }
+
+
+

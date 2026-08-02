@@ -445,3 +445,6 @@ public class AMSoundRegistry {
         return DEF_REG.register(soundName, () -> SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(AlexsMobs.MODID, soundName)));
     }
 }
+
+
+

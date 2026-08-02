@@ -74,3 +74,6 @@ public class EntityMudBall extends EntityMobProjectile {
         super.onImpact(result);
     }
 }
+
+
+

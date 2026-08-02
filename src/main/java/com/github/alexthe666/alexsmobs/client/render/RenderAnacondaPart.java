@@ -79,3 +79,6 @@ public class RenderAnacondaPart extends LivingEntityRenderer<EntityAnacondaPart,
         return RenderAnaconda.getAnacondaTexture(entity.isYellow(), entity.isShedding());
     }
 }
+
+
+

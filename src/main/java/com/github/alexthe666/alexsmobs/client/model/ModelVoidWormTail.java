@@ -77,3 +77,6 @@ public class ModelVoidWormTail extends AdvancedEntityModel<EntityVoidWormPart> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

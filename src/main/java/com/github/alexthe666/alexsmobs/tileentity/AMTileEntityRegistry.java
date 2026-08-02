@@ -29,3 +29,6 @@ public class AMTileEntityRegistry {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityEndPirateFlag>> END_PIRATE_FLAG = null;// DEF_REG.register("end_pirate_flag_te", () -> BlockEntityType.Builder.of(TileEntityEndPirateFlag::new, AMBlockRegistry.END_PIRATE_FLAG.get()).build(null));
 
 }
+
+
+

@@ -28,3 +28,6 @@ public class RenderStradpole extends MobRenderer<EntityStradpole, LivingEntityRe
 }
 
 
+
+
+

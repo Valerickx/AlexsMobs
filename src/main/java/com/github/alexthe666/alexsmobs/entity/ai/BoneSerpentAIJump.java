@@ -88,7 +88,7 @@ public class BoneSerpentAIJump extends JumpGoal {
         }
 
         if (this.inWater && !flag) {
-            this.dolphin.playSound(SoundEvents.DOLPHIN_JUMP, 1.0F, 1.0F);
+            this.dolphin.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DOLPHIN_JUMP, 1.0F, 1.0F);
         }
 
         Vec3 vector3d = this.dolphin.getDeltaMovement();
@@ -102,3 +102,7 @@ public class BoneSerpentAIJump extends JumpGoal {
 
     }
 }
+
+
+
+

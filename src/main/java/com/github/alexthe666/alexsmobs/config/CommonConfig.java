@@ -529,3 +529,6 @@ public class CommonConfig {
         return builder.comment(comment).translation(name).defineInRange(name, defaultValue, min, max);
     }
 }
+
+
+

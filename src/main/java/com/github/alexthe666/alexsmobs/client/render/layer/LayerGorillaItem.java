@@ -67,3 +67,6 @@ public class LayerGorillaItem extends RenderLayer<EntityGorilla, ModelGorilla> {
     }
 }
 
+
+
+

@@ -338,3 +338,6 @@ public class ModelEmu extends AdvancedEntityModel<EntityEmu> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

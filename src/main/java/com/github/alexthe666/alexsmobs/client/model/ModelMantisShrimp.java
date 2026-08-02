@@ -221,3 +221,6 @@ public class ModelMantisShrimp extends AdvancedEntityModel<EntityMantisShrimp> {
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

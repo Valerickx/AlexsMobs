@@ -21,3 +21,6 @@ public class EffectMosquitoRepellent extends MobEffect {
         return "alexsmobs.potion.mosquito_repellent";
     }
 }
+
+
+

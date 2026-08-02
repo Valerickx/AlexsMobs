@@ -16,3 +16,6 @@ public class AnimalAIPanicBaby extends PanicGoal {
         return animal.isBaby() && super.canUse();
     }
 }
+
+
+

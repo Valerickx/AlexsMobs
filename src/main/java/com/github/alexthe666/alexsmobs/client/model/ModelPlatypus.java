@@ -186,3 +186,6 @@ public class ModelPlatypus extends AdvancedEntityModel<EntityPlatypus> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

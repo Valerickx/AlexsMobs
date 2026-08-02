@@ -24,3 +24,6 @@ public class VoidWormMetadataSection {
         return new VoidWormMetadataSection(GsonHelper.getAsBoolean(json, "end_portal_texture"));
     }
 }
+
+
+

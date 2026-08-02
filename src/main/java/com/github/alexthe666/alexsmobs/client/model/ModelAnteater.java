@@ -251,3 +251,6 @@ public class ModelAnteater extends AdvancedEntityModel<EntityAnteater> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

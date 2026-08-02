@@ -205,3 +205,6 @@ public class ModelCrimsonMosquito extends AdvancedEntityModel<EntityCrimsonMosqu
 		modelRenderer.rotateAngleZ = z;
 	}
 }
+
+
+

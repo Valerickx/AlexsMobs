@@ -16,3 +16,6 @@ public class AMEnchantmentRegistry {
     public static final ResourceKey<Enchantment> STRADDLE_SERPENTFRIEND = ResourceKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "serpentfriend"));
     public static final ResourceKey<Enchantment> STRADDLE_BOARDRETURN = ResourceKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(AlexsMobs.MODID, "board_return"));
 }
+
+
+

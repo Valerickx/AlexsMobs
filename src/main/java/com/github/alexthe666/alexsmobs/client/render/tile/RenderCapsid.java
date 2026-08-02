@@ -34,3 +34,6 @@ public class RenderCapsid<T extends TileEntityCapsid> implements BlockEntityRend
         // Item rendering in capsid not yet implemented for 1.21.4 new renderer
     }
 }
+
+
+

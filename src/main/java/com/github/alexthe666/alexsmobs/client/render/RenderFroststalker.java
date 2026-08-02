@@ -32,3 +32,6 @@ public class RenderFroststalker extends MobRenderer<EntityFroststalker, LivingEn
 }
 
 
+
+
+

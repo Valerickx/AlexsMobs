@@ -29,3 +29,6 @@ public class EmeraldsForItemsTrade {
         return new MerchantOffer(new ItemCost(this.tradeItem, 1), new ItemStack(Items.EMERALD, this.count), this.maxUses, this.xpValue, this.priceMultiplier);
     }
 }
+
+
+

@@ -66,3 +66,6 @@ public class ModelAncientDart extends AdvancedEntityModel<Entity> {
 		modelRenderer.rotateAngleZ = z;
 	}
 }
+
+
+

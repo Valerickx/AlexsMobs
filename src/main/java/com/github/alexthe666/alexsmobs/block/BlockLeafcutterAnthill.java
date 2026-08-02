@@ -135,3 +135,6 @@ public class BlockLeafcutterAnthill extends BaseEntityBlock {
         return p_152180_.isClientSide() ? null : createTickerHelper(p_152182_, AMTileEntityRegistry.LEAFCUTTER_ANTHILL.get(), TileEntityLeafcutterAnthill::serverTick);
     }
 }
+
+
+

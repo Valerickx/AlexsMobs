@@ -67,3 +67,6 @@ public class SmartClimbPathNavigator extends GroundPathNavigation {
         }
     }
 }
+
+
+

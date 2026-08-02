@@ -336,3 +336,6 @@ public class EntityLobster extends WaterAnimal implements ISemiAquatic, Bucketab
         return spawnBlock || worldIn.getFluidState(pos).is(FluidTags.WATER);
     }
 }
+
+
+

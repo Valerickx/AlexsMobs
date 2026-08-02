@@ -254,3 +254,6 @@ public class ModelMoose extends AdvancedEntityModel<EntityMoose> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

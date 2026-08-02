@@ -170,3 +170,6 @@ public class ModelSkunk extends AdvancedEntityModel<EntitySkunk> {
 
     }
 }
+
+
+

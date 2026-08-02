@@ -278,7 +278,7 @@ public class EntityOrca extends TamableAnimal implements IAnimatedEntity {
                 boolean flag = attackTarget.hurt(this.damageSources().mobAttack(this), damage);
                 if (flag) {
                     this.doEnchantDamageEffects(this, attackTarget);
-                    this.playSound(SoundEvents.DOLPHIN_ATTACK, 1.0F, 1.0F);
+                    this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DOLPHIN_ATTACK, 1.0F, 1.0F);
                 }
             }
             if (this.getAnimation() == ANIMATION_TAILSWING && this.getAnimationTick() == 6) {
@@ -289,7 +289,7 @@ public class EntityOrca extends TamableAnimal implements IAnimatedEntity {
                 boolean flag = attackTarget.hurt(this.damageSources().mobAttack(this), damage);
                 if (flag) {
                     this.doEnchantDamageEffects(this, attackTarget);
-                    this.playSound(SoundEvents.DOLPHIN_ATTACK, 1.0F, 1.0F);
+                    this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DOLPHIN_ATTACK, 1.0F, 1.0F);
                 }
                 final float yRotRad = this.getYRot() * Mth.DEG_TO_RAD;
                 attackTarget.knockback(1F, Mth.sin(yRotRad), -Mth.cos(yRotRad), null, 0.0F);
@@ -409,7 +409,7 @@ public class EntityOrca extends TamableAnimal implements IAnimatedEntity {
         boolean flag = entityIn.hurt(this.damageSources().mobAttack(this), (float) ((int) this.getAttributeValue(Attributes.ATTACK_DAMAGE)));
         if (flag) {
             this.doEnchantDamageEffects(this, entityIn);
-            this.playSound(SoundEvents.DOLPHIN_ATTACK, 1.0F, 1.0F);
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DOLPHIN_ATTACK, 1.0F, 1.0F);
         }
     }
 
@@ -518,3 +518,7 @@ public class EntityOrca extends TamableAnimal implements IAnimatedEntity {
     }
 
 }
+
+
+
+

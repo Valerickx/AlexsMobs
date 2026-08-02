@@ -47,3 +47,6 @@ public class ItemsForEmeraldsTrade {
         return new MerchantOffer(new ItemCost(Items.EMERALD, this.emeraldCount), new ItemStack(this.sellingItem.getItem(), this.sellingItemCount), this.maxUses, this.xpValue, this.priceMultiplier);
     }
 }
+
+
+

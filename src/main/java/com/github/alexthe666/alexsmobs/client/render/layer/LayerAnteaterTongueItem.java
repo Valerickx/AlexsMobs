@@ -72,3 +72,6 @@ public class LayerAnteaterTongueItem extends RenderLayer<EntityAnteater, ModelAn
     }
 }
 
+
+
+

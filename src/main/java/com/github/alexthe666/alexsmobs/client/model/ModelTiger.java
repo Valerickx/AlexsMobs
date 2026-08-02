@@ -368,3 +368,6 @@ public class ModelTiger extends AdvancedEntityModel<EntityTiger> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

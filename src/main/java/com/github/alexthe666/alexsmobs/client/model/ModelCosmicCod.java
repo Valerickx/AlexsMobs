@@ -94,3 +94,6 @@ public class ModelCosmicCod extends AdvancedEntityModel<EntityCosmicCod> {
         AdvancedModelBox.rotateAngleZ = z;
     }
 }
+
+
+

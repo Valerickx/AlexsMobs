@@ -428,7 +428,7 @@ public class EntityTusklin extends Animal implements IAnimatedEntity {
                     if (level().getBlockState(this.blockPosition()).canBeReplaced() && random.nextInt(3) == 0) {
                         level().setBlockAndUpdate(this.blockPosition(), Blocks.BROWN_MUSHROOM.defaultBlockState());
                         this.gameEvent(GameEvent.BLOCK_DESTROY);
-                        this.playSound(SoundEvents.CROP_PLANTED, this.getSoundVolume(), this.getVoicePitch());
+                        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.CROP_PLANTED, this.getSoundVolume(), this.getVoicePitch());
                     }
                 }
                 this.level().levelEvent(2001, blockPosition().below(), Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
@@ -493,3 +493,7 @@ public class EntityTusklin extends Animal implements IAnimatedEntity {
         return new Animation[]{ANIMATION_RUT};
     }
 }
+
+
+
+

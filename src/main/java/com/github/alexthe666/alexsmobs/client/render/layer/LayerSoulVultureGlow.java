@@ -37,3 +37,6 @@ public class LayerSoulVultureGlow extends RenderLayer<EntitySoulVulture, ModelSo
     }
 }
 
+
+
+

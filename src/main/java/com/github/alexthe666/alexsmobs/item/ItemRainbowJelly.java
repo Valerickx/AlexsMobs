@@ -33,7 +33,7 @@ public class ItemRainbowJelly extends Item {
                 playerIn.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (stack).getItem()), target.getX() + (double) (random.nextFloat() * target.getBbWidth()) - (double) target.getBbWidth() * 0.5F, target.getY() + target.getBbHeight() * 0.5F + (double) (random.nextFloat() * target.getBbHeight() * 0.5F), target.getZ() + (double) (random.nextFloat() * target.getBbWidth()) - (double) target.getBbWidth() * 0.5F, d0, d1, d2);
             }
             target.gameEvent(GameEvent.ITEM_INTERACT_START);
-            target.playSound(SoundEvents.SLIME_SQUISH_SMALL, 1F, target.getVoicePitch());
+            target.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SLIME_SQUISH_SMALL, 1F, target.getVoicePitch());
             if (!playerIn.isCreative()) {
                 stack.shrink(1);
             }
@@ -81,3 +81,7 @@ public class ItemRainbowJelly extends Item {
         }
     }
 }
+
+
+
+

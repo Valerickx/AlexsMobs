@@ -539,7 +539,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
         ItemStack stack = e.getItem();
         if (stack.getItem().isEdible() && stack.getItem().getFoodProperties() != null && stack.getItem().getFoodProperties().isMeat() && stack.getItem() != Items.ROTTEN_FLESH) {
             this.gameEvent(GameEvent.EAT);
-            this.playSound(SoundEvents.CAT_EAT, this.getVoicePitch(), this.getSoundVolume());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.CAT_EAT, this.getVoicePitch(), this.getSoundVolume());
             this.heal(5);
             Entity thrower = e.getOwner();
             if (thrower != null && random.nextFloat() < getChanceForEffect(stack) && level().getPlayerByUUID(thrower.getUUID()) != null) {
@@ -715,3 +715,7 @@ public class EntityTiger extends Animal implements ICustomCollisions, IAnimatedE
         }
     }
 }
+
+
+
+

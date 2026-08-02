@@ -120,3 +120,6 @@ public class BoneSerpentNodeProcessor extends NodeEvaluator {
         return blockstate1.getFluidState().is(FluidTags.LAVA) || blockstate1.isPathfindable(PathComputationType.WATER) ? PathType.WATER : PathType.BLOCKED;
     }
 }
+
+
+

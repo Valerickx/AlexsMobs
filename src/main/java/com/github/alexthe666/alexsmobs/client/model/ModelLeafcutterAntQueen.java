@@ -197,3 +197,6 @@ public class ModelLeafcutterAntQueen extends AdvancedEntityModel<EntityLeafcutte
 		AdvancedModelBox.rotateAngleZ = z;
 	}
 }
+
+
+

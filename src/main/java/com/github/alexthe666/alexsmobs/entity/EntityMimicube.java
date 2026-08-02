@@ -130,7 +130,7 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
         double d3 = Mth.sqrt((float)(d0 * d0 + d2 * d2));
         tridententity.shoot(d0, d1 + d3 * (double) 0.2F, d2, 1.6F, (float) (14 - this.level().getDifficulty().getId() * 4));
         this.gameEvent(GameEvent.PROJECTILE_SHOOT);
-        this.playSound(SoundEvents.DROWNED_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.DROWNED_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
         this.level().addFreshEntity(tridententity);
     }
 
@@ -149,7 +149,7 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
         double d3 = Mth.sqrt((float)(d0 * d0 + d2 * d2));
         abstractarrowentity.shoot(d0, d1 + d3 * (double) 0.2F, d2, 1.6F, (float) (14 - this.level().getDifficulty().getId() * 4));
         this.gameEvent(GameEvent.PROJECTILE_SHOOT);
-        this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
         this.level().addFreshEntity(abstractarrowentity);
     }
 
@@ -272,13 +272,13 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
                 }
                 if (eatingTicks % 6 == 0) {
                     this.gameEvent(GameEvent.EAT);
-                    this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                    this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                 }
                 eatingTicks++;
             }
             if (eatingTicks == 100) {
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.PLAYER_BURP, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.PLAYER_BURP, this.getSoundVolume(), this.getVoicePitch());
                 this.getOffhandItem().shrink(1);
                 this.heal(5);
                 eatingTicks = 0;
@@ -292,16 +292,16 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
                     this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, (this.getItemInHand(InteractionHand.MAIN_HAND).getItem())), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, this.getY() + this.getBbHeight() * 0.5F + (double) (this.random.nextFloat() * this.getBbHeight() * 0.5F), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth()) - (double) this.getBbWidth() * 0.5F, d0, d1, d2);
                 }
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                 if (eatingTicks % 6 == 0) {
                     this.gameEvent(GameEvent.EAT);
-                    this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                    this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
                 }
                 eatingTicks++;
             }
             if (eatingTicks == 100) {
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.PLAYER_BURP, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.PLAYER_BURP, this.getSoundVolume(), this.getVoicePitch());
                 this.getMainHandItem().shrink(1);
                 this.heal(5);
             }
@@ -413,4 +413,8 @@ public class EntityMimicube extends Monster implements RangedAttackMob {
     }
 
 }
+
+
+
+
 

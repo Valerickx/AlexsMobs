@@ -27,3 +27,6 @@ public class EffectFear extends MobEffect {
         return "alexsmobs.potion.fear";
     }
 }
+
+
+

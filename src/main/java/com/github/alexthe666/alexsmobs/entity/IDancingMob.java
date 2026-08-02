@@ -7,3 +7,6 @@ public interface IDancingMob {
     void setDancing(boolean dancing);
     void setJukeboxPos(BlockPos pos);
 }
+
+
+

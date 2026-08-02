@@ -58,3 +58,6 @@ public class ItemTarantulaHawkElytra extends Item {
         return "alexsmobs:textures/armor/tarantula_hawk_elytra.png";
     }
 }
+
+
+

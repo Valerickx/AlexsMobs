@@ -284,7 +284,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
             this.permSnow = true;
             this.setSnowy(true);
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.SNOW_PLACE, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SNOW_PLACE, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         if(item instanceof ShovelItem && this.isSnowy() && !this.level().isClientSide()){
@@ -294,7 +294,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
             }
             this.setSnowy(false);
             this.gameEvent(GameEvent.ENTITY_INTERACT);
-            this.playSound(SoundEvents.SNOW_BREAK, this.getSoundVolume(), this.getVoicePitch());
+            this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SNOW_BREAK, this.getSoundVolume(), this.getVoicePitch());
             return InteractionResult.SUCCESS;
         }
         InteractionResult interactionresult = itemstack.interactLivingEntity(player, this, hand);
@@ -413,7 +413,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
             }
             if(eatingTime % 5 == 0){
                 this.gameEvent(GameEvent.EAT);
-                this.playSound(SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_EAT, this.getSoundVolume(), this.getVoicePitch());
             }
             if(eatingTime > 100){
                 ItemStack stack = this.getItemInHand(InteractionHand.MAIN_HAND);
@@ -820,3 +820,7 @@ public class EntityGrizzlyBear extends TamableAnimal implements NeutralMob, IAni
     }
 
 }
+
+
+
+

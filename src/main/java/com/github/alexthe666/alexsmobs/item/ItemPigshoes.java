@@ -24,3 +24,6 @@ public class ItemPigshoes extends Item {
         return !enchantment.is(Enchantments.UNBREAKING) && !enchantment.is(Enchantments.MENDING);
     }
 }
+
+
+

@@ -40,3 +40,6 @@ public class LayerRaccoonEyes extends RenderLayer<EntityRaccoon, ModelRaccoon> {
     }
 }
 
+
+
+

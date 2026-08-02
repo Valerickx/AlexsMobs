@@ -110,7 +110,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable {
     }
 
     protected void playStepSound(BlockPos p_28301_) {
-        this.playSound(SoundEvents.GOAT_STEP, 0.1F, 1.0F);
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GOAT_STEP, 0.1F, 1.0F);
     }
 
     public boolean isSnowy() {
@@ -321,7 +321,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable {
                 this.usePlayerItem(player, hand, itemstack);
                 this.permSnow = true;
                 this.setSnowy(true);
-                this.playSound(SoundEvents.SNOW_PLACE, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SNOW_PLACE, this.getSoundVolume(), this.getVoicePitch());
                 this.gameEvent(GameEvent.ENTITY_INTERACT);
                 return InteractionResult.SUCCESS;
             }
@@ -332,7 +332,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable {
                     itemstack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
                 }
                 this.setSnowy(false);
-                this.playSound(SoundEvents.SNOW_BREAK, this.getSoundVolume(), this.getVoicePitch());
+                this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SNOW_BREAK, this.getSoundVolume(), this.getVoicePitch());
                 this.gameEvent(GameEvent.ENTITY_INTERACT);
                 return InteractionResult.SUCCESS;
             }
@@ -544,3 +544,7 @@ public class EntityBison extends Animal implements IAnimatedEntity, Shearable {
         }
     }
 }
+
+
+
+

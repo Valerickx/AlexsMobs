@@ -635,7 +635,7 @@ public class EntityGiantSquid extends WaterAnimal {
 
     private void spawnInk() {
         this.gameEvent(GameEvent.ENTITY_INTERACT);
-        this.playSound(SoundEvents.SQUID_SQUIRT, this.getSoundVolume(), 0.5F * this.getVoicePitch());
+        this.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.SQUID_SQUIRT, this.getSoundVolume(), 0.5F * this.getVoicePitch());
         if (!this.level().isClientSide()) {
             Vec3 inkDirection = new Vec3(0, 0, 1.2F).xRot(-this.getXRot() * Mth.DEG_TO_RAD).yRot(-this.yBodyRot * Mth.DEG_TO_RAD);
             Vec3 vec3 = this.position().add(inkDirection);
@@ -790,3 +790,7 @@ public class EntityGiantSquid extends WaterAnimal {
         }
     }
 }
+
+
+
+

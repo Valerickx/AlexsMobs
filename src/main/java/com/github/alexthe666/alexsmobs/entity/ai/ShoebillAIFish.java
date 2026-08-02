@@ -63,7 +63,7 @@ public class ShoebillAIFish extends Goal {
                 }
                 if(idleTime > 45 && bird.getAnimation() == EntityShoebill.ANIMATION_FISH){
                     this.bird.gameEvent(GameEvent.ITEM_INTERACT_START);
-                    this.bird.playSound(SoundEvents.GENERIC_SPLASH, 0.7F, 0.5F + bird.getRandom().nextFloat());
+                    this.bird.playSound((net.minecraft.sounds.SoundEvent)(Object)SoundEvents.GENERIC_SPLASH, 0.7F, 0.5F + bird.getRandom().nextFloat());
                     this.bird.resetFishingCooldown();
                     this.spawnFishingLoot();
                     this.stop();
@@ -156,3 +156,7 @@ public class ShoebillAIFish extends Goal {
         return null;
     }
 }
+
+
+
+

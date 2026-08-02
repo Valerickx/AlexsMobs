@@ -128,3 +128,6 @@ public class ModelTriops extends AdvancedEntityModel<EntityTriops> {
         tail2.rotateAngleY += Maths.rad(tail2Rot);
     }
 }
+
+
+

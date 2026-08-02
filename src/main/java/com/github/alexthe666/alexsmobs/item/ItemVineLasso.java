@@ -93,3 +93,6 @@ public class ItemVineLasso extends Item {
         consumer.accept((IClientItemExtensions) AlexsMobs.PROXY.getISTERProperties());
     }
 }
+
+
+

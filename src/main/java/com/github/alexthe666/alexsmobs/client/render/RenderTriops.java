@@ -31,3 +31,6 @@ public class RenderTriops extends MobRenderer<EntityTriops, LivingEntityRenderSt
 }
 
 
+
+
+
